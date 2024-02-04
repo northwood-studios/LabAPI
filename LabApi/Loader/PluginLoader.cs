@@ -15,6 +15,8 @@ namespace LabApi.Loader;
 /// </summary>
 public static class PluginLoader
 {
+    private const string DllSearchPattern = "*.dll";
+    
     /// <summary>
     /// Whether or not the <see cref="PluginLoader"/> has been initialized.
     /// </summary>
@@ -59,7 +61,7 @@ public static class PluginLoader
     {
         // We load all the dependencies from the dependencies directory
         ServerConsole.AddLog("[LabAPI] [Loader] Loading all dependencies", ConsoleColor.DarkCyan); // Temporary until we have a logger
-        LoadDependencies(PathManager.Dependencies.GetFiles("*.dll"));
+        LoadDependencies(PathManager.Dependencies.GetFiles(DllSearchPattern));
     }
     
     /// <summary>
@@ -96,7 +98,7 @@ public static class PluginLoader
     {
         // First we load all the plugins from the plugins directory
         ServerConsole.AddLog("[LabAPI] [Loader] Loading all plugins", ConsoleColor.DarkCyan); // Temporary until we have a logger
-        LoadPlugins(PathManager.Plugins.GetFiles("*.dll"));
+        LoadPlugins(PathManager.Plugins.GetFiles(DllSearchPattern));
         
         // Then we finally enable all the plugins
         ServerConsole.AddLog("[LabAPI] [Loader] Enabling all plugins", ConsoleColor.DarkCyan);

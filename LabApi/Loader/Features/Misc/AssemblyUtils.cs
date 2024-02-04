@@ -34,7 +34,7 @@ public static class AssemblyUtils
             
             // If the assembly has missing dependencies after resolving embedded resources this will throw an exception.
             types = assembly.GetTypes();
-            return true;
+            return false; // False = no missing dependencies.
         }
         catch (Exception exception)
         {
@@ -49,7 +49,7 @@ public static class AssemblyUtils
             ServerConsole.AddLog(exception.ToString(), ConsoleColor.Red);
             
             types = default;
-            return false;
+            return true; // True = missing dependencies.
         }
     }
 
