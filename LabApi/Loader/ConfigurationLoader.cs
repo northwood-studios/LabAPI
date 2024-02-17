@@ -30,10 +30,7 @@ public static class ConfigurationLoader
         {
             // We try to read the configuration file.
             if (!plugin.TryReadConfig(out IConfig config))
-            {
-                // We log the error and return false to indicate that the configuration wasn't successfully loaded.
                 return false;
-            }
             
             // We update the configuration of the plugin.
             plugin.Config = config;
