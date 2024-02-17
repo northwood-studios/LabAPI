@@ -153,18 +153,23 @@ public static class PluginLoader
     {
         foreach (Plugin plugin in plugins)
         {
-            // Here we can load the config
-            // ConfigurationManager.LoadConfig(plugin.Config);
+            // We try to load the configuration of the plugin
+            if (!plugin.TryLoadConfig())
+                continue;
             
-            // Here we should check if the plugin is disabled in the config
-            // if (!plugin.Config.IsEnabled)
-            //     continue;
+            // We check if the plugin is enabled
+            if (!plugin.Config.IsEnabled)
+                continue;
             
             // We finally enable the plugin
             EnablePlugin(plugin);
         }
     }
 
+    /// <summary>
+    /// Enables a <see cref="Plugin"/>.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to enable.</param>
     public static void EnablePlugin(Plugin plugin)
     {
         try
