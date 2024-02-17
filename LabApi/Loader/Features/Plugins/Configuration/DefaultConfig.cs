@@ -7,12 +7,6 @@ namespace LabApi.Loader.Features.Plugins.Configuration;
 public class DefaultConfig : IConfig
 {
     /// <summary>
-    /// The default constructor for <see cref="DefaultConfig"/>.
-    /// Private to prevent instantiation outside of this class.
-    /// </summary>
-    private DefaultConfig() {}
-    
-    /// <summary>
     /// Creates a new instance of <see cref="DefaultConfig"/>.
     /// </summary>
     public static DefaultConfig Create() => new ();

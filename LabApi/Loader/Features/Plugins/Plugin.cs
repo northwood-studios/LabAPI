@@ -42,7 +42,7 @@ public abstract class Plugin
     /// <summary>
     /// The <see cref="IConfig"/> of the <see cref="Plugin"/>.
     /// </summary>
-    public virtual IConfig Config { get; internal set; } = DefaultConfig.Create();
+    public virtual IConfig Config { get; set; } = DefaultConfig.Create();
     
     /// <summary>
     /// Called when the <see cref="Plugin"/> is enabled.
