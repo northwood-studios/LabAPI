@@ -95,8 +95,11 @@ public static class ConfigurationLoader
             // We read the configuration file.
             string serializedConfig = File.ReadAllText(path);
 
+            // We retrieve the type of the configuration.
+            Type configType = plugin.Config.GetType();
+            
             // We deserialize the configuration and return whether or not it was successful.
-            config = YamlParser.Deserializer.Deserialize<IConfig>(serializedConfig);
+            config = YamlParser.Deserializer.Deserialize(serializedConfig, configType) as IConfig;
             return true;
         }
         catch (Exception e)
