@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
-using LabApi.Loader.Features.Plugins.Configuration;
 
 namespace LabApi.Loader;
 

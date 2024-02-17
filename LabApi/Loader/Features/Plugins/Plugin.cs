@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins.Enums;
 using LabApi.Loader.Features.Plugins.Configuration;
 
