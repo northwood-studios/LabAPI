@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins.Enums;
 using LabApi.Loader.Features.Plugins.Configuration;
 
@@ -42,7 +44,7 @@ public abstract class Plugin
     /// <summary>
     /// The <see cref="IConfig"/> of the <see cref="Plugin"/>.
     /// </summary>
-    public virtual IConfig Config { get; } = DefaultConfig.Create();
+    public virtual IConfig Config { get; internal set; } = DefaultConfig.Create();
     
     /// <summary>
     /// Called when the <see cref="Plugin"/> is enabled.
