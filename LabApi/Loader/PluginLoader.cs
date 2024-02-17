@@ -31,7 +31,7 @@ public static class PluginLoader
     /// <summary>
     /// The loaded <see cref="Plugin"/>s.
     /// </summary>
-    public static Dictionary<Assembly, Plugin> Plugins { get; } = [];
+    public static Dictionary<Plugin, Assembly> Plugins { get; } = [];
     
     /// <summary>
     /// The enabled <see cref="Plugin"/>s.
@@ -103,7 +103,7 @@ public static class PluginLoader
         
         // Then we finally enable all the plugins
         ServerConsole.AddLog("[LabAPI] [Loader] Enabling all plugins", ConsoleColor.DarkCyan);
-        EnablePlugins(Plugins.Values.OrderBy(plugin => plugin.Priority));
+        EnablePlugins(Plugins.Keys.OrderBy(plugin => plugin.Priority));
     }
     
     /// <summary>
@@ -134,7 +134,7 @@ public static class PluginLoader
                         continue;
                     
                     // In that case, we add the plugin to the plugins list and log that it has been loaded.
-                    Plugins.Add(pluginAssembly, plugin);
+                    Plugins.Add(plugin, pluginAssembly);
                     ServerConsole.AddLog($"[LabAPI] [Loader] Successfully loaded {plugin.Name}", ConsoleColor.Green); // Temporary until we have a logger
                 }
             }
@@ -176,7 +176,7 @@ public static class PluginLoader
         try
         {
             // We register all the plugin commands
-            // CommandManager.RegisterCommands(plugin);
+            plugin.RegisterCommands();
 
             // We load the configurations of the plugin
             plugin.LoadConfigs();

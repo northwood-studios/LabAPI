@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO.Compression;
 using System.Collections.Generic;
+using LabApi.Loader.Features.Plugins;
 
 namespace LabApi.Loader.Features.Misc;
 
@@ -159,6 +160,18 @@ public static class AssemblyUtils
         // If the data stream is null, we log an error message and return false.
         ServerConsole.AddLog($"[LabAPI] [Loader] [Error] Unable to resolve {name} Stream was null", ConsoleColor.Red);
         return false;
+    }
+
+    /// <summary>
+    /// Tries to get the assembly of a loaded <see cref="Plugin"/>.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to get the assembly from.</param>
+    /// <param name="assembly">The assembly of the loaded <see cref="Plugin"/>.</param>
+    /// <returns>Whether or not the assembly was successfully retrieved.</returns>
+    public static bool TryGetLoadedAssembly(this Plugin plugin, out Assembly assembly)
+    {
+        // We try to get the assembly of the specified plugin inside the plugin loader.
+        return PluginLoader.Plugins.TryGetValue(plugin, out assembly);
     }
     
     // Used for missing assembly comparisons.
