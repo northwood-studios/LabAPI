@@ -43,10 +43,10 @@
         <Compile Include="Loader\ConfigurationLoader.cs" />
         <Compile Include="Loader\Features\Misc\AssemblyUtils.cs" />
         <Compile Include="Loader\Features\Paths\PathManager.cs" />
-        <Compile Include="Loader\Features\Plugins\Configuration\DefaultConfig.cs" />
-        <Compile Include="Loader\Features\Plugins\Configuration\IConfig.cs" />
+        <Compile Include="Loader\Features\Plugins\Configuration\Properties.cs" />
         <Compile Include="Loader\Features\Plugins\Enums\LoadPriority.cs" />
         <Compile Include="Loader\Features\Plugins\Plugin.cs" />
+        <Compile Include="Loader\Features\Plugins\PluginTConfig.cs" />
         <Compile Include="Loader\PluginLoader.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Plugins.Configuration;
 
 namespace LabApi.Loader;
 
@@ -154,11 +155,11 @@ public static class PluginLoader
         foreach (Plugin plugin in plugins)
         {
             // We try to load the configuration of the plugin
-            if (!plugin.TryLoadConfig())
+            if (!plugin.TryLoadProperties())
                 continue;
             
             // We check if the plugin is enabled
-            if (!plugin.Config.IsEnabled)
+            if (!plugin.Properties.IsEnabled)
                 continue;
             
             // We finally enable the plugin
@@ -177,6 +178,9 @@ public static class PluginLoader
             // We register all the plugin commands
             // CommandManager.RegisterCommands(plugin);
 
+            // We load the configurations of the plugin
+            plugin.LoadConfigs();
+            
             // We enable the plugin if it is not disabled
             plugin.Enable();
 

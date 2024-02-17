@@ -13,47 +13,25 @@ namespace LabApi.Loader;
 /// </summary>
 public static class ConfigurationLoader
 {
-    private const string ConfigFileName = "config.yml";
-    
-    /// <summary>
-    /// Loads the configuration of the specified <see cref="Plugin"/>.
-    /// </summary>
-    /// <param name="plugin">The <see cref="Plugin"/> to load the configuration for.</param>
-    /// <returns>Whether or not the configuration was successfully loaded.</returns>
-    public static bool TryLoadConfig(this Plugin plugin)
-    {
-        // We retrieve the path of the configuration file.
-        string path = plugin.GetConfigPath();
-        
-        // If the configuration file exists, we load it and return whether or not it was successfully loaded.
-        if (File.Exists(path))
-        {
-            // We try to read the configuration file.
-            if (!plugin.TryReadConfig(out IConfig config))
-                return false;
-            
-            // We update the configuration of the plugin.
-            plugin.Config = config;
-        }
-        
-        // We save the configuration to update new properties and return whether or not it was successfully saved.
-        return plugin.TrySaveConfig();
-    }
+    private const string PropertiesFileName = "properties.yml";
     
     /// <summary>
     /// Tries to save the configuration of the specified <see cref="Plugin"/>.
     /// </summary>
     /// <param name="plugin">The <see cref="Plugin"/> to save the configuration for.</param>
+    /// <param name="config">The configuration to save.</param>
+    /// <param name="fileName">The name of the configuration file.</param>
+    /// <typeparam name="TConfig">The type of the configuration to save.</typeparam>
     /// <returns>Whether or not the configuration was successfully saved.</returns>
-    public static bool TrySaveConfig(this Plugin plugin)
+    public static bool TrySaveConfig<TConfig>(this Plugin plugin, TConfig config, string fileName)
     {
         try
         {
             // We retrieve the path of the configuration file.
-            string path = plugin.GetConfigPath();
-
+            string path = plugin.GetConfigPath(fileName);
+            
             // We serialize the configuration.
-            string serializedConfig = YamlParser.Serializer.Serialize(plugin.Config);
+            string serializedConfig = YamlParser.Serializer.Serialize(config);
 
             // We finally write the serialized configuration to the file and return whether or not it was successful.
             File.WriteAllText(path, serializedConfig);
@@ -71,19 +49,21 @@ public static class ConfigurationLoader
     }
 
     /// <summary>
-    /// We try to read the configuration of the specified <see cref="Plugin"/>.
+    /// Tries to read the configuration of the specified <see cref="Plugin"/>.
     /// </summary>
     /// <param name="plugin">The <see cref="Plugin"/> to read the configuration for.</param>
-    /// <param name="config">The configuration of the specified <see cref="Plugin"/>.</param>
+    /// <param name="fileName">The name of the configuration file.</param>
+    /// <param name="config">The read configuration of the specified <see cref="Plugin"/>.</param>
+    /// <typeparam name="TConfig">The type of the configuration to read.</typeparam>
     /// <returns>Whether or not the configuration was successfully read.</returns>
-    public static bool TryReadConfig(this Plugin plugin, out IConfig config)
+    public static bool TryReadConfig<TConfig>(this Plugin plugin, string fileName, out TConfig config)
     {
         config = default;
         
         try
         {
             // We retrieve the path of the configuration file.
-            string path = plugin.GetConfigPath();
+            string path = plugin.GetConfigPath(fileName);
 
             // If the configuration file doesn't exist, we return false to indicate that the configuration wasn't successfully read.
             if (!File.Exists(path))
@@ -91,18 +71,104 @@ public static class ConfigurationLoader
             
             // We read the configuration file.
             string serializedConfig = File.ReadAllText(path);
-
-            // We retrieve the type of the configuration.
-            Type configType = plugin.Config.GetType();
             
             // We deserialize the configuration and return whether or not it was successful.
-            config = YamlParser.Deserializer.Deserialize(serializedConfig, configType) as IConfig;
+            config = YamlParser.Deserializer.Deserialize<TConfig>(serializedConfig);
             return true;
         }
         catch (Exception e)
         {
             // We log the error and return false to indicate that the configuration wasn't successfully read.
             ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't read the configuration of the plugin {plugin}", ConsoleColor.Red);
+            ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+            return false;
+        }
+    }
+    
+    /// <summary>
+    /// Tries to read the configuration of the specified <see cref="Plugin"/> and creates a default instance if it doesn't exist.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to load the configuration for.</param>
+    /// <param name="fileName">The name of the configuration file.</param>
+    /// <param name="config">The loaded configuration of the specified <see cref="Plugin"/>.</param>
+    /// <typeparam name="TConfig">The type of the configuration to load.</typeparam>
+    /// <returns>Whether or not the configuration was successfully loaded.</returns>
+    public static bool TryLoadConfig<TConfig>(this Plugin plugin, string fileName, out TConfig config)
+    {
+        config = default;
+        
+        // We retrieve the path of the configuration file.
+        string path = plugin.GetConfigPath(fileName);
+        
+        // We check if the configuration file doesn't exist to prevent resetting it if any error occurs.
+        if (!File.Exists(path))
+        {
+            // We try to create a default instance of the configuration.
+            if (plugin.TryCreateDefaultConfig(out config))
+            {
+                // We save the new configuration.
+                return plugin.TrySaveConfig(config, fileName);
+            }
+        }
+        // We try to read the configuration from its file.
+        else if (plugin.TryReadConfig(fileName, out config))
+        {
+            // We save the configuration to update new properties and return whether or not it was successfully saved.            
+            return plugin.TrySaveConfig(config, fileName);
+        }
+
+        // We return false to indicate that the configuration wasn't successfully loaded.
+        return false;
+    }
+    
+    /// <summary>
+    /// Saves the configuration of the specified <see cref="Plugin"/>.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to save the configuration for.</param>
+    /// <param name="config">The configuration to save.</param>
+    /// <param name="fileName">The name of the configuration file.</param>
+    /// <typeparam name="TConfig">The type of the configuration to save.</typeparam>
+    public static void SaveConfig<TConfig>(this Plugin plugin, TConfig config, string fileName) => plugin.TrySaveConfig(config, fileName);
+
+    /// <summary>
+    /// Reads the configuration of the specified <see cref="Plugin"/>.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to read the configuration for.</param>
+    /// <param name="fileName">The name of the configuration file.</param>
+    /// <typeparam name="TConfig">The type of the configuration to read.</typeparam>
+    /// <returns>The read configuration of the specified <see cref="Plugin"/>.</returns>
+    public static TConfig ReadConfig<TConfig>(this Plugin plugin, string fileName) => plugin.TryReadConfig(fileName, out TConfig config) ? config : default;
+
+    /// <summary>
+    /// Reads the configuration of the specified <see cref="Plugin"/> and creates a default instance if it doesn't exist.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to load the configuration for.</param>
+    /// <param name="fileName">The name of the configuration file.</param>
+    /// <typeparam name="TConfig">The type of the configuration to load.</typeparam>
+    /// <returns>The loaded configuration of the specified <see cref="Plugin"/>.</returns>
+    public static TConfig LoadConfig<TConfig>(this Plugin plugin, string fileName) => plugin.TryLoadConfig(fileName, out TConfig config) ? config : default;
+    
+    /// <summary>
+    /// Tries to create a default instance of the specified configuration.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to create the default configuration for.</param>
+    /// <param name="config">The default instance of the configuration.</param>
+    /// <typeparam name="TConfig">The type of the configuration to create.</typeparam>
+    /// <returns>Whether or not the configuration was successfully created.</returns>
+    public static bool TryCreateDefaultConfig<TConfig>(this Plugin plugin, out TConfig config)
+    {
+        config = default;
+        
+        try
+        {
+            // We create a default instance of the configuration and return true.
+            config = Activator.CreateInstance<TConfig>();
+            return true;
+        }
+        catch (Exception e)
+        {
+            // We log the error and return false to indicate that the configuration wasn't successfully loaded.
+            ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't create a default instance of the class {typeof(TConfig)} of the plugin {plugin}", ConsoleColor.Red);
             ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
             return false;
         }
@@ -123,13 +189,34 @@ public static class ConfigurationLoader
     /// Gets the path of the configuration of the specified <see cref="Plugin"/>.
     /// </summary>
     /// <param name="plugin">The <see cref="Plugin"/> to get the configuration path for.</param>
+    /// <param name="fileName">The name of the configuration file.</param>
     /// <returns>The path of the configuration of the specified <see cref="Plugin"/>.</returns>
-    public static string GetConfigPath(this Plugin plugin)
+    public static string GetConfigPath(this Plugin plugin, string fileName)
     {
-        // We create the directory for the plugin if it doesn't exist.
+        // We retrieve the directory of the configuration of the plugin.
         DirectoryInfo directory = plugin.GetConfigDirectory();
         
-        // We retrieve the path of the configuration file.
-        return Path.Combine(directory.FullName, ConfigFileName);
+        // We check if the file name doesn't end with .yml or .yaml and add it if it doesn't.
+        if (!fileName.EndsWith(".yml", StringComparison.InvariantCultureIgnoreCase) && !fileName.EndsWith(".yaml", StringComparison.InvariantCultureIgnoreCase))
+            fileName += ".yml";
+        
+        // We return the path of the configuration file.
+        return Path.Combine(directory.FullName, fileName);
+    }
+    
+    /// <summary>
+    /// Tries to load the properties of the specified <see cref="Plugin"/>.
+    /// </summary>
+    /// <param name="plugin">The <see cref="Plugin"/> to load the properties for.</param>
+    /// <returns>Whether or not the properties were successfully loaded.</returns>
+    public static bool TryLoadProperties(this Plugin plugin)
+    {
+        // We try to load the properties of the plugin and return them.
+        if (!plugin.TryLoadConfig(PropertiesFileName, out Properties properties))
+            return false;
+        
+        // We set the properties of the plugin.
+        plugin.Properties = properties;
+        return true;
     }
 }

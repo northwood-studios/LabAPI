@@ -40,9 +40,9 @@ public abstract class Plugin
     public virtual LoadPriority Priority { get; } = LoadPriority.Medium;
 
     /// <summary>
-    /// The <see cref="IConfig"/> of the <see cref="Plugin"/>.
+    /// The <see cref="Properties"/> of the <see cref="Plugin"/>.
     /// </summary>
-    public virtual IConfig Config { get; set; } = DefaultConfig.Create();
+    public Properties Properties { get; internal set; }
     
     /// <summary>
     /// Called when the <see cref="Plugin"/> is enabled.
@@ -55,7 +55,14 @@ public abstract class Plugin
     /// Should be used to unregister events, etc.
     /// </summary>
     public abstract void Disable();
-    
+
+    /// <summary>
+    /// Called before the <see cref="Plugin"/> is enabled.
+    /// 
+    /// <para>Commonly used to load configurations, or any data files before the plugin is enabled.</para>
+    /// </summary>
+    public virtual void LoadConfigs() { }
+        
     /// <inheritdoc/>
     public override string ToString() => $"'{Name}', Version: {Version}, Author: '{Author}'";
 }
