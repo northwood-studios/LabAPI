@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabApi", "LabApi\LabApi.csproj", "{EE58A308-B929-4BBE-A984-54B2D2A2C735}"
 EndProject
 Global
