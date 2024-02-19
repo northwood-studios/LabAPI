@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO.Compression;
 using System.Collections.Generic;
+using LabApi.Features.Console;
 using LabApi.Loader.Features.Plugins;
 
 namespace LabApi.Loader.Features.Misc;
@@ -13,6 +14,8 @@ namespace LabApi.Loader.Features.Misc;
 /// </summary>
 public static class AssemblyUtils
 {
+    private const string LoggerPrefix = "[ASSEMBLY_LOADER]";
+    
     /// <summary>
     /// Checks whether or not the specified <see cref="Assembly"/> has missing dependencies and gets the types if it is loaded.
     /// </summary>
@@ -39,15 +42,15 @@ public static class AssemblyUtils
         }
         catch (Exception exception)
         {
-            ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't load the assembly inside '{assemblyPath}'", ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Couldn't load the assembly inside '{assemblyPath}'");
 
             if (missingDependencies.Length != 0)
             {
                 // If there are missing dependencies, we log them.
-                ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Missing dependencies:\n{string.Join("\n", missingDependencies.Select(x => $"-\t {x}"))}", ConsoleColor.Red);
+                Logger.Error($"{LoggerPrefix} Missing dependencies:\n{string.Join("\n", missingDependencies.Select(x => $"-\t {x}"))}");
             }
             
-            ServerConsole.AddLog(exception.ToString(), ConsoleColor.Red);
+            Logger.Error(exception.ToString());
             
             types = default;
             return true; // True = missing dependencies.
@@ -158,7 +161,7 @@ public static class AssemblyUtils
             return true;
         
         // If the data stream is null, we log an error message and return false.
-        ServerConsole.AddLog($"[LabAPI] [Loader] [Error] Unable to resolve {name} Stream was null", ConsoleColor.Red);
+        Logger.Error($"{LoggerPrefix} Unable to resolve {name} Stream was null");
         return false;
     }
 

@@ -40,6 +40,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Features\Console\Logger.cs" />
         <Compile Include="Loader\CommandLoader.cs" />
         <Compile Include="Loader\ConfigurationLoader.cs" />
         <Compile Include="Loader\Features\Misc\AssemblyUtils.cs" />

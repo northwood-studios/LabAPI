@@ -3,10 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using LabApi.Features.Console;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
-using LabApi.Loader.Features.Plugins.Configuration;
 
 namespace LabApi.Loader;
 
@@ -16,6 +16,7 @@ namespace LabApi.Loader;
 /// </summary>
 public static class PluginLoader
 {
+    private const string LoggerPrefix = "[LOADER]";
     private const string DllSearchPattern = "*.dll";
     
     /// <summary>
@@ -61,7 +62,7 @@ public static class PluginLoader
     public static void LoadAllDependencies()
     {
         // We load all the dependencies from the dependencies directory
-        ServerConsole.AddLog("[LabAPI] [Loader] Loading all dependencies", ConsoleColor.DarkCyan); // Temporary until we have a logger
+        Logger.Info($"{LoggerPrefix} Loading all dependencies");
         LoadDependencies(PathManager.Dependencies.GetFiles(DllSearchPattern));
     }
     
@@ -82,12 +83,12 @@ public static class PluginLoader
                 Dependencies.Add(assembly);
                 
                 // We finally log that the dependency has been loaded.
-                ServerConsole.AddLog($"[LabAPI] [Loader] Successfully loaded {assembly.FullName}", ConsoleColor.Green); // Temporary until we have a logger
+                Logger.Info($"{LoggerPrefix} Successfully loaded {assembly.FullName}");
             }
             catch (Exception e)
             {
-                ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't load the dependency inside '{file.FullName}'", ConsoleColor.Red);
-                ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+                Logger.Error($"{LoggerPrefix} Couldn't load the dependency inside '{file.FullName}'");
+                Logger.Error(e);
             }
         }
     }
@@ -98,11 +99,11 @@ public static class PluginLoader
     public static void LoadAllPlugins()
     {
         // First we load all the plugins from the plugins directory
-        ServerConsole.AddLog("[LabAPI] [Loader] Loading all plugins", ConsoleColor.DarkCyan); // Temporary until we have a logger
+        Logger.Info($"{LoggerPrefix} Loading all plugins");
         LoadPlugins(PathManager.Plugins.GetFiles(DllSearchPattern));
         
         // Then we finally enable all the plugins
-        ServerConsole.AddLog("[LabAPI] [Loader] Enabling all plugins", ConsoleColor.DarkCyan);
+        Logger.Info($"{LoggerPrefix} Enabling all plugins");
         EnablePlugins(Plugins.Keys.OrderBy(plugin => plugin.Priority));
     }
     
@@ -135,13 +136,13 @@ public static class PluginLoader
                     
                     // In that case, we add the plugin to the plugins list and log that it has been loaded.
                     Plugins.Add(plugin, pluginAssembly);
-                    ServerConsole.AddLog($"[LabAPI] [Loader] Successfully loaded {plugin.Name}", ConsoleColor.Green); // Temporary until we have a logger
+                    Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
                 }
             }
             catch (Exception e)
             {
-                ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't load the plugin inside '{file.FullName}'", ConsoleColor.Red);
-                ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+                Logger.Error($"{LoggerPrefix} Couldn't load the plugin inside '{file.FullName}'");
+                Logger.Error(e);
             }
         }
     }
@@ -188,12 +189,12 @@ public static class PluginLoader
             EnabledPlugins.Add(plugin);
 
             // We finally log that the plugin has been enabled
-            ServerConsole.AddLog($"[LabAPI] [Loader] Successfully enabled {plugin}", ConsoleColor.Green); // Temporary until we have a logger
+            Logger.Info($"{LoggerPrefix} Successfully enabled {plugin}");
         }
         catch (Exception e)
         {
-            ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't enable the plugin {plugin}", ConsoleColor.Red);
-            ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Couldn't enable the plugin {plugin}");
+            Logger.Error(e);
         }
     }
 }

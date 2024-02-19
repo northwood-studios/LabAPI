@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using LabApi.Features.Console;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Configuration;
@@ -13,6 +14,7 @@ namespace LabApi.Loader;
 /// </summary>
 public static class ConfigurationLoader
 {
+    private const string LoggerPrefix = "[CONFIG_LOADER]";
     private const string PropertiesFileName = "properties.yml";
     
     /// <summary>
@@ -42,8 +44,8 @@ public static class ConfigurationLoader
         catch (Exception e)
         {
             // We log the error and return false to indicate that the configuration wasn't successfully saved.
-            ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't save the configuration of the plugin {plugin}", ConsoleColor.Red);
-            ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Couldn't save the configuration of the plugin {plugin}");
+            Logger.Error(e);
             return false;
         }
     }
@@ -79,8 +81,8 @@ public static class ConfigurationLoader
         catch (Exception e)
         {
             // We log the error and return false to indicate that the configuration wasn't successfully read.
-            ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't read the configuration of the plugin {plugin}", ConsoleColor.Red);
-            ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Couldn't read the configuration of the plugin {plugin}");
+            Logger.Error(e);
             return false;
         }
     }
@@ -147,7 +149,7 @@ public static class ConfigurationLoader
     /// <typeparam name="TConfig">The type of the configuration to load.</typeparam>
     /// <returns>The loaded configuration of the specified <see cref="Plugin"/>.</returns>
     public static TConfig LoadConfig<TConfig>(this Plugin plugin, string fileName) => plugin.TryLoadConfig(fileName, out TConfig config) ? config : default;
-    
+
     /// <summary>
     /// Tries to create a default instance of the specified configuration.
     /// </summary>
@@ -168,8 +170,8 @@ public static class ConfigurationLoader
         catch (Exception e)
         {
             // We log the error and return false to indicate that the configuration wasn't successfully loaded.
-            ServerConsole.AddLog($"[LabAPI] [Loader] [ERROR] Couldn't create a default instance of the class {typeof(TConfig)} of the plugin {plugin}", ConsoleColor.Red);
-            ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Couldn't create a default instance of the class {typeof(TConfig)} of the plugin {plugin}");
+            Logger.Error(e);
             return false;
         }
     }

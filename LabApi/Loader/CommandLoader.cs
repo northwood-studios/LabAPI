@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using CommandSystem;
+using LabApi.Features.Console;
 using RemoteAdmin;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Plugins;
@@ -15,6 +16,8 @@ namespace LabApi.Loader;
 /// </summary>
 public static class CommandLoader
 {
+    private const string LoggerPrefix = "[COMMAND_LOADER]";
+    
     /// <summary>
     /// The dictionary of command handlers.
     /// </summary>
@@ -140,7 +143,7 @@ public static class CommandLoader
         // We try to get the command handler from the dictionary of command handlers.
         if (!CommandHandlers.TryGetValue(commandHandlerType, out CommandHandler commandHandler))
         {
-            ServerConsole.AddLog($"[LabAPI] [Loader] [Error] Unable to register command '{commandType.Name}' from '{logName}'. CommandHandler '{commandHandlerType}' not found.", ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Unable to register command '{commandType.Name}' from '{logName}'. CommandHandler '{commandHandlerType}' not found.");
             return false;
         }
         
@@ -149,7 +152,7 @@ public static class CommandLoader
             // We create an instance of the command type.
             if (Activator.CreateInstance(commandType) is not ICommand cmd)
             {
-                ServerConsole.AddLog($"[LabAPI] [Loader] [Error] Unable to register command '{commandType.Name}' from '{logName}'. Couldn't create an instance of the command.", ConsoleColor.Red);
+                Logger.Error($"{LoggerPrefix} Unable to register command '{commandType.Name}' from '{logName}'. Couldn't create an instance of the command.");
                 return false;
             }
 
@@ -158,8 +161,8 @@ public static class CommandLoader
         }
         catch (Exception e)
         {
-            ServerConsole.AddLog($"[LabAPI] [Loader] [Error] Unable to register command '{commandType.Name}' from '{logName}'. Couldn't create an instance of the command.", ConsoleColor.Red);
-            ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Unable to register command '{commandType.Name}' from '{logName}'. Couldn't create an instance of the command.");
+            Logger.Error(e);
             throw;
         }
 
@@ -204,13 +207,13 @@ public static class CommandLoader
             // If the command name is not null then the error was thrown because of a duplicate command.
             if (!string.IsNullOrWhiteSpace(command.Command))
             {
-                ServerConsole.AddLog($"[LabAPI] [Loader] [Error] Unable to register command '{command.Command}' from '{logName}'. A command with the same name or aliases has already been registered!", ConsoleColor.Red);
+                Logger.Error($"{LoggerPrefix} Unable to register command '{command.Command}' from '{logName}'. A command with the same name or aliases has already been registered!");
                 return false;
             }
             
             // If the command name is null then we log the exception.
-            ServerConsole.AddLog($"[LabAPI] [Loader] [Error] Unable to register command '{command.Command}' from '{logName}'.", ConsoleColor.Red);
-            ServerConsole.AddLog(e.ToString(), ConsoleColor.Red);
+            Logger.Error($"{LoggerPrefix} Unable to register command '{command.Command}' from '{logName}'.");
+            Logger.Error(e);
             return false;
         }
     }
