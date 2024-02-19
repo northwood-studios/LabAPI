@@ -11,11 +11,11 @@ public abstract class Plugin<TConfig> : Plugin
     /// The configuration of the <see cref="Plugin"/>.
     /// </summary>
     public TConfig Config { get; set; }
-    
+
     /// <summary>
     /// The file name of the configuration file.
     /// </summary>
-    public abstract string ConfigFileName { get; set; }
+    public virtual string ConfigFileName { get; set; } = "config.yml";
 
     /// <inheritdoc/>
     public override void LoadConfigs()
