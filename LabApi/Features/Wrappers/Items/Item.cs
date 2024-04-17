@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using InventorySystem.Items;
+using LabApi.Features.Wrappers.Pickups;
 
-namespace LabApi.Features.Items;
+namespace LabApi.Features.Wrappers.Items;
 
 /// <summary>
 /// The wrapper representing <see cref="ItemBase">items</see>.
