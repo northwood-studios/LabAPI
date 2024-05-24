@@ -1,4 +1,6 @@
-﻿namespace LabApi.Loader.Features.Plugins;
+﻿using LabApi.Features.Console;
+
+namespace LabApi.Loader.Features.Plugins;
 
 /// <summary>
 /// Represents a plugin which can be loaded by the <see cref="PluginLoader"/>.
@@ -6,6 +8,7 @@
 /// </summary>
 /// <typeparam name="TConfig">The configuration of the <see cref="Plugin"/>.</typeparam>
 public abstract class Plugin<TConfig> : Plugin
+    where TConfig : class, new()
 {
     /// <summary>
     /// The configuration of the <see cref="Plugin"/>.
@@ -20,6 +23,24 @@ public abstract class Plugin<TConfig> : Plugin
     /// <inheritdoc/>
     public override void LoadConfigs()
     {
-        Config = this.LoadConfig<TConfig>(ConfigFileName);
+        // This is a more beginner-friendly approach
+        // as it defaults to the default values if the config file broken.
+        if (!this.TryLoadConfig(ConfigFileName, out TConfig config))
+        {
+            Logger.Warn("Failed to load the configuration file, using default values.");
+            config = new TConfig();
+        }
+        
+        // Then we set the configuration to the loaded one or the default one.
+        Config = config;
+    }
+    
+    /// <summary>
+    /// Saves the configuration of the <see cref="Plugin"/> to its configuration file.
+    /// </summary>
+    public void SaveConfig()
+    {
+        // We directly use SaveConfig(T, name) to save the configuration.
+        this.SaveConfig(Config, ConfigFileName);
     }
 }
