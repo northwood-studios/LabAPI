@@ -13,20 +13,6 @@ namespace LabApi.Events;
 public static class EventManager
 {
     /// <summary>
-    /// LabAPI's event handler.
-    /// Called when an event is triggered.
-    /// </summary>
-    public delegate void LabEventHandler();
-
-    /// <summary>
-    /// LabAPI's event handler with a <see cref="EventArgs"/> parameter.
-    /// Called when an event is with the specified <see cref="EventArgs"/> triggered .
-    /// </summary>
-    /// <typeparam name="TEventArgs">The type of the <see cref="EventArgs"/> of the event.</typeparam>
-    public delegate void LabEventHandler<in TEventArgs>(TEventArgs ev)
-        where TEventArgs : EventArgs;
-    
-    /// <summary>
     /// Invokes a <see cref="LabEventHandler"/> event and logs any errors that occur.
     /// </summary>
     /// <param name="eventHandler">The <see cref="LabEventHandler"/> to invoke.</param>
