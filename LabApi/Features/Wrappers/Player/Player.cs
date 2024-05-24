@@ -20,6 +20,11 @@ public class Player
     public static IReadOnlyCollection<Player> List => Dictionary.Values;
 
     /// <summary>
+    /// The <see cref="Player"/> representing the host or server.
+    /// </summary>
+    public static Player Host { get; internal set; } // TODO: Implement this when we generate the map. Add it with Doors Cache, Rooms Cache, etc.
+    
+    /// <summary>
     /// A private constructor to prevent external instantiation.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
@@ -33,6 +38,11 @@ public class Player
     /// The <see cref="ReferenceHub">reference hub</see> of the player.
     /// </summary>
     public ReferenceHub ReferenceHub { get; }
+
+    /// <summary>
+    /// Whether the player is the host or server.
+    /// </summary>
+    public bool IsHost => ReferenceHub.IsHost;
     
     /// <summary>
     /// Gets the player wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
