@@ -1,6 +1,6 @@
 using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers;
+using LabApi.Features.Wrappers.Player;
 
 namespace LabApi.Events.Arguments.Scp173Events;
 

@@ -1,6 +1,6 @@
 using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers;
+using LabApi.Features.Wrappers.Player;
 using LabApi.Features.Wrappers.Items;
 using Scp914;
 
