@@ -2,7 +2,7 @@
 using System.Linq;
 using NorthwoodLib.Pools;
 
-namespace LabApi.Features.Wrappers;
+namespace LabApi.Features.Wrappers.Player;
 
 /// <summary>
 /// The wrapper representing <see cref="ReferenceHub">reference hubs</see>, the in-game players.

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers;
+using LabApi.Features.Wrappers.Player;
 using Respawning;
 
 namespace LabApi.Events.Arguments.ServerEvents;
