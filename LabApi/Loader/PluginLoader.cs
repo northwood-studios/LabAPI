@@ -18,6 +18,7 @@ public static class PluginLoader
 {
     private const string LoggerPrefix = "[LOADER]";
     private const string DllSearchPattern = "*.dll";
+    private const string PdbFileExtension = ".pdb";
     
     /// <summary>
     /// Whether or not the <see cref="PluginLoader"/> has been initialized.
@@ -117,8 +118,15 @@ public static class PluginLoader
         {
             try
             {
+                // We check if the file has a corresponding PDB file
+                FileInfo pdb = new (Path.ChangeExtension(file.FullName, PdbFileExtension));
+
                 // We load the assembly from the specified file.
-                Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(file.FullName));
+                Assembly pluginAssembly = pdb.Exists
+                    // In the case that the PDB file exists, we load the assembly with the PDB file.
+                    ? Assembly.Load(File.ReadAllBytes(file.FullName), File.ReadAllBytes(pdb.FullName)) 
+                    // Otherwise, we load the assembly without any debug information.
+                    : Assembly.Load(File.ReadAllBytes(file.FullName));
 
                 // If the assembly has missing dependencies, we skip it.
                 if (AssemblyUtils.HasMissingDependencies(pluginAssembly, file.FullName, out Type[] types)) 
