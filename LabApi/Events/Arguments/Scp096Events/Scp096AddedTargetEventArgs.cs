@@ -14,12 +14,12 @@ public class Scp096AddedTargetEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
     /// <param name="target">The target player instance.</param>
-    /// <param name="look">Whether the target looked at SCP-096.</param>
-    public Scp096AddedTargetEventArgs(Player player, Player target, bool look)
+    /// <param name="wasLooking">Whether the target looked at SCP-096.</param>
+    public Scp096AddedTargetEventArgs(Player player, Player target, bool wasLooking)
     {
         Player = player;
         Target = target;
-        Look = look;
+        WasLooking = wasLooking;
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class Scp096AddedTargetEventArgs : EventArgs, IPlayerEvent
     public Player Target { get; }
 
     /// <summary>
-    /// Whether the target looked at SCP-096.
+    /// Whether the target was looking at SCP-096
     /// </summary>
-    public bool Look { get; }
+    public bool WasLooking { get; }
 }
