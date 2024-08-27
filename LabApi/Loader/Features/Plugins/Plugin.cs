@@ -1,6 +1,6 @@
 using System;
-using LabApi.Loader.Features.Plugins.Enums;
 using LabApi.Loader.Features.Plugins.Configuration;
+using LabApi.Loader.Features.Plugins.Enums;
 
 namespace LabApi.Loader.Features.Plugins;
 
@@ -13,22 +13,22 @@ public abstract class Plugin
     /// The name of the <see cref="Plugin"/>.
     /// </summary>
     public abstract string Name { get; }
-    
+
     /// <summary>
     /// A description of the <see cref="Plugin"/>.
     /// </summary>
     public abstract string Description { get; }
-    
+
     /// <summary>
     /// The author of the <see cref="Plugin"/>.
     /// </summary>
     public abstract string Author { get; }
-    
+
     /// <summary>
     /// The <see cref="Version"/> of the <see cref="Plugin"/>.
     /// </summary>
     public abstract Version Version { get; }
-    
+
     /// <summary>
     /// The <see cref="Version"/> of LabAPI required by the <see cref="Plugin"/>.
     /// </summary>
@@ -42,8 +42,8 @@ public abstract class Plugin
     /// <summary>
     /// The <see cref="Properties"/> of the <see cref="Plugin"/>.
     /// </summary>
-    public Properties Properties { get; internal set; }
-    
+    public Properties? Properties { get; internal set; }
+
     /// <summary>
     /// Called when the <see cref="Plugin"/> is enabled.
     /// Should be used to register events, etc.
@@ -62,7 +62,7 @@ public abstract class Plugin
     /// <para>Commonly used to load configurations, or any data files before the plugin is enabled.</para>
     /// </summary>
     public virtual void LoadConfigs() { }
-        
+
     /// <inheritdoc/>
     public override string ToString() => $"'{Name}', Version: {Version}, Author: '{Author}'";
 }

@@ -13,7 +13,7 @@ public abstract class Plugin<TConfig> : Plugin
     /// <summary>
     /// The configuration of the <see cref="Plugin"/>.
     /// </summary>
-    public TConfig Config { get; set; }
+    public TConfig? Config { get; set; }
 
     /// <summary>
     /// The file name of the configuration file.
@@ -25,21 +25,27 @@ public abstract class Plugin<TConfig> : Plugin
     {
         // This is a more beginner-friendly approach
         // as it defaults to the default values if the config file broken.
-        if (!this.TryLoadConfig(ConfigFileName, out TConfig config))
+        if (!this.TryLoadConfig(ConfigFileName, out TConfig? config))
         {
             Logger.Warn("Failed to load the configuration file, using default values.");
             config = new TConfig();
         }
-        
+
         // Then we set the configuration to the loaded one or the default one.
         Config = config;
     }
-    
+
     /// <summary>
     /// Saves the configuration of the <see cref="Plugin"/> to its configuration file.
     /// </summary>
     public void SaveConfig()
     {
+        if (Config is null)
+        {
+            Logger.Warn($"Failed to save the configuration file for {Name}, the configuration is null.");
+            return;
+        }
+
         // We directly use SaveConfig(T, name) to save the configuration.
         this.SaveConfig(Config, ConfigFileName);
     }

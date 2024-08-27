@@ -8,10 +8,13 @@
 		<LangVersion>12.0</LangVersion>
 		
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Nullable>enable</Nullable>
+		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="YamlDotNet" Version="11.0.1" />
+		<PackageReference Include="T4.Build" Version="0.2.4" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -22,5 +25,14 @@
 		<Reference Include="Pooling" HintPath="$(SL_REFERENCES)\Pooling.dll" />
 		<Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
 		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.PhysicsModule.dll" />
+		<Reference Include="mscorlib" HintPath="$(UNITY_REFERENCES)\mscorlib.dll" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Loader\InitializeWrappers.g.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>InitializeWrappers.g.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+	
 </Project>

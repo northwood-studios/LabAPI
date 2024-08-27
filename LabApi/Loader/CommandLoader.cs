@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using CommandSystem;
 using LabApi.Features.Console;
-using RemoteAdmin;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Plugins;
+using RemoteAdmin;
 
 namespace LabApi.Loader;
 
@@ -17,18 +18,18 @@ namespace LabApi.Loader;
 public static class CommandLoader
 {
     private const string LoggerPrefix = "[COMMAND_LOADER]";
-    
+
     /// <summary>
     /// The dictionary of command handlers.
     /// </summary>
-    public static Dictionary<Type, CommandHandler> CommandHandlers { get; } = new()
+    public static Dictionary<Type, CommandHandler> CommandHandlers { get; } = new ()
     {
         // The server console command handler.
         [typeof(GameConsoleCommandHandler)] = GameCore.Console.singleton.ConsoleCommandHandler,
-        
+
         // The remote admin command handler.
         [typeof(RemoteAdminCommandHandler)] = CommandProcessor.RemoteAdminCommandHandler,
-        
+
         // The client console command handler.
         [typeof(ClientCommandHandler)] = QueryProcessor.DotCommandHandler
     };
@@ -37,7 +38,7 @@ public static class CommandLoader
     /// The dictionary of registered commands by plugins.
     /// </summary>
     public static Dictionary<Plugin, IEnumerable<ICommand>> RegisteredCommands { get; } = [];
-    
+
     /// <summary>
     /// Registers all commands in the given <see cref="Plugin"/>.
     /// </summary>
@@ -50,11 +51,11 @@ public static class CommandLoader
             // If the assembly of the plugin could not be retrieved, we use reflection to get the assembly.
             assembly = plugin.GetType().Assembly;
         }
-        
+
         // We finally register all commands in the assembly of the plugin.
         // We convert it to an array since IEnumerable are lazy and need to be iterated through to be executed.
         IEnumerable<ICommand> registeredCommands = RegisterCommands(assembly, plugin.Name).ToArray();
-        
+
         // We add the registered commands to the dictionary of registered commands.
         RegisteredCommands.Add(plugin, registeredCommands);
     }
@@ -68,7 +69,7 @@ public static class CommandLoader
     {
         // We use reflection to get all types in the assembly.
         Type[] types = assembly.GetTypes();
-        
+
         // We iterate through all types in the assembly.
         foreach (Type type in types)
         {
@@ -90,9 +91,9 @@ public static class CommandLoader
     public static IEnumerable<ICommand> RegisterCommands(Type type, string logName = "")
     {
         // We check if the type implements the ICommand interface.
-        if (!typeof(ICommand).IsAssignableFrom(type)) 
+        if (!typeof(ICommand).IsAssignableFrom(type))
             yield break;
-            
+
         // We iterate through all custom attributes of the type.
         foreach (CustomAttributeData attributeData in type.GetCustomAttributesData())
         {
@@ -113,9 +114,9 @@ public static class CommandLoader
                     yield return parent;
                 }
             }
-                
+
             // And we finally register the command.
-            if (!TryRegisterCommand(type, commandHandlerType, out ICommand command, logName))
+            if (!TryRegisterCommand(type, commandHandlerType, out ICommand? command, logName))
                 continue;
 
             // We add the command to the list of registered commands.
@@ -129,8 +130,8 @@ public static class CommandLoader
     /// <param name="commandType">The <see cref="Type"/> of the command to register.</param>
     /// <param name="commandHandlerType">The <see cref="Type"/> of the command handler to register the command to.</param>
     /// <param name="logName">The name of the plugin to log to use when logging errors.</param>
-    /// <param name="command">The registered command.</param>
-    public static bool TryRegisterCommand(Type commandType, Type commandHandlerType, out ICommand command, string logName = "")
+    /// <param name="command">The registered command if the command was successfully registered.</param>
+    public static bool TryRegisterCommand(Type commandType, Type commandHandlerType, [NotNullWhen(true)] out ICommand? command, string logName)
     {
         command = default;
 
@@ -139,14 +140,14 @@ public static class CommandLoader
             // This parent command was already registered.
             return false;
         }
-        
+
         // We try to get the command handler from the dictionary of command handlers.
         if (!CommandHandlers.TryGetValue(commandHandlerType, out CommandHandler commandHandler))
         {
             Logger.Error($"{LoggerPrefix} Unable to register command '{commandType.Name}' from '{logName}'. CommandHandler '{commandHandlerType}' not found.");
             return false;
         }
-        
+
         try
         {
             // We create an instance of the command type.
@@ -169,7 +170,7 @@ public static class CommandLoader
         // We finally try to register the command in the command handler.
         return TryRegisterCommand(command, commandHandler, logName);
     }
-    
+
     /// <summary>
     /// Tries to register a command with the given <see cref="ICommand"/> and <see cref="CommandHandler"/>.
     /// </summary>
@@ -183,15 +184,15 @@ public static class CommandLoader
         {
             // We try to register the command.
             commandHandler.RegisterCommand(command);
-            
+
             // We check if the command type is a parent command.
-            if (command is not ParentCommand parentCommand) 
+            if (command is not ParentCommand parentCommand)
                 return true;
-            
+
             // If the command type is a parent command, we register the command type as a command handler type.
             // This allows us to register subcommands to the parent command by just using the CommandHandlerAttribute.
             // [CommandHandler(typeof(MyParentCommand))]
-                
+
             Type commandType = command.GetType();
             if (!CommandHandlers.ContainsKey(commandType))
             {
@@ -210,14 +211,14 @@ public static class CommandLoader
                 Logger.Error($"{LoggerPrefix} Unable to register command '{command.Command}' from '{logName}'. A command with the same name or aliases has already been registered!");
                 return false;
             }
-            
+
             // If the command name is null then we log the exception.
             Logger.Error($"{LoggerPrefix} Unable to register command '{command.Command}' from '{logName}'.");
             Logger.Error(e);
             return false;
         }
     }
-    
+
     /// <summary>
     /// Unregisters all commands in the given <see cref="Plugin"/>.
     /// </summary>
@@ -226,14 +227,14 @@ public static class CommandLoader
     {
         if (!RegisteredCommands.TryGetValue(plugin, out IEnumerable<ICommand> commands))
             return;
-        
+
         // We iterate through all commands in the plugin.
         foreach (ICommand command in commands)
         {
             // And we unregister the command.
             UnregisterCommand(command);
         }
-        
+
         // Once we have unregistered all commands, we remove the plugin from the dictionary of registered commands.
         RegisteredCommands.Remove(plugin);
     }
@@ -250,15 +251,15 @@ public static class CommandLoader
             // If the command handler does not contain the command, we continue.
             if (!commandHandler.AllCommands.Contains(command))
                 continue;
-                    
+
             // We manually unregister the command from the command handler.
             commandHandler.UnregisterCommand(command);
         }
-            
+
         // We check if the command is a parent command.
-        if (command is not ParentCommand parentCommand) 
+        if (command is not ParentCommand parentCommand)
             return;
-            
+
         // If the command is a parent command, we remove the command type from the dictionary of command handlers.
         Type commandType = parentCommand.GetType();
         CommandHandlers.Remove(commandType);

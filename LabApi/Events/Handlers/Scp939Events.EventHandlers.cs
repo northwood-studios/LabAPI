@@ -10,30 +10,30 @@ public static partial class Scp939Events
     /// <summary>
     /// Gets called when SCP-939 is attacking.
     /// </summary>
-    public static event LabEventHandler<Scp939AttackingEventArgs> Attacking;
-    
+    public static event LabEventHandler<Scp939AttackingEventArgs>? Attacking;
+
     /// <summary>
     /// Gets called when SCP-939 has attacked.
     /// </summary>
-    public static event LabEventHandler<Scp939AttackedEventArgs> Attacked;
-    
+    public static event LabEventHandler<Scp939AttackedEventArgs>? Attacked;
+
     /// <summary>
     /// Gets called when SCP-939 is creating an amnestic cloud.
     /// </summary>
-    public static event LabEventHandler<Scp939CreatingAmnesticCloudEventArgs> CreatingAmnesticCloud;
-    
+    public static event LabEventHandler<Scp939CreatingAmnesticCloudEventArgs>? CreatingAmnesticCloud;
+
     /// <summary>
     /// Gets called when SCP-939 has created an amnestic cloud.
     /// </summary>
-    public static event LabEventHandler<Scp939CreatedAmnesticCloudEventArgs> CreatedAmnesticCloud;
-    
+    public static event LabEventHandler<Scp939CreatedAmnesticCloudEventArgs>? CreatedAmnesticCloud;
+
     /// <summary>
     /// Gets called when SCP-939 is lunging.
     /// </summary>
-    public static event LabEventHandler<Scp939LungingEventArgs> Lunging;
-    
+    public static event LabEventHandler<Scp939LungingEventArgs>? Lunging;
+
     /// <summary>
     /// Gets called when SCP-939 has lunged.
     /// </summary>
-    public static event LabEventHandler<Scp939LungedEventArgs> Lunged;
+    public static event LabEventHandler<Scp939LungedEventArgs>? Lunged;
 }

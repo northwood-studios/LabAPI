@@ -16,7 +16,7 @@ public static class EventManager
     /// Invokes a <see cref="LabEventHandler"/> event and logs any errors that occur.
     /// </summary>
     /// <param name="eventHandler">The <see cref="LabEventHandler"/> to invoke.</param>
-    public static void InvokeEvent(this LabEventHandler eventHandler)
+    public static void InvokeEvent(this LabEventHandler? eventHandler)
     {
         // We check if the event handler is null
         if (eventHandler is null)
@@ -49,7 +49,7 @@ public static class EventManager
     /// <param name="eventHandler">The <see cref="LabEventHandler{TEventArgs}"/> to invoke.</param>
     /// <param name="args">The <see cref="EventArgs"/> of the event.</param>
     /// <typeparam name="TEventArgs">The type of the <see cref="EventArgs"/> of the event.</typeparam>
-    public static void InvokeEvent<TEventArgs>(this LabEventHandler<TEventArgs> eventHandler, TEventArgs args)
+    public static void InvokeEvent<TEventArgs>(this LabEventHandler<TEventArgs>? eventHandler, TEventArgs args)
         where TEventArgs : EventArgs
     {
         // We check if the event handler is null

@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.IO.Compression;
-using System.Collections.Generic;
 using LabApi.Features.Console;
 using LabApi.Loader.Features.Plugins;
 
@@ -23,7 +24,7 @@ public static class AssemblyUtils
     /// <param name="assemblyPath">The path of the assembly to log an error message.</param>
     /// <param name="types">The types of the assembly if it is loaded.</param>
     /// <returns>Whether or not the specified <see cref="Assembly"/> has missing dependencies.</returns>
-    public static bool HasMissingDependencies(Assembly assembly, string assemblyPath, out Type[] types)
+    public static bool HasMissingDependencies(Assembly assembly, string assemblyPath, [NotNullWhen(false)] out Type[]? types)
     {
         // We convert the missing dependencies to an array to avoid multiple iterations.
         string[] missingDependencies = GetMissingDependencies(assembly).ToArray();
@@ -116,7 +117,7 @@ public static class AssemblyUtils
     public static void LoadEmbeddedDll(Assembly target, string name)
     {
         // We try to get the data stream of the specified resource name.
-        if (!TryGetDataStream(target, name, out Stream dataStream))
+        if (!TryGetDataStream(target, name, out Stream? dataStream))
             return;
                 
         // We copy the data stream to a memory stream and load the assembly from the memory stream.
@@ -133,7 +134,7 @@ public static class AssemblyUtils
     public static void LoadCompressedEmbeddedDll(Assembly target, string name)
     {
         // We try to get the data stream of the specified resource name.
-        if (!TryGetDataStream(target, name, out Stream dataStream))
+        if (!TryGetDataStream(target, name, out Stream? dataStream))
             return;
 
         // We decompress the data stream and load the assembly from the memory stream.
@@ -149,9 +150,9 @@ public static class AssemblyUtils
     /// </summary>
     /// <param name="target">The assembly to get the data stream from.</param>
     /// <param name="name">The resource name to get the data stream from.</param>
-    /// <param name="dataStream">The data stream of the specified resource name.</param>
+    /// <param name="dataStream">The data stream of the specified resource name if it was successfully retrieved, otherwise <see langword="null"/>.</param>
     /// <returns>Whether or not the data stream was successfully retrieved.</returns>
-    public static bool TryGetDataStream(Assembly target, string name, out Stream dataStream)
+    public static bool TryGetDataStream(Assembly target, string name, [NotNullWhen(true)] out Stream? dataStream)
     {
         // We try to get the data stream of the specified resource name.
         dataStream = target.GetManifestResourceStream(name);
