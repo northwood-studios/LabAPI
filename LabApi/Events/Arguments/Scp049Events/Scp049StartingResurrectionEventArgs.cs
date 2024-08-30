@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.Scp049Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp049Events.ResurrectedBody"/> event.
 /// </summary>
-public class Scp049StartingResurrectionEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp049StartingResurrectionEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, ITargetEvent, IRagdollEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp049StartingResurrectionEventArgs"/> class.

@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.Scp096Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp096Events.AddedTarget"/> event.
 /// </summary>
-public class Scp096AddedTargetEventArgs : EventArgs, IPlayerEvent
+public class Scp096AddedTargetEventArgs : EventArgs, IPlayerEvent, ITargetEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096AddedTargetEventArgs"/> class.
