@@ -1,7 +1,7 @@
-﻿using System;
-using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+﻿using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp079;
+using System;
 
 namespace LabApi.Events.Arguments.Scp079Events;
 

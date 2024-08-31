@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 using Scp914;
+using System;
 
 namespace LabApi.Events.Arguments.Scp914Events;
 
@@ -20,7 +20,7 @@ public class Scp914ActivatedEventArgs : EventArgs, IScp914Event, IPlayerEvent
         KnobSetting = knobSetting;
         Player = player;
     }
-    
+
     /// <inheritdoc />
     public Scp914KnobSetting KnobSetting { get; }
 

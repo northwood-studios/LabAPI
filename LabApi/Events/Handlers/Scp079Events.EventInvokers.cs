@@ -1,5 +1,4 @@
-﻿using System;
-using LabApi.Events.Arguments.Scp079Events;
+﻿using LabApi.Events.Arguments.Scp079Events;
 
 namespace LabApi.Events.Handlers;
 

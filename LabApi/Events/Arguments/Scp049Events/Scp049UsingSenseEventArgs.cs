@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
@@ -20,17 +19,17 @@ public class Scp049UsingSenseEventArgs : EventArgs, ICancellableEvent, IPlayerEv
         Target = target;
         IsAllowed = true;
     }
-    
+
     /// <summary>
     /// Gets or sets the player that SCP-049 is using sense on.
     /// </summary>
     public Player Target { get; set; }
-    
+
     /// <summary>
     /// The SCP-049 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

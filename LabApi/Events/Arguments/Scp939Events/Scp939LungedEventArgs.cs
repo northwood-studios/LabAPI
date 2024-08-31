@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp939;
+using System;
 
 namespace LabApi.Events.Arguments.Scp939Events;
 
@@ -25,7 +25,7 @@ public class Scp939LungedEventArgs : EventArgs, IPlayerEvent
     /// The 939 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <summary>
     /// Gets the current state of the SCP-939 lunge ability.
     /// </summary>

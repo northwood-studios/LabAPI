@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp939Events;
 
 /// <summary>
@@ -18,7 +17,7 @@ public class Scp939CreatingAmnesticCloudEventArgs : EventArgs, ICancellableEvent
         IsAllowed = true;
         Player = player;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 

@@ -1,8 +1,7 @@
-﻿using System;
-using Interactables.Interobjects;
+﻿using Interactables.Interobjects;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp096Events;
 
 /// <summary>

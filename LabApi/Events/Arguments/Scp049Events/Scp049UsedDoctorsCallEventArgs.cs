@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
@@ -17,7 +16,7 @@ public class Scp049UsedDoctorsCallEventArgs : EventArgs, IPlayerEvent
     {
         Player = player;
     }
-    
+
     /// <summary>
     /// The SCP-049 player instance.
     /// </summary>

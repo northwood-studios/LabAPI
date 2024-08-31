@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.WarheadEvents;
 
 /// <summary>
@@ -23,22 +22,22 @@ public class WarheadStartedEventArgs : EventArgs, IPlayerEvent
         SuppressSubtitles = suppressSubtitles;
         WarheadState = warheadState;
     }
-    
+
     /// <summary>
     /// Whether the warhead is starting automatically.
     /// </summary>
     public bool IsAutomatic { get; }
-    
+
     /// <summary>
     /// Whether subtitles should be suppressed.
     /// </summary>
     public bool SuppressSubtitles { get; }
-    
+
     /// <summary>
     /// Gets the current state of the alpha warhead.
     /// </summary>
     public AlphaWarheadSyncInfo WarheadState { get; }
-    
+
     /// <summary>
     /// Gets the player who started the warhead.
     /// </summary>

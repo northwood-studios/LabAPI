@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp173Events;
 
 /// <summary>
@@ -20,17 +19,17 @@ public class Scp173AddingObserverEventArgs : EventArgs, ICancellableEvent, IPlay
         Target = target;
         Player = player;
     }
-    
+
     /// <summary>
     /// The player that is observing the SCP-173 player.
     /// </summary>
     public Player Target { get; }
-    
+
     /// <summary>
     /// The SCP-173 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

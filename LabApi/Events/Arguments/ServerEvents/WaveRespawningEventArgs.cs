@@ -1,8 +1,8 @@
+using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
+using Respawning;
 using System;
 using System.Collections.Generic;
-using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-using Respawning;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -22,15 +22,15 @@ public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
         Team = team;
         Players = players;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-    
+
     /// <summary>
     /// The team that is respawning.
     /// </summary>
     public SpawnableTeamType Team { get; set; }
-    
+
     /// <summary>
     /// The players that are respawning.
     /// </summary>

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Interactables.Interobjects.DoorUtils;
+﻿using Interactables.Interobjects.DoorUtils;
+using System.Collections.Generic;
 
-namespace LabApi.Features.Wrappers.Facility.Doors;
+namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper representing <see cref="DoorVariant">door variants</see>, the in-game doors.
@@ -17,7 +17,7 @@ public class Door
     /// A reference to all <see cref="Door"/> instances currently in the game.
     /// </summary>
     public static IReadOnlyCollection<Door> List => Dictionary.Values;
-    
+
     /// <summary>
     /// A private constructor to prevent external instantiation.
     /// </summary>
@@ -27,12 +27,12 @@ public class Door
         Dictionary.Add(doorVariant, this);
         DoorVariant = doorVariant;
     }
-    
+
     /// <summary>
     /// The <see cref="DoorVariant"/> of the door.
     /// </summary>
     public DoorVariant DoorVariant { get; }
-    
+
     /// <summary>
     /// Gets the door wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>

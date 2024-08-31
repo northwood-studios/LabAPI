@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp939Events;
 
 /// <summary>
@@ -19,12 +18,12 @@ public class Scp939AttackedEventArgs : EventArgs, IPlayerEvent
         Player = player;
         Target = target;
     }
-    
+
     /// <summary>
     /// The destructible that was attacked.
     /// </summary>
     public IDestructible Target { get; }
-    
+
     /// <summary>
     /// The SCP-939 player instance.
     /// </summary>

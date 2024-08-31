@@ -1,8 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-using LabApi.Features.Wrappers.Items;
+using LabApi.Features.Wrappers;
 using Scp914;
+using System;
 
 namespace LabApi.Events.Arguments.Scp914Events;
 
@@ -25,12 +24,12 @@ public class Scp914ProcessedInventoryItemEventArgs : EventArgs, IScp914Event, II
         KnobSetting = knobSetting;
         Player = player;
     }
-    
+
     /// <summary>
     /// Gets the old item type.
     /// </summary>
     public ItemType OldItemType { get; }
-    
+
     /// <inheritdoc />
     public Scp914KnobSetting KnobSetting { get; }
 

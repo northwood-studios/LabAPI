@@ -9,13 +9,13 @@ public enum CommandType
     /// A command that is executed from the server console.
     /// </summary>
     Console = 0,
-    
+
     /// <summary>
     /// A command that is executed from the remote admin.
     /// <para>Also called slash command.</para>
     /// </summary>
     RemoteAdmin = 1,
-    
+
     /// <summary>
     /// A command that is executed from the players console.
     /// <para>Also called dot command.</para>

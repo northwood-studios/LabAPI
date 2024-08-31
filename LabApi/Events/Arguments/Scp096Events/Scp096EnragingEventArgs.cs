@@ -1,7 +1,6 @@
-﻿using System;
-using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+﻿using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp096Events;
 
 /// <summary>

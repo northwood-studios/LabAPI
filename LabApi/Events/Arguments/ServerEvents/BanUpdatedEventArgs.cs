@@ -19,17 +19,17 @@ public class BanUpdatedEventArgs : EventArgs
         BanDetails = banDetails;
         OldBanDetails = oldBanDetails;
     }
-    
+
     /// <summary>
     /// The type of ban that was updated.
     /// </summary>
     public BanHandler.BanType BanType { get; }
-    
+
     /// <summary>
     /// The new details of the ban that was updated.
     /// </summary>
     public BanDetails BanDetails { get; }
-    
+
     /// <summary>
     /// The old details of the ban that was updated.
     /// </summary>

@@ -1,5 +1,5 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -19,15 +19,15 @@ public class BanRevokingEventArgs : EventArgs, ICancellableEvent
         BanType = banType;
         BanDetails = banDetails;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-    
+
     /// <summary>
     /// The type of ban that is being revoked.
     /// </summary>
     public BanHandler.BanType BanType { get; }
-    
+
     /// <summary>
     /// The details of the ban that is being revoked.
     /// </summary>

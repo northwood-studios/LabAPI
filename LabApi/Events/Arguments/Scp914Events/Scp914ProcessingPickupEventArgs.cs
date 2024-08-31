@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Pickups;
+using LabApi.Features.Wrappers;
 using Scp914;
+using System;
 using UnityEngine;
 
 namespace LabApi.Events.Arguments.Scp914Events;
@@ -24,12 +24,12 @@ public class Scp914ProcessingPickupEventArgs : EventArgs, ICancellableEvent, ISc
         KnobSetting = knobSetting;
         Pickup = pickup;
     }
-    
+
     /// <summary>
     /// The new position of the pickup.
     /// </summary>
     public Vector3 NewPosition { get; set; }
-    
+
     /// <inheritdoc />
     public Scp914KnobSetting KnobSetting { get; set; }
 

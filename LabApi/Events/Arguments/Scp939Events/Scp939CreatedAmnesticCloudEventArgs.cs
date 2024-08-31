@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp939;
+using System;
 
 namespace LabApi.Events.Arguments.Scp939Events;
 
@@ -20,12 +20,12 @@ public class Scp939CreatedAmnesticCloudEventArgs : EventArgs, IPlayerEvent
         Player = player;
         AmnesticCloudInstance = amnesticCloudInstance;
     }
-    
+
     /// <summary>
     /// The SCP-939 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <summary>
     /// Gets the created amnestic cloud instance.
     /// </summary>

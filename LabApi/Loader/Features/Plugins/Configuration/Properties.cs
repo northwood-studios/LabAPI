@@ -11,7 +11,7 @@ public class Properties
     /// Creates a new instance of the <see cref="Properties"/> class.
     /// </summary>
     /// <returns>A new instance of the <see cref="Properties"/> class.</returns>
-    public static Properties CreateDefault() => new ();
+    public static Properties CreateDefault() => new();
 
     /// <summary>
     /// Whether or not the <see cref="Plugin"/> is enabled.

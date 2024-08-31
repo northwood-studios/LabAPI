@@ -1,6 +1,6 @@
-using System;
 using LabApi.Loader.Features.Plugins.Configuration;
 using LabApi.Loader.Features.Plugins.Enums;
+using System;
 
 namespace LabApi.Loader.Features.Plugins;
 

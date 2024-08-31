@@ -13,7 +13,7 @@ public static class Logger
     private const string InfoPrefix = "INFO";
     private const string WarnPrefix = "WARN";
     private const string ErrorPrefix = "ERROR";
-    
+
     /// <summary>
     /// Logs a message to the server console with the specified color.
     /// </summary>
@@ -30,7 +30,7 @@ public static class Logger
     {
         if (!canBePrinted)
             return;
-        
+
         Raw(FormatLog(message, DebugPrefix, Assembly.GetCallingAssembly()), ConsoleColor.Gray);
     }
 
@@ -53,6 +53,6 @@ public static class Logger
     public static void Error(object message) => Raw(FormatLog(message, ErrorPrefix, Assembly.GetCallingAssembly()), ConsoleColor.Red);
 
     private static string FormatAssemblyName(Assembly assembly) => assembly.GetName().Name;
-    
+
     private static string FormatLog(object message, string prefix, Assembly assembly) => $"[{prefix}] [{FormatAssemblyName(assembly)}] {message}";
 }

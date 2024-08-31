@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp173Events;
 
 /// <summary>
@@ -18,12 +17,12 @@ public class Scp173CreatingTantrumEventArgs : EventArgs, ICancellableEvent, IPla
         IsAllowed = true;
         Player = player;
     }
-    
+
     /// <summary>
     /// The SCP-173 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

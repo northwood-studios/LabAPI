@@ -1,6 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
 using Respawning;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -18,10 +18,10 @@ public class WaveTeamSelectingEventArgs : EventArgs, ICancellableEvent
         IsAllowed = true;
         ChosenTeam = chosenTeam;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-    
+
     /// <summary>
     /// The team that is being selected.
     /// </summary>

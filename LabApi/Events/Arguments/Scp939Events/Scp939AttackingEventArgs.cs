@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp939Events;
 
 /// <summary>
@@ -20,12 +19,12 @@ public class Scp939AttackingEventArgs : EventArgs, ICancellableEvent, IPlayerEve
         Player = player;
         Target = target;
     }
-    
+
     /// <summary>
     /// The destructible that is being attacked.
     /// </summary>
     public IDestructible Target { get; set; }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 

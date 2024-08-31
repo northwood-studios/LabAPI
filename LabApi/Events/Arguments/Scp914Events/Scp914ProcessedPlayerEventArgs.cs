@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 using Scp914;
+using System;
 using UnityEngine;
 
 namespace LabApi.Events.Arguments.Scp914Events;
@@ -23,12 +23,12 @@ public class Scp914ProcessedPlayerEventArgs : EventArgs, IScp914Event, IPlayerEv
         KnobSetting = knobSetting;
         Player = player;
     }
-    
+
     /// <summary>
     /// The new position that the player has been processed into.
     /// </summary>
     public Vector3 NewPosition { get; }
-    
+
     /// <inheritdoc />
     public Scp914KnobSetting KnobSetting { get; }
 

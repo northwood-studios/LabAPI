@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp173;
+using System;
 
 namespace LabApi.Events.Arguments.Scp173Events;
 
@@ -21,17 +21,17 @@ public class Scp173PlayingSoundEventArgs : EventArgs, ICancellableEvent, IPlayer
         Player = player;
         SoundId = soundId;
     }
-    
+
     /// <summary>
     /// The sound id that is going to be played.
     /// </summary>
     public Scp173AudioPlayer.Scp173SoundId SoundId { get; set; }
-    
+
     /// <summary>
     /// The SCP-173 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

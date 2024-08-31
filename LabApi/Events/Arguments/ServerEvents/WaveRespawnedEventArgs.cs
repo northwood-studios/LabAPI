@@ -1,7 +1,7 @@
+using LabApi.Features.Wrappers;
+using Respawning;
 using System;
 using System.Collections.Generic;
-using LabApi.Features.Wrappers.Player;
-using Respawning;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -20,12 +20,12 @@ public class WaveRespawnedEventArgs : EventArgs
         Team = team;
         Players = players;
     }
-    
+
     /// <summary>
     /// The team that was respawned.
     /// </summary>
     public SpawnableTeamType Team { get; }
-    
+
     /// <summary>
     /// The players that were respawned.
     /// </summary>

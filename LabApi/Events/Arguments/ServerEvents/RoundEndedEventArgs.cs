@@ -16,12 +16,12 @@ public class RoundEndedEventArgs : EventArgs
         ShowSummary = true;
         LeadingTeam = leadingTeam;
     }
-    
+
     /// <summary>
     /// The team that is leading or winning the round.
     /// </summary>
     public RoundSummary.LeadingTeam LeadingTeam { get; }
-    
+
     /// <summary>
     /// Whether to show the round summary.
     /// </summary>

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using PlayerRoles.Ragdolls;
+using System.Collections.Generic;
 
-namespace LabApi.Features.Wrappers.Player;
+namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper representing <see cref="BasicRagdoll">basic ragdolls</see>.
@@ -12,12 +12,12 @@ public class Ragdoll
     /// Contains all the cached ragdolls in the game, accessible through their <see cref="BasicRagdoll"/>.
     /// </summary>
     public static Dictionary<BasicRagdoll, Ragdoll> Dictionary { get; } = [];
-    
+
     /// <summary>
     /// A reference to all <see cref="Ragdoll"/> instances currently in the game.
     /// </summary>
     public static IReadOnlyCollection<Ragdoll> List => Dictionary.Values;
-    
+
     /// <summary>
     /// A private constructor to prevent external instantiation.
     /// </summary>
@@ -27,12 +27,12 @@ public class Ragdoll
         Dictionary.Add(ragdoll, this);
         RagdollBase = ragdoll;
     }
-    
+
     /// <summary>
     /// Gets the <see cref="BasicRagdoll"/> of the ragdoll.
     /// </summary>
     public BasicRagdoll RagdollBase { get; }
-    
+
     /// <summary>
     /// Gets the ragdoll wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>

@@ -1,6 +1,6 @@
-using System;
 using CommandSystem;
 using LabApi.Features.Enums;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -27,37 +27,37 @@ public class CommandExecutedEventArgs : EventArgs
         ExecutedSuccessfully = successful;
         Response = response;
     }
-    
+
     /// <summary>
     /// The sender of the command.
     /// </summary>
     public CommandSender Sender { get; }
-    
+
     /// <summary>
     /// The type of the command that was executed.
     /// </summary>
     public CommandType CommandType { get; }
-    
+
     /// <summary>
     /// The command that was executed.
     /// </summary>
     public ICommand Command { get; }
-    
+
     /// <summary>
     /// The arguments of the command.
     /// </summary>
     public ArraySegment<string> Arguments { get; }
-    
+
     /// <summary>
     /// Whether the command was executed successfully.
     /// </summary>
     public bool ExecutedSuccessfully { get; set; }
-    
+
     /// <summary>
     /// The response of the command.
     /// </summary>
     public string Response { get; set; }
-    
+
     /// <summary>
     /// Gets the name or alias of the command that was executed.
     /// </summary>

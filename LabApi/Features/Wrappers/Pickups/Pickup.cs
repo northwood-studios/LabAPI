@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using InventorySystem.Items.Pickups;
+﻿using InventorySystem.Items.Pickups;
+using System.Collections.Generic;
 
-namespace LabApi.Features.Wrappers.Pickups;
+namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper representing <see cref="ItemPickupBase">item pickups</see>.
@@ -29,17 +29,17 @@ public class Pickup
         Dictionary.Add(itemPickupBase, this);
         ItemPickupBase = itemPickupBase;
     }
-    
+
     /// <summary>
     /// The <see cref="ItemPickupBase"/> of the pickup.
     /// </summary>
     public ItemPickupBase ItemPickupBase { get; }
-    
+
     /// <summary>
     /// Gets the pickup wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
     /// </summary>
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
     /// <returns>The requested item pickup.</returns>
     public static Pickup Get(ItemPickupBase itemPickupBase) =>
-		        Dictionary.TryGetValue(itemPickupBase, out Pickup pickup) ? pickup : new Pickup(itemPickupBase);
+                Dictionary.TryGetValue(itemPickupBase, out Pickup pickup) ? pickup : new Pickup(itemPickupBase);
 }

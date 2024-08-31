@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Interactables.Interobjects.DoorUtils;
-using LabApi.Features.Wrappers.Facility.Doors;
 using LabApi.Loader.Features.Misc;
 using MapGeneration;
 using UnityEngine;
 
-namespace LabApi.Features.Wrappers.Facility.Rooms;
+namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper representing <see cref="RoomIdentifier">room identifiers</see>, the in-game rooms.
@@ -60,7 +59,6 @@ public class Room
     /// <summary>
     /// The zone in which this room is located.
     /// </summary>
-
     public FacilityZone Zone => Base.Zone;
 
     /// <summary>

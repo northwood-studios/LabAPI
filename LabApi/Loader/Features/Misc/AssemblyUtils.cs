@@ -1,3 +1,5 @@
+using LabApi.Features.Console;
+using LabApi.Loader.Features.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -5,8 +7,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using LabApi.Features.Console;
-using LabApi.Loader.Features.Plugins;
 
 namespace LabApi.Loader.Features.Misc;
 
@@ -16,7 +16,7 @@ namespace LabApi.Loader.Features.Misc;
 public static class AssemblyUtils
 {
     private const string LoggerPrefix = "[ASSEMBLY_LOADER]";
-    
+
     /// <summary>
     /// Checks whether or not the specified <see cref="Assembly"/> has missing dependencies and gets the types if it is loaded.
     /// </summary>
@@ -28,7 +28,7 @@ public static class AssemblyUtils
     {
         // We convert the missing dependencies to an array to avoid multiple iterations.
         string[] missingDependencies = GetMissingDependencies(assembly).ToArray();
-        
+
         try
         {
             if (missingDependencies.Length != 0)
@@ -36,7 +36,7 @@ public static class AssemblyUtils
                 // In the case that there are missing dependencies, we try to resolve possible embedded resources.
                 ResolveEmbeddedResources(assembly);
             }
-            
+
             // If the assembly has missing dependencies after resolving embedded resources this will throw an exception.
             types = assembly.GetTypes();
             return false; // False = no missing dependencies.
@@ -50,9 +50,9 @@ public static class AssemblyUtils
                 // If there are missing dependencies, we log them.
                 Logger.Error($"{LoggerPrefix} Missing dependencies:\n{string.Join("\n", missingDependencies.Select(x => $"-\t {x}"))}");
             }
-            
+
             Logger.Error(exception.ToString());
-            
+
             types = default;
             return true; // True = missing dependencies.
         }
@@ -68,7 +68,7 @@ public static class AssemblyUtils
         // We will use this selector to format the assembly names to the format we want.
         string NameSelector(Assembly assembly) => FormatAssemblyName(assembly.GetName());
     }
-    
+
     /// <summary>
     /// Gets the missing dependencies of the specified <see cref="Assembly"/>.
     /// </summary>
@@ -80,7 +80,7 @@ public static class AssemblyUtils
         // Using the same format, we will get the missing dependencies.
         return assembly.GetReferencedAssemblies().Select(FormatAssemblyName).Where(name => !loadedAssemblies.Contains(name));
     }
-    
+
     /// <summary>
     /// Resolves embedded resources from the specified <see cref="Assembly"/>.
     /// </summary>
@@ -89,7 +89,7 @@ public static class AssemblyUtils
     {
         const string dllExtension = ".dll";
         const string compressedDllExtension = ".dll.compressed";
-        
+
         // We get all the resource names from the specified assembly.
         string[] resourceNames = assembly.GetManifestResourceNames();
         foreach (string resourceName in resourceNames)
@@ -119,9 +119,9 @@ public static class AssemblyUtils
         // We try to get the data stream of the specified resource name.
         if (!TryGetDataStream(target, name, out Stream? dataStream))
             return;
-                
+
         // We copy the data stream to a memory stream and load the assembly from the memory stream.
-        using MemoryStream stream = new ();
+        using MemoryStream stream = new();
         dataStream.CopyTo(stream);
         Assembly.Load(stream.ToArray());
     }
@@ -138,13 +138,13 @@ public static class AssemblyUtils
             return;
 
         // We decompress the data stream and load the assembly from the memory stream.
-        using DeflateStream stream = new (dataStream, CompressionMode.Decompress);
+        using DeflateStream stream = new(dataStream, CompressionMode.Decompress);
         // We use a memory stream to load the assembly from the decompressed data stream.
-        using MemoryStream memStream = new ();
+        using MemoryStream memStream = new();
         stream.CopyTo(memStream);
         Assembly.Load(memStream.ToArray());
     }
-    
+
     /// <summary>
     /// Try to get the data stream of the specified resource name from the specified <see cref="Assembly"/>.
     /// </summary>
@@ -156,11 +156,11 @@ public static class AssemblyUtils
     {
         // We try to get the data stream of the specified resource name.
         dataStream = target.GetManifestResourceStream(name);
-        
+
         // If the data stream is not null, we successfully retrieved the data stream and therefore return true.
-        if (dataStream is not null) 
+        if (dataStream is not null)
             return true;
-        
+
         // If the data stream is null, we log an error message and return false.
         Logger.Error($"{LoggerPrefix} Unable to resolve {name} Stream was null");
         return false;
@@ -177,7 +177,7 @@ public static class AssemblyUtils
         // We try to get the assembly of the specified plugin inside the plugin loader.
         return PluginLoader.Plugins.TryGetValue(plugin, out assembly);
     }
-    
+
     // Used for missing assembly comparisons.
     private static string FormatAssemblyName(AssemblyName assemblyName) => $"{assemblyName.Name} v{assemblyName.Version}";
 }

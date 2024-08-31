@@ -1,7 +1,7 @@
-using System;
 using CommandSystem;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Enums;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -27,31 +27,31 @@ public class CommandExecutingEventArgs : EventArgs, ICancellableEvent
         Command = command;
         Arguments = arguments;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-    
+
     /// <summary>
     /// The sender of the command.
     /// </summary>
     public CommandSender Sender { get; set; }
-    
+
     /// <summary>
     /// The type of the command that is being executed.
     /// </summary>
     public CommandType CommandType { get; }
-    
+
     /// <summary>
     /// Whether the command was found.
     /// </summary>
     public bool CommandFound { get; }
-    
+
     /// <summary>
     /// The command that is being executed.
     /// <para>Can be null if the command was not found.</para>
     /// </summary>
     public ICommand Command { get; set; }
-    
+
     /// <summary>
     /// The arguments of the command.
     /// </summary>

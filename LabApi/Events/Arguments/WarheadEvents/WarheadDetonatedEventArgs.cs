@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.WarheadEvents;
 
 /// <summary>
@@ -17,7 +16,7 @@ public class WarheadDetonatedEventArgs : EventArgs, IPlayerEvent
     {
         Player = player;
     }
-    
+
     /// <summary>
     /// Gets the player who detonated the warhead.
     /// </summary>

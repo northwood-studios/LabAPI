@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
@@ -19,12 +18,12 @@ public class Scp049UsedSenseEventArgs : EventArgs, IPlayerEvent, ITargetEvent
         Player = player;
         Target = target;
     }
-    
+
     /// <summary>
     /// The player that SCP-049 has used sense on.
     /// </summary>
-    public Player Target { get;}
-    
+    public Player Target { get; }
+
     /// <summary>
     /// The SCP-049 player instance.
     /// </summary>

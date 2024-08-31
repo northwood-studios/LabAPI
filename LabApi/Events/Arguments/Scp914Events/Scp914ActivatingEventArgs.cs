@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 using Scp914;
+using System;
 
 namespace LabApi.Events.Arguments.Scp914Events;
 
@@ -21,15 +21,15 @@ public class Scp914ActivatingEventArgs : EventArgs, ICancellableEvent, IScp914Ev
         KnobSetting = knobSetting;
         Player = player;
     }
-    
+
     /// <inheritdoc />
     public Scp914KnobSetting KnobSetting { get; set; }
-    
+
     /// <summary>
     /// The player that is activating SCP-914.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

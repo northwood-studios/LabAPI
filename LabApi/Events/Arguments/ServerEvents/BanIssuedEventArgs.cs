@@ -17,12 +17,12 @@ public class BanIssuedEventArgs : EventArgs
         BanType = banType;
         BanDetails = banDetails;
     }
-    
+
     /// <summary>
     /// The type of ban that was issued.
     /// </summary>
     public BanHandler.BanType BanType { get; }
-    
+
     /// <summary>
     /// The details of the ban that was issued.
     /// </summary>

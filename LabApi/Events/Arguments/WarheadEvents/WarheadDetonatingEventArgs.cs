@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.WarheadEvents;
 
 /// <summary>
@@ -18,7 +17,7 @@ public class WarheadDetonatingEventArgs : EventArgs, ICancellableEvent, IPlayerE
         IsAllowed = true;
         Player = player;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 

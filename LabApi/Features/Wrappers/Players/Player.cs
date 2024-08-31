@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using CentralAuth;
+﻿using CentralAuth;
 using CommandSystem;
 using CustomPlayerEffects;
 using Footprinting;
@@ -12,8 +8,6 @@ using InventorySystem.Disarming;
 using InventorySystem.Items;
 using InventorySystem.Items.Firearms.Ammo;
 using InventorySystem.Items.Pickups;
-using LabApi.Features.Wrappers.Items;
-using LabApi.Features.Wrappers.Pickups;
 using LabApi.Loader.Features.Misc;
 using MapGeneration;
 using Mirror;
@@ -24,13 +18,17 @@ using PlayerRoles.FirstPersonControl;
 using PlayerRoles.Voice;
 using PlayerStatsSystem;
 using RoundRestarting;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using UnityEngine;
 using Utils.Networking;
 using Utils.NonAllocLINQ;
 using VoiceChat;
 using VoiceChat.Playbacks;
 
-namespace LabApi.Features.Wrappers.Player;
+namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper representing <see cref="ReferenceHub">reference hubs</see>, the in-game players.
@@ -45,7 +43,7 @@ public class Player
     /// <summary>
     /// A cache of players by their User ID. Does not necessarily contain all players.
     /// </summary>
-    private static readonly Dictionary<string, Player> UserIdCache = new (CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instances currently in the game.

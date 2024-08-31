@@ -1,5 +1,5 @@
-using System;
 using Respawning;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -16,7 +16,7 @@ public class WaveTeamSelectedEventArgs : EventArgs
     {
         ChosenTeam = chosenTeam;
     }
-    
+
     /// <summary>
     /// The team that was selected.
     /// </summary>

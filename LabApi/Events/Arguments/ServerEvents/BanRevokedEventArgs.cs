@@ -17,12 +17,12 @@ public class BanRevokedEventArgs : EventArgs
         BanType = banType;
         BanDetails = banDetails;
     }
-    
+
     /// <summary>
     /// The type of ban that was revoked.
     /// </summary>
     public BanHandler.BanType BanType { get; }
-    
+
     /// <summary>
     /// The details of the ban that was revoked.
     /// </summary>

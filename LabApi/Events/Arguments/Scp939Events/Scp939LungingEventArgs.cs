@@ -1,7 +1,7 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp939;
+using System;
 
 namespace LabApi.Events.Arguments.Scp939Events;
 
@@ -21,7 +21,7 @@ public class Scp939LungingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
         Player = player;
         LungeState = lungeState;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 
@@ -29,7 +29,7 @@ public class Scp939LungingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
     /// The SCP-939 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <summary>
     /// Gets or sets the current state of the SCP-939 lunge ability.
     /// </summary>

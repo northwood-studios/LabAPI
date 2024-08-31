@@ -15,7 +15,7 @@ public static class LabApiProperties
     /// <para>Due to being a constant, the value of this field will always be that of its compilation time version.</para>
     /// </summary>
     public const string CompiledVersion = "1.0.0.0";
-    
+
     /// <summary>
     /// Indicates the value of <see cref="CompiledVersion"/> the server is currently using.
     /// </summary>

@@ -1,5 +1,5 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -17,10 +17,10 @@ public class RoundEndingEventArgs : EventArgs, ICancellableEvent
         IsAllowed = true;
         LeadingTeam = leadingTeam;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-    
+
     /// <summary>
     /// The team that is leading or winning the round.
     /// </summary>

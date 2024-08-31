@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.WarheadEvents;
 
 /// <summary>
@@ -19,12 +18,12 @@ public class WarheadStoppedEventArgs : EventArgs, IPlayerEvent
         Player = player;
         WarheadState = warheadState;
     }
-    
+
     /// <summary>
     /// Gets the current state of the alpha warhead.
     /// </summary>
     public AlphaWarheadSyncInfo WarheadState { get; }
-    
+
     /// <summary>
     /// Gets the player who stopped the warhead.
     /// </summary>

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using LabApi.Features.Console;
+﻿using LabApi.Features.Console;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Configuration;
 using Serialization;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace LabApi.Loader;
 

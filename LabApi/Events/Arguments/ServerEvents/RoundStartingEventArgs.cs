@@ -1,5 +1,5 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -15,7 +15,7 @@ public class RoundStartingEventArgs : EventArgs, ICancellableEvent
     {
         IsAllowed = true;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
-using CommandSystem;
+﻿using CommandSystem;
 using LabApi.Features.Console;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Plugins;
 using RemoteAdmin;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 
 namespace LabApi.Loader;
 
@@ -22,7 +22,7 @@ public static class CommandLoader
     /// <summary>
     /// The dictionary of command handlers.
     /// </summary>
-    public static Dictionary<Type, CommandHandler> CommandHandlers { get; } = new ()
+    public static Dictionary<Type, CommandHandler> CommandHandlers { get; } = new()
     {
         // The server console command handler.
         [typeof(GameConsoleCommandHandler)] = GameCore.Console.singleton.ConsoleCommandHandler,

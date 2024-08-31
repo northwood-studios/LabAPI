@@ -1,8 +1,8 @@
-using System;
-using System.Text;
-using System.Reflection;
-using NorthwoodLib.Pools;
 using LabApi.Features.Console;
+using NorthwoodLib.Pools;
+using System;
+using System.Reflection;
+using System.Text;
 
 namespace LabApi.Events;
 
@@ -21,12 +21,12 @@ public static class EventManager
         // We check if the event handler is null
         if (eventHandler is null)
             return;
-        
+
 #if DEBUG
         // In DEBUG mode we add some useful logs about the event.
         Logger.Debug("Invoking event " + eventHandler.FormatToString());
 #endif
-        
+
         // We iterate through all the subscribers of the event and invoke them.
         foreach (Delegate sub in eventHandler.GetInvocationList())
         {
@@ -42,7 +42,7 @@ public static class EventManager
             }
         }
     }
-    
+
     /// <summary>
     /// Invokes a <see cref="LabEventHandler{TEventArgs}"/> event and logs any errors that occur.
     /// </summary>
@@ -55,12 +55,12 @@ public static class EventManager
         // We check if the event handler is null
         if (eventHandler is null)
             return;
-        
+
 #if DEBUG
         // In DEBUG mode we add some useful logs about the event.
         Logger.Debug("Invoking event " + eventHandler.FormatToString(args));
 #endif
-        
+
         // We iterate through all the subscribers of the event and invoke them.
         foreach (Delegate sub in eventHandler.GetInvocationList())
         {
@@ -76,7 +76,7 @@ public static class EventManager
             }
         }
     }
-    
+
     /// <summary>
     /// Formats the <see cref="LabEventHandler"/> to a string.
     /// </summary>
@@ -87,7 +87,7 @@ public static class EventManager
         // As this one doesn't have parameters, we can just return the method name.
         return eventHandler.Method.Name;
     }
-    
+
     /// <summary>
     /// Formats the <see cref="LabEventHandler{T}"/> to a string.
     /// </summary>
@@ -100,17 +100,17 @@ public static class EventManager
     {
         // We rent a StringBuilder from the pool to avoid creating a new one.
         StringBuilder stringBuilder = StringBuilderPool.Shared.Rent(eventHandler.Method.Name + ":");
-        
+
         // We iterate through all the properties of the EventArgs and append them to the StringBuilder.
         foreach (PropertyInfo property in typeof(TEventArgs).GetProperties())
         {
             stringBuilder.AppendLine("\t- " + property.Name + ": " + property.GetValue(args));
         }
-        
+
         // As this one has parameters, we can return the method name and the parameters' types.
         return StringBuilderPool.Shared.ToStringReturn(stringBuilder);
     }
-    
+
     /// <summary>
     /// Formats an error message for a <see cref="LabEventHandler"/>.
     /// </summary>

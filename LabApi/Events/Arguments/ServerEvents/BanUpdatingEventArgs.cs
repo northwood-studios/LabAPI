@@ -1,5 +1,5 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -21,20 +21,20 @@ public class BanUpdatingEventArgs : EventArgs, ICancellableEvent
         BanDetails = banDetails;
         OldBanDetails = oldBanDetails;
     }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-    
+
     /// <summary>
     /// The type of ban that is being updated.
     /// </summary>
     public BanHandler.BanType BanType { get; set; }
-    
+
     /// <summary>
     /// The new details of the ban that is being updated.
     /// </summary>
     public BanDetails BanDetails { get; set; }
-    
+
     /// <summary>
     /// The old details of the ban that is being updated.
     /// </summary>

@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp173Events;
 
 /// <summary>
@@ -19,12 +18,12 @@ public class Scp173BreakneckSpeedChangedEventArgs : EventArgs, IPlayerEvent
         Player = player;
         Active = active;
     }
-    
+
     /// <summary>
     /// Whether the SCP-173 player is currently in breakneck speed mode.
     /// </summary>
     public bool Active { get; }
-    
+
     /// <summary>
     /// The SCP-173 player instance.
     /// </summary>

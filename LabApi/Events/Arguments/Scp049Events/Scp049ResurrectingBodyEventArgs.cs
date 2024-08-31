@@ -1,7 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Player;
-
+using LabApi.Features.Wrappers;
+using System;
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
@@ -22,12 +21,12 @@ public class Scp049ResurrectingBodyEventArgs : EventArgs, ICancellableEvent, IPl
         Player = player;
         IsAllowed = true;
     }
-    
+
     /// <summary>
     /// The ragdoll that SCP-049 is resurrecting.
     /// </summary>
     public Ragdoll Ragdoll { get; }
-    
+
     /// <summary>
     /// The player that SCP-049 is resurrecting.
     /// </summary>
@@ -37,7 +36,7 @@ public class Scp049ResurrectingBodyEventArgs : EventArgs, ICancellableEvent, IPl
     /// The SCP-049 player instance.
     /// </summary>
     public Player Player { get; set; }
-    
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }
