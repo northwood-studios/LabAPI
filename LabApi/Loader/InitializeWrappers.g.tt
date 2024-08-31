@@ -23,13 +23,13 @@
         string namespaceName = namespaceMatch.Groups[1].Value;
         int index = namespaceMatch.Index + namespaceMatch.Length;
 
-        Match classMatch = Regex.Match(fileContent[index..], @"class\s+(\w+)");
+        Match classMatch = Regex.Match(fileContent.Substring(index), @"class\s+(\w+)");
         if (!classMatch.Success)
             continue;
         string className = classMatch.Groups[1].Value;
         index = classMatch.Index + classMatch.Length;
 
-        MatchCollection methodMatches = Regex.Matches(fileContent[index..], $@"{attribute}\s+.*?\s+static\s+.*?\s+(\w+)\s*\(");        
+        MatchCollection methodMatches = Regex.Matches(fileContent.Substring(index), $@"{attribute}\s+.*?\s+static\s+.*?\s+(\w+)\s*\(");        
         foreach (Match match in methodMatches)
         {
             string methodName = match.Groups[1].Value;
