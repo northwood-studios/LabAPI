@@ -15,7 +15,7 @@ public class Room
     [InitializeWrapper]
     internal static void Initialize()
     {
-        RoomIdentifier.OnAdded += (roomIdentifier) => new Room(roomIdentifier);
+        RoomIdentifier.OnAdded += (roomIdentifier) => _ = new Room(roomIdentifier);
         RoomIdentifier.OnRemoved += (roomIdentier) => Dictionary.Remove(roomIdentier);
     }
 

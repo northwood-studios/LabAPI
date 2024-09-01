@@ -16,6 +16,10 @@
 		<PackageReference Include="YamlDotNet" Version="11.0.1" />
 		<PackageReference Include="T4.Build" Version="0.2.4" PrivateAssets="All" />
 	</ItemGroup>
+	
+	<PropertyGroup>
+		<TextTemplateTransformSkipUpToDate>false</TextTemplateTransformSkipUpToDate>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp" HintPath="$(SL_REFERENCES)\Assembly-CSharp.dll" />

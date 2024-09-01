@@ -5,7 +5,6 @@ using NorthwoodLib.Pools;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Utils.NonAllocLINQ;
 
 namespace LabApi.Features.Wrappers;
 
@@ -66,7 +65,7 @@ public class Item
     /// <summary>
     /// Gets the item's current owner.
     /// </summary>
-    public Player CurrentOwner => ItemBase.Owner == null ? null : Player.Get(ItemBase.Owner);
+    public Player? CurrentOwner => ItemBase.Owner == null ? null : Player.Get(ItemBase.Owner);
 
     /// <summary>
     /// Gets the item's serial.
@@ -129,8 +128,8 @@ public class Item
     {
         Dictionary.Clear();
 
-        InventoryExtensions.OnItemAdded += (player, item, pickup) => new Item(item);
-        InventoryExtensions.OnItemRemoved += (player, item, pickup) => Dictionary.Remove(item);
+        InventoryExtensions.OnItemAdded += (_, item, _) => _ = new Item(item);
+        InventoryExtensions.OnItemRemoved += (_, item, _) => Dictionary.Remove(item);
     }
 
     /// <summary>
@@ -145,7 +144,7 @@ public class Item
     /// </summary>
     /// <param name="serial">The serial number of the item.</param>
     /// <returns>The requested item.</returns>
-    public static Item Get(ushort serial) => List.FirstOrDefault(item => item.Serial == serial);
+    public static Item? Get(ushort serial) => List.FirstOrDefault(item => item.Serial == serial);
 
     /// <summary>
     /// Gets a pooled list of items having the same <see cref="ItemType"/>

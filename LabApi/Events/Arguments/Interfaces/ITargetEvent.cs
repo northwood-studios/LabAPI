@@ -1,4 +1,4 @@
-using LabApi.Features.Wrappers.Player;
+using LabApi.Features.Wrappers;
 
 namespace LabApi.Events.Arguments.Interfaces;
 
