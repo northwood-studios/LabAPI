@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 ﻿using Interactables.Interobjects.DoorUtils;
-using System.Collections.Generic;
 using LabApi.Loader.Features.Misc;
 using MapGeneration;
 using UnityEngine;
@@ -17,8 +16,8 @@ public class Door
     [InitializeWrapper]
     internal static void Initialize()
     {
-        DoorVariant.OnAdded += (door) => new Door(door);
-        DoorVariant.OnAdded += (door) => Dictionary.Remove(door);
+        DoorVariant.OnInstanceCreated += (door) => new Door(door);
+        DoorVariant.OnInstanceRemoved += (door) => Dictionary.Remove(door);
     }
 
     /// <summary>
