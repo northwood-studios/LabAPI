@@ -276,7 +276,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="RoomIdentifier"/> at the player's current position.
     /// </summary>
-    public RoomIdentifier? Room => RoomIdUtils.RoomAtPosition(GameObject.transform.position);
+    public Room? Room => Room.GetRoomAtPosition(Position);
 
     /// <summary>
     /// Gets the <see cref="FacilityZone"/> for the player's current room. Returns <see cref="FacilityZone.None"/> if the room is null.

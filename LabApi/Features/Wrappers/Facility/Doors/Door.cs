@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-﻿using Interactables.Interobjects.DoorUtils;
+using Interactables.Interobjects.DoorUtils;
 using LabApi.Loader.Features.Misc;
 using MapGeneration;
 using UnityEngine;
