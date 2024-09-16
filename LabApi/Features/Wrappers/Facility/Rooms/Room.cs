@@ -1,9 +1,9 @@
+using Generators;
+using Interactables.Interobjects.DoorUtils;
+using MapGeneration;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Interactables.Interobjects.DoorUtils;
-using LabApi.Loader.Features.Misc;
-using MapGeneration;
 using UnityEngine;
 
 namespace LabApi.Features.Wrappers;

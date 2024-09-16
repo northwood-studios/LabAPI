@@ -14,7 +14,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="YamlDotNet" Version="11.0.1" />
-		<PackageReference Include="T4.Build" Version="0.2.4" PrivateAssets="All" />
 	</ItemGroup>
 	
 	<PropertyGroup>
@@ -33,10 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Loader\InitializeWrappers.g.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>InitializeWrappers.g.cs</LastGenOutput>
-	  </None>
+	  <ProjectReference Include="..\LabApi.SourceGenerators\LabApi.SourceGenerators\LabApi.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
 	</ItemGroup>
 	
 </Project>

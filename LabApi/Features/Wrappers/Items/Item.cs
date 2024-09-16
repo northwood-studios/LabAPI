@@ -1,6 +1,6 @@
-﻿using InventorySystem;
+﻿using Generators;
+using InventorySystem;
 using InventorySystem.Items;
-using LabApi.Loader.Features.Misc;
 using NorthwoodLib.Pools;
 using System.Collections.Generic;
 using System.Linq;
