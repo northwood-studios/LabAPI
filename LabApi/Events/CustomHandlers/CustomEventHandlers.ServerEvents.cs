@@ -7,56 +7,56 @@ namespace LabApi.Events.CustomHandlers;
 public abstract partial class CustomEventsHandler
 {
     /// <inheritdoc cref="ServerEvents.WaitingForPlayers"/>
-    public virtual void OnWaitingForPlayers() {}
-    
+    public virtual void OnWaitingForPlayers() { }
+
     /// <inheritdoc cref="ServerEvents.RoundRestarted"/>
-    public virtual void OnRoundRestarted() {}
+    public virtual void OnRoundRestarted() { }
 
     /// <inheritdoc cref="ServerEvents.RoundEnding"/>
-    public virtual void OnRoundEnding(RoundEndingEventArgs args) {}
+    public virtual void OnRoundEnding(RoundEndingEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.RoundEnded"/>
-    public virtual void OnRoundEnded(RoundEndedEventArgs args) {}
+    public virtual void OnRoundEnded(RoundEndedEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.RoundStarting"/>
-    public virtual void OnRoundStarting(RoundStartingEventArgs args) {}
+    public virtual void OnRoundStarting(RoundStartingEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.RoundStarted"/>
-    public virtual void OnRoundStarted() {}
+    public virtual void OnRoundStarted() { }
 
     /// <inheritdoc cref="ServerEvents.BanIssuing"/>
-    public virtual void OnBanIssuing(BanIssuingEventArgs args) {}
+    public virtual void OnBanIssuing(BanIssuingEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.BanIssued"/>
-    public virtual void OnBanIssued(BanIssuedEventArgs args) {}
+    public virtual void OnBanIssued(BanIssuedEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.BanRevoking"/>
-    public virtual void OnBanRevoking(BanRevokingEventArgs args) {}
+    public virtual void OnBanRevoking(BanRevokingEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.BanRevoked"/>
-    public virtual void OnBanRevoked(BanRevokedEventArgs args) {}
+    public virtual void OnBanRevoked(BanRevokedEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.BanUpdating"/>
-    public virtual void OnBanUpdating(BanUpdatingEventArgs args) {}
+    public virtual void OnBanUpdating(BanUpdatingEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.BanUpdated"/>
-    public virtual void OnBanUpdated(BanUpdatedEventArgs args) {}
+    public virtual void OnBanUpdated(BanUpdatedEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.CommandExecuting"/>
-    public virtual void OnCommandExecuting(CommandExecutingEventArgs args) {}
+    public virtual void OnCommandExecuting(CommandExecutingEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.CommandExecuted"/>
-    public virtual void OnCommandExecuted(CommandExecutedEventArgs args) {}
+    public virtual void OnCommandExecuted(CommandExecutedEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.WaveRespawning"/>
-    public virtual void OnWaveRespawning(WaveRespawningEventArgs args) {}
+    public virtual void OnWaveRespawning(WaveRespawningEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.WaveRespawned"/>
-    public virtual void OnWaveRespawned(WaveRespawnedEventArgs args) {}
+    public virtual void OnWaveRespawned(WaveRespawnedEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.WaveTeamSelecting"/>
-    public virtual void OnWaveTeamSelecting(WaveTeamSelectingEventArgs args) {}
+    public virtual void OnWaveTeamSelecting(WaveTeamSelectingEventArgs args) { }
 
     /// <inheritdoc cref="ServerEvents.WaveTeamSelected"/>
-    public virtual void OnWaveTeamSelected(WaveTeamSelectedEventArgs args) {}
+    public virtual void OnWaveTeamSelected(WaveTeamSelectedEventArgs args) { }
 }
