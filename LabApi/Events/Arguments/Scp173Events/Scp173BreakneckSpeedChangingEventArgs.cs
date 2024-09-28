@@ -13,10 +13,10 @@ public class Scp173BreakneckSpeedChangingEventArgs : EventArgs, ICancellableEven
     /// </summary>
     /// <param name="player">The SCP-173 player instance.</param>
     /// <param name="active">The new breakneck speed state.</param>
-    public Scp173BreakneckSpeedChangingEventArgs(Player player, bool active)
+    public Scp173BreakneckSpeedChangingEventArgs(ReferenceHub player, bool active)
     {
         IsAllowed = true;
-        Player = player;
+        Player = Player.Get(player);
         Active = active;
     }
 

@@ -1,0 +1,32 @@
+﻿using InventorySystem.Items;
+using LabApi.Events.Arguments.Interfaces;
+
+using LabApi.Features.Wrappers;
+using System;
+
+namespace LabApi.Events.Arguments.PlayerEvents;
+
+/// <summary>
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.AimedWeapon"/> event.
+/// </summary>
+public class PlayerAimedWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PlayerAimedWeaponEventArgs"/> class.
+    /// </summary>
+    /// <param name="player">The player who aimed the weapon.</param>
+    /// <param name="weapon">The weapon that the player aimed.</param>
+    public PlayerAimedWeaponEventArgs(ReferenceHub player, ItemBase weapon)
+    {
+        Player = Player.Get(player);
+        Weapon = Item.Get(weapon);
+    }
+
+    /// <summary>
+    /// Gets the player who aimed the weapon.
+    /// </summary>
+    public Player Player { get; }
+
+    /// <inheritdoc />
+    public Item Weapon { get; }
+}

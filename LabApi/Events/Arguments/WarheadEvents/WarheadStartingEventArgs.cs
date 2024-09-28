@@ -15,10 +15,10 @@ public class WarheadStartingEventArgs : EventArgs, ICancellableEvent, IPlayerEve
     /// <param name="isAutomatic">Whether the warhead is starting automatically.</param>
     /// <param name="suppressSubtitles">Whether subtitles should be suppressed.</param>
     /// <param name="warheadState">The current state of the alpha warhead.</param>
-    public WarheadStartingEventArgs(Player player, bool isAutomatic, bool suppressSubtitles, AlphaWarheadSyncInfo warheadState)
+    public WarheadStartingEventArgs(ReferenceHub player, bool isAutomatic, bool suppressSubtitles, AlphaWarheadSyncInfo warheadState)
     {
         IsAllowed = true;
-        Player = player;
+        Player = Player.Get(player);
         IsAutomatic = isAutomatic;
         SuppressSubtitles = suppressSubtitles;
         WarheadState = warheadState;

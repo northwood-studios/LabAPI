@@ -13,9 +13,9 @@ public class Scp939AttackedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-939 player instance.</param>
     /// <param name="target">The destructible that was attacked.</param>
-    public Scp939AttackedEventArgs(Player player, IDestructible target)
+    public Scp939AttackedEventArgs(ReferenceHub player, IDestructible target)
     {
-        Player = player;
+        Player = Player.Get(player);
         Target = target;
     }
 

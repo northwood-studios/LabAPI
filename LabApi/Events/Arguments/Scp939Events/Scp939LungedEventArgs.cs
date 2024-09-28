@@ -15,9 +15,9 @@ public class Scp939LungedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-939 player instance.</param>
     /// <param name="lungeState">The SCP-939 lunge state.</param>
-    public Scp939LungedEventArgs(Player player, Scp939LungeState lungeState)
+    public Scp939LungedEventArgs(ReferenceHub player, Scp939LungeState lungeState)
     {
-        Player = player;
+        Player = Player.Get(player);
         LungeState = lungeState;
     }
 

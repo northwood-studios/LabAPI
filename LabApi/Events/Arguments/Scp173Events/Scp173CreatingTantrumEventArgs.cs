@@ -12,10 +12,10 @@ public class Scp173CreatingTantrumEventArgs : EventArgs, ICancellableEvent, IPla
     /// Initializes a new instance of the <see cref="Scp173CreatingTantrumEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-173 player instance.</param>
-    public Scp173CreatingTantrumEventArgs(Player player)
+    public Scp173CreatingTantrumEventArgs(ReferenceHub player)
     {
         IsAllowed = true;
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <summary>

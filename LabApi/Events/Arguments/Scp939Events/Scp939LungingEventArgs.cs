@@ -15,10 +15,10 @@ public class Scp939LungingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-939 player instance.</param>
     /// <param name="lungeState">The SCP-939 lunge state.</param>
-    public Scp939LungingEventArgs(Player player, Scp939LungeState lungeState)
+    public Scp939LungingEventArgs(ReferenceHub player, Scp939LungeState lungeState)
     {
         IsAllowed = true;
-        Player = player;
+        Player = Player.Get(player);
         LungeState = lungeState;
     }
 

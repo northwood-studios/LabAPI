@@ -15,9 +15,9 @@ public class Scp939CreatedAmnesticCloudEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-939 player instance.</param>
     /// <param name="amnesticCloudInstance">The created amnestic cloud instance.</param>
-    public Scp939CreatedAmnesticCloudEventArgs(Player player, Scp939AmnesticCloudInstance amnesticCloudInstance)
+    public Scp939CreatedAmnesticCloudEventArgs(ReferenceHub player, Scp939AmnesticCloudInstance amnesticCloudInstance)
     {
-        Player = player;
+        Player = Player.Get(player);
         AmnesticCloudInstance = amnesticCloudInstance;
     }
 

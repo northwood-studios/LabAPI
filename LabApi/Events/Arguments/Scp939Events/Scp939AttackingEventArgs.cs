@@ -13,10 +13,10 @@ public class Scp939AttackingEventArgs : EventArgs, ICancellableEvent, IPlayerEve
     /// </summary>
     /// <param name="player">The SCP-939 player instance.</param>
     /// <param name="target">The destructible that is being attacked.</param>
-    public Scp939AttackingEventArgs(Player player, IDestructible target)
+    public Scp939AttackingEventArgs(ReferenceHub player, IDestructible target)
     {
         IsAllowed = true;
-        Player = player;
+        Player = Player.Get(player);
         Target = target;
     }
 

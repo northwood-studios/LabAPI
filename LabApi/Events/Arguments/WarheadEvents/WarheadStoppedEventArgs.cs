@@ -13,9 +13,9 @@ public class WarheadStoppedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player who stopped the warhead.</param>
     /// <param name="warheadState">The current state of the alpha warhead.</param>
-    public WarheadStoppedEventArgs(Player player, AlphaWarheadSyncInfo warheadState)
+    public WarheadStoppedEventArgs(ReferenceHub player, AlphaWarheadSyncInfo warheadState)
     {
-        Player = player;
+        Player = Player.Get(player);
         WarheadState = warheadState;
     }
 

@@ -13,10 +13,10 @@ public class Scp049UsedSenseEventArgs : EventArgs, IPlayerEvent, ITargetEvent
     /// </summary>
     /// <param name="player">The SCP-049 player instance.</param>
     /// <param name="target">The player that SCP-049 has used sense on.</param>
-    public Scp049UsedSenseEventArgs(Player player, Player target)
+    public Scp049UsedSenseEventArgs(ReferenceHub player, ReferenceHub target)
     {
-        Player = player;
-        Target = target;
+        Player = Player.Get(player);
+        Target = Player.Get(target);
     }
 
     /// <summary>

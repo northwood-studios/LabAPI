@@ -14,11 +14,11 @@ public class Scp049ResurrectingBodyEventArgs : EventArgs, ICancellableEvent, IPl
     /// <param name="ragdoll">The ragdoll that SCP-049 is resurrecting.</param>
     /// <param name="target">The player that SCP-049 is resurrecting.</param>
     /// <param name="player">The SCP-049 player instance.</param>
-    public Scp049ResurrectingBodyEventArgs(Ragdoll ragdoll, Player target, Player player)
+    public Scp049ResurrectingBodyEventArgs(Ragdoll ragdoll, ReferenceHub target, ReferenceHub player)
     {
         Ragdoll = ragdoll;
-        Target = target;
-        Player = player;
+        Target = Player.Get(target);
+        Player = Player.Get(player);
         IsAllowed = true;
     }
 

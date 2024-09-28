@@ -1,8 +1,9 @@
+using System;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using Scp914;
-using System;
 using UnityEngine;
+using InventorySystem.Items.Pickups;
 
 namespace LabApi.Events.Arguments.Scp914Events;
 
@@ -17,12 +18,12 @@ public class Scp914ProcessingPickupEventArgs : EventArgs, ICancellableEvent, ISc
     /// <param name="newPosition">The new position of the pickup.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
     /// <param name="pickup">The pickup that is being processed by SCP-914.</param>
-    public Scp914ProcessingPickupEventArgs(Vector3 newPosition, Scp914KnobSetting knobSetting, Pickup pickup)
+    public Scp914ProcessingPickupEventArgs(Vector3 newPosition, Scp914KnobSetting knobSetting, ItemPickupBase pickup)
     {
         IsAllowed = true;
         NewPosition = newPosition;
         KnobSetting = knobSetting;
-        Pickup = pickup;
+        Pickup = Pickup.Get(pickup);
     }
 
     /// <summary>

@@ -109,4 +109,81 @@ public static partial class ServerEvents
     /// </summary>
     /// <param name="args">The <see cref="WaveTeamSelectedEventArgs"/> of the event.</param>
     public static void OnWaveTeamSelected(WaveTeamSelectedEventArgs args) => WaveTeamSelected.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="LczDecontaminationAnnounced"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="LczDecontaminationAnnouncedEventArgs"/> of the event.</param>
+    public static void OnLczDecontaminationAnnounced(LczDecontaminationAnnouncedEventArgs args) => LczDecontaminationAnnounced.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="LczDecontaminationStarting"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="LczDecontaminationStartingEventArgs"/> of the event.</param>
+    public static void OnLczDecontaminationStarting(LczDecontaminationStartingEventArgs args) => LczDecontaminationStarting.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="LczDecontaminationStarted"/> event.
+    /// </summary>
+    public static void OnLczDecontaminationStarted() => LczDecontaminationStarted.InvokeEvent();
+
+    /// <summary>
+    /// Invokes the <see cref="MapGenerating"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="MapGeneratingEventArgs"/> of the event.</param>
+    public static void OnMapGenerating(MapGeneratingEventArgs args) => MapGenerating.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="MapGenerated"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="MapGeneratedEventArgs"/> of the event.</param>
+    public static void OnMapGenerated(MapGeneratedEventArgs args) => MapGenerated.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="ItemSpawning"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="ItemSpawningEventArgs"/> of the event.</param>
+    public static void OnItemSpawning(ItemSpawningEventArgs args) => ItemSpawning.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="ItemSpawned"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="ItemSpawnedEventArgs"/> of the event.</param>
+    public static void OnItemSpawned(ItemSpawnedEventArgs args) => ItemSpawned.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="CassieAnnouncing"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="CassieAnnouncingEventArgs"/> of the event.</param>
+    public static void OnCassieAnnouncing(CassieAnnouncingEventArgs args) => CassieAnnouncing.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="CassieAnnounced"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="CassieAnnouncedEventArgs"/> of the event.</param>
+    public static void OnCassieAnnounced(CassieAnnouncedEventArgs args) => CassieAnnounced.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="GrenadeExploding"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="GrenadeExplodingEventArgs"/> of the event.</param>
+    public static void OnGrenadeExploding(GrenadeExplodingEventArgs args) => GrenadeExploding.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="GrenadeExploded"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="GrenadeExplodedEventArgs"/> of the event.</param>
+    public static void OnGrenadeExploded(GrenadeExplodedEventArgs args) => GrenadeExploded.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="GeneratorActivating"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="GeneratorActivatingEventArgs"/> of the event.</param>
+    public static void OnGeneratorActivating(GeneratorActivatingEventArgs args) => GeneratorActivating.InvokeEvent(args);
+
+    /// <summary>
+    /// Invokes the <see cref="GeneratorActivated"/> event.
+    /// </summary>
+    /// <param name="args">The <see cref="GeneratorActivatedEventArgs"/> of the event.</param>
+    public static void OnGeneratorActivated(GeneratorActivatedEventArgs args) => GeneratorActivated.InvokeEvent(args);
 }

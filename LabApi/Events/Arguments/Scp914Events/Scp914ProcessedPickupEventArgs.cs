@@ -1,3 +1,5 @@
+using System;
+using InventorySystem.Items.Pickups;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using Scp914;
@@ -18,12 +20,12 @@ public class Scp914ProcessedPickupEventArgs : EventArgs, IScp914Event, IPickupEv
     /// <param name="newPosition">The new position of the pickup.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
     /// <param name="pickup">The new pickup that has been processed by SCP-914.</param>
-    public Scp914ProcessedPickupEventArgs(ItemType oldItemType, Vector3 newPosition, Scp914KnobSetting knobSetting, Pickup pickup)
+    public Scp914ProcessedPickupEventArgs(ItemType oldItemType, Vector3 newPosition, Scp914KnobSetting knobSetting, ItemPickupBase pickup)
     {
         OldItemType = oldItemType;
         NewPosition = newPosition;
         KnobSetting = knobSetting;
-        Pickup = pickup;
+        Pickup = Pickup.Get(pickup);
     }
 
     /// <summary>

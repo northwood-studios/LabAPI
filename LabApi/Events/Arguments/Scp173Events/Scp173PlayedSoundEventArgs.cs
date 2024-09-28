@@ -15,9 +15,9 @@ public class Scp173PlayedSoundEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-173 player instance.</param>
     /// <param name="soundId">The sound id that is being played.</param>
-    public Scp173PlayedSoundEventArgs(Player player, Scp173AudioPlayer.Scp173SoundId soundId)
+    public Scp173PlayedSoundEventArgs(ReferenceHub player, Scp173AudioPlayer.Scp173SoundId soundId)
     {
-        Player = player;
+        Player = Player.Get(player);
         SoundId = soundId;
     }
 

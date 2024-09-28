@@ -13,10 +13,10 @@ public class Scp049ResurrectedBodyEventArgs : EventArgs, IPlayerEvent, ITargetEv
     /// </summary>
     /// <param name="target">The player that SCP-049 has resurrected.</param>
     /// <param name="player">The SCP-049 player instance.</param>
-    public Scp049ResurrectedBodyEventArgs(Player target, Player player)
+    public Scp049ResurrectedBodyEventArgs(ReferenceHub target, ReferenceHub player)
     {
-        Target = target;
-        Player = player;
+        Target = Player.Get(target);
+        Player = Player.Get(player);
     }
 
     /// <summary>

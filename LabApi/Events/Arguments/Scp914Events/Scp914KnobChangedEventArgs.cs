@@ -16,11 +16,11 @@ public class Scp914KnobChangedEventArgs : EventArgs, IScp914Event, IPlayerEvent
     /// <param name="oldKnobSetting">The old knob setting of SCP-914.</param>
     /// <param name="knobSetting">The new knob setting of SCP-914.</param>
     /// <param name="player">The player that has changed the knob.</param>
-    public Scp914KnobChangedEventArgs(Scp914KnobSetting oldKnobSetting, Scp914KnobSetting knobSetting, Player player)
+    public Scp914KnobChangedEventArgs(Scp914KnobSetting oldKnobSetting, Scp914KnobSetting knobSetting, ReferenceHub player)
     {
         OldKnobSetting = oldKnobSetting;
         KnobSetting = knobSetting;
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <summary>

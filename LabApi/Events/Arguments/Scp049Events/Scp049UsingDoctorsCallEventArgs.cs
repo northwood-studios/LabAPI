@@ -12,9 +12,9 @@ public class Scp049UsingDoctorsCallEventArgs : EventArgs, ICancellableEvent, IPl
     /// Initializes a new instance of the <see cref="Scp049UsingDoctorsCallEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-049 player instance.</param>
-    public Scp049UsingDoctorsCallEventArgs(Player player)
+    public Scp049UsingDoctorsCallEventArgs(ReferenceHub player)
     {
-        Player = player;
+        Player = Player.Get(player);
         IsAllowed = true;
     }
 

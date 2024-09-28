@@ -96,4 +96,69 @@ public static partial class ServerEvents
     /// Gets called when the server has selected a team for the wave.
     /// </summary>
     public static event LabEventHandler<WaveTeamSelectedEventArgs>? WaveTeamSelected;
+
+    /// <summary>
+    /// Gets called when the server announced LCZ decontamination.
+    /// </summary>
+    public static event LabEventHandler<LczDecontaminationAnnouncedEventArgs>? LczDecontaminationAnnounced;
+
+    /// <summary>
+    /// Gets called when the server starts LCZ decontamiantion.
+    /// </summary>
+    public static event LabEventHandler<LczDecontaminationStartingEventArgs>? LczDecontaminationStarting;
+
+    /// <summary>
+    /// Gets called when the server started LCZ decontamination.
+    /// </summary>
+    public static event LabEventHandler? LczDecontaminationStarted;
+
+    /// <summary>
+    /// Gets called when the server starts generating map.
+    /// </summary>
+    public static event LabEventHandler<MapGeneratingEventArgs>? MapGenerating;
+
+    /// <summary>
+    /// Gets called when the server generated map.
+    /// </summary>
+    public static event LabEventHandler<MapGeneratedEventArgs>? MapGenerated;
+
+    /// <summary>
+    /// Gets called when the server is spawning item on map.
+    /// </summary>
+    public static event LabEventHandler<ItemSpawningEventArgs>? ItemSpawning;
+
+    /// <summary>
+    /// Gets called when the server spawned item on map.
+    /// </summary>
+    public static event LabEventHandler<ItemSpawnedEventArgs>? ItemSpawned;
+
+    /// <summary>
+    /// Gets called when the server starts playing C.A.S.S.I.E sentence.
+    /// </summary>
+    public static event LabEventHandler<CassieAnnouncingEventArgs>? CassieAnnouncing;
+
+    /// <summary>
+    /// Gets called when the server played C.A.S.S.I.E sentence.
+    /// </summary>
+    public static event LabEventHandler<CassieAnnouncedEventArgs>? CassieAnnounced;
+
+    /// <summary>
+    /// Gets called when the server will explode grenade.
+    /// </summary>
+    public static event LabEventHandler<GrenadeExplodingEventArgs>? GrenadeExploding;
+
+    /// <summary>
+    /// Gets called when the server exploded grenade.
+    /// </summary>
+    public static event LabEventHandler<GrenadeExplodedEventArgs>? GrenadeExploded;
+
+    /// <summary>
+    /// Gets called when the server will activate generator.
+    /// </summary>
+    public static event LabEventHandler<GeneratorActivatingEventArgs>? GeneratorActivating;
+
+    /// <summary>
+    /// Gets called when the server activated generator.
+    /// </summary>
+    public static event LabEventHandler<GeneratorActivatedEventArgs>? GeneratorActivated;
 }

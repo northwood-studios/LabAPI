@@ -12,10 +12,10 @@ public class Scp939CreatingAmnesticCloudEventArgs : EventArgs, ICancellableEvent
     /// Initializes a new instance of the <see cref="Scp939CreatingAmnesticCloudEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-939 player instance.</param>
-    public Scp939CreatingAmnesticCloudEventArgs(Player player)
+    public Scp939CreatingAmnesticCloudEventArgs(ReferenceHub player)
     {
         IsAllowed = true;
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <inheritdoc />

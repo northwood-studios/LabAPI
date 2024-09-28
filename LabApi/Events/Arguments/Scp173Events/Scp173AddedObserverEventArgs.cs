@@ -13,10 +13,10 @@ public class Scp173AddedObserverEventArgs : EventArgs, IPlayerEvent, ITargetEven
     /// </summary>
     /// <param name="target">The player that is observing the SCP-173 player.</param>
     /// <param name="player">The SCP-173 player instance.</param>
-    public Scp173AddedObserverEventArgs(Player target, Player player)
+    public Scp173AddedObserverEventArgs(ReferenceHub target, ReferenceHub player)
     {
-        Target = target;
-        Player = player;
+        Target = Player.Get(target);
+        Player = Player.Get(player);
     }
 
     /// <summary>

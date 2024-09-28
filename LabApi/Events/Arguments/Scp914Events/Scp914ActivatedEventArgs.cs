@@ -15,10 +15,10 @@ public class Scp914ActivatedEventArgs : EventArgs, IScp914Event, IPlayerEvent
     /// </summary>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
     /// <param name="player">The player that activated SCP-914.</param>
-    public Scp914ActivatedEventArgs(Scp914KnobSetting knobSetting, Player player)
+    public Scp914ActivatedEventArgs(Scp914KnobSetting knobSetting, ReferenceHub player)
     {
         KnobSetting = knobSetting;
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <inheritdoc />

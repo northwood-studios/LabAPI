@@ -12,9 +12,9 @@ public class WarheadDetonatedEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="WarheadDetonatedEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who detonated the warhead.</param>
-    public WarheadDetonatedEventArgs(Player player)
+    public WarheadDetonatedEventArgs(ReferenceHub player)
     {
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <summary>

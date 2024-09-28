@@ -13,10 +13,10 @@ public class Scp049UsingSenseEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     /// </summary>
     /// <param name="player">The SCP-049 player instance.</param>
     /// <param name="target">The player that SCP-049 is using sense on.</param>
-    public Scp049UsingSenseEventArgs(Player player, Player target)
+    public Scp049UsingSenseEventArgs(ReferenceHub player, ReferenceHub target)
     {
-        Player = player;
-        Target = target;
+        Player = Player.Get(player);
+        Target = Player.Get(target);
         IsAllowed = true;
     }
 

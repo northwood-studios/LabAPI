@@ -13,11 +13,11 @@ public class Scp173RemovingObserverEventArgs : EventArgs, ICancellableEvent, IPl
     /// </summary>
     /// <param name="target">The player that was observing the SCP-173 player.</param>
     /// <param name="player">The SCP-173 player instance.</param>
-    public Scp173RemovingObserverEventArgs(Player target, Player player)
+    public Scp173RemovingObserverEventArgs(ReferenceHub target, ReferenceHub player)
     {
         IsAllowed = true;
-        Target = target;
-        Player = player;
+        Target = Player.Get(target);
+        Player = Player.Get(player);
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using Scp914;
+using InventorySystem.Items;
 using System;
 
 namespace LabApi.Events.Arguments.Scp914Events;
@@ -16,12 +17,12 @@ public class Scp914ProcessingInventoryItemEventArgs : EventArgs, ICancellableEve
     /// <param name="item">The item that is being processed by SCP-914.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
     /// <param name="player">The owner of the item.</param>
-    public Scp914ProcessingInventoryItemEventArgs(Item item, Scp914KnobSetting knobSetting, Player player)
+    public Scp914ProcessingInventoryItemEventArgs(ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub player)
     {
         IsAllowed = true;
-        Item = item;
+        Item = Item.Get(item);
         KnobSetting = knobSetting;
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <inheritdoc />
