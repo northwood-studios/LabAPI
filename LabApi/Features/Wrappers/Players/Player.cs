@@ -739,12 +739,8 @@ public class Player
     /// <returns>Whether the player was successfully retrieved.</returns>
     public static bool TryGet(int playerId, [NotNullWhen(true)] out Player? player)
     {
-        player = null;
-        if (playerId < 0 || playerId >= List.Count)
-            return false;
-
-        player = List.ElementAt(playerId);
-        return true;
+        player = List.FirstOrDefault(n => n.PlayerId == playerId);
+        return player != null;
     }
 
     #endregion
@@ -863,7 +859,7 @@ public class Player
     /// Removes a specific <see cref="Item"/> from the player's inventory.
     /// </summary>
     /// <param name="item">The item to remove.</param>
-    public void RemoveItem(Item item) => RemoveItem(item.ItemBase);
+    public void RemoveItem(Item item) => RemoveItem(item.Base);
 
     /// <summary>
     /// Removes a specific <see cref="ItemBase"/> from the player's inventory.
@@ -908,7 +904,7 @@ public class Player
     /// </summary>
     /// <param name="item">The item.</param>
     /// <returns>The dropped <see cref="ItemPickupBase">item pickup</see>.</returns>
-    public ItemPickupBase DropItem(Item item) => DropItem(item.ItemBase);
+    public ItemPickupBase DropItem(Item item) => DropItem(item.Base);
 
     /// <summary>
     /// Drops the specified <see cref="ItemBase"/> from the player's inventory.
@@ -1023,7 +1019,8 @@ public class Player
     /// </summary>
     /// <param name="newRole">The <see cref="RoleTypeId"/> which will be set.</param>
     /// <param name="reason">The <see cref="RoleChangeReason"/> of role change.</param>
-    public void SetRole(RoleTypeId newRole, RoleChangeReason reason = RoleChangeReason.RemoteAdmin) => ReferenceHub.roleManager.ServerSetRole(newRole, reason);
+    /// <param name="flags">The <see cref="RoleSpawnFlags"/> of role change.</param>
+    public void SetRole(RoleTypeId newRole, RoleChangeReason reason = RoleChangeReason.RemoteAdmin, RoleSpawnFlags flags = RoleSpawnFlags.All) => ReferenceHub.roleManager.ServerSetRole(newRole, reason, flags);
 
     /// <summary>
     /// Disconnects the player from the server.

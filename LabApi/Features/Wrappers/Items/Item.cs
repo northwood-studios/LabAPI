@@ -9,16 +9,21 @@ using UnityEngine;
 namespace LabApi.Features.Wrappers;
 
 /// <summary>
-/// The wrapper representing <see cref="ItemBase">items</see>.
+/// The wrapper representing <see cref="ItemBase">object</see>.
 ///
-/// <para>Not to be confused with <see cref="Pickup">item pickups</see>.</para>
+/// <para>Not to be confused with <see cref="Pickup">item pickup.</see></para>
 /// </summary>
 public class Item
 {
     /// <summary>
-    /// Contains all the cached items, accessible through their <see cref="ItemBase"/>.
+    /// Contains all the cached items, accessible through their <see cref="Base"/>.
     /// </summary>
     public static Dictionary<ItemBase, Item> Dictionary { get; } = [];
+
+    /// <summary>
+    /// Contains all cached items with their <see cref="Item.Serial"/> as a key.
+    /// </summary>
+    private static Dictionary<ushort, Item> SerialsCache { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="Item"/>.
@@ -26,66 +31,76 @@ public class Item
     public static IReadOnlyCollection<Item> List => Dictionary.Values;
 
     /// <summary>
-    /// The <see cref="ItemBase"/> of the item.
+    /// The <see cref="Base"/> of the item.
     /// </summary>
-    public ItemBase ItemBase { get; }
+    public ItemBase Base { get; }
 
     /// <summary>
     /// Gets the item's <see cref="ItemType"/>.
     /// </summary>
-    public ItemType Type => ItemBase.ItemTypeId;
+    public ItemType Type => Base.ItemTypeId;
 
     /// <summary>
     /// Gets or sets the item's <see cref="ItemCategory"/>.
+    /// <para>
+    /// Category is not saved and is discarded when the item is dropped.
+    /// </para>
     /// </summary>
+    // TODO: Maybe do something with it? Not sure if anyone is gonna use these 3 properties anyways but you never know.
     public ItemCategory Category
     {
-        get => ItemBase.Category;
-        set => ItemBase.Category = value;
+        get => Base.Category;
+        set => Base.Category = value;
     }
 
     /// <summary>
     /// Gets or sets the item's <see cref="ItemTierFlags"/>.
+    /// <para>
+    /// Flags are not saved and are discarded when the item is dropped.
+    /// </para>
     /// </summary>
     public ItemTierFlags TierFlags
     {
-        get => ItemBase.TierFlags;
-        set => ItemBase.TierFlags = value;
+        get => Base.TierFlags;
+        set => Base.TierFlags = value;
     }
 
     /// <summary>
     /// Gets or sets the item's <see cref="ItemThrowSettings"/>.
+    /// <para>
+    /// Settings are not saved and are discarded when the item is dropped.
+    /// </para>
     /// </summary>
     public ItemThrowSettings ThrowSettings
     {
-        get => ItemBase.ThrowSettings;
-        set => ItemBase.ThrowSettings = value;
+        get => Base.ThrowSettings;
+        set => Base.ThrowSettings = value;
     }
 
     /// <summary>
     /// Gets the item's current owner.
     /// </summary>
-    public Player? CurrentOwner => ItemBase.Owner == null ? null : Player.Get(ItemBase.Owner);
+    public Player? CurrentOwner => Base.Owner == null ? null : Player.Get(Base.Owner);
 
     /// <summary>
     /// Gets the item's serial.
     /// </summary>
-    public ushort Serial => ItemBase.ItemSerial;
+    public ushort Serial => Base.ItemSerial;
 
     /// <summary>
     /// Gets the item's weight.
     /// </summary>
-    public float Weight => ItemBase.Weight;
+    public float Weight => Base.Weight;
 
     /// <summary>
     /// Gets the item's <see cref="UnityEngine.Transform"/>.
     /// </summary>
-    public Transform Transform => ItemBase.transform;
+    public Transform Transform => Base.transform;
 
     /// <summary>
     /// Gets the item's <see cref="UnityEngine.GameObject"/>.
     /// </summary>
-    public GameObject GameObject => ItemBase.gameObject;
+    public GameObject GameObject => Base.gameObject;
 
     /// <summary>
     /// Gets or sets the item's <see cref="UnityEngine.Vector3">position</see>.
@@ -108,17 +123,17 @@ public class Item
     /// <summary>
     /// A private constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="itemBase">The <see cref="ItemBase"/> of the item.</param>
+    /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
     private Item(ItemBase itemBase)
     {
         Dictionary.Add(itemBase, this);
-        ItemBase = itemBase;
+        Base = itemBase;
     }
 
     /// <summary>
     /// Drops this item from player's inventory
     /// </summary>
-    public void DropItem() => ItemBase.ServerDropItem(true);
+    public void DropItem() => Base.ServerDropItem(true);
 
     /// <summary>
     /// Initializes the <see cref="Item"/> class to subscribe to <see cref="InventoryExtensions"/> events and handle the item caching.
@@ -129,22 +144,41 @@ public class Item
         Dictionary.Clear();
 
         InventoryExtensions.OnItemAdded += (_, item, _) => _ = new Item(item);
-        InventoryExtensions.OnItemRemoved += (_, item, _) => Dictionary.Remove(item);
+        InventoryExtensions.OnItemRemoved += (_, item, _) => RemoveItem(item);
     }
 
     /// <summary>
     /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
     /// </summary>
-    /// <param name="itemBase">The <see cref="ItemBase"/> of the item.</param>
+    /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
     /// <returns>The requested item.</returns>
     public static Item Get(ItemBase itemBase) => Dictionary.TryGetValue(itemBase, out Item item) ? item : new Item(itemBase);
+
+    /// <summary>
+    /// Gets the item wrapper or null from <see cref="SerialsCache"/>.
+    /// </summary>
+    /// <param name="serial">Serial of the item</param>
+    /// <returns>The requested item.</returns>
+    public static Item? Get(ushort serial) => TryGet(serial, out Item? item) ? item : null;
 
     /// <summary>
     /// Gets the item wrapper or null from the <see cref="Dictionary"/> based on provided serial number.
     /// </summary>
     /// <param name="serial">The serial number of the item.</param>
     /// <returns>The requested item.</returns>
-    public static Item? Get(ushort serial) => List.FirstOrDefault(item => item.Serial == serial);
+    public static bool TryGet(ushort serial, out Item? item)
+    {
+        item = null;
+        if (SerialsCache.TryGetValue(serial, out item))
+            return true;
+
+        item = List.FirstOrDefault(x => x.Serial == serial);
+        if (item == null)
+            return false;
+
+        SerialsCache[serial] = item;
+        return true;
+    }
 
     /// <summary>
     /// Gets a pooled list of items having the same <see cref="ItemType"/>
@@ -168,5 +202,11 @@ public class Item
         List<Item> list = ListPool<Item>.Shared.Rent();
         list.AddRange(List.Where(n => n.Category == category));
         return list;
+    }
+
+    private static void RemoveItem(ItemBase item)
+    {
+        Dictionary.Remove(item);
+        SerialsCache.Remove(item.ItemSerial);
     }
 }
