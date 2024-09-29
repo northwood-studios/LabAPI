@@ -990,7 +990,13 @@ public class Player
     /// <summary>
     /// Clear Ammo from the player's inventory.
     /// </summary>
-    public void ClearAmmo() => Ammo.Clear();
+    public void ClearAmmo()
+    {
+        if (Ammo.Any(x => x.Value > 0))
+            Inventory.SendAmmoNextFrame = true;
+
+        Ammo.Clear();
+    }
 
     /// <summary>
     /// Clears the player's inventory.
