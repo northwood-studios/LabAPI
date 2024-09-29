@@ -1,4 +1,5 @@
 ﻿using LabApi.Features.Wrappers;
+using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using System;
 
@@ -15,10 +16,10 @@ public class PlayerSpawnedRagdollEventArgs : EventArgs
     /// <param name="player">The player from who is ragdoll from.</param>
     /// <param name="ragdoll">The spawned ragdoll.</param>
     /// <param name="damageHandler">The damage handler that caused the death of the player.</param>
-    public PlayerSpawnedRagdollEventArgs(ReferenceHub player, Ragdoll ragdoll, DamageHandlerBase damageHandler)
+    public PlayerSpawnedRagdollEventArgs(ReferenceHub player, BasicRagdoll ragdoll, DamageHandlerBase damageHandler)
     {
         Player = Player.Get(player);
-        Ragdoll = ragdoll;
+        Ragdoll = Ragdoll.Get(ragdoll);
         DamageHandler = damageHandler;
     }
 
