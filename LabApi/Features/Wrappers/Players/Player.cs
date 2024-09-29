@@ -329,7 +329,7 @@ public class Player
     /// <summary>
     /// Gets a value indicating whether the player has a reserved slot.
     /// </summary>
-    public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId, out _);
+    public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId);
 
     /// <summary>
     /// Gets the player's velocity.
@@ -857,7 +857,7 @@ public class Player
     /// Adds an item of the specified type to the player's inventory.
     /// </summary>
     /// <param name="item">The type of item.</param>
-    public void AddItem(ItemType item) => Inventory.ServerAddItem(item);
+    public void AddItem(ItemType item) => Inventory.ServerAddItem(item, ItemAddReason.AdminCommand);
 
     /// <summary>
     /// Removes a specific <see cref="Item"/> from the player's inventory.

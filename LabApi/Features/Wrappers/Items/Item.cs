@@ -118,7 +118,7 @@ public class Item
     /// <summary>
     /// Drops this item from player's inventory
     /// </summary>
-    public void DropItem() => ItemBase.ServerDropItem();
+    public void DropItem() => ItemBase.ServerDropItem(true);
 
     /// <summary>
     /// Initializes the <see cref="Item"/> class to subscribe to <see cref="InventoryExtensions"/> events and handle the item caching.
