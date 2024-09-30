@@ -16,7 +16,7 @@ public class PlayerChangingItemEventArgs : EventArgs, ICancellableEvent
     /// <param name="player">The player who is changing item.</param>
     /// <param name="oldItem">The old item.</param>
     /// <param name="newItem">The new item that is being equipped.</param>
-    public PlayerChangingItemEventArgs(ReferenceHub player, ItemBase oldItem, ItemBase newItem)
+    public PlayerChangingItemEventArgs(ReferenceHub player, ItemBase? oldItem, ItemBase? newItem)
     {
         IsAllowed = true;
         Player = Player.Get(player);
@@ -32,13 +32,13 @@ public class PlayerChangingItemEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Gets the old item.
     /// </summary>
-    public Item OldItem { get; }
+    public Item? OldItem { get; }
 
     /// <summary>
     /// Gets the new item that is being equipped.
     /// <para>Item is null if player is equipping nothing.</para>
     /// </summary>
-    public Item NewItem { get; }
+    public Item? NewItem { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

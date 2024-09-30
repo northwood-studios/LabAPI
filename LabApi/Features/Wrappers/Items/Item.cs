@@ -3,6 +3,7 @@ using InventorySystem;
 using InventorySystem.Items;
 using NorthwoodLib.Pools;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 
@@ -148,11 +149,29 @@ public class Item
     }
 
     /// <summary>
-    /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
+    /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ItemBase"/> was not null.
     /// </summary>
     /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item.</returns>
-    public static Item Get(ItemBase itemBase) => Dictionary.TryGetValue(itemBase, out Item item) ? item : new Item(itemBase);
+    /// <returns>The requested item or null.</returns>
+    public static Item? Get(ItemBase? itemBase)
+    {
+        if (itemBase == null)
+            return null;
+
+        return Dictionary.TryGetValue(itemBase, out Item item) ? item : new Item(itemBase);
+    }
+
+    /// <summary>
+    /// Tries to get the item wrapper from the <see cref="Dictionary"/>.
+    /// </summary>
+    /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
+    /// <param name="item">The requested item.</param>
+    /// <returns>True if the item exists, otherwise false.</returns>
+    public static bool TryGet(ItemBase? itemBase, [NotNullWhen(true)] out Item? item)
+    {
+        item = Get(itemBase);
+        return item!= null;
+    }
 
     /// <summary>
     /// Gets the item wrapper or null from <see cref="SerialsCache"/>.
@@ -165,8 +184,9 @@ public class Item
     /// Gets the item wrapper or null from the <see cref="Dictionary"/> based on provided serial number.
     /// </summary>
     /// <param name="serial">The serial number of the item.</param>
-    /// <returns>The requested item.</returns>
-    public static bool TryGet(ushort serial, out Item? item)
+    /// <param name="item">The requested item.</param>
+    /// <returns>Whether the was successfully retrieved, otherwise false.</returns>
+    public static bool TryGet(ushort serial, [NotNullWhen(true)] out Item? item)
     {
         item = null;
         if (SerialsCache.TryGetValue(serial, out item))
