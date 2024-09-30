@@ -19,6 +19,7 @@ public class GrenadeExplodingEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     /// <param name="position">The position of explosion.</param>
     public GrenadeExplodingEventArgs(ExplosionGrenade grenade, ReferenceHub player, Vector3 position)
     {
+        IsAllowed = true;
         Grenade = grenade;
         Player = Player.Get(player);
         Position = position;

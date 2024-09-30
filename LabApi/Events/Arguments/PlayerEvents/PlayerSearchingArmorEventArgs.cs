@@ -17,6 +17,7 @@ public class PlayerSearchingArmorEventArgs : EventArgs, IPlayerEvent, IPickupEve
     /// <param name="pickup">The armor pickup.</param>
     public PlayerSearchingArmorEventArgs(ReferenceHub player, ItemPickupBase pickup)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Pickup = Pickup.Get(pickup);
     }

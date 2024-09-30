@@ -18,6 +18,7 @@ public class PlayerTogglingFlashlightEventArgs : EventArgs, IPlayerEvent, IItemE
     /// <param name="newState">Whenever the flashlight is being toggled to on or off state.</param>
     public PlayerTogglingFlashlightEventArgs(ReferenceHub player, ItemBase item, bool newState)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Item = Item.Get(item);
         NewState = newState;

@@ -17,6 +17,7 @@ public class PlayerDroppingAmmoEventArgs : EventArgs, ICancellableEvent, IPlayer
     /// <param name="amount">The amount of ammo being dropped.</param>
     public PlayerDroppingAmmoEventArgs(ReferenceHub player, ItemType type, int amount)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Type = type;
         Amount = amount;

@@ -24,6 +24,7 @@ public class PlayerSpawningEventArgs : EventArgs, IPlayerEvent, ICancellableEven
     /// <param name="horizontalRotation">The default spawn horizontal rotation.</param>
     public PlayerSpawningEventArgs(ReferenceHub player, PlayerRoleBase role, bool useSpawnPoint, Vector3 spawnLocation, float horizontalRotation)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Role = role;
         UseSpawnPoint = useSpawnPoint;

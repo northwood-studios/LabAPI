@@ -19,6 +19,7 @@ public class PlayerPickingUpAmmoEventArgs : EventArgs, ICancellableEvent
     /// <param name="pickup">Ammo pickup.</param>
     public PlayerPickingUpAmmoEventArgs(ReferenceHub player, ItemType ammoType, ushort ammoAmount, ItemPickupBase pickup)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         AmmoType = ammoType;
         AmmoAmount = ammoAmount;

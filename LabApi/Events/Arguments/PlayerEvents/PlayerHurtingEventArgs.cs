@@ -18,6 +18,7 @@ public class PlayerHurtingEventArgs : EventArgs, ICancellableEvent
     /// <param name="damageHandler">The damage handler.</param>
     public PlayerHurtingEventArgs(ReferenceHub player, ReferenceHub target, DamageHandlerBase damageHandler)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Target = Player.Get(target);
         DamageHandler = damageHandler;

@@ -19,6 +19,7 @@ public class PlayerInteractingScp330EventArgs : EventArgs, IPlayerEvent, ICancel
     /// <param name="allowPunishment">Whenever the <see cref="SeveredHands"/> effect should be applied.</param>
     public PlayerInteractingScp330EventArgs(ReferenceHub player, int uses, bool playSound, bool allowPunishment)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Uses = uses;
         PlaySound = playSound;

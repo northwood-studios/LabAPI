@@ -19,6 +19,7 @@ public class PlayerReceivingEffectEventArgs : EventArgs, ICancellableEvent
     /// <param name="duration">Duration of the effect in seconds.</param>
     public PlayerReceivingEffectEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Effect = effect;
         Intensity = intensity;

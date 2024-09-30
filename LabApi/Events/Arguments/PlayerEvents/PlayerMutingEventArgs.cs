@@ -17,6 +17,7 @@ public class PlayerMutingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
     /// <param name="isIntercom">Whenever mute is being applied to intercom.</param>
     public PlayerMutingEventArgs(ReferenceHub player, ReferenceHub issuer, bool isIntercom)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Issuer = Player.Get(issuer);
         IsIntercom = isIntercom;

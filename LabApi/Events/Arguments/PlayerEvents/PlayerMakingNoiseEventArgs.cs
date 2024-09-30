@@ -15,6 +15,7 @@ public class PlayerMakingNoiseEventArgs : EventArgs, IPlayerEvent, ICancellableE
     /// <param name="player">The player who is making noise.</param>
     public PlayerMakingNoiseEventArgs(ReferenceHub player)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
     }
 

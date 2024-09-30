@@ -19,6 +19,7 @@ public class PlayerPickingUpItemEventArgs : EventArgs, IPlayerEvent, IPickupEven
     /// <param name="pickup">The item pickup.</param>
     public PlayerPickingUpItemEventArgs(ReferenceHub player, ItemPickupBase pickup)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Pickup = Pickup.Get(pickup);
     }

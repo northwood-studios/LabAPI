@@ -17,6 +17,7 @@ public class PlayerInteractingShootingTargetEventArgs : EventArgs, IPlayerEvent,
     /// <param name="target">The shooting target.</param>
     public PlayerInteractingShootingTargetEventArgs(ReferenceHub player, ShootingTarget target)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Target = target;
     }

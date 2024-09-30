@@ -16,6 +16,7 @@ public class PlayerCuffingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
     /// <param name="target">The player who is being detained.</param>
     public PlayerCuffingEventArgs(ReferenceHub player, ReferenceHub target)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Target = Player.Get(target);
     }

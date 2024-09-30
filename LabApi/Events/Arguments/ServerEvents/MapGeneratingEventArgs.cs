@@ -14,6 +14,7 @@ public class MapGeneratingEventArgs : EventArgs, ICancellableEvent
     /// <param name="seed">The seed of next map.</param>
     public MapGeneratingEventArgs(int seed)
     {
+        IsAllowed = true;
         Seed = seed;
     }
 

@@ -17,6 +17,7 @@ public class PlayerPickingUpScp330EventArgs : EventArgs, IPlayerEvent, IPickupEv
     /// <param name="pickup">The SCP-330 pickup.</param>
     public PlayerPickingUpScp330EventArgs(ReferenceHub player, Scp330Pickup pickup)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Pickup = Pickup.Get(pickup);
     }

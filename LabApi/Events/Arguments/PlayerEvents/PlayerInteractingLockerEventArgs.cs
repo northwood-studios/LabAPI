@@ -19,6 +19,7 @@ public class PlayerInteractingLockerEventArgs : EventArgs, ICancellableEvent
     /// <param name="canOpen">Whenever the player is allowed to open it.</param>
     public PlayerInteractingLockerEventArgs(ReferenceHub player, Locker locker, LockerChamber chamber, bool canOpen)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Locker = locker;
         Chamber = chamber;

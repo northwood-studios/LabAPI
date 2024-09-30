@@ -17,6 +17,7 @@ public class PlayerReportingCheaterEventArgs : EventArgs, IPlayerEvent, ICancell
     /// <param name="reason">The reason why is the player being reported.</param>
     public PlayerReportingCheaterEventArgs(ReferenceHub player, ReferenceHub target, string reason)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Target = Player.Get(target);
         Reason = reason;

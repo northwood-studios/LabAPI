@@ -17,6 +17,7 @@ public class PlayerUsingItemEventArgs : EventArgs, IPlayerEvent, IItemEvent, ICa
     /// <param name="item">The item that is being used.</param>
     public PlayerUsingItemEventArgs(ReferenceHub player, ItemBase item)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Item = Item.Get(item);
     }

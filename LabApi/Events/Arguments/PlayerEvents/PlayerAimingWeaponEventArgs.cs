@@ -18,6 +18,7 @@ public class PlayerAimingWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent
     /// <param name="weapon">The weapon that the player is aiming.</param>
     public PlayerAimingWeaponEventArgs(ReferenceHub player, ItemBase weapon)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Weapon = Item.Get(weapon);
     }

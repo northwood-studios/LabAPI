@@ -19,6 +19,7 @@ public class PlayerDamagingShootingTargetEventArgs : EventArgs, IPlayerEvent, IC
     /// <param name="damageHandler">The damage handler.</param>
     public PlayerDamagingShootingTargetEventArgs(ReferenceHub player, ShootingTarget target, DamageHandlerBase damageHandler)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Target = target;
         DamageHandler = damageHandler;

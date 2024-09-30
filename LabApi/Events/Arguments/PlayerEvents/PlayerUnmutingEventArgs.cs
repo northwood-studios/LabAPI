@@ -17,6 +17,7 @@ public class PlayerUnmutingEventArgs : EventArgs, ICancellableEvent
     /// <param name="isIntercom">Whenever is unmute for intercom.</param>
     public PlayerUnmutingEventArgs(ReferenceHub player, ReferenceHub issuer, bool isIntercom)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Issuer = Player.Get(issuer);
         IsIntercom = isIntercom;

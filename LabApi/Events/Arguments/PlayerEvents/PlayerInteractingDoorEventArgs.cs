@@ -18,6 +18,7 @@ public class PlayerInteractingDoorEventArgs : EventArgs, ICancellableEvent
     /// <param name="canOpen">Whenever player can open the door.</param>
     public PlayerInteractingDoorEventArgs(ReferenceHub player, DoorVariant door, bool canOpen)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Door = Door.Get(door);
         CanOpen = canOpen;

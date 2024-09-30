@@ -19,6 +19,7 @@ public class PlayerInteractingElevatorEventArgs : EventArgs, ICancellableEvent
     /// <param name="panel">The elevator panel.</param>
     public PlayerInteractingElevatorEventArgs(ReferenceHub player, ElevatorChamber elevator, ElevatorPanel panel)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Elevator = Elevator.Get(elevator);
         Panel = panel;

@@ -20,6 +20,7 @@ public class PlayerThrowingItemEventArgs : EventArgs, IPlayerEvent, IPickupEvent
     /// <param name="rigidbody">The rigidbody of the item.</param>
     public PlayerThrowingItemEventArgs(ReferenceHub player, ItemPickupBase item, Rigidbody rigidbody)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Pickup = Pickup.Get(item);
         Rigidbody = rigidbody;

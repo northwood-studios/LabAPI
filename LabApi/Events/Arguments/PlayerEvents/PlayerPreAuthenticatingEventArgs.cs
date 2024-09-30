@@ -24,6 +24,7 @@ public class PlayerPreAuthenticatingEventArgs : EventArgs, ICancellableEvent
     /// <param name="readerStartPosition">Start position of stream.</param>
     public PlayerPreAuthenticatingEventArgs(bool canJoin, string userId, string ipAddress, long expiration, CentralAuthPreauthFlags flags, string region, byte[] signature, ConnectionRequest connectionRequest, int readerStartPosition)
     {
+        IsAllowed = true;
         CanJoin = canJoin;
         UserId = userId;
         IpAddress = ipAddress;

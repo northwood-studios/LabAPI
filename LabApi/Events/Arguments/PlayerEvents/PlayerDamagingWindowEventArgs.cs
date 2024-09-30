@@ -18,6 +18,7 @@ public class PlayerDamagingWindowEventArgs : EventArgs, ICancellableEvent
     /// <param name="damageHandler">The damage handler.</param>
     public PlayerDamagingWindowEventArgs(ReferenceHub player, BreakableWindow window, DamageHandlerBase damageHandler)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Window = window;
         DamageHandler = damageHandler;

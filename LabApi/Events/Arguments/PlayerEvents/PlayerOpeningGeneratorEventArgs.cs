@@ -18,6 +18,7 @@ public class PlayerOpeningGeneratorEventArgs : EventArgs, ICancellableEvent
     /// <param name="generator">The generator.</param>
     public PlayerOpeningGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Generator = Generator.Get(generator);
     }

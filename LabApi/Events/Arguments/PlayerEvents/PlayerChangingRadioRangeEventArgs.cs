@@ -19,6 +19,7 @@ public class PlayerChangingRadioRangeEventArgs : EventArgs, ICancellableEvent
     /// <param name="range">The range level that is radio being changed to.</param>
     public PlayerChangingRadioRangeEventArgs(ReferenceHub player, ItemBase radio, RadioRangeLevel range)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Radio = Item.Get(radio);
         Range = range;

@@ -17,6 +17,7 @@ public class PlayerSearchingAmmoEventArgs : EventArgs, IPlayerEvent, IPickupEven
     /// <param name="pickup">The ammo pickup.</param>
     public PlayerSearchingAmmoEventArgs(ReferenceHub player, ItemPickupBase pickup)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Pickup = Pickup.Get(pickup);
     }

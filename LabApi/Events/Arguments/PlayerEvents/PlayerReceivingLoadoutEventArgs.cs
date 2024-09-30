@@ -19,6 +19,7 @@ public class PlayerReceivingLoadoutEventArgs : EventArgs, IPlayerEvent, ICancell
     /// <param name="inventoryReset">If players inventory will be cleared.</param>
     public PlayerReceivingLoadoutEventArgs(ReferenceHub player, List<ItemType> items, Dictionary<ItemType, ushort> ammo, bool inventoryReset)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Items = items;
         Ammo = ammo;

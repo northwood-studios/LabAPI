@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.LczDecontaminationStarting"/> event.
 /// </summary>
 public class LczDecontaminationStartingEventArgs : EventArgs, ICancellableEvent
-{    
+{
     /// <inheritdoc />
-    public bool IsAllowed { get; set; }
+    public bool IsAllowed { get; set; } = true;
 }

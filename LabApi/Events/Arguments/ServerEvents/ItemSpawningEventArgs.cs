@@ -14,6 +14,7 @@ public class ItemSpawningEventArgs : EventArgs, ICancellableEvent
     /// <param name="type">The type of item which will spawn on map</param>
     public ItemSpawningEventArgs(ItemType type)
     {
+        IsAllowed = true;
         ItemType = type;
     }
 

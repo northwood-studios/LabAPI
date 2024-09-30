@@ -18,6 +18,7 @@ public class PlayerChangingItemEventArgs : EventArgs, ICancellableEvent
     /// <param name="newItem">The new item that is being equipped.</param>
     public PlayerChangingItemEventArgs(ReferenceHub player, ItemBase oldItem, ItemBase newItem)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         OldItem = Item.Get(oldItem);
         NewItem = Item.Get(newItem);

@@ -17,6 +17,7 @@ public class CassieAnnouncingEventArgs : EventArgs, ICancellableEvent
     /// <param name="customAnnouncement">If thats custom announcement? Custom announcements show subtitles</param>
     public CassieAnnouncingEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement)
     {
+        IsAllowed = true;
         Words = words;
         MakeHold = makeHold;
         MakeNoise = makeNoise;

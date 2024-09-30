@@ -16,6 +16,7 @@ public class GeneratorActivatingEventArgs : EventArgs, ICancellableEvent
     /// <param name="generator">The generator which is being activated.</param>
     public GeneratorActivatingEventArgs(Scp079Generator generator)
     {
+        IsAllowed = true;
         Generator = Generator.Get(generator);
     }
 

@@ -17,6 +17,7 @@ public class PlayerKickingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
     /// <param name="reason">The reason for which is player being kicked.</param>
     public PlayerKickingEventArgs(ReferenceHub player, ReferenceHub issuer, string reason)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Issuer = Player.Get(issuer);
         Reason = reason;

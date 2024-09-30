@@ -16,6 +16,7 @@ public class PlayerFlippingCoinEventArgs : EventArgs, ICancellableEvent
     /// <param name="isTails">Whenever the coin flip is tails.</param>
     public PlayerFlippingCoinEventArgs(ReferenceHub player, bool isTails)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         IsTails = isTails;
     }

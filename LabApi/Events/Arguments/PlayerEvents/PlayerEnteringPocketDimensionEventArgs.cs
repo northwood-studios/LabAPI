@@ -15,6 +15,7 @@ public class PlayerEnteringPocketDimensionEventArgs : EventArgs, IPlayerEvent, I
     /// <param name="player">The player who is entering the pocket dimension.</param>
     public PlayerEnteringPocketDimensionEventArgs(ReferenceHub player)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
     }
 

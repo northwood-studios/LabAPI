@@ -19,6 +19,7 @@ public class PlayerChangingRoleEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// <param name="changeReason">The reason of role changing.</param>
     public PlayerChangingRoleEventArgs(ReferenceHub player, PlayerRoleBase oldRole, RoleTypeId newRole, RoleChangeReason changeReason)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         OldRole = oldRole;
         NewRole = newRole;

@@ -18,6 +18,7 @@ public class PlayerClosingGeneratorEventArgs : EventArgs, IPlayerEvent, IGenerat
     /// <param name="generator">The generator.</param>
     public PlayerClosingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Generator = Generator.Get(generator);
     }

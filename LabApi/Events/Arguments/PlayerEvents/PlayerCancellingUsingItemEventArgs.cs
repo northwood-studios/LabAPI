@@ -18,6 +18,7 @@ public class PlayerCancellingUsingItemEventArgs : EventArgs, IUsableItem, ICance
     /// <param name="item">The item which the player cancels using.</param>
     public PlayerCancellingUsingItemEventArgs(ReferenceHub player, UsableItem item)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Item = item;
     }

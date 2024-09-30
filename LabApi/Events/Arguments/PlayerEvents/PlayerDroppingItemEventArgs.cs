@@ -17,6 +17,7 @@ public class PlayerDroppingItemEventArgs : EventArgs, ICancellableEvent
     /// <param name="item">The item being dropped.</param>
     public PlayerDroppingItemEventArgs(ReferenceHub player, ItemBase item)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Item = Item.Get(item);
     }

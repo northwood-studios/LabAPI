@@ -16,6 +16,7 @@ public class PlayerLeavingPocketDimensionEventArgs : EventArgs, IPlayerEvent, IC
     /// <param name="isSuccessful">Whenever it is gonna be success.</param>
     public PlayerLeavingPocketDimensionEventArgs(ReferenceHub player, bool isSuccessful)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         IsSuccessful = isSuccessful;
     }

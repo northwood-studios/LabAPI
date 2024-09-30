@@ -18,6 +18,7 @@ public class PlayerUsingRadioEventArgs : EventArgs, ICancellableEvent
     /// <param name="drain">Battery drain amount per second.</param>
     public PlayerUsingRadioEventArgs(ReferenceHub player, RadioItem radio, float drain)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Radio = radio;
         Drain = drain;

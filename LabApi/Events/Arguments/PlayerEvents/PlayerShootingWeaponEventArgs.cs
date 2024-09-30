@@ -17,6 +17,7 @@ public class PlayerShootingWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEve
     /// <param name="weapon">The firearm that the player shooting from.</param>
     public PlayerShootingWeaponEventArgs(ReferenceHub player, ItemBase weapon)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Weapon = Item.Get(weapon);
     }

@@ -17,6 +17,7 @@ public class PlayerReloadingWeaponEventArgs : EventArgs, ICancellableEvent
     /// <param name="weapon">The weapon that is being reloaded.</param>
     public PlayerReloadingWeaponEventArgs(ReferenceHub player, ItemBase weapon)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Weapon = Item.Get(weapon);
     }

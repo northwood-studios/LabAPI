@@ -18,6 +18,7 @@ public class PlayerUsingIntercomEventArgs : EventArgs, IPlayerEvent, ICancellabl
     //TODO: Add intercom class and ref it docs
     public PlayerUsingIntercomEventArgs(ReferenceHub player, IntercomState state)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         State = state;
     }

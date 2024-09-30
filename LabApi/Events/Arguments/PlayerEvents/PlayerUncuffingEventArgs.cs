@@ -17,6 +17,7 @@ public class PlayerUncuffingEventArgs : EventArgs, ICancellableEvent
     /// <param name="canUnDetainAsScp">Whenever the player can undetain as SCP player</param>
     public PlayerUncuffingEventArgs(ReferenceHub player, ReferenceHub target, bool canUnDetainAsScp)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Target = Player.Get(target);
         CanUnDetainAsScp = canUnDetainAsScp;

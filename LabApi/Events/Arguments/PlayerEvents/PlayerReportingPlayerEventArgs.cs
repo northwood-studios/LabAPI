@@ -17,6 +17,7 @@ public class PlayerReportingPlayerEventArgs : EventArgs, ICancellableEvent
     /// <param name="reason">The reason why was player reported.</param>
     public PlayerReportingPlayerEventArgs(ReferenceHub player, ReferenceHub target, string reason)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Target = Player.Get(target);
         Reason = reason;

@@ -17,6 +17,7 @@ public class PlayerDryFiringWeaponEventArgs : EventArgs, ICancellableEvent
     /// <param name="weapon">The weapon item.</param>
     public PlayerDryFiringWeaponEventArgs(ReferenceHub player, ItemBase weapon)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Weapon = Item.Get(weapon);
     }

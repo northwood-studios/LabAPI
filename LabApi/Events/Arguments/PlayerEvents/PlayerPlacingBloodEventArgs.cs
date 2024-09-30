@@ -17,6 +17,7 @@ public class PlayerPlacingBloodEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// <param name="hitPosition">Position at which is blood being placed.</param>
     public PlayerPlacingBloodEventArgs(ReferenceHub player, Vector3 hitPosition)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         HitPosition = hitPosition;
     }

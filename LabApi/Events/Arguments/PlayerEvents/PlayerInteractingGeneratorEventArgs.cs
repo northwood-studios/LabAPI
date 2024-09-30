@@ -20,6 +20,7 @@ public class PlayerInteractingGeneratorEventArgs : EventArgs, ICancellableEvent
     /// <param name="colliderId">The collider ID.</param>
     public PlayerInteractingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator, GeneratorColliderId colliderId)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Generator = Generator.Get(generator);
         ColliderId = colliderId;

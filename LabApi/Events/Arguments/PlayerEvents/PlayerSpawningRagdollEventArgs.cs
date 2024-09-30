@@ -19,6 +19,7 @@ public class PlayerSpawningRagdollEventArgs : EventArgs, IPlayerEvent, ICancella
     /// <param name="damageHandler">The damage handler that caused the death of the player.</param>
     public PlayerSpawningRagdollEventArgs(ReferenceHub player, BasicRagdoll ragdoll, DamageHandlerBase damageHandler)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Ragdoll = Ragdoll.Get(ragdoll);
         DamageHandler = damageHandler;

@@ -21,6 +21,7 @@ public class PlayerThrowingProjectileEventArgs : EventArgs, ICancellableEvent
     //TODO: Throwable item wrapper
     public PlayerThrowingProjectileEventArgs(ReferenceHub player, ThrowableItem item, ProjectileSettings projectileSettings, bool fullForce)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Item = item;
         ProjectileSettings = projectileSettings;

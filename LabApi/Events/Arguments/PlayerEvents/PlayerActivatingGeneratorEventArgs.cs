@@ -18,6 +18,7 @@ public class PlayerActivatingGeneratorEventArgs : EventArgs, IPlayerEvent, IGene
     /// <param name="generator">The generator that the player is activating.</param>
     public PlayerActivatingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Generator = Generator.Get(generator);
     }

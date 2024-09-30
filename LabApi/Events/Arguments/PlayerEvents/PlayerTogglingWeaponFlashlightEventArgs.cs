@@ -18,6 +18,7 @@ public class PlayerTogglingWeaponFlashlightEventArgs : EventArgs, ICancellableEv
     /// <param name="newState">The new state of the flashlight.</param>
     public PlayerTogglingWeaponFlashlightEventArgs(ReferenceHub player, ItemBase item, bool newState)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Item = Item.Get(item);
         NewState = newState;

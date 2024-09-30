@@ -19,6 +19,7 @@ public class PlayerBanningEventArgs : EventArgs, ICancellableEvent
     /// <param name="duration">The duration of the ban.</param>
     public PlayerBanningEventArgs(ReferenceHub player, ReferenceHub issuer, string reason, long duration)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Issuer = Player.Get(issuer);
         Reason = reason;

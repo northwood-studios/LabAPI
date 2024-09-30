@@ -18,6 +18,7 @@ public class PlayerTogglingRadioEventArgs : EventArgs, IPlayerEvent, ICancellabl
     /// <param name="newState">New state of the radio being turned off or on.</param>
     public PlayerTogglingRadioEventArgs(ReferenceHub player, RadioItem radio, bool newState)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Radio = radio;
         NewState = newState;

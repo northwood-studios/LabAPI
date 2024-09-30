@@ -17,6 +17,7 @@ public class PlayerPlacingBulletHoleEventArgs : EventArgs, IPlayerEvent, ICancel
     /// <param name="hitPosition">Position at which is bullet hole being placed.</param>
     public PlayerPlacingBulletHoleEventArgs(ReferenceHub player, Vector3 hitPosition)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         HitPosition = hitPosition;
     }

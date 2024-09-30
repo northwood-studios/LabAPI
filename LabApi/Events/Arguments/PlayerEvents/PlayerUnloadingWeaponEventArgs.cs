@@ -17,6 +17,7 @@ public class PlayerUnloadingWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEv
     /// <param name="weapon">The weapon that is being unloaded.</param>
     public PlayerUnloadingWeaponEventArgs(ReferenceHub player, ItemBase weapon)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         Weapon = Item.Get(weapon);
     }

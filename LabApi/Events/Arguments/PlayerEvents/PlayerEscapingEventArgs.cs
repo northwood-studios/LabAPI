@@ -20,6 +20,7 @@ public class PlayerEscapingEventArgs : EventArgs, ICancellableEvent
     /// <param name="tokens">The amount of tokens granted to team after escape.</param>
     public PlayerEscapingEventArgs(ReferenceHub player, RoleTypeId newRole, SpawnableTeamType ticketTeam, float tokens)
     {
+        IsAllowed = true;
         Player = Player.Get(player);
         NewRole = newRole;
         TicketTeam = ticketTeam;
