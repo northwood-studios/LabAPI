@@ -314,10 +314,9 @@ public class Player
     /// <summary>
     /// Gets or sets the player's <see cref="UserGroup"/>.
     /// </summary>
-    // TODO: Group field is internal. Figure out what to do with this.
     public UserGroup? UserGroup
     {
-        // get => ReferenceHub.serverRoles.Group;
+        get => ReferenceHub.serverRoles.Group;
         set => ReferenceHub.serverRoles.SetGroup(value);
     }
 
