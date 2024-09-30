@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using LabApi.Events.Handlers;
 
 namespace LabApi.Events.CustomHandlers;
 
 /// <summary>
 /// Handles the registration of custom event handlers.
 /// </summary>
-public static class CustomHandlersManager
+public static partial class CustomHandlersManager
 {
     /// <summary>
     /// Registers all the events from the specified handler.
@@ -19,7 +18,7 @@ public static class CustomHandlersManager
         where T : CustomEventsHandler
     {
         Type handlerType = handler.GetType();
-        RegisterServerEvents(handler, handlerType);
+        RegisterEvents(handler, handlerType);
     }
 
     /// <summary>
@@ -77,29 +76,6 @@ public static class CustomHandlersManager
         return method.GetBaseDefinition().DeclaringType != method.DeclaringType;
     }
 
-    /// <summary>
-    /// Registers all <see cref="ServerEvents">Server events</see> from a <see cref="CustomEventsHandler"/>.
-    /// </summary>
-    private static void RegisterServerEvents<T>(T handler, Type handlerType)
-        where T : CustomEventsHandler
-    {
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnWaitingForPlayers), typeof(ServerEvents), nameof(ServerEvents.WaitingForPlayers));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnRoundRestarted), typeof(ServerEvents), nameof(ServerEvents.RoundRestarted));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnRoundEnding), typeof(ServerEvents), nameof(ServerEvents.RoundEnding));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnRoundEnded), typeof(ServerEvents), nameof(ServerEvents.RoundEnded));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnRoundStarting), typeof(ServerEvents), nameof(ServerEvents.RoundStarting));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnRoundStarted), typeof(ServerEvents), nameof(ServerEvents.RoundStarted));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnBanIssuing), typeof(ServerEvents), nameof(ServerEvents.BanIssuing));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnBanIssued), typeof(ServerEvents), nameof(ServerEvents.BanIssued));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnBanRevoking), typeof(ServerEvents), nameof(ServerEvents.BanRevoking));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnBanRevoked), typeof(ServerEvents), nameof(ServerEvents.BanRevoked));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnBanUpdating), typeof(ServerEvents), nameof(ServerEvents.BanUpdating));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnBanUpdated), typeof(ServerEvents), nameof(ServerEvents.BanUpdated));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnCommandExecuting), typeof(ServerEvents), nameof(ServerEvents.CommandExecuting));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnCommandExecuted), typeof(ServerEvents), nameof(ServerEvents.CommandExecuted));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnWaveRespawning), typeof(ServerEvents), nameof(ServerEvents.WaveRespawning));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnWaveRespawned), typeof(ServerEvents), nameof(ServerEvents.WaveRespawned));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnWaveTeamSelecting), typeof(ServerEvents), nameof(ServerEvents.WaveTeamSelecting));
-        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnWaveTeamSelected), typeof(ServerEvents), nameof(ServerEvents.WaveTeamSelected));
-    }
+    static partial void RegisterEvents<T>(T handler, Type handlerType)
+        where T : CustomEventsHandler;
 }

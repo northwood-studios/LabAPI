@@ -92,7 +92,7 @@ public class PlayerPreAuthenticatingEventArgs : EventArgs, ICancellableEvent
     /// Gets or sets the custom rejection writer.
     /// </summary>
     //TODO: Write what exactly this does and how does it work
-    public NetDataWriter CustomReject { get; set; }
+    public NetDataWriter? CustomReject { get; set; }
 
     /// <summary>
     /// Rejects connection.

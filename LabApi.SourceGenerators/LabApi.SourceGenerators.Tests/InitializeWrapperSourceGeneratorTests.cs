@@ -44,17 +44,15 @@ public class InitializeWrapperSourceGeneratorTests
                                                       // Instead, please modify the methods marked with the [InitializeWrapper] attribute, or the source generator itself.
                                                       // Methods marked with the [InitializeWrapper] attribute will be called during LabApi startup.
                                                       // </auto-generated>
-                                                      namespace LabApi.Loader
+                                                      namespace LabApi.Loader;
+                                                      public static partial class PluginLoader
                                                       {
-                                                          public static partial class PluginLoader
+                                                          static partial void InitializeWrappers()
                                                           {
-                                                              static partial void InitializeWrappers()
-                                                              {
-                                                                  TestNamespace.TestClass.FirstInitialize(); // 0
-                                                                  TestNamespace.TestClass.SecondInitialize(); // 15
-                                                                  TestNamespace.TestClass.ThirdInitialize(); // 100
-                                                                  TestNamespace.TestClass.FourthInitialize(); // 128
-                                                              }
+                                                              TestNamespace.TestClass.FirstInitialize(); // 0
+                                                              TestNamespace.TestClass.SecondInitialize(); // 15
+                                                              TestNamespace.TestClass.ThirdInitialize(); // 100
+                                                              TestNamespace.TestClass.FourthInitialize(); // 128
                                                           }
                                                       }
                                                       """;
