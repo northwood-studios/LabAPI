@@ -1,6 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using Interactables.Interobjects.DoorUtils;
+
 namespace LabApi.Events.Arguments.Scp079Events;
 
 /// <summary>
@@ -13,10 +15,10 @@ public class Scp079UnlockedDoorEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="door">The affected door instance.</param>
-    public Scp079UnlockedDoorEventArgs(Player player, Door door)
+    public Scp079UnlockedDoorEventArgs(ReferenceHub player, DoorVariant door)
     {
-        Player = player;
-        Door = door;
+        Player = Player.Get(player);
+        Door = Door.Get(door);
     }
 
     /// <summary>

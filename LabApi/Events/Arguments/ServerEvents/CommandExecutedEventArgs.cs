@@ -18,7 +18,7 @@ public class CommandExecutedEventArgs : EventArgs
     /// <param name="arguments">The arguments of the command.</param>
     /// <param name="successful">Whether the command was executed successfully.</param>
     /// <param name="response">The response of the command</param>
-    public CommandExecutedEventArgs(CommandSender sender, CommandType commandType, ICommand command, ArraySegment<string> arguments, bool successful, string response)
+    public CommandExecutedEventArgs(CommandSender? sender, CommandType commandType, ICommand command, ArraySegment<string> arguments, bool successful, string response)
     {
         Sender = sender;
         CommandType = commandType;
@@ -31,7 +31,7 @@ public class CommandExecutedEventArgs : EventArgs
     /// <summary>
     /// The sender of the command.
     /// </summary>
-    public CommandSender Sender { get; }
+    public CommandSender? Sender { get; }
 
     /// <summary>
     /// The type of the command that was executed.

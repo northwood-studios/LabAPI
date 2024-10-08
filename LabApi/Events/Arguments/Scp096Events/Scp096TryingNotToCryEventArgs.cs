@@ -12,9 +12,9 @@ public class Scp096TryingNotToCryEventArgs : EventArgs, ICancellableEvent, IPlay
     /// Initializes a new instance of the <see cref="Scp096TryingNotToCryEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
-    public Scp096TryingNotToCryEventArgs(Player player)
+    public Scp096TryingNotToCryEventArgs(ReferenceHub player)
     {
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <summary>

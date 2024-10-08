@@ -13,9 +13,9 @@ public class Scp079UsedTeslaEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="tesla">The affected tesla instance.</param>
-    public Scp079UsedTeslaEventArgs(Player player, TeslaGate tesla)
+    public Scp079UsedTeslaEventArgs(ReferenceHub player, TeslaGate tesla)
     {
-        Player = player;
+        Player = Player.Get(player);
         Tesla = tesla;
     }
 

@@ -17,7 +17,7 @@ public class PlayerDyingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
     /// <param name="player">The player who is dying.</param>
     /// <param name="attacker">The player who attacked.</param>
     /// <param name="damageHandler">The damage handler who is causing death.</param>
-    public PlayerDyingEventArgs(ReferenceHub player, ReferenceHub attacker, DamageHandlerBase damageHandler)
+    public PlayerDyingEventArgs(ReferenceHub player, ReferenceHub? attacker, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
         Player = Player.Get(player);
@@ -33,7 +33,7 @@ public class PlayerDyingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
     /// <summary>
     /// Gets the player who attacked.
     /// </summary>
-    public Player Attacker { get; }
+    public Player? Attacker { get; }
 
     /// <summary>
     /// Gets the damage handler who is causing death.

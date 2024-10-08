@@ -13,7 +13,7 @@ public class PlayerMakingNoiseEventArgs : EventArgs, IPlayerEvent, ICancellableE
     /// Initializes a new instance of the <see cref="PlayerMakingNoiseEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who is making noise.</param>
-    public PlayerMakingNoiseEventArgs(ReferenceHub player)
+    public PlayerMakingNoiseEventArgs(ReferenceHub? player)
     {
         IsAllowed = true;
         Player = Player.Get(player);
@@ -22,7 +22,7 @@ public class PlayerMakingNoiseEventArgs : EventArgs, IPlayerEvent, ICancellableE
     /// <summary>
     /// Gets the player who is making noise.
     /// </summary>
-    public Player Player { get; }
+    public Player? Player { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

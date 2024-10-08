@@ -546,9 +546,15 @@ public class Player
     /// Gets the player wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
-    /// <returns>The requested player.</returns>
-    public static Player Get(ReferenceHub referenceHub) =>
-        Dictionary.TryGetValue(referenceHub, out Player player) ? player : new Player(referenceHub);
+    /// <returns>The requested player or null if the reference hub is null.</returns>
+    [return: NotNullIfNotNull("referenceHub")]
+    public static Player? Get(ReferenceHub? referenceHub)
+    {
+        if (referenceHub == null)
+            return null;
+
+        return Dictionary.TryGetValue(referenceHub, out Player player) ? player : new Player(referenceHub);
+    }
 
     /// <summary>
     /// Gets a list of players from a list of reference hubs.

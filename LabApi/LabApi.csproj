@@ -34,5 +34,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\LabApi.SourceGenerators\LabApi.SourceGenerators\LabApi.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
 	</ItemGroup>
-	
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="$(SL_SOURCE)\Assets\Plugins" Condition=" '$(SL_SOURCE)' != '' "/>
+	</Target>	
 </Project>

@@ -1,6 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using MapGeneration;
+
 namespace LabApi.Events.Arguments.Scp079Events;
 
 /// <summary>
@@ -13,10 +15,10 @@ public class Scp079BlackedOutRoomEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="room">The affected room instance.</param>
-    public Scp079BlackedOutRoomEventArgs(Player player, Room room)
+    public Scp079BlackedOutRoomEventArgs(ReferenceHub player, RoomIdentifier room)
     {
-        Player = player;
-        Room = room;
+        Player = Player.Get(player);
+        Room = Room.Get(room);
     }
 
     /// <summary>

@@ -14,9 +14,9 @@ public class Scp106ChangedStalkModeEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-106 player instance.</param>
     /// <param name="active">Whether the ability was activated or deactivated.</param>
-    public Scp106ChangedStalkModeEventArgs(Player player, bool active)
+    public Scp106ChangedStalkModeEventArgs(ReferenceHub player, bool active)
     {
-        Player = player;
+        Player = Player.Get(player);
         IsStalkActive = active;
     }
     

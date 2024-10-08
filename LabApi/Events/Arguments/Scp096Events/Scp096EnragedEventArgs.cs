@@ -13,9 +13,9 @@ public class Scp096EnragedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
     /// <param name="initialDuration">The initial duration of the rage.</param>
-    public Scp096EnragedEventArgs(Player player, float initialDuration)
+    public Scp096EnragedEventArgs(ReferenceHub player, float initialDuration)
     {
-        Player = player;
+        Player = Player.Get(player);
         InitialDuration = initialDuration;
     }
 

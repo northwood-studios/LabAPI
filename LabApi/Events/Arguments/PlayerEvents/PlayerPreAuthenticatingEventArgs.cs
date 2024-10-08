@@ -22,7 +22,7 @@ public class PlayerPreAuthenticatingEventArgs : EventArgs, ICancellableEvent
     /// <param name="signature">Signature of auth.</param>
     /// <param name="connectionRequest">Connection request to server.</param>
     /// <param name="readerStartPosition">Start position of stream.</param>
-    public PlayerPreAuthenticatingEventArgs(bool canJoin, string userId, string ipAddress, long expiration, CentralAuthPreauthFlags flags, string region, byte[] signature, ConnectionRequest connectionRequest, int readerStartPosition)
+    public PlayerPreAuthenticatingEventArgs(bool canJoin, string userId, string ipAddress, long expiration, CentralAuthPreauthFlags flags, string region, byte[]? signature, ConnectionRequest connectionRequest, int readerStartPosition)
     {
         IsAllowed = true;
         CanJoin = canJoin;
@@ -69,7 +69,7 @@ public class PlayerPreAuthenticatingEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Gets the signature of auth.
     /// </summary>
-    public byte[] Signature { get; }
+    public byte[]? Signature { get; }
 
     /// <summary>
     /// Gets the connection request to server.

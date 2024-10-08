@@ -14,9 +14,9 @@ public class Scp079LeveledUpEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="tier">The new SCP-079's tier.</param>
-    public Scp079LeveledUpEventArgs(Player player, int tier)
+    public Scp079LeveledUpEventArgs(ReferenceHub player, int tier)
     {
-        Player = player;
+        Player = Player.Get(player);
         Tier = tier;
     }
 

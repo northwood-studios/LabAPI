@@ -14,10 +14,10 @@ public class Scp096AddingTargetEventArgs : EventArgs, ICancellableEvent, IPlayer
     /// <param name="player">The SCP-096 player instance.</param>
     /// <param name="target">The target player instance.</param>
     /// <param name="wasLooking">Whether the target looked at SCP-096.</param>
-    public Scp096AddingTargetEventArgs(Player player, Player target, bool wasLooking)
+    public Scp096AddingTargetEventArgs(ReferenceHub player, ReferenceHub target, bool wasLooking)
     {
-        Player = player;
-        Target = target;
+        Player = Player.Get(player);
+        Target = Player.Get(target);
         WasLooking = wasLooking;
         IsAllowed = true;
     }

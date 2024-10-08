@@ -14,7 +14,7 @@ public class PlayerMadeNoiseEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="PlayerMadeNoiseEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who is making noise.</param>
-    public PlayerMadeNoiseEventArgs(ReferenceHub player)
+    public PlayerMadeNoiseEventArgs(ReferenceHub? player)
     {
         Player = Player.Get(player);
     }
@@ -22,5 +22,5 @@ public class PlayerMadeNoiseEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the player who is making noise.
     /// </summary>
-    public Player Player { get; }
+    public Player? Player { get; }
 }

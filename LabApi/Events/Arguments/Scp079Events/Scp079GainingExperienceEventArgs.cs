@@ -17,9 +17,9 @@ public class Scp079GainingExperienceEventArgs : EventArgs, ICancellableEvent, IP
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="amount">The amount of experience that is going to be gained.</param>
     /// <param name="reason">The reason of experience gain that is going to be shown in HUD.</param>
-    public Scp079GainingExperienceEventArgs(Player player, float amount, Scp079HudTranslation reason)
+    public Scp079GainingExperienceEventArgs(ReferenceHub player, float amount, Scp079HudTranslation reason)
     {
-        Player = player;
+        Player = Player.Get(player);
         Amount = amount;
         Reason = reason;
         IsAllowed = true;

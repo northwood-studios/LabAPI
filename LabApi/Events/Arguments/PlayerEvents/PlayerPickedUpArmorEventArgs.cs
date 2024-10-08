@@ -15,7 +15,7 @@ public class PlayerPickedUpArmorEventArgs : EventArgs, IPlayerEvent, IItemEvent
     /// </summary>
     /// <param name="player">The player who picked up armor.</param>
     /// <param name="item">The armor that was picked up.</param>
-    public PlayerPickedUpArmorEventArgs(ReferenceHub player, ItemBase item)
+    public PlayerPickedUpArmorEventArgs(ReferenceHub player, ItemBase? item)
     {
         Player = Player.Get(player);
         Item = Item.Get(item);
@@ -29,5 +29,5 @@ public class PlayerPickedUpArmorEventArgs : EventArgs, IPlayerEvent, IItemEvent
     /// <summary>
     /// Gets the armor that was picked up.
     /// </summary>
-    public Item Item { get; }
+    public Item? Item { get; }
 }

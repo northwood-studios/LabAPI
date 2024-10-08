@@ -15,7 +15,7 @@ public class Scp049StartingResurrectionEventArgs : EventArgs, ICancellableEvent,
     /// <param name="ragdoll">The ragdoll that SCP-049 is resurrecting.</param>
     /// <param name="target">The owner of the ragdoll that SCP-049 is resurrecting.</param>
     /// <param name="player">The SCP-049 player instance.</param>
-    public Scp049StartingResurrectionEventArgs(bool canResurrect, Ragdoll ragdoll, ReferenceHub target, ReferenceHub player)
+    public Scp049StartingResurrectionEventArgs(bool canResurrect, Ragdoll ragdoll, ReferenceHub? target, ReferenceHub player)
     {
         CanResurrect = canResurrect;
         Ragdoll = ragdoll;
@@ -37,7 +37,7 @@ public class Scp049StartingResurrectionEventArgs : EventArgs, ICancellableEvent,
     /// <summary>
     /// The owner of the ragdoll that SCP-049 is resurrecting.
     /// </summary>
-    public Player Target { get; }
+    public Player? Target { get; }
 
     /// <summary>
     /// The SCP-049 player instance.

@@ -12,9 +12,9 @@ public class Scp096TriedNotToCryEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="Scp096TriedNotToCryEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
-    public Scp096TriedNotToCryEventArgs(Player player)
+    public Scp096TriedNotToCryEventArgs(ReferenceHub player)
     {
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <summary>

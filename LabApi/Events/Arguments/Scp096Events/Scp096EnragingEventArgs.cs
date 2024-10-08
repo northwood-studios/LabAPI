@@ -13,9 +13,9 @@ public class Scp096EnragingEventArgs : EventArgs, ICancellableEvent, IPlayerEven
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
     /// <param name="initialDuration">The initial duration of the rage.</param>
-    public Scp096EnragingEventArgs(Player player, float initialDuration)
+    public Scp096EnragingEventArgs(ReferenceHub player, float initialDuration)
     {
-        Player = player;
+        Player = Player.Get(player);
         InitialDuration = initialDuration;
         IsAllowed = true;
     }

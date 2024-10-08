@@ -16,7 +16,7 @@ public class PlayerHurtEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The player who attacked.</param>
     /// <param name="target">The player who was attacked.</param>
     /// <param name="damageHandler">The damage handler.</param>
-    public PlayerHurtEventArgs(ReferenceHub player, ReferenceHub target, DamageHandlerBase damageHandler)
+    public PlayerHurtEventArgs(ReferenceHub? player, ReferenceHub target, DamageHandlerBase damageHandler)
     {
         Player = Player.Get(player);
         Target = Player.Get(target);
@@ -26,7 +26,7 @@ public class PlayerHurtEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the player who attacked.
     /// </summary>
-    public Player Player { get; }
+    public Player? Player { get; }
 
     /// <summary>
     /// Gets the player who was attacked.

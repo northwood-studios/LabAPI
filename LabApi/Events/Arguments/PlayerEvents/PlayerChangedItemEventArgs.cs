@@ -15,8 +15,8 @@ public class PlayerChangedItemEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player who changed current item.</param>
     /// <param name="oldItem">The old item which player changed to.</param>
-    /// <param name="oldItem">The new item which player changed to.</param>
-    public PlayerChangedItemEventArgs(ReferenceHub player, ItemBase oldItem, ItemBase newItem)
+    /// <param name="newItem">The new item which player changed to.</param>
+    public PlayerChangedItemEventArgs(ReferenceHub player, ItemBase? oldItem, ItemBase? newItem)
     {
         Player = Player.Get(player);
         OldItem = Item.Get(oldItem);
@@ -31,10 +31,10 @@ public class PlayerChangedItemEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the old item which player changed.
     /// </summary>
-    public Item OldItem { get; }
+    public Item? OldItem { get; }
 
     /// <summary>
     /// Gets the new item which player changed to.
     /// </summary>
-    public Item NewItem { get; }
+    public Item? NewItem { get; }
 }

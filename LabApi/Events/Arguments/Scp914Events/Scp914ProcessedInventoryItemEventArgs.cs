@@ -2,6 +2,7 @@ using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using Scp914;
 using System;
+using InventorySystem.Items;
 
 namespace LabApi.Events.Arguments.Scp914Events;
 
@@ -17,10 +18,10 @@ public class Scp914ProcessedInventoryItemEventArgs : EventArgs, IScp914Event, II
     /// <param name="item">The new item that has been processed by SCP-914.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
     /// <param name="player">The owner of the item.</param>
-    public Scp914ProcessedInventoryItemEventArgs(ItemType oldItemType, Item item, Scp914KnobSetting knobSetting, ReferenceHub player)
+    public Scp914ProcessedInventoryItemEventArgs(ItemType oldItemType, ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub player)
     {
         OldItemType = oldItemType;
-        Item = item;
+        Item = Item.Get(item);
         KnobSetting = knobSetting;
         Player = Player.Get(player);
     }

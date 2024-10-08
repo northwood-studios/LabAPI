@@ -14,9 +14,9 @@ public class Scp096PryingGateEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
     /// <param name="gate">The affected pryable door instance.</param>
-    public Scp096PryingGateEventArgs(Player player, PryableDoor gate)
+    public Scp096PryingGateEventArgs(ReferenceHub player, PryableDoor gate)
     {
-        Player = player;
+        Player = Player.Get(player);
         Gate = gate;
         IsAllowed = true;
     }

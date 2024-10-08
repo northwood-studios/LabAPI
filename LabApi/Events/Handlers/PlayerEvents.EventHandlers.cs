@@ -413,6 +413,11 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerReceivingEffectEventArgs>? ReceivingEffect;
 
     /// <summary>
+    /// Gets called when the player is receiving a voice message.
+    /// </summary>
+    public static event LabEventHandler<PlayerReceivingVoiceMessageEventArgs>? ReceivingVoiceMessage;
+
+    /// <summary>
     /// Gets called when the player has received an effect.
     /// </summary>
     public static event LabEventHandler<PlayerReceivedEffectEventArgs>? ReceivedEffect;
@@ -486,6 +491,11 @@ public static partial class PlayerEvents
     /// Gets called when the player has searched a pickup.
     /// </summary>
     public static event LabEventHandler<PlayerSearchedPickupEventArgs>? SearchedPickup;
+
+    /// <summary>
+    /// Gets called when the player is sending a voice message.
+    /// </summary>
+    public static event LabEventHandler<PlayerSendingVoiceMessageEventArgs>? SendingVoiceMessage;
 
     /// <summary>
     /// Gets called when the player is shooting from a weapon.

@@ -16,7 +16,7 @@ public class PlayerDeathEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The player who died.</param>
     /// <param name="attacker">The player who caused the death.</param>
     /// <param name="damageHandler">The damage that caused the death.</param>
-    public PlayerDeathEventArgs(ReferenceHub player, ReferenceHub attacker, DamageHandlerBase damageHandler)
+    public PlayerDeathEventArgs(ReferenceHub player, ReferenceHub? attacker, DamageHandlerBase damageHandler)
     {
         Player = Player.Get(player);
         Attacker = Player.Get(attacker);
@@ -31,7 +31,7 @@ public class PlayerDeathEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the player who caused the death.
     /// </summary>
-    public Player Attacker { get; }
+    public Player? Attacker { get; }
 
     /// <summary>
     /// Gets the damage that caused the death.

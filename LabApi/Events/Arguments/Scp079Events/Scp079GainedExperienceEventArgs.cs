@@ -17,9 +17,9 @@ public class Scp079GainedExperienceEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="amount">The amount of experience gained.</param>
     /// <param name="reason">The reason of experience gain shown in HUD.</param>
-    public Scp079GainedExperienceEventArgs(Player player, float amount, Scp079HudTranslation reason)
+    public Scp079GainedExperienceEventArgs(ReferenceHub player, float amount, Scp079HudTranslation reason)
     {
-        Player = player;
+        Player = Player.Get(player);
         Amount = amount;
         Reason = reason;
     }

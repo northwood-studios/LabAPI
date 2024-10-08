@@ -16,7 +16,7 @@ public class PlayerHurtingEventArgs : EventArgs, ICancellableEvent
     /// <param name="player">The player who is attacking.</param>
     /// <param name="target">The player who is being attacked.</param>
     /// <param name="damageHandler">The damage handler.</param>
-    public PlayerHurtingEventArgs(ReferenceHub player, ReferenceHub target, DamageHandlerBase damageHandler)
+    public PlayerHurtingEventArgs(ReferenceHub? player, ReferenceHub target, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
         Player = Player.Get(player);
@@ -27,7 +27,7 @@ public class PlayerHurtingEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Gets the player who is attacking.
     /// </summary>
-    public Player Player { get; }
+    public Player? Player { get; }
 
     /// <summary>
     /// Gets the player who is being attacked.

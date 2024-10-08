@@ -15,9 +15,9 @@ public class Scp106ChangedVigorEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The SCP-106 player instance.</param>
     /// <param name="oldVigor">The previous vigor value.</param>
     /// <param name="newVigor">The new vigor value.</param>
-    public Scp106ChangedVigorEventArgs(Player player, float oldVigor, float newVigor)
+    public Scp106ChangedVigorEventArgs(ReferenceHub player, float oldVigor, float newVigor)
     {
-        Player = player;
+        Player = Player.Get(player);
         OldValue = oldVigor;
         Value = newVigor;
     }

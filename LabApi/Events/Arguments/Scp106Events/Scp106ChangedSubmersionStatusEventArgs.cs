@@ -14,9 +14,9 @@ public class Scp106ChangedSubmersionStatusEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-106 player instance.</param>
     /// <param name="isSubmerging">Whether the SCP-106 is submerging or emerging.</param>
-    public Scp106ChangedSubmersionStatusEventArgs(Player player, bool isSubmerging)
+    public Scp106ChangedSubmersionStatusEventArgs(ReferenceHub player, bool isSubmerging)
     {
-        Player = player;
+        Player = Player.Get(player);
         IsSubmerging = isSubmerging;
     }
     

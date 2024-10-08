@@ -15,9 +15,9 @@ public class Scp079ChangingCameraEventArgs : EventArgs, ICancellableEvent, IPlay
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="camera">The affected camera instance.</param>
-    public Scp079ChangingCameraEventArgs(Player player, Scp079Camera camera)
+    public Scp079ChangingCameraEventArgs(ReferenceHub player, Scp079Camera camera)
     {
-        Player = player;
+        Player = Player.Get(player);
         Camera = camera;
         IsAllowed = true;
     }

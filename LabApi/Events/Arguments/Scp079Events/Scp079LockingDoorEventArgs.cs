@@ -1,6 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using Interactables.Interobjects.DoorUtils;
+
 namespace LabApi.Events.Arguments.Scp079Events;
 
 /// <summary>
@@ -13,10 +15,10 @@ public class Scp079LockingDoorEventArgs : EventArgs, ICancellableEvent, IPlayerE
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="door">The affected door instance.</param>
-    public Scp079LockingDoorEventArgs(Player player, Door door)
+    public Scp079LockingDoorEventArgs(ReferenceHub player, DoorVariant door)
     {
-        Player = player;
-        Door = door;
+        Player = Player.Get(player);
+        Door = Door.Get(door);
         IsAllowed = true;
     }
 

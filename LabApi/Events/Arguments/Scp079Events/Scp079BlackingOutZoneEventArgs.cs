@@ -15,9 +15,9 @@ public class Scp079BlackingOutZoneEventArgs : EventArgs, ICancellableEvent, IPla
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="zone">The affected zone instance.</param>
-    public Scp079BlackingOutZoneEventArgs(Player player, FacilityZone zone)
+    public Scp079BlackingOutZoneEventArgs(ReferenceHub player, FacilityZone zone)
     {
-        Player = player;
+        Player = Player.Get(player);
         Zone = zone;
         IsAllowed = true;
     }

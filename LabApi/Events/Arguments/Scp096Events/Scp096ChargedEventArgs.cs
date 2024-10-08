@@ -12,9 +12,9 @@ public class Scp096ChargedEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="Scp096ChargedEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
-    public Scp096ChargedEventArgs(Player player)
+    public Scp096ChargedEventArgs(ReferenceHub player)
     {
-        Player = player;
+        Player = Player.Get(player);
     }
 
     /// <summary>

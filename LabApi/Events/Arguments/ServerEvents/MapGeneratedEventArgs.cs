@@ -1,7 +1,8 @@
 ﻿using System;
+using LabApi.Events.Handlers;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.ServerEvents.MapGenerated"/> event.
+/// Represents the arguments for the <see cref="ServerEvents.MapGenerated"/> event.
 /// </summary>
 public class MapGeneratedEventArgs : EventArgs
 {

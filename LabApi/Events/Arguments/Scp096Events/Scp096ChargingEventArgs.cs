@@ -12,9 +12,9 @@ public class Scp096ChargingEventArgs : EventArgs, ICancellableEvent, IPlayerEven
     /// Initializes a new instance of the <see cref="Scp096ChargingEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-096 player instance.</param>
-    public Scp096ChargingEventArgs(Player player)
+    public Scp096ChargingEventArgs(ReferenceHub player)
     {
-        Player = player;
+        Player = Player.Get(player);
         IsAllowed = true;
     }
 

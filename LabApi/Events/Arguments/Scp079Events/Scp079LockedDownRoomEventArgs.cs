@@ -1,6 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using MapGeneration;
+
 namespace LabApi.Events.Arguments.Scp079Events;
 
 /// <summary>
@@ -12,11 +14,11 @@ public class Scp079LockedDownRoomEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="Scp079LockedDoorEventArgs"/> class.
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
-    /// <param name="roomr">The affected room instance.</param>
-    public Scp079LockedDownRoomEventArgs(Player player, Room room)
+    /// <param name="room">The affected room instance.</param>
+    public Scp079LockedDownRoomEventArgs(ReferenceHub player, RoomIdentifier room)
     {
-        Player = player;
-        Room = room;
+        Player = Player.Get(player);
+        Room = Room.Get(room);
     }
 
     /// <summary>

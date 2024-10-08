@@ -15,9 +15,9 @@ public class Scp079ChangedCameraEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="camera">The affected camera instance.</param>
-    public Scp079ChangedCameraEventArgs(Player player, Scp079Camera camera)
+    public Scp079ChangedCameraEventArgs(ReferenceHub player, Scp079Camera camera)
     {
-        Player = player;
+        Player = Player.Get(player);
         Camera = camera;
     }
     /// <summary>

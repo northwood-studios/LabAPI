@@ -153,6 +153,7 @@ public class Item
     /// </summary>
     /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
     /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull("itemBase")]
     public static Item? Get(ItemBase? itemBase)
     {
         if (itemBase == null)

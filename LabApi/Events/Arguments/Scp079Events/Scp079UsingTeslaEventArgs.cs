@@ -13,9 +13,9 @@ public class Scp079UsingTeslaEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     /// </summary>
     /// <param name="player">The SCP-079 player instance.</param>
     /// <param name="tesla">The affected tesla instance.</param>
-    public Scp079UsingTeslaEventArgs(Player player, TeslaGate tesla)
+    public Scp079UsingTeslaEventArgs(ReferenceHub player, TeslaGate tesla)
     {
-        Player = player;
+        Player = Player.Get(player);
         Tesla = tesla;
         IsAllowed = true;
     }
