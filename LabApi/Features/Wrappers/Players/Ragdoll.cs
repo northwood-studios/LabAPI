@@ -1,4 +1,4 @@
-using LabApi.Loader.Features.Misc;
+using Generators;
 using Mirror;
 using PlayerRoles;
 using PlayerRoles.FirstPersonControl;
@@ -122,24 +122,24 @@ public class Ragdoll
     /// <param name="nickname">Nickname of the ragdoll</param>
     /// <param name="handler">Handler that is displayed as reason of death</param>
     /// <returns>New ragdoll or null</returns>
-    public static Ragdoll SpawnRagdoll(RoleTypeId role, Vector3 position, string nickname = "", DamageHandlerBase handler = null)
+    public static Ragdoll? SpawnRagdoll(RoleTypeId role, Vector3 position, string nickname = "", DamageHandlerBase? handler = null)
     {
-        //We use host hub to change his role to the target & use it as a template
+        // We use host hub to change his role to the target & use it as a template
         ReferenceHub.HostHub.roleManager.ServerSetRole(role, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.None);
 
-        //Check for roles that may not have ragdoll templates
+        // Check for roles that may not have ragdoll templates
         if (ReferenceHub.HostHub.roleManager.CurrentRole is not FpcStandardRoleBase humanRole) return null;
 
-        //Set the position
+        // Set the position
         humanRole.FpcModule.ServerOverridePosition(position, Vector3.zero);
 
-        //Spawn the ragdoll
+        // Spawn the ragdoll
         BasicRagdoll ragdoll = RagdollManager.ServerSpawnRagdoll(ReferenceHub.HostHub, handler);
 
-        //Set role of the hosthub back to none
-        ReferenceHub.HostHub.roleManager.ServerSetRole(RoleTypeId.None, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.All);
+        // Set role of the hosthub back to none
+        ReferenceHub.HostHub.roleManager.ServerSetRole(RoleTypeId.None, RoleChangeReason.RemoteAdmin);
 
-        //set the ragdoll info
+        // set the ragdoll info
         ragdoll.Info = new RagdollData(ReferenceHub.HostHub, ragdoll.Info.Handler, role, position, ragdoll.Info.StartRotation, nickname, NetworkTime.time);
         return Get(ragdoll);
     }
@@ -152,7 +152,7 @@ public class Ragdoll
     {
         Dictionary.Clear();
 
-        RagdollManager.OnRagdollSpawned += (ragdoll) => new Ragdoll(ragdoll);
+        RagdollManager.OnRagdollSpawned += (ragdoll) => _ = new Ragdoll(ragdoll);
         RagdollManager.OnRagdollRemoved += (ragdoll) => Dictionary.Remove(ragdoll);
     }
 
