@@ -40,6 +40,21 @@ public static class CommandLoader
     public static Dictionary<Plugin, IEnumerable<ICommand>> RegisteredCommands { get; } = [];
 
     /// <summary>
+    /// The dictionary of registered LabAPI commands.
+    /// </summary>
+    public static IEnumerable<ICommand>? LabApiCommands { get; private set; }
+
+    /// <summary>
+    /// Registers all commands in the LabAPI solution.
+    /// </summary>
+    internal static void RegisterCommands()
+    {
+        // We register all commands in the LabAPI assembly.
+        // We convert it to an array since IEnumerable are lazy and need to be iterated through to be executed.
+         LabApiCommands = RegisterCommands(Assembly.GetExecutingAssembly(), "LabApi").ToArray();
+    }
+
+    /// <summary>
     /// Registers all commands in the given <see cref="Plugin"/>.
     /// </summary>
     /// <param name="plugin">The <see cref="Plugin"/> to register the commands from.</param>
