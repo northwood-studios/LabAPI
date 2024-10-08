@@ -51,19 +51,22 @@ public class Room
     /// <summary>
     /// The room's shape.
     /// </summary>
-
     public RoomShape Shape => Base.Shape;
 
     /// <summary>
     /// The room's name.
     /// </summary>
-
     public RoomName Name => Base.Name;
 
     /// <summary>
     /// The zone in which this room is located.
     /// </summary>
     public FacilityZone Zone => Base.Zone;
+    
+    /// <summary>
+    /// Gets the room's neighbors.
+    /// </summary>
+    public HashSet<RoomIdentifier> ConnectedRooms => Base.ConnectedRooms;
 
     /// <summary>
     /// Gets the doors that are a part of this room.
