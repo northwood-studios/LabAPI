@@ -1,8 +1,8 @@
-﻿using LabApi.Loader.Features.Misc;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using Utils.NonAllocLINQ;
+using Generators;
 
 namespace LabApi.Features.Wrappers
 {
@@ -114,7 +114,7 @@ namespace LabApi.Features.Wrappers
         {
             Dictionary.Clear();
             TeslaByRoom.Clear();
-            TeslaGate.OnAdded += (tesla) => new Tesla(tesla);
+            TeslaGate.OnAdded += (tesla) => _ = new Tesla(tesla);
             TeslaGate.OnRemoved += (tesla) =>
             {
                 Dictionary.Remove(tesla);
