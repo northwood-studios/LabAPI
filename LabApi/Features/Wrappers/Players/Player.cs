@@ -876,7 +876,7 @@ public class Player
     /// Removes a specific <see cref="ItemBase"/> from the player's inventory.
     /// </summary>
     /// <param name="item">The item to remove.</param>
-    public void RemoveItem(ItemBase item) => Inventory.ServerRemoveItem(item.ItemSerial, item.PickupDropModel);
+    public void RemoveItem(ItemBase item) => Inventory.ServerRemoveItem(item.ItemSerial, null);
 
     /// <summary>
     /// Removes a specific <see cref="Pickup"/> from the player's inventory.
@@ -888,7 +888,7 @@ public class Player
     /// Removes a specific <see cref="ItemPickupBase"/> from the player's inventory.
     /// </summary>
     /// <param name="pickup">The pickup to remove.</param>
-    public void RemoveItem(ItemPickupBase pickup) => Inventory.ServerRemoveItem(pickup.Info.Serial, pickup);
+    public void RemoveItem(ItemPickupBase pickup) => Inventory.ServerRemoveItem(pickup.Info.Serial, null);
 
     /// <summary>
     /// Removes all items of the specified type from the player's inventory.
