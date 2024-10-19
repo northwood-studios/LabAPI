@@ -863,7 +863,8 @@ public class Player
     /// Adds an item of the specified type to the player's inventory.
     /// </summary>
     /// <param name="item">The type of item.</param>
-    public void AddItem(ItemType item) => Inventory.ServerAddItem(item, ItemAddReason.AdminCommand);
+    /// <returns>The <see cref="Item"/> added or null if it could not be added.</returns>
+    public Item? AddItem(ItemType item) => Item.Get(Inventory.ServerAddItem(item, ItemAddReason.AdminCommand));
 
     /// <summary>
     /// Removes a specific <see cref="Item"/> from the player's inventory.
