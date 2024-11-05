@@ -61,7 +61,7 @@ public class Door
     public bool IsOpened
     {
         get => Base.TargetState;
-        set => Base.TargetState = value;
+        set => Base.NetworkTargetState = value;
     }
 
     /// <summary>
