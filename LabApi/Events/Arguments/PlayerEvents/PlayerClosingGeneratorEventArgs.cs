@@ -1,5 +1,4 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers.Facility;
 using LabApi.Features.Wrappers;
 using MapGeneration.Distributors;
 using System;
