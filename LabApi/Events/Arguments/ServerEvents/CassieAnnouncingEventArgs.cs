@@ -15,13 +15,15 @@ public class CassieAnnouncingEventArgs : EventArgs, ICancellableEvent
     /// <param name="makeHold">For most cases you wanna keep it true. Sets a minimal 3-second moment of silence before the announcement.</param>
     /// <param name="makeNoise">The background noises before playing.</param>
     /// <param name="customAnnouncement">If thats custom announcement? Custom announcements show subtitles</param>
-    public CassieAnnouncingEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement)
+    /// <param name="customSubtitles">Custom subtitles text to appear instead of original text.</param>
+    public CassieAnnouncingEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement, string customSubtitles)
     {
         IsAllowed = true;
         Words = words;
         MakeHold = makeHold;
         MakeNoise = makeNoise;
         CustomAnnouncement = customAnnouncement;
+        CustomSubtitles = customSubtitles;
     }
 
     /// <summary>
@@ -43,6 +45,11 @@ public class CassieAnnouncingEventArgs : EventArgs, ICancellableEvent
     /// Gets or sets if announce should have custom subtitles.
     /// </summary>
     public bool CustomAnnouncement { get; set; }
+
+    /// <summary>
+    /// Gets or sets the custom subtitles text. Set to <see cref="string.Empty"/> or null if you wish keep the <see cref="Words"/> as subtitles text.
+    /// </summary>
+    public string CustomSubtitles { get; set; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

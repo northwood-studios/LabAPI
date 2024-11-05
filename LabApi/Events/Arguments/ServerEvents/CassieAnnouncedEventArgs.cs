@@ -14,12 +14,14 @@ public class CassieAnnouncedEventArgs : EventArgs
     /// <param name="makeHold">For most cases you wanna keep it true. Sets a minimal 3-second moment of silence before the announcement.</param>
     /// <param name="makeNoise">The background noises before playing.</param>
     /// <param name="customAnnouncement">If thats custom announcement? Custom announcements show subtitles</param>
-    public CassieAnnouncedEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement)
+    /// <param name="customSubtitles">Custom subtitles text.</param>
+    public CassieAnnouncedEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement, string customSubtitles)
     {
         Words = words;
         MakeHold = makeHold;
         MakeNoise = makeNoise;
         CustomAnnouncement = customAnnouncement;
+        CustomSubtitles = customSubtitles;
     }
 
     /// <summary>
@@ -41,4 +43,9 @@ public class CassieAnnouncedEventArgs : EventArgs
     /// Gets if announce had custom subtitles.
     /// </summary>
     public bool CustomAnnouncement { get; }
+
+    /// <summary>
+    /// Gets the custom subtitles with the announcement.
+    /// </summary>
+    public string CustomSubtitles { get; }
 }
