@@ -65,7 +65,7 @@ public class Elevator
     /// <summary>
     /// Gets the destination this elevator will head towards once activated.
     /// </summary>
-    public Elevator NextDestination => Base.NextDestination;
+    public ElevatorDoor NextDestination => Base.NextDestination;
 
     /// <summary>
     /// Gets the destination floor index this elevator will head towards once activated.
@@ -87,9 +87,9 @@ public class Elevator
     }
 
     /// <summary>
-    /// Gets the current <see cref="ElevatorSequence"/>.
+    /// Gets the current <see cref="ElevatorChamber.ElevatorSequence"/>.
     /// </summary>
-    public ElevatorSequence CurrentSequence => Base.CurrentSequence;
+    public ElevatorChamber.ElevatorSequence CurrentSequence => Base.CurrentSequence;
 
     /// <summary>
     /// Gets the current world space bounds of this elevator.

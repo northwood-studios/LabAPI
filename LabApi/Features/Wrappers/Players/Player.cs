@@ -333,7 +333,7 @@ public class Player
     /// <summary>
     /// Gets the player's group name. Or null if the player is not in a group.
     /// </summary>
-    public string? GroupName => ServerStatic.GetPermissionsHandler()._members.GetValueOrDefault(UserId);
+    public string? GroupName => ServerStatic.GetPermissionsHandler().Members.GetValueOrDefault(UserId);
 
     /// <summary>
     /// Gets the player's unit ID, or -1 if the role is not a <see cref="HumanRole"/>.

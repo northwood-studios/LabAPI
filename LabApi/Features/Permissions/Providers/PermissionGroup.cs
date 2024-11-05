@@ -7,8 +7,26 @@ namespace LabApi.Features.Permissions.Providers;
 /// <summary>
 /// Represents a group of permissions. They are linked to RA user groups.
 /// </summary>
-public class PermissionGroup(string[] inheritedGroups, string[] permissions)
+public class PermissionGroup
 {
+    /// <summary>
+    /// Constructor for deserialization.
+    /// </summary>
+    #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    public PermissionGroup()
+        #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    {
+    }
+
+    /// <summary>
+    /// Represents a group of permissions. They are linked to RA user groups.
+    /// </summary>
+    public PermissionGroup(string[] inheritedGroups, string[] permissions)
+    {
+        InheritedGroups = inheritedGroups;
+        Permissions = permissions;
+    }
+
     /// <summary>
     /// Gets the default permission group.
     /// </summary>
@@ -26,12 +44,6 @@ public class PermissionGroup(string[] inheritedGroups, string[] permissions)
                 ["default"] = Default
             };
 
-            // We fill the permissions with the available groups, because it is cool, and we can ;).
-            foreach (string raGroup in ServerStatic.GetPermissionsHandler().GetAllGroupsNames())
-            {
-                groups[raGroup] = new PermissionGroup(["default"], Array.Empty<string>());
-            }
-
             return groups;
         }
     }
@@ -39,12 +51,12 @@ public class PermissionGroup(string[] inheritedGroups, string[] permissions)
     /// <summary>
     /// The inherited groups of the group.
     /// </summary>
-    public string[] InheritedGroups { get; set; } = inheritedGroups;
+    public string[] InheritedGroups { get; set; }
 
     /// <summary>
     /// The permissions of the group.
     /// </summary>
-    public string[] Permissions { get; set; } = permissions;
+    public string[] Permissions { get; set; }
 
     /// <summary>
     /// An internal dictionary that saves special permissions. (x.*).

@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using Utils.NonAllocLINQ;
 using Generators;
+using MapGeneration;
 
 namespace LabApi.Features.Wrappers
 {
@@ -19,7 +20,7 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// Cached tesla gates by <see cref="Room"/> they are in.
         /// </summary>
-        private static Dictionary<Room, Tesla> TeslaByRoom { get; } = [];
+        private static Dictionary<RoomIdentifier, Tesla> TeslaByRoom { get; } = [];
 
         /// <summary>
         /// A reference to all instances of <see cref="Tesla"/>.
@@ -129,7 +130,7 @@ namespace LabApi.Features.Wrappers
         private Tesla(TeslaGate tesla)
         {
             Dictionary.Add(tesla, this);
-            TeslaByRoom.Add(Room.Get(tesla.Room), this);
+            TeslaByRoom.Add(tesla.Room, this);
             Base = tesla;
         }
 
@@ -143,11 +144,12 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// Gets the tesla wrapper inside of <see cref="Room"/> from the <see cref="TeslaByRoom"/>.
         /// </summary>
-        /// <param name="teslaGate"></param>
+        /// <param name="room">The <see cref="Room"/> with the tesla.</param>
+        /// <param name="tesla">The tesla to be returned.</param>
         /// <returns>Whether the tesla is in out parameter.</returns>
         public static bool TryGet(Room room, [NotNullWhen(true)] out Tesla? tesla)
         {
-            return TeslaByRoom.TryGetValue(room, out tesla);
+            return TeslaByRoom.TryGetValue(room.Base, out tesla);
         }
     }
 }
