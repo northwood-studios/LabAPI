@@ -106,12 +106,22 @@ public class Player
     /// <summary>
     /// Gets whether the player is the host or server.
     /// </summary>
-    public bool IsHost => ReferenceHub.IsHost;
+    public bool IsHost => ReferenceHub.connectionToClient is LocalConnectionToClient;
 
     /// <summary>
     /// Gets whether the player is the dedicated server.
     /// </summary>
     public bool IsServer => ReferenceHub.isLocalPlayer;
+
+    /// <summary>
+    /// Gets whether this <see cref="Player"/> instance is not controlled by a real human being.
+    /// </summary>
+    public bool IsNpc => !IsHost && ReferenceHub.connectionToClient.GetType() != typeof(NetworkConnectionToClient);
+
+    /// <summary>
+    /// Gets whether the player is a real player and not the host or an Npc.
+    /// </summary>
+    public bool IsPlayer => Connection.GetType() == typeof(NetworkConnectionToClient);
 
     /// <summary>
     /// Gets the Player's User ID.
