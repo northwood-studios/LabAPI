@@ -1,5 +1,6 @@
 using Generators;
 using Interactables.Interobjects.DoorUtils;
+using LabApi.Features.Wrappers.Facility.Rooms;
 using MapGeneration;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -13,16 +14,6 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Room
 {
-    /// <summary>
-    /// Initializes the Room wrapper by subscribing to the RoomIdentifier events.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        RoomIdentifier.OnAdded += (roomIdentifier) => _ = new Room(roomIdentifier);
-        RoomIdentifier.OnRemoved += (roomIdentifier) => Dictionary.Remove(roomIdentifier);
-    }
-
     /// <summary>
     /// Contains all the cached rooms in the game, accessible through their <see cref="RoomIdentifier"/>.
     /// </summary>
@@ -44,6 +35,16 @@ public class Room
     }
 
     /// <summary>
+    /// Initializes the Room wrapper by subscribing to the <see cref="RoomIdentifier"/> events.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        RoomIdentifier.OnAdded += (roomIdentifier) => _ = new Room(roomIdentifier);
+        RoomIdentifier.OnRemoved += (roomIdentifier) => Dictionary.Remove(roomIdentifier);
+    }
+
+    /// <summary>
     /// The base object.
     /// </summary>
     public RoomIdentifier Base { get; }
@@ -62,7 +63,7 @@ public class Room
     /// The zone in which this room is located.
     /// </summary>
     public FacilityZone Zone => Base.Zone;
-    
+
     /// <summary>
     /// Gets the room's neighbors.
     /// </summary>
@@ -79,6 +80,29 @@ public class Room
                 return [];
 
             return doorList.Select(Door.Get);
+        }
+    }
+
+    /// <summary>
+    /// Gets the first light controller for this room.<br></br>
+    /// <note>Please see <see cref="AllLightControllers"/> if you wish to modify all lights in this room.</note>
+    /// </summary>
+    public LightsController? LightController
+    {
+        get
+        {
+            return Base.LightControllers.Count > 0 ? LightsController.Get(Base.LightControllers[0]) : null;
+        }
+    }
+
+    /// <summary>
+    /// Gets all light controllers for this specified room.<br></br> Some rooms such as 049, warhead and etc may have multiple light controllers as they are split by the elevator.
+    /// </summary>
+    public IEnumerable<LightsController> AllLightControllers
+    {
+        get
+        {
+            return Base.LightControllers.Select(LightsController.Get);
         }
     }
 
@@ -142,6 +166,18 @@ public class Room
     public static IEnumerable<Room> Get(IEnumerable<RoomIdentifier> roomIdentifiers) =>
         roomIdentifiers.Select(Get);
 
+
+    /// <summary>
+    /// Gets the closest <see cref="LightsController"/> to the specified player.
+    /// </summary>
+    /// <param name="player">The player to check the closest light controller for.</param>
+    /// <returns>The closest light controller. May return null if player is not alive or is not in any room.</returns>
+    public LightsController? GetClosestLightController(Player player)
+    {
+        RoomLightController rlc = Base.GetClosestLightController(player.ReferenceHub);
+        return rlc == null ? null : LightsController.Get(rlc);
+    }
+
     /// <summary>
     /// Tries to get the room at the specified position.
     /// </summary>
@@ -150,7 +186,7 @@ public class Room
     /// <returns>Whether the room was found at the specified position.</returns>
     public static bool TryGetRoomAtPosition(Vector3 position, [NotNullWhen(true)] out Room? room)
     {
-        RoomIdentifier? roomIdentifier = RoomIdUtils.RoomAtPosition(position);
+        RoomIdentifier? roomIdentifier = RoomIdUtils.RoomAtPosition(position) ?? RoomIdUtils.RoomAtPositionRaycasts(position);
         if (roomIdentifier == null)
         {
             room = null;
