@@ -885,7 +885,7 @@ public class Player
     /// Removes a specific <see cref="Pickup"/> from the player's inventory.
     /// </summary>
     /// <param name="pickup">The pickup to remove.</param>
-    public void RemoveItem(Pickup pickup) => RemoveItem(pickup.ItemPickupBase);
+    public void RemoveItem(Pickup pickup) => RemoveItem(pickup.Base);
 
     /// <summary>
     /// Removes a specific <see cref="ItemPickupBase"/> from the player's inventory.
