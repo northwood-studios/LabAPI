@@ -53,7 +53,7 @@ public class Player
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
     /// </summary>
-    public static Player? Host { get; internal set; } // TODO: Implement this when we generate the map. Add it with Doors Cache, Rooms Cache, etc.
+    public static Player? Host => Server.Host;
 
     /// <summary>
     /// Gets the amount of online players.
@@ -79,15 +79,15 @@ public class Player
         Dictionary.Clear();
         UserIdCache.Clear();
 
-        ReferenceHub.OnPlayerAdded += (hub) => _ = new Player(hub);
+        ReferenceHub.OnPlayerAdded += AddPlayer;
         ReferenceHub.OnPlayerRemoved += RemovePlayer;
     }
 
     /// <summary>
-    /// A private constructor to prevent external instantiation.
+    /// A internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
-    private Player(ReferenceHub referenceHub)
+    internal Player(ReferenceHub referenceHub)
     {
         Dictionary.Add(referenceHub, this);
         ReferenceHub = referenceHub;
@@ -788,8 +788,7 @@ public class Player
     /// <summary>
     /// Clears displayed broadcast(s).
     /// </summary>
-    // TODO: Maybe use Server Wrapper
-    public void ClearBroadcasts() => Broadcast.Singleton.TargetClearElements(ReferenceHub.characterClassManager.connectionToClient);
+    public void ClearBroadcasts() => Server.ClearBroadcasts(this);
 
     /// <summary>
     /// Sends a broadcast to the player.
@@ -798,14 +797,8 @@ public class Player
     /// <param name="duration">The broadcast duration.</param>
     /// <param name="type">The broadcast type.</param>
     /// <param name="shouldClearPrevious">Whether it should clear previous broadcasts.</param>
-    // TODO: Maybe use Server Wrapper
     public void SendBroadcast(string message, ushort duration, Broadcast.BroadcastFlags type = Broadcast.BroadcastFlags.Normal, bool shouldClearPrevious = false)
-    {
-        if (shouldClearPrevious)
-            ClearBroadcasts();
-
-        Broadcast.Singleton.TargetAddElement(ReferenceHub.characterClassManager.connectionToClient, message, duration, type);
-    }
+        => Server.SendBroadcast(this, message, duration, type, shouldClearPrevious);
 
     /// <summary>
     /// Sends a message to the player's console.
@@ -1200,41 +1193,47 @@ public class Player
     /// <summary>
     /// Bans the player from the server.
     /// </summary>
-    /// <param name="issuer">The player which issued ban.</param>
-    /// <param name="reason">The reason of ban.</param>
-    /// <param name="duration">The duration of ban in seconds.</param>
+    /// <param name="issuer">The player that issued the ban.</param>
+    /// <param name="reason">The reason of the ban.</param>
+    /// <param name="duration">The duration of the ban in seconds.</param>
     /// <returns>Whether the player was successfully banned.</returns>
-    // TODO: Use the Server Wrapper
-    public bool Ban(Player issuer, string reason, long duration) => BanPlayer.BanUser(ReferenceHub, issuer.ReferenceHub, reason, duration);
+    public bool Ban(Player issuer, string reason, long duration) => Server.BanPlayer(this, issuer, reason, duration);
 
     /// <summary>
     /// Bans the player from the server.
     /// </summary>
-    /// <param name="reason">The reason of ban.</param>
-    /// <param name="duration">The duration of ban in seconds.</param>
+    /// <param name="reason">The reason of the ban.</param>
+    /// <param name="duration">The duration of the ban in seconds.</param>
     /// <returns>Whether the player was successfully banned.</returns>
-    // TODO: Use the Server Wrapper
-    public bool Ban(string reason, long duration) => BanPlayer.BanUser(ReferenceHub, reason, duration);
+    public bool Ban(string reason, long duration) => Server.BanPlayer(this, reason, duration);
 
     /// <summary>
     /// Kicks the player from the server.
     /// </summary>
-    /// <param name="issuer">The player which issued kick.</param>
-    /// <param name="reason">The reason of kick.</param>
+    /// <param name="issuer">The player that issued the kick.</param>
+    /// <param name="reason">The reason of the kick.</param>
     /// <returns>Whether the player was successfully kicked.</returns>
-    // TODO: Use the Server Wrapper
-    public bool Kick(Player issuer, string reason) => BanPlayer.KickUser(ReferenceHub, issuer.ReferenceHub, reason);
+    public bool Kick(Player issuer, string reason) => Server.KickPlayer(this, issuer, reason);
 
     /// <summary>
     /// Kicks the player from the server.
     /// </summary>
-    /// <param name="reason">The reason of kick.</param>
+    /// <param name="reason">The reason of the kick.</param>
     /// <returns>Whether the player was successfully kicked.</returns>
-    // TODO: Use the Server Wrapper
-    public bool Kick(string reason) => BanPlayer.KickUser(ReferenceHub, reason);
+    public bool Kick(string reason) => Server.KickPlayer(this, reason); 
 
     // TODO: EffectsManager, DamageManager, DataStorage?
     // DamageManager seems to have been unused previously. Also relies on DataStorage/SharedStorage
+
+    /// <summary>
+    /// Handles the creation of a player in the server.
+    /// </summary>
+    /// <param name="referenceHub">The reference hub of the player.</param>
+    private static void AddPlayer(ReferenceHub referenceHub)
+    {
+        if (!referenceHub.isLocalPlayer)
+            _ = new Player(referenceHub);
+    }
 
     /// <summary>
     /// Handles the removal of a player from the server.
