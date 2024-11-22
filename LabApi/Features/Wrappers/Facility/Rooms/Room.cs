@@ -1,6 +1,4 @@
 using Generators;
-using Interactables.Interobjects.DoorUtils;
-using LabApi.Features.Wrappers.Facility.Rooms;
 using MapGeneration;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -76,10 +74,7 @@ public class Room
     {
         get
         {
-            if (!DoorVariant.DoorsByRoom.TryGetValue(Base, out HashSet<DoorVariant> doorList))
-                return [];
-
-            return doorList.Select(Door.Get);
+            return Doors.Where(n => n.Rooms.Contains(Base)); // TODO: Cache the result in base game code?
         }
     }
 

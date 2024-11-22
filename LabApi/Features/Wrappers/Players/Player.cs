@@ -1181,7 +1181,7 @@ public class Player
     /// <param name="armorPenetration">The amount of armor penetration.</param>
     /// <returns>Whether the player was successfully damaged.</returns>
     public bool Damage(float amount, Player attacker, Vector3 force = default, int armorPenetration = 0) =>
-        Damage(new ExplosionDamageHandler(new Footprint(attacker.ReferenceHub), force, amount, armorPenetration));
+        Damage(new ExplosionDamageHandler(new Footprint(attacker.ReferenceHub), force, amount, armorPenetration, ExplosionType.Grenade));
 
     /// <summary>
     /// Damages player.

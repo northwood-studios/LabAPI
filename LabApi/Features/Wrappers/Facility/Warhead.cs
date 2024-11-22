@@ -53,7 +53,7 @@ public static class Warhead
     public static bool LeverStatus
     {
         get => BaseNukesitePanel?.enabled ?? false;
-        set 
+        set
         {
             if (BaseNukesitePanel != null)
                 BaseNukesitePanel.Networkenabled = value;
@@ -66,7 +66,7 @@ public static class Warhead
     public static bool IsAuthorized
     {
         get => BaseOutsidePanel?.keycardEntered ?? false;
-        set 
+        set
         {
             if (BaseOutsidePanel != null)
                 BaseOutsidePanel.NetworkkeycardEntered = value;
@@ -79,8 +79,8 @@ public static class Warhead
     public static bool IsLocked
     {
         get => BaseController?.IsLocked ?? false;
-        set 
-        { 
+        set
+        {
             if (BaseController != null)
                 BaseController.IsLocked = value;
         }
@@ -129,6 +129,7 @@ public static class Warhead
     /// Must be one of <see cref="StartScenarios"/>, <see cref="ResumeScenarios"/> or the default value for <see cref="DetonationScenario"/>.
     /// If <see cref="DetonationScenario"/> is the default value the Scenario is reset to the default used by the server config.
     /// </remarks>
+
     public static DetonationScenario Scenario
     {
         get
@@ -141,12 +142,12 @@ public static class Warhead
         {
             if (BaseController == null) return;
 
-            if(value.Equals(default))
+            if (value.Equals(default))
             {
                 // Resets warhead to its initial scenario.
                 int duration = ConfigFile.ServerConfig.GetInt("warhead_tminus_start_duration", 90);
                 var found = StartScenarios.Select((val, index) => new { val, index }).FirstOrDefault(x => x.val.TimeToDetonate == duration);
-                int id = found.Equals(default) ? BaseController._defaultScenarioId : found.index;
+                int id = found.Equals(default) ? BaseController.DefaultScenarioId : found.index;
                 BaseController.NetworkInfo = BaseController.Info with
                 {
                     ResumeScenario = false,
@@ -171,6 +172,7 @@ public static class Warhead
         }
     }
 
+
     /// <summary>
     /// Gets a value indicating whether a <see cref="DetonationScenario"/> from <see cref="StartScenarios"> is being used.
     /// If false a <see cref="ResumeScenarios">Resume Scenario</see> is being used.
@@ -183,7 +185,7 @@ public static class Warhead
     /// <remarks>
     /// The scenarios used for the first time the warhead is activated.
     /// </remarks>
-    public static IReadOnlyList<DetonationScenario> StartScenarios => BaseController?._startScenarios.Select(x => new DetonationScenario(x.TimeToDetonate, x.AdditionalTime)).ToArray() ?? new DetonationScenario[] { };
+    public static IReadOnlyList<DetonationScenario> StartScenarios => BaseController?.StartScenarios.Select(x => new DetonationScenario(x.TimeToDetonate, x.AdditionalTime)).ToArray() ?? new DetonationScenario[] { };
 
     /// <summary>
     /// Gets an array for all the resume scenarios.
@@ -191,7 +193,7 @@ public static class Warhead
     /// <remarks>
     /// The scenarios used for anytime the warhead is resumed.
     /// </remarks>
-    public static IReadOnlyList<DetonationScenario> ResumeScenarios => BaseController?._resumeScenarios.Select(x => new DetonationScenario(x.TimeToDetonate, x.AdditionalTime)).ToArray() ?? new DetonationScenario[] { };
+    public static IReadOnlyList<DetonationScenario> ResumeScenarios => BaseController?.ResumeScenarios.Select(x => new DetonationScenario(x.TimeToDetonate, x.AdditionalTime)).ToArray() ?? new DetonationScenario[] { };
 
     /// <summary>
     /// Starts the detonation countdown.

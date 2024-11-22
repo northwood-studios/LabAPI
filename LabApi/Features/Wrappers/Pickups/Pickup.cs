@@ -1,11 +1,11 @@
 ﻿using InventorySystem.Items;
 using InventorySystem;
 using InventorySystem.Items.Pickups;
-using LabApi.Loader.Features.Misc;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System.Diagnostics.CodeAnalysis;
+using Generators;
 
 namespace LabApi.Features.Wrappers;
 
@@ -52,7 +52,7 @@ public class Pickup
     private Pickup(ItemPickupBase itemPickupBase)
     {
         Base = itemPickupBase;
-        
+
         if (itemPickupBase.Info.Serial == 0)
             itemPickupBase.OnInfoChanged += OnPickupInfoChanged;
     }
@@ -291,7 +291,7 @@ public class Pickup
 
         Pickup newPickup = new(itemPickupBase);
         Dictionary.Add(itemPickupBase, newPickup);
-        
+
         if (itemPickupBase.Info.Serial != 0)
             SerialCache.Add(itemPickupBase.Info.Serial, newPickup);
 
@@ -304,7 +304,7 @@ public class Pickup
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> being removed.</param>
     private static void RemovePickup(ItemPickupBase itemPickupBase)
     {
-        if(Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
+        if (Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
         {
             pickup.UnsubscribeEvents();
             Dictionary.Remove(itemPickupBase);

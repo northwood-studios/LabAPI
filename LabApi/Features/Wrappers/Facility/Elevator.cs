@@ -48,19 +48,21 @@ public class Elevator
     {
         Dictionary.Clear();
 
+        /*
         ElevatorChamber.OnAdded += (chamber) => _ = new Elevator(chamber);
         ElevatorChamber.OnRemoved += (chamber) => Dictionary.Remove(chamber);
+        */
     }
 
     /// <summary>
     /// Gets the current destination / location of the elevator.
     /// </summary>
-    public ElevatorDoor CurrentDestination => Base.CurrentDestination;
+    //public ElevatorDoor CurrentDestination => Base.CurrentDestination;
 
     /// <summary>
     /// Gets the destination/current floor of the elevator.
     /// </summary>
-    public int CurrentDestinationLevel => Base.CurrentLevel;
+    //public int CurrentDestinationLevel => Base.CurrentLevel;
 
     /// <summary>
     /// Gets the destination this elevator will head towards once activated.
@@ -89,7 +91,7 @@ public class Elevator
     /// <summary>
     /// Gets the current <see cref="ElevatorChamber.ElevatorSequence"/>.
     /// </summary>
-    public ElevatorChamber.ElevatorSequence CurrentSequence => Base.CurrentSequence;
+    //public ElevatorChamber.ElevatorSequence CurrentSequence => Base.CurrentSequence;
 
     /// <summary>
     /// Gets the current world space bounds of this elevator.
@@ -123,13 +125,13 @@ public class Elevator
     /// <param name="targetLevel">Target level index of the floor.</param>
     /// <param name="force">Whether the destination should be changed even that the elevator is not ready/is still moving.</param>
     /// <returns></returns>
-    public bool TrySetDestination(int targetLevel, bool force = false) => Base.TrySetDestination(targetLevel, force);
+    //public bool TrySetDestination(int targetLevel, bool force = false) => Base.TrySetDestination(targetLevel, force);
 
     /// <summary>
     /// Attempts to send the elevator to the next available floor.
     /// </summary>
     /// <returns>Whether the elevator was sent. Returns false if elevator is still moving or not yet ready.</returns>
-    public bool TrySendToNextFloor() => TrySetDestination(NextDestinationLevel, false);
+    //public bool TrySendToNextFloor() => TrySetDestination(NextDestinationLevel, false);
 
     /// <summary>
     /// Attempts to get elevator door at specified floor.
@@ -137,20 +139,21 @@ public class Elevator
     /// <param name="targetLevel">The target elevator floor.</param>
     /// <param name="door">The elevator door at floor.</param>
     /// <returns>Bool whether the elevator door was found.</returns>
-    public bool TryGetDoorAtLevel(int targetLevel, [NotNullWhen(true)] out ElevatorDoor door) => Base.TryGetLevelDoor(targetLevel, out door);
+    //public bool TryGetDoorAtLevel(int targetLevel, [NotNullWhen(true)] out ElevatorDoor door) => Base.TryGetLevelDoor(targetLevel, out door);
 
     /// <summary>
     /// Sets the lock reason of all elevator doors to the specified state.
     /// </summary>
     /// <param name="reason">The reason for door lock.</param>
     /// <param name="state">Whether the lock is active due to the specified reason.</param>
-    public void LockAllDoors(DoorLockReason reason, bool state) => Base.LockAllDoors(reason, state);
+    //public void LockAllDoors(DoorLockReason reason, bool state) => Base.LockAllDoors(reason, state);
 
     /// <summary>
     /// Unlocks all elevator doors assigned to this <see cref="Group"/>.
     /// </summary>
     public void UnlockAllDoors()
     {
+        /*
         if (ElevatorDoor.AllElevatorDoors.TryGetValue(Group, out List<ElevatorDoor> doors))
         {
             foreach (ElevatorDoor door in doors)
@@ -158,6 +161,7 @@ public class Elevator
                 door.ActiveLocks = 0;
             }
         }
+        */
     }
 
     /// <summary>

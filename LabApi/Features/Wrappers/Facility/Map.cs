@@ -1,6 +1,4 @@
-﻿using LabApi.Features.Wrappers.Facility;
-using LightContainmentZoneDecontamination;
-using MapGeneration;
+﻿using MapGeneration;
 using MapGeneration.Distributors;
 using System;
 using System.Collections.Generic;
@@ -26,8 +24,7 @@ public static class Map
     /// <summary>
     /// Gets all the <see cref="RoomLight">room lights</see>.
     /// </summary>
-    // TODO: use wrapper type instead
-    public static IReadOnlyCollection<RoomLight> RoomLights => RoomLight.List;
+    public static IReadOnlyCollection<LightsController> RoomLights => LightsController.List;
 
     /// <summary>
     /// Gets all the <see cref="Camera">cameras</see>.
@@ -38,29 +35,6 @@ public static class Map
     /// Gets all the <see cref="Door">doors</see>.
     /// </summary>
     public static IReadOnlyCollection<Door> Doors => Door.List;
-
-    /// <summary>
-    /// Gets all the pocket dimension teleports.
-    /// </summary>
-    // TODO: get list of teleports from the PocketDimention wrapper
-    // use wrapped type if there is one
-    public static IReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports => PocketDimensionTeleport.List;
-
-    /// <summary>
-    /// Gets all the <see cref="Locker"/> structures.
-    /// </summary>
-    // TODO: use Locker wrapper
-    //assumed to encapsulate StandardLocker LargeGunLocker ScpPedestal
-    public static IReadOnlyCollection<Locker> Lockers => Locker.List;
-
-    /// <summary>
-    /// Gets all the <see cref="Structure">structures</see>.
-    /// </summary>
-    // TODO: find out what to use here
-    //possibly needed for SmallWallCabinet types as it might not be included in Locker
-    //stucture might be the best option as it should hold all Lockers/workstations and other ones needed
-    //it can replace Locker if needed
-    public static IReadOnlyCollection<Structure> Structures => Structure.List;
 
     /// <summary>
     /// Gets all the <see cref="Elevator">elevators</see>.
@@ -87,28 +61,6 @@ public static class Map
     /// </summary>
     public static IReadOnlyCollection<Ragdoll> Ragdolls => Ragdoll.List;
 
-    /// <summary>
-    /// Gets all the <see cref="Workstation">workstations</see>.
-    /// </summary>
-    // TODO: use Workstation wrapper
-    public static IReadOnlyCollection<Workstation> Workstations => Workstation.List;
-
-    #region Decontamination
-    /// <summary>
-    /// Force start light containment zone decontamination.
-    /// </summary>
-    // TODO: consider making a decontamination wrapper
-    public static void ForceDecontamination() => DecontaminationController.Singleton.ForceDecontamination();
-
-    /// <summary>
-    /// Gets or sets the light containment zone decontamination status.
-    /// </summary>
-    public static DecontaminationController.DecontaminationStatus DecontaminationStatus
-    {
-        get => DecontaminationController.Singleton.DecontaminationOverride;
-        set => DecontaminationController.Singleton.NetworkDecontaminationOverride = value;// TODO: test if this works as expected for devs i.e. changing this shouldnt have unintended or weird behaviour
-    }
-    #endregion
 
     #region Get Random
     /// <summary>
@@ -187,8 +139,7 @@ public static class Map
     /// Gets a random <see cref="RoomLight"/>.
     /// </summary>
     /// <returns>The random room light if there were any room lights otherwise null.</returns>
-    // TODO: use light wrapper
-    public static RoomLight? GetRandomLight()
+    public static LightsController? GetRandomLight()
     {
         return RoomLights.Count != 0 ? RoomLights.ElementAt(UnityEngine.Random.Range(0, RoomLights.Count)) : null;
     }
@@ -198,11 +149,10 @@ public static class Map
     /// </summary>
     /// <param name="zone">The zone to pick a random room light from.</param>
     /// <returns>The random room light if there were any room lights in the zone otherwise null.</returns>
-    // TODO: use light wrapper
-    public static RoomLight? GetRandomLight(FacilityZone zone)
+    public static LightsController? GetRandomLight(FacilityZone zone)
     {
         // TODO: use zone wrapper.
-        IEnumerable<RoomLight> lights = RoomLights.Where(x => x.Room.Zone == zone);
+        IEnumerable<LightsController> lights = RoomLights.Where(x => x.Room.Zone == zone);
         int count = lights.Count();
         return count != 0 ? lights.ElementAt(UnityEngine.Random.Range(0, count)) : null;
     }
@@ -213,10 +163,10 @@ public static class Map
     /// <param name="zones">The zones to pick a random room light from.</param>
     /// <returns>The random room light if there were any room lights in the zones otherwise null.</returns>
     // TODO: use light wrapper
-    public static RoomLight? GetRandomLight(IEnumerable<FacilityZone> zones)
+    public static LightsController? GetRandomLight(IEnumerable<FacilityZone> zones)
     {
         // TODO: use zone wrapper.
-        IEnumerable<RoomLight> lights = RoomLights.Where(x => zones.Contains(x.Room.Zone));
+        IEnumerable<LightsController> lights = RoomLights.Where(x => zones.Contains(x.Room.Zone));
         int count = lights.Count();
         return count != 0 ? lights.ElementAt(UnityEngine.Random.Range(0, count)) : null;
     }
@@ -263,7 +213,7 @@ public static class Map
     // TODO: use wrapper type
     public static Locker? GetRandomLocker()
     {
-        return Lockers.Count != 0 ? Lockers.ElementAt(UnityEngine.Random.Range(0, Lockers.Count)) : null;
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -383,30 +333,36 @@ public static class Map
     #endregion
 
     #region Lights
+
+    /// <summary>
+    /// Turns off all lights for a certain duration.
+    /// </summary>
+    /// <param name="duration">How long to keep the lights off.</param>
+    public static void TurnOffLights(float duration)
+    {
+        foreach (LightsController lc in LightsController.List)
+            lc.FlickerLights(duration);
+    }
+
+
     /// <summary>
     /// Turns off all lights.
     /// </summary>
-    // TODO: use Room.Lights wrapper instead
-    public static void TurnOffLights()
-    {
-        foreach (RoomLightController controller in RoomLightController.Instances)
-            controller.NetworkLightsEnabled = false;
-    }
+    public static void TurnOffLights() => TurnOffLights(float.MaxValue);
 
     /// <summary>
     /// Turns off lights in a zone.
     /// </summary>
     /// <param name="zone">The zone to turn the lights off in.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void TurnOffLights(FacilityZone zone)
     {
-        // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        //TODO: use zone wrapper?
+        foreach (LightsController lc in LightsController.List)
         {
-            if (controller.Room.Zone != zone)
+            if (lc.Room.Zone != zone)
                 continue;
 
-            controller.NetworkLightsEnabled = false;
+            lc.FlickerLights(float.MaxValue);
         }
     }
 
@@ -414,45 +370,33 @@ public static class Map
     /// Turns off lights in the zones.
     /// </summary>
     /// <param name="zones">The zones to turn off the lights.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void TurnOffLights(IEnumerable<FacilityZone> zones)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (!zones.Contains(controller.Room.Zone))
+            if (!zones.Contains(lc.Room.Zone))
                 continue;
 
-            controller.NetworkLightsEnabled = false;
+            lc.FlickerLights(float.MaxValue);
         }
     }
 
-    /// <summary>
-    /// Turns off all lights for a certain duration.
-    /// </summary>
-    /// <param name="duration">How long to keep the lights off.</param>
-    // TODO: use Room.Lights wrapper instead
-    public static void TurnOffLights(float duration)
-    {
-        foreach (RoomLightController controller in RoomLightController.Instances)
-            controller.ServerFlickerLights(duration);
-    }
 
     /// <summary>
     /// Turns off all lights in a zone for a certain duration.
     /// </summary>
     /// <param name="duration">How long to keep the lights off.</param>
     /// <param name="zone">The zone to turn the lights off in.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void TurnOffLights(float duration, FacilityZone zone)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if(controller.Room.Zone != zone)
+            if (lc.Room.Zone != zone)
                 continue;
 
-            controller.ServerFlickerLights(duration);
+            lc.FlickerLights(duration);
         }
     }
 
@@ -461,43 +405,40 @@ public static class Map
     /// </summary>
     /// <param name="duration">How long to keep the lights off.</param>
     /// <param name="zones">The zones to turn the lights off in.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void TurnOffLights(float duration, IEnumerable<FacilityZone> zones)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (!zones.Contains(controller.Room.Zone))
+            if (!zones.Contains(lc.Room.Zone))
                 continue;
 
-            controller.ServerFlickerLights(duration);
+            lc.FlickerLights(duration);
         }
     }
 
     /// <summary>
     /// Turns on all the lights.
     /// </summary>
-    // TODO: use Room.Lights wrapper instead
     public static void TurnOnLights()
     {
-        foreach (RoomLightController controller in RoomLightController.Instances)
-            controller.NetworkLightsEnabled = true;
+        foreach (LightsController lc in LightsController.List)
+            lc.LightsEnabled = true;
     }
 
     /// <summary>
     /// Turns on all the lights in a zone.
     /// </summary>
     /// <param name="zone">The zone to turn all the light on in.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void TurnOnLights(FacilityZone zone)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (controller.Room.Zone != zone)
+            if (lc.Room.Zone != zone)
                 continue;
 
-            controller.NetworkLightsEnabled = true;
+            lc.LightsEnabled = true;
         }
     }
 
@@ -505,16 +446,15 @@ public static class Map
     /// Turns on all the lights in the zones.
     /// </summary>
     /// <param name="zones">The zones to turn all the lights on in.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void TurnOnLights(IEnumerable<FacilityZone> zones)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (!zones.Contains(controller.Room.Zone))
+            if (!zones.Contains(lc.Room.Zone))
                 continue;
 
-            controller.NetworkLightsEnabled = true;
+            lc.LightsEnabled = true;
         }
     }
 
@@ -524,11 +464,10 @@ public static class Map
     /// Sets the color of all the lights.
     /// </summary>
     /// <param name="color">The color to set the lights.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void SetColorOfLights(UnityEngine.Color color)
     {
-        foreach (RoomLightController controller in RoomLightController.Instances)
-            controller.NetworkOverrideColor = color;
+        foreach (LightsController lc in LightsController.List)
+            lc.OverrideLightsColor = color;
     }
 
     /// <summary>
@@ -536,16 +475,15 @@ public static class Map
     /// </summary>
     /// <param name="color">The color to set the lights.</param>
     /// <param name="zone">The zone to effect.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void SetColorOfLights(UnityEngine.Color color, FacilityZone zone)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (controller.Room.Zone != zone)
+            if (lc.Room.Zone != zone)
                 continue;
 
-            controller.NetworkOverrideColor = color;
+            lc.OverrideLightsColor = color;
         }
     }
 
@@ -554,43 +492,40 @@ public static class Map
     /// </summary>
     /// <param name="color">The color to set the lights.</param>
     /// <param name="zones">The zones to effect.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void SetColorOfLights(UnityEngine.Color color, IEnumerable<FacilityZone> zones)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (!zones.Contains(controller.Room.Zone))
+            if (!zones.Contains(lc.Room.Zone))
                 continue;
 
-            controller.NetworkOverrideColor = color;
+            lc.OverrideLightsColor = color;
         }
     }
 
     /// <summary>
     /// Sets the color of all the lights back to their default.
     /// </summary>
-    // TODO: use Room.Lights wrapper instead
     public static void ResetColorOfLights()
     {
-        foreach (RoomLightController controller in RoomLightController.Instances)
-            controller.NetworkOverrideColor = UnityEngine.Color.clear;// TODO: check if this is the correct way to clear the override color.
+        foreach (LightsController lc in LightsController.List)
+            lc.OverrideLightsColor = UnityEngine.Color.clear;
     }
 
     /// <summary>
     /// Sets the color of all the lights in a zone back to their default;
     /// </summary>
     /// <param name="zone">The zone to effect.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void ResetColorOfLights(FacilityZone zone)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (controller.Room.Zone != zone)
+            if (lc.Room.Zone != zone)
                 continue;
 
-            controller.NetworkOverrideColor = UnityEngine.Color.clear;
+            lc.OverrideLightsColor = UnityEngine.Color.clear;
         }
     }
 
@@ -598,16 +533,15 @@ public static class Map
     /// Sets the color of all lights in the zones back to their default.
     /// </summary>
     /// <param name="zones">The zones to effect.</param>
-    // TODO: use Room.Lights wrapper instead
     public static void ResetColorOfLights(IEnumerable<FacilityZone> zones)
     {
         // TODO: use zone wrapper.
-        foreach (RoomLightController controller in RoomLightController.Instances)
+        foreach (LightsController lc in LightsController.List)
         {
-            if (!zones.Contains(controller.Room.Zone))
+            if (!zones.Contains(lc.Room.Zone))
                 continue;
 
-            controller.NetworkOverrideColor = UnityEngine.Color.clear;
+            lc.OverrideLightsColor = UnityEngine.Color.clear;
         }
     }
     #endregion

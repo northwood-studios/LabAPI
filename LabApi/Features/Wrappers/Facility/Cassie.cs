@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using static NineTailedFoxAnnouncer;
 
-namespace LabApi.Features.Wrappers.Facility
+namespace LabApi.Features.Wrappers
 {
     /// <summary>
     /// The wrapper for in game Cassie announcer.

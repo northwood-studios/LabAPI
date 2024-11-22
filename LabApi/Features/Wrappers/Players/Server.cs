@@ -48,7 +48,7 @@ public static class Server
     /// <summary>
     /// Gets the amount of online players.
     /// </summary>
-    public static int PlayerCount => Count;
+    public static int PlayerCount => Player.Count;
 
     /// <summary>
     /// Gets or sets the maximum amount of players allowed online at the same time.
@@ -130,17 +130,16 @@ public static class Server
     /// <summary>
     /// Gets or sets the server name as seen on the server list.
     /// </summary>
-    // TODO: make _serverName public
     public static string ServerListName
     {
-        get => ServerConsole._serverName;
-        set => ServerConsole._serverName = value;
+        get => ServerConsole.ServerName;
+        set => ServerConsole.ServerName = value;
     }
 
     /// <summary>
     /// Gets or sets the server name as seen on the player list.
     /// </summary>
-    // TODO: maybe move to a playerlist wrapper
+    // TODO: maybe move to a playerlist wrapper?
     public static string PlayerListName
     {
         get => PlayerList.Title.Value;
@@ -150,12 +149,11 @@ public static class Server
     /// <summary>
     /// Gets or sets the refresh rate for the player list name.
     /// </summary>
-    // TODO: maybe move to a playerlist wrapper
-    // TODO: make _refreshRate public
+    // TODO: maybe move to a playerlist wrapper?
     public static float PlayerListNameRefreshRate
     {
-        get => PlayerList._refreshRate.Value;
-        set => PlayerList._refreshRate.Value = value;
+        get => PlayerList.RefreshRate.Value;
+        set => PlayerList.RefreshRate.Value = value;
     }
 
     /// <summary>
@@ -186,7 +184,6 @@ public static class Server
     /// <summary>
     /// Gets the <see cref="ServerShutdown.ServerShutdownState"/> of the server.
     /// </summary>
-    // TODO: make ServerShutdown.ServerShutdownState and ServerShutdown.ShutdownState public.
     public static ServerShutdown.ServerShutdownState ShutdownState => ServerShutdown.ShutdownState;
 
     #region Ban System
@@ -415,7 +412,7 @@ public static class Server
         if (shouldClearPrevious)
             ClearBroadcasts();
 
-        Broadcast.RpcAddElement(message, duration, type);
+        Broadcast.Singleton.RpcAddElement(message, duration, type);
     }
 
     /// <summary>
@@ -431,19 +428,19 @@ public static class Server
         if (shouldClearPrevious)
             ClearBroadcasts(player);
 
-        Broadcast.TargetAddElement(player.Connection, message, duration, type);
+        Broadcast.Singleton.TargetAddElement(player.Connection, message, duration, type);
     }
 
     /// <summary>
     /// Clears broadcast's for all players.
     /// </summary>
-    public static void ClearBroadcasts() => Broadcast.RpcClearElements();
+    public static void ClearBroadcasts() => Broadcast.Singleton.RpcClearElements();
 
     /// <summary>
     /// Clears broadcast's for the specified <see cref="Player"/>.
     /// </summary>
     /// <param name="player">The player to clear the broadcast's.</param>
-    public static void ClearBroadcasts(Player player) => Broadcast.TargetClearElements(player.Connection);
+    public static void ClearBroadcasts(Player player) => Broadcast.Singleton.TargetClearElements(player.Connection);
 
     /// <summary>
     /// Handles the creation of the host in the server.
@@ -488,7 +485,6 @@ public static class Server
     /// <summary>
     /// Private implementation class for synchronizing ItemCategory limits
     /// </summary>
-    // TODO: make RefreshCategoryLimits public
     private class CategoryLimitsSynchronizer : ILimit<ItemCategory, sbyte>
     {
         /// <inheritdoc/>
@@ -504,7 +500,6 @@ public static class Server
                     throw new IndexOutOfRangeException($"Index {category} was not a valid ItemCategory type");
 
                 InventoryLimits.StandardCategoryLimits[category] = value;
-                // TODO: make public
                 ServerConfigSynchronizer.Singleton.RefreshCategoryLimits();
             }
         }
@@ -513,7 +508,6 @@ public static class Server
     /// <summary>
     /// Private implementation class for synchronizing Ammo limits.
     /// </summary>
-    // TODO: make RefreshAmmoLimits public
     private class AmmoLimitsSynchronizer : ILimit<ItemType, ushort>
     {
         /// <inheritdoc/>
@@ -526,7 +520,6 @@ public static class Server
                     throw new IndexOutOfRangeException($"Index {ammo} was not a valid Ammo type");
 
                 InventoryLimits.StandardAmmoLimits[ammo] = value;
-                // TODO: make public
                 ServerConfigSynchronizer.Singleton.RefreshAmmoLimits();
             }
         }

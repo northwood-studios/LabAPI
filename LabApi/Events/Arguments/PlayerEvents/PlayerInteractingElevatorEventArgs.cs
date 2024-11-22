@@ -2,7 +2,6 @@
 using LabApi.Features.Wrappers;
 using System;
 using Interactables.Interobjects;
-using LabApi.Features.Wrappers.Facility;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 

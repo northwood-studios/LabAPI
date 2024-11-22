@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LabApi.Features.Wrappers.Facility.Rooms
+namespace LabApi.Features.Wrappers
 {
     /// <summary>
     /// The wrapper representing <see cref="RoomLightController">room light controller</see>.
