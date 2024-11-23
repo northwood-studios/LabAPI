@@ -2,10 +2,8 @@
 using Interactables.Interobjects.DoorUtils;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
-using static Interactables.Interobjects.ElevatorManager;
 using Generators;
 
 namespace LabApi.Features.Wrappers;
@@ -48,21 +46,19 @@ public class Elevator
     {
         Dictionary.Clear();
 
-        /*
-        ElevatorChamber.OnAdded += (chamber) => _ = new Elevator(chamber);
-        ElevatorChamber.OnRemoved += (chamber) => Dictionary.Remove(chamber);
-        */
+        ElevatorChamber.OnElevatorSpawned += (chamber) => _ = new Elevator(chamber);
+        ElevatorChamber.OnElevatorRemoved += (chamber) => Dictionary.Remove(chamber);
     }
 
     /// <summary>
     /// Gets the current destination / location of the elevator.
     /// </summary>
-    //public ElevatorDoor CurrentDestination => Base.CurrentDestination;
+    public ElevatorDoor CurrentDestination => Base.DestinationDoor;
 
     /// <summary>
     /// Gets the destination/current floor of the elevator.
     /// </summary>
-    //public int CurrentDestinationLevel => Base.CurrentLevel;
+    public int CurrentDestinationLevel => Base.DestinationLevel;
 
     /// <summary>
     /// Gets the destination this elevator will head towards once activated.
@@ -80,6 +76,11 @@ public class Elevator
     public bool IsReady => Base.IsReady;
 
     /// <summary>
+    /// Gets whether the level of this elevator is increasing.
+    /// </summary>
+    public bool GoingUp => Base.GoingUp;
+
+    /// <summary>
     /// Gets or sets the <see cref="ElevatorGroup"/> this elevator belongs to.
     /// </summary>
     public ElevatorGroup Group
@@ -91,7 +92,7 @@ public class Elevator
     /// <summary>
     /// Gets the current <see cref="ElevatorChamber.ElevatorSequence"/>.
     /// </summary>
-    //public ElevatorChamber.ElevatorSequence CurrentSequence => Base.CurrentSequence;
+    public ElevatorChamber.ElevatorSequence CurrentSequence => Base.CurSequence;
 
     /// <summary>
     /// Gets the current world space bounds of this elevator.
@@ -119,50 +120,52 @@ public class Elevator
         set => Base.DynamicAdminLock = value;
     }
 
+
+    /// <summary>
+    /// Locks every door of every elevator on map.
+    /// </summary>
+    public static void LockAll()
+    {
+        foreach (Elevator el in List)
+            el.LockAllDoors();
+    }
+
+    /// <summary>
+    /// Unlocks every door of every elevator on map.
+    /// </summary>
+    public static void UnlockAll()
+    {
+        foreach (Elevator el in List)
+            el.UnlockAllDoors();
+    }
+
     /// <summary>
     /// Attempts to send the elevator to target destination.
     /// </summary>
     /// <param name="targetLevel">Target level index of the floor.</param>
     /// <param name="force">Whether the destination should be changed even that the elevator is not ready/is still moving.</param>
-    /// <returns></returns>
-    //public bool TrySetDestination(int targetLevel, bool force = false) => Base.TrySetDestination(targetLevel, force);
+    public void SetDestination(int targetLevel, bool force = false) => Base.ServerSetDestination(targetLevel, force);
+
+    /// <summary>
+    /// Simulates interaction of specified <see cref="Player"/> on this elevator.
+    /// </summary>
+    /// <param name="player">The player who is interacting with this elevator.</param>
+    public void Interact(Player player) => Base.ServerInteract(player.ReferenceHub, 0);
 
     /// <summary>
     /// Attempts to send the elevator to the next available floor.
     /// </summary>
-    /// <returns>Whether the elevator was sent. Returns false if elevator is still moving or not yet ready.</returns>
-    //public bool TrySendToNextFloor() => TrySetDestination(NextDestinationLevel, false);
-
-    /// <summary>
-    /// Attempts to get elevator door at specified floor.
-    /// </summary>
-    /// <param name="targetLevel">The target elevator floor.</param>
-    /// <param name="door">The elevator door at floor.</param>
-    /// <returns>Bool whether the elevator door was found.</returns>
-    //public bool TryGetDoorAtLevel(int targetLevel, [NotNullWhen(true)] out ElevatorDoor door) => Base.TryGetLevelDoor(targetLevel, out door);
+    public void SendToNextFloor() => SetDestination(NextDestinationLevel, false);
 
     /// <summary>
     /// Sets the lock reason of all elevator doors to the specified state.
     /// </summary>
-    /// <param name="reason">The reason for door lock.</param>
-    /// <param name="state">Whether the lock is active due to the specified reason.</param>
-    //public void LockAllDoors(DoorLockReason reason, bool state) => Base.LockAllDoors(reason, state);
+    public void LockAllDoors() => Base.ServerLockAllDoors(DoorLockReason.AdminCommand, true);
 
     /// <summary>
-    /// Unlocks all elevator doors assigned to this <see cref="Group"/>.
+    /// Unlocks all elevator doors assigned to this chamber.
     /// </summary>
-    public void UnlockAllDoors()
-    {
-        /*
-        if (ElevatorDoor.AllElevatorDoors.TryGetValue(Group, out List<ElevatorDoor> doors))
-        {
-            foreach (ElevatorDoor door in doors)
-            {
-                door.ActiveLocks = 0;
-            }
-        }
-        */
-    }
+    public void UnlockAllDoors() => Base.ServerLockAllDoors(DoorLockReason.AdminCommand, false);
 
     /// <summary>
     /// Gets the elevator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
