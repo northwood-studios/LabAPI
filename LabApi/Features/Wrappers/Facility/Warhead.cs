@@ -11,7 +11,6 @@ namespace LabApi.Features.Wrappers;
 /// <summary>
 /// The wrapper for various Warhead components.
 /// </summary>
-// TODO: Add a way in the base game to reset the blastdoors to enable resetting of the warhead + otherstuff.
 public static class Warhead
 {
     [InitializeWrapper]
@@ -38,6 +37,11 @@ public static class Warhead
     /// Null if they have not been created yet, see <see cref="Exists"/>.
     /// </summary>
     public static AlphaWarheadOutsitePanel? BaseOutsidePanel { get; private set; }
+
+    /// <summary>
+    /// A reference to all <see cref="BlastDoor"/> instances currently in the game.
+    /// </summary>
+    public static HashSet<BlastDoor> BlastDoors => BlastDoor.Instances;
 
     /// <summary>
     /// Gets a value indicating whether the Warhead components have been created.
@@ -222,6 +226,24 @@ public static class Warhead
     public static void Detonate()
     {
         DetonationTime = 0.0f;
+    }
+
+    /// <summary>
+    /// Opens all blast doors.
+    /// </summary>
+    public static void OpenBlastDoors()
+    {
+        foreach (var door in BlastDoor.Instances)
+            door.ServerSetTargetState(true);
+    }
+
+    /// <summary>
+    /// Closes all blast doors.
+    /// </summary>
+    public static void CloseBlastDoors()
+    {
+        foreach (var door in BlastDoor.Instances)
+            door.ServerSetTargetState(false);
     }
 
     /// <summary>
