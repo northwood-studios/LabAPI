@@ -205,7 +205,7 @@ public static partial class PlayerEvents
     /// <summary>
     /// Gets called when the player group has changed.
     /// </summary>
-    public static event LabEventHandler<PlayerGetGroupEventArgs>? GetGroup;
+    public static event LabEventHandler<PlayerGroupChangedEventArgs>? GroupChanged;
 
     /// <summary>
     /// Gets called when the player is getting hurt.

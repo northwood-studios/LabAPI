@@ -7,14 +7,14 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.GetGroup"/> event.
 /// </summary>
-public class PlayerGetGroupEventArgs : EventArgs, IPlayerEvent
+public class PlayerGroupChangedEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerGetGroupEventArgs"/> class.
+    /// Initializes a new instance of the <see cref="PlayerGroupChangedEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player whose group changed.</param>
     /// <param name="group">The new group.</param>
-    public PlayerGetGroupEventArgs(ReferenceHub player, UserGroup group)
+    public PlayerGroupChangedEventArgs(ReferenceHub player, UserGroup group)
     {
         Player = Player.Get(player);
         Group = group;
