@@ -1,7 +1,12 @@
 ﻿using Generators;
 using InventorySystem;
 using InventorySystem.Items;
+using InventorySystem.Items.Armor;
+using InventorySystem.Items.Coin;
+using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Usables;
 using NorthwoodLib.Pools;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -16,6 +21,11 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Item
 {
+    /// <summary>
+    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// </summary>
+    private static Dictionary<Type, Func<ItemBase, Item>> typeWrappers = [];
+
     /// <summary>
     /// Contains all the cached items, accessible through their <see cref="Base"/>.
     /// </summary>
@@ -125,10 +135,17 @@ public class Item
     /// A private constructor to prevent external instantiation.
     /// </summary>
     /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
-    private Item(ItemBase itemBase)
+    protected Item(ItemBase itemBase)
     {
         Dictionary.Add(itemBase, this);
         Base = itemBase;
+    }
+
+    /// <summary>
+    /// An internal virtual method to signal to derived implementations to uncache when the base object is destroyed.
+    /// </summary>
+    internal virtual void OnRemove()
+    {
     }
 
     /// <summary>
@@ -144,8 +161,41 @@ public class Item
     {
         Dictionary.Clear();
 
-        InventoryExtensions.OnItemAdded += (_, item, _) => _ = new Item(item);
+        InventoryExtensions.OnItemAdded += (_, item, _) => AddItem(item);
         InventoryExtensions.OnItemRemoved += (_, item, _) => RemoveItem(item);
+
+        Register<ItemBase>(x => new Item(x));
+
+        Register<Consumable>(x => new ConsumableItem(x));
+        Register<Scp500>(x => new Scp500Item(x));
+        Register<InventorySystem.Items.Usables.Scp1853Item>(x => new Scp1853Item(x));
+        Register<Painkillers>(x => new PainkillersItem(x));
+        Register<Adrenaline>(x => new AdrenalineItem(x));
+        Register<Medkit>(x => new MedkitItem(x));
+        Register<Scp207>(x => new Scp207Item(x));
+        Register<AntiScp207>(x => new AntiScp207Item(x));
+
+        Register<InventorySystem.Items.Usables.UsableItem>(x => new UsableItem(x));
+        Register<InventorySystem.Items.Usables.Scp1576.Scp1576Item>(x => new Scp1576Item(x));
+        Register<InventorySystem.Items.Usables.Scp330.Scp330Bag>(x => new Scp330Item(x));
+        Register<InventorySystem.Items.Usables.Scp244.Scp244Item>(x => new Scp244Item(x));
+        Register<Scp268>(x => new Scp268Item(x));
+
+        Register<Firearm>(x => new FirearmItem(x));
+        Register<ParticleDisruptor>(x => new ParticleDisruptorItem(x));
+        Register<InventorySystem.Items.Jailbird.JailbirdItem>(x => new JailbirdItem(x));
+        Register<Coin>(x => new CoinItem(x));
+
+        Register<InventorySystem.Items.ToggleableLights.ToggleableLightItemBase>(x => new LightItem(x));
+        Register<InventorySystem.Items.ToggleableLights.Flashlight.FlashlightItem>(x => new FlashlightItem(x));
+        Register<InventorySystem.Items.ToggleableLights.Lantern.LanternItem>(x => new LanternItem(x));
+
+        Register<InventorySystem.Items.Radio.RadioItem>(x => new RadioItem(x));
+        Register<InventorySystem.Items.Firearms.Ammo.AmmoItem>(x => new AmmoItem(x));
+        Register<BodyArmor>(x => new BodyArmorItem(x));
+        Register<InventorySystem.Items.ThrowableProjectiles.ThrowableItem>(x => new ThrowableItem(x));
+        Register<InventorySystem.Items.Keycards.KeycardItem>(x => new KeycardItem(x));
+        Register<InventorySystem.Items.MicroHID.MicroHIDItem>(x => new MicroHIDItem(x));
     }
 
     /// <summary>
@@ -159,7 +209,7 @@ public class Item
         if (itemBase == null)
             return null;
 
-        return Dictionary.TryGetValue(itemBase, out Item item) ? item : new Item(itemBase);
+        return Dictionary.TryGetValue(itemBase, out Item item) ? item : CreateItemWrapper(itemBase);
     }
 
     /// <summary>
@@ -225,9 +275,47 @@ public class Item
         return list;
     }
 
-    private static void RemoveItem(ItemBase item)
+    /// <summary>
+    /// Creates a new wrapper from the base item object.
+    /// </summary>
+    /// <param name="item">The base object.</param>
+    /// <returns>The newly created wrapper.</returns>
+    protected static Item CreateItemWrapper(ItemBase item)
     {
-        Dictionary.Remove(item);
-        SerialsCache.Remove(item.ItemSerial);
+        return typeWrappers[item.GetType()].Invoke(item);
+    }
+
+    /// <summary>
+    /// A private method to handle the creation of new items in the server.
+    /// </summary>
+    /// <param name="item">The created <see cref="ItemBase"/> instance.</param>
+    private static void AddItem(ItemBase item)
+    {
+        if (!Dictionary.ContainsKey(item))
+            _ = CreateItemWrapper(item);
+    }
+
+    /// <summary>
+    /// A private method to handle the removal of items from the server.
+    /// </summary>
+    /// <param name="itemBase">The to be destroyed <see cref="ItemBase"/> instance.</param>
+    private static void RemoveItem(ItemBase itemBase)
+    {
+        SerialsCache.Remove(itemBase.ItemSerial);
+        if (Dictionary.TryGetValue(itemBase, out Item item))
+        {
+            Dictionary.Remove(itemBase);
+            item.OnRemove();
+        }
+    }
+
+    /// <summary>
+    /// A private method to handle the addition of wrapper handlers.
+    /// </summary>
+    /// <typeparam name="T">The derived base game type to handle.</typeparam>
+    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
+    private static void Register<T>(Func<T, Item> constructor) where T : ItemBase
+    {
+        typeWrappers.Add(typeof(T), x => constructor((T)x));
     }
 }
