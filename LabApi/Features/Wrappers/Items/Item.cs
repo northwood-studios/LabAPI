@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
 
@@ -104,34 +103,6 @@ public class Item
     public float Weight => Base.Weight;
 
     /// <summary>
-    /// Gets the item's <see cref="UnityEngine.Transform"/>.
-    /// </summary>
-    public Transform Transform => Base.transform;
-
-    /// <summary>
-    /// Gets the item's <see cref="UnityEngine.GameObject"/>.
-    /// </summary>
-    public GameObject GameObject => Base.gameObject;
-
-    /// <summary>
-    /// Gets or sets the item's <see cref="UnityEngine.Vector3">position</see>.
-    /// </summary>
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set => Transform.position = value;
-    }
-
-    /// <summary>
-    /// Gets or sets the item's <see cref="UnityEngine.Quaternion">rotation</see>.
-    /// </summary>
-    public Quaternion Rotation
-    {
-        get => Transform.rotation;
-        set => Transform.rotation = value;
-    }
-
-    /// <summary>
     /// A private constructor to prevent external instantiation.
     /// </summary>
     /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
@@ -203,7 +174,7 @@ public class Item
     /// </summary>
     /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
     /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull("itemBase")]
+    [return: NotNullIfNotNull(nameof(itemBase))]
     public static Item? Get(ItemBase? itemBase)
     {
         if (itemBase == null)
@@ -221,13 +192,13 @@ public class Item
     public static bool TryGet(ItemBase? itemBase, [NotNullWhen(true)] out Item? item)
     {
         item = Get(itemBase);
-        return item!= null;
+        return item != null;
     }
 
     /// <summary>
     /// Gets the item wrapper or null from <see cref="SerialsCache"/>.
     /// </summary>
-    /// <param name="serial">Serial of the item</param>
+    /// <param name="serial">Serial of the item.</param>
     /// <returns>The requested item.</returns>
     public static Item? Get(ushort serial) => TryGet(serial, out Item? item) ? item : null;
 
@@ -252,10 +223,10 @@ public class Item
     }
 
     /// <summary>
-    /// Gets a pooled list of items having the same <see cref="ItemType"/>
+    /// Gets a pooled list of items having the same <see cref="ItemType"/>.
     /// </summary>
-    /// <param name="type">Target type</param>
-    /// <returns>A List of items</returns>
+    /// <param name="type">Target type.</param>
+    /// <returns>A List of items.</returns>
     public static List<Item> GetAll(ItemType type)
     {
         List<Item> list = ListPool<Item>.Shared.Rent();
@@ -264,10 +235,10 @@ public class Item
     }
 
     /// <summary>
-    /// Gets a pooled list of items having the same <see cref="ItemCategory"/>
+    /// Gets a pooled list of items having the same <see cref="ItemCategory"/>.
     /// </summary>
-    /// <param name="category">Target category</param>
-    /// <returns>A List of items</returns>
+    /// <param name="category">Target category.</param>
+    /// <returns>A List of items.</returns>
     public static List<Item> GetAll(ItemCategory category)
     {
         List<Item> list = ListPool<Item>.Shared.Rent();

@@ -1,7 +1,8 @@
 using Generators;
 using Mirror;
 using PlayerRoles;
-using PlayerRoles.FirstPersonControl;
+using PlayerRoles.PlayableScps.Scp049;
+using PlayerRoles.PlayableScps.Scp049.Zombies;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using System.Collections.Generic;
@@ -30,18 +31,18 @@ public class Ragdoll
     /// <param name="ragdoll">The ragdoll component.</param>
     private Ragdoll(BasicRagdoll ragdoll)
     {
-        Dictionary.Add(ragdoll, this);
         Base = ragdoll;
+        Dictionary.TryAdd(ragdoll, this);
     }
 
     /// <summary>
     /// Gets the <see cref="BasicRagdoll"/> of the ragdoll.
     /// </summary>
-    public BasicRagdoll Base { get; }
+    public BasicRagdoll Base { get; private set; }
 
     /// <summary>
-    /// Gets or sets the role info of the ragdoll
-    /// <para>This does NOT change the ragdoll visually</para>
+    /// Gets or sets the role info of the ragdoll.
+    /// <para>This does NOT change the ragdoll visually.</para>
     /// </summary>
     public RoleTypeId Role
     {
@@ -69,29 +70,76 @@ public class Ragdoll
     }
 
     /// <summary>
-    /// Gets or sets position of the ragdoll.
+    /// Gets or sets the position of the ragdoll.
     /// </summary>
     public Vector3 Position
     {
         get => Base.transform.position;
         set
         {
-            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, value, Base.NetworkInfo.StartRotation, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
             Base.transform.position = value;
+            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, value, Base.NetworkInfo.StartRotation, Base.NetworkInfo.Scale, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
         }
     }
 
     /// <summary>
-    /// Gets or sets rotation of the ragdoll.
+    /// Gets or sets the rotation of the ragdoll.
     /// </summary>
     public Quaternion Rotation
     {
         get => Base.transform.rotation;
         set
         {
-            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, value, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
             Base.transform.rotation = value;
+            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, value, Base.NetworkInfo.Scale, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
         }
+    }
+
+    /// <summary>
+    /// Gets or sets the player scale.
+    /// </summary>
+    public Vector3 Scale
+    {
+        get => Base.transform.localScale;
+        set
+        {
+            Base.transform.localScale = value;
+            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, value, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets whether the corpse is consumed.
+    /// </summary>
+    public bool IsConsumed
+    {
+        get => ZombieConsumeAbility.ConsumedRagdolls.Contains(Base);
+        set
+        {
+            if (value)
+            {
+                ZombieConsumeAbility.ConsumedRagdolls.Add(Base);
+                return;
+            }
+
+            ZombieConsumeAbility.ConsumedRagdolls.Remove(Base);
+        }
+    }
+
+    /// <summary>
+    /// Gets whether the ragdoll is revivable by SCP-049 player.
+    /// </summary>
+    /// <param name="scp049">Player who is SCP-049</param>
+    /// <returns>True if corpse is revivable. False if it isn't or specified player is not SCP-049.</returns>
+    public bool IsRevivableBy(Player scp049)
+    {
+        if (scp049.RoleBase is not Scp049Role role)
+            return false;
+
+        if (!role.SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability))
+            return false;
+
+        return ability.CheckRagdoll(Base);
     }
 
     /// <summary>
@@ -103,45 +151,55 @@ public class Ragdoll
     }
 
     /// <summary>
-    /// Spawns a new ragdoll based on a specified player and damage handler.
+    /// Forcefully freezes this ragdoll for all clients.
     /// </summary>
-    /// <param name="player">Player for ragdoll template</param>
-    /// <param name="handler">Handler that is shown as death cause</param>
-    /// <returns>New ragdoll</returns>
-    public static Ragdoll SpawnRagdoll(Player player, DamageHandlerBase handler)
+    public void Freeze()
     {
-        return Get(RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, handler));
+        Base.ClientFreezeRpc();
     }
 
+    /// <summary>
+    /// Unfreezes this ragdoll by spawning a copy of it and destroying the original. Reference to the <see cref="Base"/> changes, but no other action is required if you are referencing this object. <br/>
+    /// </summary>
+    /// <remarks>
+    /// Note that the position and rotation is set to the server one.
+    /// </remarks>
+    public void UnFreeze()
+    {
+        RagdollData data = Base.NetworkInfo;
+
+        RagdollManager.OnRagdollSpawned -= RagdollSpawned;
+        RagdollManager.OnRagdollRemoved -= RagdollRemoved;
+
+        Destroy();
+        Base = RagdollManager.ServerCreateRagdoll(data.RoleType, data.StartPosition, data.StartRotation, data.Handler, data.Nickname, data.Scale, data.Serial);
+
+        RagdollManager.OnRagdollSpawned += RagdollSpawned;
+        RagdollManager.OnRagdollRemoved += RagdollRemoved;
+    }
 
     /// <summary>
-    /// Spawns a new ragdoll for the specified role at position. May return null if specified role doesn't have ragdoll.
+    /// Spawns a new ragdoll based on a specified player and damage handler.
     /// </summary>
-    /// <param name="role">Target role of the ragdoll</param>
-    /// <param name="position">Position at which </param>
-    /// <param name="nickname">Nickname of the ragdoll</param>
-    /// <param name="handler">Handler that is displayed as reason of death</param>
-    /// <returns>New ragdoll or null</returns>
-    public static Ragdoll? SpawnRagdoll(RoleTypeId role, Vector3 position, string nickname = "", DamageHandlerBase? handler = null)
+    /// <param name="player">Player for ragdoll template.</param>
+    /// <param name="handler">Handler that is shown as a death cause.</param>
+    /// <returns>New ragdoll.</returns>
+    public static Ragdoll? SpawnRagdoll(Player player, DamageHandlerBase handler) => SpawnRagdoll(player.Role, player.Position, player.Rotation, handler, player.DisplayName);
+
+    /// <summary>
+    /// Attempts to spawn a ragdoll from specified role. Ragdoll is not created if specified role doesn't have any ragdoll model available.
+    /// </summary>
+    /// <param name="role">Target role type.</param>
+    /// <param name="position">Spawn position.</param>
+    /// <param name="rotation">Spawn rotation.</param>
+    /// <param name="scale">Spawn scale. Converted to <see cref="Vector3.one"></see> if null.</param>
+    /// <param name="handler">Damage handler of the death cause.</param>
+    /// <param name="nickname">Nickname that is visible when hovering over.</param>
+    /// <returns>Ragdoll object or null.</returns>
+    public static Ragdoll? SpawnRagdoll(RoleTypeId role, Vector3 position, Quaternion rotation, DamageHandlerBase handler, string nickname, Vector3? scale = null)
     {
-        // We use host hub to change his role to the target & use it as a template
-        ReferenceHub.HostHub.roleManager.ServerSetRole(role, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.None);
-
-        // Check for roles that may not have ragdoll templates
-        if (ReferenceHub.HostHub.roleManager.CurrentRole is not FpcStandardRoleBase humanRole) return null;
-
-        // Set the position
-        humanRole.FpcModule.ServerOverridePosition(position, Vector3.zero);
-
-        // Spawn the ragdoll
-        BasicRagdoll ragdoll = RagdollManager.ServerSpawnRagdoll(ReferenceHub.HostHub, handler);
-
-        // Set role of the hosthub back to none
-        ReferenceHub.HostHub.roleManager.ServerSetRole(RoleTypeId.None, RoleChangeReason.RemoteAdmin);
-
-        // set the ragdoll info
-        ragdoll.Info = new RagdollData(ReferenceHub.HostHub, ragdoll.Info.Handler, role, position, ragdoll.Info.StartRotation, nickname, NetworkTime.time);
-        return Get(ragdoll);
+        BasicRagdoll ragdoll = RagdollManager.ServerCreateRagdoll(role, position, rotation, handler, nickname, scale);
+        return ragdoll == null ? null : Get(ragdoll);
     }
 
     /// <summary>
@@ -152,9 +210,21 @@ public class Ragdoll
     {
         Dictionary.Clear();
 
-        RagdollManager.OnRagdollSpawned += (ragdoll) => _ = new Ragdoll(ragdoll);
-        RagdollManager.OnRagdollRemoved += (ragdoll) => Dictionary.Remove(ragdoll);
+        RagdollManager.OnRagdollSpawned += RagdollSpawned;
+        RagdollManager.OnRagdollRemoved += RagdollRemoved;
     }
+
+    /// <summary>
+    /// Event method for <see cref="RagdollManager.OnRagdollSpawned"/>.
+    /// </summary>
+    /// <param name="ragdoll">New ragdoll.</param>
+    private static void RagdollSpawned(BasicRagdoll ragdoll) => _ = new Ragdoll(ragdoll).Base;
+
+    /// <summary>
+    /// Event method for <see cref="RagdollManager.OnRagdollRemoved"/>.
+    /// </summary>
+    /// <param name="ragdoll">Destoyed ragdoll.</param>
+    private static void RagdollRemoved(BasicRagdoll ragdoll) => Dictionary.Remove(ragdoll);
 
     /// <summary>
     /// Gets the ragdoll wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
@@ -162,4 +232,5 @@ public class Ragdoll
     /// <param name="ragdoll">The ragdoll.</param>
     /// <returns>The requested ragdoll.</returns>
     public static Ragdoll Get(BasicRagdoll ragdoll) => Dictionary.TryGetValue(ragdoll, out Ragdoll rag) ? rag : new Ragdoll(ragdoll);
+
 }

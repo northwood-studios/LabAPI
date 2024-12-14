@@ -1,6 +1,9 @@
-﻿using GameCore;
+﻿using CentralAuth;
+using GameCore;
+using PlayerRoles;
 using RoundRestarting;
 using System;
+using Utils.NonAllocLINQ;
 using static ServerStatic;
 
 namespace LabApi.Features.Wrappers
@@ -16,10 +19,6 @@ namespace LabApi.Features.Wrappers
         public static bool IsRoundStarted
         {
             get => RoundSummary.RoundInProgress();
-            set
-            {
-                if (value) Start();
-            }
         }
 
         /// <summary>
@@ -28,10 +27,33 @@ namespace LabApi.Features.Wrappers
         public static bool IsRoundEnded
         {
             get => !IsRoundStarted && Duration.Seconds > 1;
-            set
+        }
+
+        /// <summary>
+        /// Gets whether the round can end if there is only 1 team alive remaining.<br/>
+        /// <remarks>IMPORTANT: This does NOT check win conditions! Only whether the round is locked and if there is a required amount of players.</remarks>
+        /// </summary>
+        public static bool CanRoundEnd
+        {
+            get
             {
-                if (value) End(true);
+                if (IsLocked || KeepRoundOnOne && ReferenceHub.AllHubs.Count(x => x.authManager.InstanceMode != ClientInstanceMode.DedicatedServer) < 2 || !IsRoundStarted)
+                    return false;
+
+                if (!IsRoundStarted || IsLocked)
+                    return false;
+
+                return true;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the round should end if is active and there is only one player on the server.
+        /// </summary>
+        public static bool KeepRoundOnOne
+        {
+            get => RoundSummary.singleton.KeepRoundOnOne;
+            set => RoundSummary.singleton.KeepRoundOnOne = value;
         }
 
         /// <summary>
@@ -53,13 +75,18 @@ namespace LabApi.Features.Wrappers
         }
 
         /// <summary>
-        /// Gets or sets the current chaos target count.s
+        /// Gets or sets the current extra targets count for SCPs.
         /// </summary>
         public static int ExtraTargets
         {
-            get => RoundSummary.singleton.ExtraTargets;
-            set => RoundSummary.singleton.ExtraTargets = value;
+            get => RoundSummary.singleton.Network_extraTargets;
+            set => RoundSummary.singleton.Network_extraTargets = value;
         }
+
+        /// <summary>
+        /// Gets the current amount of targets for SCPs. Use <see cref="ExtraTargets"/> to add/remove any extra.
+        /// </summary>
+        public static int ScpTargetsAmount => ReferenceHub.AllHubs.Count(hub => hub.GetFaction() is Faction.FoundationStaff or Faction.FoundationEnemy) + ExtraTargets;
 
         /// <summary>
         /// Gets the amount of total deaths during the round.
@@ -95,15 +122,6 @@ namespace LabApi.Features.Wrappers
         /// Gets the duration of the current round.
         /// </summary>
         public static TimeSpan Duration => RoundStart.RoundLength;
-
-        /// <summary>
-        /// Gets or sets whether the round should end if is active and there is only one player on the server.
-        /// </summary>
-        public static bool KeepRoundOnOne
-        {
-            get => RoundSummary.singleton.KeepRoundOnOne;
-            set => RoundSummary.singleton.KeepRoundOnOne = value;
-        }
 
         /// <summary>
         /// Start the round.
@@ -145,9 +163,7 @@ namespace LabApi.Features.Wrappers
                 return true;
             }
 
-            if (KeepRoundOnOne && Player.Count < 2) return false;
-
-            if (!IsRoundStarted || IsLocked)
+            if (!CanRoundEnd)
                 return false;
 
             RoundSummary.singleton.ForceEnd();

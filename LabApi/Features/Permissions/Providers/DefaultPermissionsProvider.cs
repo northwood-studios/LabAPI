@@ -98,7 +98,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         SavePermissions();
     }
 
-    private PermissionGroup GetPlayerGroup(Player player) => _permissionsDictionary.GetValueOrDefault(player.GroupName ?? "default") ?? PermissionGroup.Default;
+    private PermissionGroup GetPlayerGroup(Player player) => _permissionsDictionary.GetValueOrDefault(player.PermissionsGroupName ?? "default") ?? PermissionGroup.Default;
 
     private string[] GetPermissions(PermissionGroup group)
     {

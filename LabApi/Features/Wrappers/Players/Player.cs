@@ -304,18 +304,18 @@ public class Player
     public Dictionary<ItemType, ushort> Ammo => Inventory.UserInventory.ReserveAmmo;
 
     /// <summary>
-    /// Gets or sets the player's role color.
+    /// Gets or sets the player's group color.
     /// </summary>
-    public string RoleColor
+    public string GroupColor
     {
         get => ReferenceHub.serverRoles.Network_myColor;
         set => ReferenceHub.serverRoles.SetColor(value);
     }
 
     /// <summary>
-    /// Gets or sets the player's role name.
+    /// Gets or sets the player's group name.
     /// </summary>
-    public string RoleName
+    public string GroupName
     {
         get => ReferenceHub.serverRoles.Network_myText;
         set => ReferenceHub.serverRoles.SetText(value);
@@ -331,11 +331,11 @@ public class Player
     }
 
     /// <summary>
-    /// Gets the player's group name. Or null if the player is not in a group.
+    /// Gets the player's default permission group name. Or null if the player is not in a group.
     /// </summary>
-    public string? GroupName => ServerStatic.PermissionsHandler.Members.GetValueOrDefault(UserId);
+    public string? PermissionsGroupName => ServerStatic.GetPermissionsHandler().Members.GetValueOrDefault(UserId);
 
-    /// <summary>
+    /// <summary>s
     /// Gets the player's unit ID, or -1 if the role is not a <see cref="HumanRole"/>.
     /// </summary>
     public int UnitId => RoleBase is HumanRole humanRole ? humanRole.UnitNameId : -1;
@@ -1047,7 +1047,7 @@ public class Player
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="duration">The duration of which the text will be visible.</param>
-    public void ReceiveHint(string text, float duration = 3f) => ReferenceHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter(text) }, null, duration));
+    public void SendHint(string text, float duration = 3f) => ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(text)], null, duration));
 
     /// <summary>
     /// Sends the player a hint text with effects.
@@ -1055,14 +1055,14 @@ public class Player
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="effects">The effects of text.</param>
     /// <param name="duration">The duration of which the text will be visible.</param>
-    public void ReceiveHint(string text, HintEffect[] effects, float duration = 3f) =>
-        ReferenceHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter(text) }, effects, duration));
+    public void SendHint(string text, HintEffect[] effects, float duration = 3f) =>
+        ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(text)], effects, duration));
 
     /// <summary>
     /// Sends the player a hit marker.
     /// </summary>
     /// <param name="size">The size of hit marker.</param>
-    public void ReceiveHitMarker(float size = 1f) => Hitmarker.SendHitmarkerDirectly(Connection, size);
+    public void SendHitMarker(float size = 1f) => Hitmarker.SendHitmarkerDirectly(Connection, size);
 
     /// <summary>
     /// Gets the stats module.
