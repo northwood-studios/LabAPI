@@ -9,6 +9,7 @@ namespace LabApi.Features.Wrappers.Facility.Structures;
 /// The wrapper over the <see cref="WorkstationController"/> object.
 /// </summary>
 // TODO: add event to allow/deny attachment changes.
+/*
 public class Workstation : Structure
 {
     /// <summary>
@@ -86,3 +87,4 @@ public class Workstation : Structure
         BaseController.ServerInteract(player.ReferenceHub, BaseController.ActivateCollider.ColliderId);
     }
 }
+*/

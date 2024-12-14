@@ -1,8 +1,6 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
-using Respawning;
-using System;
-using System.Collections.Generic;
+using PlayerRoles;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -15,24 +13,48 @@ public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
     /// Initializes a new instance of the <see cref="WaveRespawningEventArgs"/> class.
     /// </summary>
     /// <param name="team">The team that is respawning.</param>
-    /// <param name="players">The players that are respawning.</param>
-    public WaveRespawningEventArgs(SpawnableTeamType team, List<Player> players)
+    /// <param name="roles">The players that are respawning and roles they will spawn as.</param>
+    public WaveRespawningEventArgs(Team team, Dictionary<ReferenceHub, RoleTypeId> roles)
     {
         IsAllowed = true;
         Team = team;
-        Players = players;
+        _roles = roles;
     }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 
     /// <summary>
-    /// The team that is respawning.
+    /// Team that is respawning.
     /// </summary>
-    public SpawnableTeamType Team { get; set; }
+    public Team Team { get; }
 
     /// <summary>
-    /// The players that are respawning.
+    /// Gets all players that are about to respawn.
     /// </summary>
-    public List<Player> Players { get; }
+    public IEnumerable<Player> SpawningPlayers => _roles.Keys.Select(n => Player.Get(n));
+
+    private readonly Dictionary<ReferenceHub, RoleTypeId> _roles;
+
+    /// <summary>
+    /// Gets whether is this player spawning.
+    /// </summary>
+    /// <param name="player">Player to check on.</param>
+    /// <returns>Whether the player is spawning the next spawn wave.</returns>
+    public bool IsSpawning(Player player) => _roles.ContainsKey(player.ReferenceHub);
+
+    /// <summary>
+    /// Removes the player from respawn team.
+    /// </summary>
+    /// <param name="player">The player to remove.</param>
+    /// <returns>Whether the player was removed.</returns>
+    public bool Remove(Player player) => _roles.Remove(player.ReferenceHub);
+
+    /// <summary>
+    /// Changes the role of player. Can also add a player.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="role"></param>
+    public void ChangeRole(Player player, RoleTypeId role) => _roles[player.ReferenceHub] = role;
+
 }

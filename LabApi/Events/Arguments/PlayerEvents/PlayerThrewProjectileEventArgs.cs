@@ -3,6 +3,7 @@ using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
 using static InventorySystem.Items.ThrowableProjectiles.ThrowableItem;
+using ThrowableItem = InventorySystem.Items.ThrowableProjectiles.ThrowableItem;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 

@@ -55,10 +55,10 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// Gets or sets the current chaos target count.s
         /// </summary>
-        public static int ChaosTargetCount
+        public static int ExtraTargets
         {
-            get => RoundSummary.singleton.ChaosTargetCount;
-            set => RoundSummary.singleton.ChaosTargetCount = value;
+            get => RoundSummary.singleton.ExtraTargets;
+            set => RoundSummary.singleton.ExtraTargets = value;
         }
 
         /// <summary>

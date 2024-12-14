@@ -3,6 +3,7 @@ using LabApi.Features.Wrappers;
 using PlayerRoles;
 using Respawning;
 using System;
+using static Escape;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
@@ -18,13 +19,12 @@ public class PlayerEscapingEventArgs : EventArgs, ICancellableEvent
     /// <param name="newRole">The new role that is set after escape.</param>
     /// <param name="ticketTeam">The team that will be granted tickets.</param>
     /// <param name="tokens">The amount of tokens granted to team after escape.</param>
-    public PlayerEscapingEventArgs(ReferenceHub player, RoleTypeId newRole, SpawnableTeamType ticketTeam, float tokens)
+    public PlayerEscapingEventArgs(ReferenceHub player, RoleTypeId newRole, EscapeScenarioType escapeScenario)
     {
         IsAllowed = true;
         Player = Player.Get(player);
         NewRole = newRole;
-        TicketTeam = ticketTeam;
-        Tokens = tokens;
+        EscapeScenario = escapeScenario;
     }
 
     /// <summary>
@@ -38,14 +38,9 @@ public class PlayerEscapingEventArgs : EventArgs, ICancellableEvent
     public RoleTypeId NewRole { get; set; }
 
     /// <summary>
-    /// Gets or sets the team that will be granted tickets.
+    /// Gets or sets the escape scenario 
     /// </summary>
-    public SpawnableTeamType TicketTeam { get; set; }
-
-    /// <summary>
-    /// Gets or sets the amount of tokens granted to team after escape.
-    /// </summary>
-    public float Tokens { get; set; }
+    public EscapeScenarioType EscapeScenario { get; set; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

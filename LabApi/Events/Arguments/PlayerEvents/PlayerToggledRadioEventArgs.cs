@@ -1,6 +1,7 @@
 ﻿using InventorySystem.Items.Radio;
 using LabApi.Features.Wrappers;
 using System;
+using RadioItem = InventorySystem.Items.Radio.RadioItem;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 

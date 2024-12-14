@@ -1,7 +1,5 @@
 using LabApi.Features.Wrappers;
-using Respawning;
-using System;
-using System.Collections.Generic;
+using PlayerRoles;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -15,19 +13,20 @@ public class WaveRespawnedEventArgs : EventArgs
     /// </summary>
     /// <param name="team">The team that was respawned.</param>
     /// <param name="players">The players that were respawned.</param>
-    public WaveRespawnedEventArgs(SpawnableTeamType team, List<Player> players)
+    public WaveRespawnedEventArgs(Team team, List<Player> players)
     {
-        Team = team;
         Players = players;
+        Team = team;
     }
 
     /// <summary>
-    /// The team that was respawned.
+    /// The team that respawned.
     /// </summary>
-    public SpawnableTeamType Team { get; }
+    public Team Team { get; }
 
     /// <summary>
-    /// The players that were respawned.
+    /// The players that were respawned.<br/>
+    /// Be aware that every plugin share the same instance.
     /// </summary>
     public IReadOnlyList<Player> Players { get; }
 }

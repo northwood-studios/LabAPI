@@ -63,7 +63,7 @@ public class Elevator
     /// <summary>
     /// Gets the destination this elevator will head towards once activated.
     /// </summary>
-    public ElevatorDoor NextDestination => Base.NextDestination;
+    public ElevatorDoor NextDestination => Base.NextDestinationDoor;
 
     /// <summary>
     /// Gets the destination floor index this elevator will head towards once activated.

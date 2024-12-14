@@ -133,7 +133,6 @@ public static class Warhead
     /// Must be one of <see cref="StartScenarios"/>, <see cref="ResumeScenarios"/> or the default value for <see cref="DetonationScenario"/>.
     /// If <see cref="DetonationScenario"/> is the default value the Scenario is reset to the default used by the server config.
     /// </remarks>
-
     public static DetonationScenario Scenario
     {
         get
@@ -154,34 +153,33 @@ public static class Warhead
                 int id = found.Equals(default) ? BaseController.DefaultScenarioId : found.index;
                 BaseController.NetworkInfo = BaseController.Info with
                 {
-                    ResumeScenario = false,
-                    ScenarioId = id,
+                    ScenarioType = WarheadScenarioType.Start,
+                    ScenarioId = (byte)id,
                 };
             }
             else
             {
-                bool resumeScenrio = true;
+                bool resumeScenario = true;
                 var found = StartScenarios.Select((val, index) => new { val, index }).FirstOrDefault(x => x.val.Equals(value));
                 if (found.Equals(default))
                     found = ResumeScenarios.Select((val, index) => new { val, index }).First(x => x.val.Equals(value));
                 else
-                    resumeScenrio = false;
+                    resumeScenario = false;
 
                 BaseController.NetworkInfo = BaseController.Info with
                 {
-                    ResumeScenario = resumeScenrio,
-                    ScenarioId = found.index,
+                    ScenarioType = WarheadScenarioType.Start,
+                    ScenarioId = (byte)found.index,
                 };
             }
         }
     }
 
-
     /// <summary>
     /// Gets a value indicating whether a <see cref="DetonationScenario"/> from <see cref="StartScenarios"> is being used.
     /// If false a <see cref="ResumeScenarios">Resume Scenario</see> is being used.
     /// </summary>
-    public static bool IsStartScenario => !BaseController?.Info.ResumeScenario ?? true;
+    public static bool IsStartScenario => BaseController?.Info.ScenarioType == WarheadScenarioType.Start;
 
     /// <summary>
     /// Gets an array of all the start scenarios.

@@ -13,17 +13,11 @@ public class WaveTeamSelectingEventArgs : EventArgs, ICancellableEvent
     /// Initializes a new instance of the <see cref="WaveTeamSelectingEventArgs"/> class.
     /// </summary>
     /// <param name="chosenTeam">The team that is being selected.</param>
-    public WaveTeamSelectingEventArgs(SpawnableTeamType chosenTeam)
+    public WaveTeamSelectingEventArgs()
     {
         IsAllowed = true;
-        ChosenTeam = chosenTeam;
     }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-
-    /// <summary>
-    /// The team that is being selected.
-    /// </summary>
-    public SpawnableTeamType ChosenTeam { get; set; }
 }

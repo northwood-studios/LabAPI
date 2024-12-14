@@ -1,8 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
-using Respawning;
 using System;
+using static Escape;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
@@ -16,14 +16,11 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player who escaped.</param>
     /// <param name="newRole">The new role.</param>
-    /// <param name="ticketTeam">The team that is granted tickets.</param>
     /// <param name="tokens">The amount of tokens granted to team after escape.</param>
-    public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId newRole, SpawnableTeamType ticketTeam, float tokens)
+    public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId newRole, EscapeScenarioType escapeScenarioType)
     {
         Player = Player.Get(player);
         NewRole = newRole;
-        TicketTeam = ticketTeam;
-        Tokens = tokens;
     }
 
     /// <summary>
@@ -37,12 +34,7 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     public RoleTypeId NewRole { get; }
 
     /// <summary>
-    /// Gets the team that is granted tickets.
+    /// Escape scenario of the player.
     /// </summary>
-    public SpawnableTeamType TicketTeam { get; }
-
-    /// <summary>
-    /// Gets the amount of tokens granted to team after escape.
-    /// </summary>
-    public float Tokens { get; }
+    public EscapeScenarioType EscapeScenarioType { get; }
 }

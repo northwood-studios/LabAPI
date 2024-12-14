@@ -12,13 +12,8 @@ public class WaveTeamSelectedEventArgs : EventArgs
     /// Initializes a new instance of the <see cref="WaveTeamSelectedEventArgs"/> class.
     /// </summary>
     /// <param name="chosenTeam">The team that was selected.</param>
-    public WaveTeamSelectedEventArgs(SpawnableTeamType chosenTeam)
+    public WaveTeamSelectedEventArgs()
     {
-        ChosenTeam = chosenTeam;
-    }
 
-    /// <summary>
-    /// The team that was selected.
-    /// </summary>
-    public SpawnableTeamType ChosenTeam { get; }
+    }
 }
