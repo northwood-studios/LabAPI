@@ -1,4 +1,4 @@
-﻿using GameCore;
+﻿using LabApi.Loader.Features.Paths;
 using NorthwoodLib.Pools;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ public static class ReservedSlots
     /// <summary>
     /// Absolute path to UserIDReservedSlots file.
     /// </summary>
-    public static string FilePath => ConfigSharing.Paths[3] + "UserIDReservedSlots.txt";
+    public static string FilePath => PathManager.ReservedSlotsConfigPath;
 
     /// <summary>
     /// All currently players with reserved slots.

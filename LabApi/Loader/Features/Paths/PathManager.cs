@@ -1,3 +1,4 @@
+using GameCore;
 using System;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,8 @@ public static class PathManager
         Dependencies = LabApi.CreateSubdirectory(DependenciesFolderName);
         Configs = LabApi.CreateSubdirectory(ConfigsFolderName);
     }
+
+    #region Directories
 
     /// <summary>
     /// Gets the path to the system's AppData folder.
@@ -55,6 +58,52 @@ public static class PathManager
     /// Gets the path to the configs folder, located inside <see cref="LabApi"/>.
     /// </summary>
     public static DirectoryInfo Configs { get; }
+
+    #endregion
+
+    #region Config files
+
+    /// <summary>
+    /// Gets an absolute path to the bans file.
+    /// </summary>
+    public static string RAConfigPath => ServerStatic.RolesConfigPath;
+
+    /// <summary>
+    /// Gets an absolute path to the gameplay config file.
+    /// </summary>
+    public static string GameplayConfigPath => ConfigFile.GetConfigPath("config_gameplay");
+
+    /// <summary>
+    /// Gets an absolute path to the config sharing file.
+    /// </summary>
+    public static string SharingConfigPath => ConfigFile.GetConfigPath("config_sharing");
+
+    /// <summary>
+    /// Gets an absolute path to the mutes config file.
+    /// </summary>
+    public static string MutesConfigPath => ConfigSharing.Paths[(int)ConfigShareTypes.Mutes];
+
+    /// <summary>
+    /// Gets an absolute path to the user id bans file.
+    /// </summary>
+    public static string UserIdBansPath => BanHandler.GetPath(BanHandler.BanType.UserId);
+
+    /// <summary>
+    /// Gets an absolute path to the IP bans file.
+    /// </summary>
+    public static string IpBansPath => BanHandler.GetPath(BanHandler.BanType.IP);
+
+    /// <summary>
+    /// Gets an absolute path to the whitelist config file.
+    /// </summary>
+    public static string WhitelistConfigPath => ConfigSharing.Paths[(int)ConfigShareTypes.Whitelist] + "UserIDWhitelist.txt";
+
+    /// <summary>
+    /// Gets an absolute path to the reserved slots config file.
+    /// </summary>
+    public static string ReservedSlotsConfigPath => ConfigSharing.Paths[(int)ConfigShareTypes.ReservedSlots] + "UserIDReservedSlots.txt";
+
+    #endregion
 
     private static DirectoryInfo GetAppDataDirectory()
     {

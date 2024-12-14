@@ -1,4 +1,4 @@
-﻿using GameCore;
+﻿using LabApi.Loader.Features.Paths;
 using NorthwoodLib.Pools;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ public static class Whitelist
     /// <summary>
     /// Absolute path to UserIDWhitelist file.
     /// </summary>
-    public static string FilePath => ConfigSharing.Paths[2] + "UserIDWhitelist.txt";
+    public static string FilePath => PathManager.WhitelistConfigPath;
 
     /// <summary>
     /// All currently whitelisted players.
