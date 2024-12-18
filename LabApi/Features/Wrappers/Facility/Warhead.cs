@@ -130,56 +130,56 @@ public static class Warhead
     /// Gets or sets the value for which <see cref="DetonationScenario"/> to use.
     /// </summary>
     /// <remarks>
-    /// Must be one of <see cref="StartScenarios"/>, <see cref="ResumeScenarios"/> or the default value for <see cref="DetonationScenario"/>.
+    /// Must be one of <see cref="StartScenarios"/>, <see cref="ResumeScenarios"/>, <see cref="DeadmanSwitchScenario"/> or the default value for <see cref="DetonationScenario"/>.
     /// If <see cref="DetonationScenario"/> is the default value the Scenario is reset to the default used by the server config.
     /// </remarks>
     public static DetonationScenario Scenario
     {
         get
         {
-            if (BaseController == null) return new DetonationScenario();
+            if (BaseController == null) 
+                return new DetonationScenario();
 
-            return (IsStartScenario ? StartScenarios : ResumeScenarios)[BaseController.Info.ScenarioId];
+            return ScenarioType switch
+            {
+                WarheadScenarioType.Start => StartScenarios[BaseController.Info.ScenarioId],
+                WarheadScenarioType.Resume => ResumeScenarios[BaseController.Info.ScenarioId],
+                WarheadScenarioType.DeadmanSwitch => DeadmanSwitchScenario,
+                _ => new DetonationScenario()
+            };
         }
         set
         {
-            if (BaseController == null) return;
+            if (BaseController == null) 
+                return;
 
             if (value.Equals(default))
             {
                 // Resets warhead to its initial scenario.
                 int duration = ConfigFile.ServerConfig.GetInt("warhead_tminus_start_duration", 90);
                 var found = StartScenarios.Select((val, index) => new { val, index }).FirstOrDefault(x => x.val.TimeToDetonate == duration);
-                int id = found.Equals(default) ? BaseController.DefaultScenarioId : found.index;
+                byte id = found.Equals(default) ? BaseController.DefaultScenarioId : (byte)found.index;
                 BaseController.NetworkInfo = BaseController.Info with
                 {
                     ScenarioType = WarheadScenarioType.Start,
-                    ScenarioId = (byte)id,
+                    ScenarioId = id,
                 };
             }
             else
             {
-                bool resumeScenario = true;
-                var found = StartScenarios.Select((val, index) => new { val, index }).FirstOrDefault(x => x.val.Equals(value));
-                if (found.Equals(default))
-                    found = ResumeScenarios.Select((val, index) => new { val, index }).First(x => x.val.Equals(value));
-                else
-                    resumeScenario = false;
-
                 BaseController.NetworkInfo = BaseController.Info with
                 {
-                    ScenarioType = WarheadScenarioType.Start,
-                    ScenarioId = (byte)found.index,
+                    ScenarioType = value.Type,
+                    ScenarioId = value.Id,
                 };
             }
         }
     }
 
     /// <summary>
-    /// Gets a value indicating whether a <see cref="DetonationScenario"/> from <see cref="StartScenarios"> is being used.
-    /// If false a <see cref="ResumeScenarios">Resume Scenario</see> is being used.
+    /// Gets the warhead scenario type for the current <see cref="Scenario"/>.
     /// </summary>
-    public static bool IsStartScenario => BaseController?.Info.ScenarioType == WarheadScenarioType.Start;
+    public static WarheadScenarioType ScenarioType => BaseController?.Info.ScenarioType ?? WarheadScenarioType.Start;
 
     /// <summary>
     /// Gets an array of all the start scenarios.
@@ -187,7 +187,7 @@ public static class Warhead
     /// <remarks>
     /// The scenarios used for the first time the warhead is activated.
     /// </remarks>
-    public static IReadOnlyList<DetonationScenario> StartScenarios => BaseController?.StartScenarios.Select(x => new DetonationScenario(x.TimeToDetonate, x.AdditionalTime)).ToArray() ?? new DetonationScenario[] { };
+    public static IReadOnlyList<DetonationScenario> StartScenarios { get; private set; } = [];
 
     /// <summary>
     /// Gets an array for all the resume scenarios.
@@ -195,7 +195,12 @@ public static class Warhead
     /// <remarks>
     /// The scenarios used for anytime the warhead is resumed.
     /// </remarks>
-    public static IReadOnlyList<DetonationScenario> ResumeScenarios => BaseController?.ResumeScenarios.Select(x => new DetonationScenario(x.TimeToDetonate, x.AdditionalTime)).ToArray() ?? new DetonationScenario[] { };
+    public static IReadOnlyList<DetonationScenario> ResumeScenarios { get; private set; } = [];
+
+    /// <summary>
+    /// Gets the deadman switch scenario.
+    /// </summary>
+    public static DetonationScenario DeadmanSwitchScenario { get; private set; } = new DetonationScenario();
 
     /// <summary>
     /// Starts the detonation countdown.
@@ -260,6 +265,10 @@ public static class Warhead
         BaseController = UnityEngine.Object.FindObjectOfType<AlphaWarheadController>();
         BaseNukesitePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
         BaseOutsidePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
+
+        StartScenarios = BaseController.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
+        ResumeScenarios = BaseController.ResumeScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Resume)).ToArray();
+        DeadmanSwitchScenario = new DetonationScenario(BaseController.DeadmanSwitchScenario, 0, WarheadScenarioType.DeadmanSwitch);
     }
 
     /// <summary>
@@ -282,10 +291,12 @@ public static class Warhead
         /// </summary>
         /// <param name="timeToDetonate"></param>
         /// <param name="additionalTime"></param>
-        internal DetonationScenario(int timeToDetonate, int additionalTime)
+        internal DetonationScenario(AlphaWarheadController.DetonationScenario detonationScenario, byte id, WarheadScenarioType type)
         {
-            TimeToDetonate = timeToDetonate;
-            AdditionalTime = additionalTime;
+            TimeToDetonate = detonationScenario.TimeToDetonate;
+            AdditionalTime = detonationScenario.AdditionalTime;
+            Type = type;
+            Id = id;
         }
 
         /// <summary>
@@ -297,6 +308,16 @@ public static class Warhead
         /// The additional time needed to play out the scenario's sequence before starting the countdown.
         /// </summary>
         public readonly int AdditionalTime;
+
+        /// <summary>
+        /// The <see cref="WarheadScenarioType"/> this scenario is for.
+        /// </summary>
+        public readonly WarheadScenarioType Type;
+
+        /// <summary>
+        /// The index of the scenario for its associated <see cref="Type"/>.
+        /// </summary>
+        public readonly byte Id;
 
         /// <summary>
         /// The actual time it takes for the warhead to detonate.
