@@ -524,12 +524,24 @@ public class Player
     public Transform Camera => ReferenceHub.PlayerCameraReference;
 
     /// <summary>
-    /// Gets or sets the player's position.
+    /// Gets or sets the player's position.<br/>
+    /// Returns <see cref="Vector3.zero"/> if the player's role is not currently derived from <see cref="IFpcRole"/>.
     /// </summary>
     public Vector3 Position
     {
-        get => GameObject.transform.position;
-        set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
+        get
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+            {
+                return Vector3.zero;
+            }
+
+            return fpcRole.FpcModule.Position;
+        }
+        set
+        {
+            ReferenceHub.TryOverridePosition(value);
+        }
     }
 
     /// <summary>
@@ -538,7 +550,29 @@ public class Player
     public Quaternion Rotation
     {
         get => GameObject.transform.rotation;
-        set => ReferenceHub.TryOverridePosition(Position, value.eulerAngles);
+        set => ReferenceHub.TryOverrideRotation(value.eulerAngles);
+    }
+
+    /// <summary>
+    /// Gets or sets the player's look rotation. X is vertical axis while Y is horizontal. Vertical axis is clamped by the base game logic.<br/>
+    /// Returns <see cref="Vector2.zero"/> if the player's role is not currently derived from <see cref="IFpcRole"/>.
+    /// </summary>
+    public Vector2 LookRotation
+    {
+        get
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+            {
+                return Vector2.zero;
+            }
+
+            FpcMouseLook mouseLook = fpcRole.FpcModule.MouseLook;
+            return new Vector2(mouseLook.CurrentVertical, mouseLook.CurrentHorizontal);
+        }
+        set
+        {
+            ReferenceHub.TryOverrideRotation(value);
+        }
     }
 
     /// <summary>
@@ -784,6 +818,18 @@ public class Player
     #endregion
 
     #endregion
+
+    /// <summary>
+    /// Teleports the player by the delta location.
+    /// </summary>
+    /// <param name="delta">Position to add to the current one.</param>
+    public void Move(Vector3 delta) => ReferenceHub.TryOverridePosition(Position + delta);
+
+    /// <summary>
+    /// Rotates the player by the parameter.
+    /// </summary>
+    /// <param name="delta">Rotation to add to the current one. X is vertical and Y is horizontal rotation.</param>
+    public void Rotate(Vector2 delta) => ReferenceHub.TryOverrideRotation(LookRotation + delta);
 
     /// <summary>
     /// Clears displayed broadcast(s).
