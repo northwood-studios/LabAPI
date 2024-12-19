@@ -333,7 +333,7 @@ public class Player
     /// <summary>
     /// Gets the player's default permission group name. Or null if the player is not in a group.
     /// </summary>
-    public string? PermissionsGroupName => ServerStatic.GetPermissionsHandler().Members.GetValueOrDefault(UserId);
+    public string? PermissionsGroupName => ServerStatic.PermissionsHandler.Members.GetValueOrDefault(UserId);
 
     /// <summary>s
     /// Gets the player's unit ID, or -1 if the role is not a <see cref="HumanRole"/>.
