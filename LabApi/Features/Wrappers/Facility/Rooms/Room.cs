@@ -13,6 +13,16 @@ namespace LabApi.Features.Wrappers;
 public class Room
 {
     /// <summary>
+    /// Initializes the Room wrapper by subscribing to the RoomIdentifier events.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        RoomIdentifier.OnAdded += AddRoom;
+        RoomIdentifier.OnRemoved += (roomIdentifier) => Dictionary.Remove(roomIdentifier);
+    }
+
+    /// <summary>
     /// Contains all the cached rooms in the game, accessible through their <see cref="RoomIdentifier"/>.
     /// </summary>
     private static Dictionary<RoomIdentifier, Room> Dictionary { get; } = [];
@@ -33,13 +43,11 @@ public class Room
     }
 
     /// <summary>
-    /// Initializes the Room wrapper by subscribing to the <see cref="RoomIdentifier"/> events.
+    /// An internal virtual method to signal to derived wrappers that the base has been destroyed.
     /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
+    internal virtual void OnRemoved()
     {
-        RoomIdentifier.OnAdded += (roomIdentifier) => _ = new Room(roomIdentifier);
-        RoomIdentifier.OnRemoved += (roomIdentifier) => Dictionary.Remove(roomIdentifier);
+        Dictionary.Remove(Base);
     }
 
     /// <summary>
@@ -198,4 +206,27 @@ public class Room
     /// <param name="position">The position to get the room at.</param>
     /// <returns>The room at the specified position or null if no room was found.</returns>
     public static Room? GetRoomAtPosition(Vector3 position) => TryGetRoomAtPosition(position, out Room? room) ? room : null;
+
+    /// <summary>
+    /// Handles the creation of a room in the server.
+    /// </summary>
+    /// <param name="roomIdentifier">The <see cref="RoomIdentifier"/> of the room.</param>
+    // TODO: use factory instead.
+    private static void AddRoom(RoomIdentifier roomIdentifier)
+    {
+        if (roomIdentifier.Name == RoomName.Pocket)
+            _ = new PocketDimension(roomIdentifier);
+        else
+            _ = new Room(roomIdentifier);
+    }
+
+    /// <summary>
+    /// Handles the removal of a room from the server.
+    /// </summary>
+    /// <param name="roomIdentifier">The <see cref="RoomIdentifier"/> of the room.</param>
+    private static void RemoveRoom(RoomIdentifier roomIdentifier)
+    {
+        if (Dictionary.TryGetValue(roomIdentifier, out Room room))
+            room.OnRemoved();
+    }
 }
