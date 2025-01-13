@@ -23,10 +23,10 @@ public class Room
     public static IReadOnlyCollection<Room> List => Dictionary.Values;
 
     /// <summary>
-    /// A private constructor to prevent external instantiation.
+    /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="roomIdentifier">The identifier of the room.</param>
-    private Room(RoomIdentifier roomIdentifier)
+    internal Room(RoomIdentifier roomIdentifier)
     {
         Dictionary.Add(roomIdentifier, this);
         Base = roomIdentifier;
