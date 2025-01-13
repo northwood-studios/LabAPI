@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Generators;
+﻿using Generators;
+using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
+using LabApi.Features.Enums;
 using MapGeneration;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
@@ -16,9 +19,66 @@ public class Door
     [InitializeWrapper]
     internal static void Initialize()
     {
-        DoorVariant.OnInstanceCreated += (door) => new Door(door);
-        DoorVariant.OnInstanceRemoved += (door) => Dictionary.Remove(door);
+        DoorVariant.OnInstanceCreated += OnAdded;
+        DoorVariant.OnInstanceRemoved += OnRemoved;
+
+        Register<Interactables.Interobjects.BreakableDoor>(x => new BreakableDoor(x));
+        Register<Interactables.Interobjects.ElevatorDoor>(x => new ElevatorDoor(x));
+        Register<Timed173PryableDoor>(x => new Timed173Gate(x));
+        Register<PryableDoor>(x => new Gate(x));
+        Register<BasicNonInteractableDoor>(x => new NonInteractableDoor(x));
+        Register<Interactables.Interobjects.CheckpointDoor>(x => new CheckpointDoor(x));
+        Register<Interactables.Interobjects.DummyDoor>(x => new DummyDoor(x));
+        Register<DoorVariant>(x => new Door(x));
     }
+
+    /// <summary>
+    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// </summary>
+    private static Dictionary<Type, Func<DoorVariant, Door>> typeWrappers = [];
+
+    /// <summary>
+    /// Contains all the <see cref="Enums.DoorName"/> values for the associated <see cref="NameTag"/>.
+    /// </summary>
+    private readonly static Dictionary<string, DoorName> doorNameDictionary = new()
+    {
+        { "LCZ_CAFE", DoorName.LczPc },
+        { "LCZ_WC", DoorName.LczWc },
+        { "CHECKPOINT_LCZ_A", DoorName.LczCheckpointA },
+        { "CHECKPOINT_LCZ_B", DoorName.LczCheckpointB },
+        { "LCZ_ARMORY", DoorName.LczArmory },
+        { "173_BOTTOM", DoorName.Lcz173Bottom },
+        { "173_GATE", DoorName.Lcz173Gate },
+        { "173_CONNECTOR", DoorName.Lcz173Connector },
+        { "173_ARMORY", DoorName.Lcz173Armory },
+        { "GR18_INNER", DoorName.LczGr18Inner },
+        { "GR18", DoorName.LczGr18Gate },
+        { "914", DoorName.Lcz914Gate },
+        { "330", DoorName.Lcz330 },
+        { "330_CHAMBER", DoorName.Lcz330Chamber },
+        { "079_FIRST", DoorName.Hcz079FirstGate },
+        { "079_SECOND", DoorName.Hcz079SecondGate },
+        { "079_ARMORY", DoorName.Hcz079Armory },
+        { "096", DoorName.Hcz096 },
+        { "939_CRYO", DoorName.Hcz939Cryo },
+        { "HCZ_ARMORY", DoorName.HczArmory },
+        { "049_ARMORY", DoorName.Hcz049Armory },
+        { "HID_CHAMBER", DoorName.HczHidChamber },
+        { "HID_UPPER", DoorName.HczHidUpper },
+        { "HID_LOWER", DoorName.HczHidLower },
+        { "NUKE_ARMORY", DoorName.HczNukeArmory },
+        { "106_PRIMARY", DoorName.Hcz106Primiary },
+        { "106_SECONDARY", DoorName.Hcz106Secondary },
+        { "CHECKPOINT_EZ_HCZ_A", DoorName.HczCheckpoint },
+        { "INTERCOM", DoorName.EzIntercom },
+        { "GATE_A", DoorName.EzGateA },
+        { "GATE_B", DoorName.EzGateB },
+        { "SURFACE_GATE", DoorName.SurfaceGate },
+        { "SURFACE_NUKE", DoorName.SurfaceNuke },
+        { "ESCAPE_PRIMARY", DoorName.SurfaceEscapePrimary },
+        { "ESCAPE_SECONDARY", DoorName.SurfaceEscapeSecondary },
+        { "ESCAPE_FINAL", DoorName.SurfaceEscapeFinal }
+    };
 
     /// <summary>
     /// Contains all the cached <see cref="Door">doors</see> in the game, accessible through their <see cref="DoorVariant"/>.
@@ -38,12 +98,44 @@ public class Door
     {
         Dictionary.Add(doorVariant, this);
         Base = doorVariant;
+
+        if(doorVariant.TryGetComponent(out DoorNametagExtension nametag) && !string.IsNullOrEmpty(nametag.GetName))
+        {
+            if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorName doorName))
+                DoorName = doorName;
+            else
+                throw new NotImplementedException($"Missing DoorName enum value for door name tag {nametag.GetName}");
+        }
+    }
+
+    /// <summary>
+    /// An internal virtual method to signal that the base object has been destroyed.
+    /// </summary>
+    internal virtual void OnRemove()
+    {
+        Dictionary.Remove(Base);
     }
 
     /// <summary>
     /// The base object.
     /// </summary>
     public DoorVariant Base { get; }
+
+    /// <summary>
+    /// Gets the <see cref="Enums.DoorName"/> of the door.
+    /// </summary>
+    /// <remarks>
+    /// Is the enum version of <see cref="NameTag"/>.
+    /// </remarks>
+    public DoorName DoorName { get; } = DoorName.None;
+
+    /// <summary>
+    /// Gets the name tag of the door.
+    /// </summary>
+    /// <remarks>
+    /// Is the string version of <see cref="DoorName"/>.
+    /// </remarks>
+    public string NameTag => Base.DoorName;
 
     /// <summary>
     /// Gets the rooms which have this door.
@@ -63,6 +155,11 @@ public class Door
         get => Base.TargetState;
         set => Base.NetworkTargetState = value;
     }
+
+    /// <summary>
+    /// Gets whether or not the door can be interacted with by a <see cref="Player"/>.
+    /// </summary>
+    public bool CanInteract => Base.AllowInteracting(null, 0);
 
     /// <summary>
     /// Gets or sets whether or not the door is locked.
@@ -124,16 +221,39 @@ public class Door
     public Quaternion Rotation => Transform.rotation;
 
     /// <summary>
+    /// Plays a sound that indicates that lock bypass was denied.
+    /// </summary>
+    public void PlayLockBypassDeniedSound()
+    {
+        Base.LockBypassDenied(null, 0);
+    }
+
+    /// <summary>
+    /// Plays a sound and flashes permission denied on the panel.
+    /// </summary>
+    public void PlayPermissionDeniedAnimation()
+    {
+        Base.PermissionsDenied(null, 0);
+    }
+
+    /// <summary>
     /// Gets the door wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>
     /// <param name="doorVariant">The <see cref="DoorVariant"/> of the door.</param>
-    /// <returns>The requested door.</returns>
-    public static Door Get(DoorVariant doorVariant)
+    /// <returns>The requested door or null if the input was null.</returns>
+    [return: NotNullIfNotNull(nameof(doorVariant))]
+    public static Door? Get(DoorVariant? doorVariant)
     {
+        if (doorVariant == null)
+            return null;
+
+        Door d = Get(doorVariant);
+        d.IsOpened = true;
+
         if (Dictionary.TryGetValue(doorVariant, out Door door))
             return door;
 
-        throw new NullReferenceException("This should never happen.");
+        return CreateDoorWrapper(doorVariant);
     }
 
     /// <summary>
@@ -162,4 +282,55 @@ public class Door
     /// <param name="roomId">Target room identifier.</param>
     public static IEnumerable<Door> Get(RoomIdentifier roomId) =>
         List.Where(x => x.Rooms.First().Equals(roomId));
+
+    /// <summary>
+    /// A protected method to create new door wrappers from the base game object.
+    /// </summary>
+    /// <param name="doorVariant">The base object to create the wrapper from.</param>
+    /// <returns>The newly created wrapper.</returns>
+    /// <exception cref="InvalidOperationException">Happens if the base game object type is missing an equivalent wrapper type.</exception>
+    protected static Door CreateDoorWrapper(DoorVariant doorVariant)
+    {
+        if (!typeWrappers.TryGetValue(doorVariant.GetType(), out Func<DoorVariant, Door> handler))
+            throw new InvalidOperationException($"Failed to create door wrapper. Missing constructor handler for type {doorVariant.GetType()}");
+
+        return handler.Invoke(doorVariant);
+    }
+
+    /// <summary>
+    /// Private method to handle the creation of new doors in the server.
+    /// </summary>
+    /// <param name="doorVariant">The <see cref="DoorVariant"/> that was created.</param>
+    private static void OnAdded(DoorVariant doorVariant)
+    {
+        try
+        {
+            if (!Dictionary.ContainsKey(doorVariant))
+                CreateDoorWrapper(doorVariant);
+        }
+        catch (Exception ex)
+        {
+            Console.Logger.Error($"An exception occurred while handling the creation of a new door in LabApi.Features.Wrappers.Door.OnAdded(DoorVariant). Error: {ex}");
+        }
+    }
+
+    /// <summary>
+    /// Private method to handle the removal of doors from the server.
+    /// </summary>
+    /// <param name="doorVariant">The door being destroyed.</param>
+    private static void OnRemoved(DoorVariant doorVariant)
+    {
+        if (Dictionary.TryGetValue(doorVariant, out Door door))
+            door.OnRemove();
+    }
+
+    /// <summary>
+    /// A private method to handle the addition of wrapper handlers.
+    /// </summary>
+    /// <typeparam name="T">The derived base game type to handle.</typeparam>
+    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
+    private static void Register<T>(Func<T, Door> constructor) where T : DoorVariant
+    {
+        typeWrappers.Add(typeof(T), x => constructor((T)x));
+    }
 }
