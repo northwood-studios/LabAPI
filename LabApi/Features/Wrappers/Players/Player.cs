@@ -15,6 +15,8 @@ using Mirror.LiteNetLib4Mirror;
 using NorthwoodLib.Pools;
 using PlayerRoles;
 using PlayerRoles.FirstPersonControl;
+using PlayerRoles.PlayableScps.HumeShield;
+using PlayerRoles.Spectating;
 using PlayerRoles.Voice;
 using PlayerStatsSystem;
 using RoundRestarting;
@@ -27,6 +29,7 @@ using Utils.Networking;
 using Utils.NonAllocLINQ;
 using VoiceChat;
 using VoiceChat.Playbacks;
+using static PlayerStatsSystem.AhpStat;
 
 namespace LabApi.Features.Wrappers;
 
@@ -206,7 +209,7 @@ public class Player
     }
 
     /// <summary>
-    /// Gets or sets the player's current health;
+    /// Gets or sets the player's current health.
     /// </summary>
     public float Health
     {
@@ -215,34 +218,125 @@ public class Player
     }
 
     /// <summary>
-    /// Gets the player's current maximum health;
+    /// Gets or sets the player's current maximum health.
     /// </summary>
-    // TODO: Add a setter for this property.
-    public float MaxHealth => ReferenceHub.playerStats.GetModule<HealthStat>().MaxValue;
+    public float MaxHealth
+    {
+        get => ReferenceHub.playerStats.GetModule<HealthStat>().MaxValue;
+        set => ReferenceHub.playerStats.GetModule<HealthStat>().MaxValue = value;
+    }
 
     /// <summary>
-    /// Gets or sets the player's current artificial health;
+    /// Gets or sets the player's current artificial health.<br/>
+    /// Setting the value will clear all of the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
+    /// Note: This value cannot be greater than <see cref="MaxArtificialHealth"/>. Set it to your desired value first if its over <see cref="AhpStat.DefaultMax"/> and then set this one.
     /// </summary>
     public float ArtificialHealth
     {
-        get => IsSCP ? ReferenceHub.playerStats.GetModule<HumeShieldStat>().CurValue : ReferenceHub.playerStats.GetModule<AhpStat>().CurValue;
+        get => ReferenceHub.playerStats.GetModule<AhpStat>().CurValue;
         set
         {
-            if (IsSCP)
-            {
-                ReferenceHub.playerStats.GetModule<HumeShieldStat>().CurValue = value;
-                return;
-            }
+            AhpStat ahp = ReferenceHub.playerStats.GetModule<AhpStat>();
+            ahp.ServerKillAllProcesses();
 
-            ReferenceHub.playerStats.GetModule<AhpStat>().CurValue = value;
+            if (value > 0)
+                ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(value, MaxArtificialHealth, 0f, 1f, 0f, false);
         }
     }
 
     /// <summary>
-    /// Gets the player's current maximum artificial health.
+    /// Gets or sets the player's current maximum artificial health or hume shield.<br/>
+    /// Note: The value resets to <see cref="AhpStat.DefaultMax"/> when the player's AHP reaches 0.
     /// </summary>
-    // TODO: Possibly add a setter for this property?
-    public float MaxArtificialHealth => IsSCP ? ReferenceHub.playerStats.GetModule<HumeShieldStat>().MaxValue : ReferenceHub.playerStats.GetModule<AhpStat>().MaxValue;
+    public float MaxArtificialHealth
+    {
+        get => ReferenceHub.playerStats.GetModule<AhpStat>().MaxValue;
+        set => ReferenceHub.playerStats.GetModule<AhpStat>().MaxValue = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the player's hume shield current value.
+    /// </summary>
+    public float HumeShield
+    {
+        get => ReferenceHub.playerStats.GetModule<HumeShieldStat>().CurValue;
+        set => ReferenceHub.playerStats.GetModule<HumeShieldStat>().CurValue = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the player's maximum hume shield value.
+    /// Note: This value may change if the player passes a new humeshield treshold for SCPs.
+    /// </summary>
+    public float MaxHumeShield
+    {
+        get => ReferenceHub.playerStats.GetModule<HumeShieldStat>().MaxValue;
+        set => ReferenceHub.playerStats.GetModule<HumeShieldStat>().MaxValue = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the current regeneration rate of the hume shield per second. 
+    /// Returns -1 if the player's role doesn't have hume shield controller.
+    /// </summary>
+    public float HumeShieldRegenRate
+    {
+        get
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+                return -1;
+
+            return role.HumeShieldModule.HsRegeneration;
+        }
+        set
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+                return;
+
+            (role.HumeShieldModule as DynamicHumeShieldController).RegenerationRate = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the time that must pass after taking damage for hume shield to regenerate again. 
+    /// Returns -1 if the player's role doesn't have hume shield controller.
+    /// </summary>
+    public float HumeShieldRegenCooldown
+    {
+        get
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+                return -1;
+
+            return (role.HumeShieldModule as DynamicHumeShieldController).RegenerationCooldown;
+        }
+        set
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+                return;
+
+            (role.HumeShieldModule as DynamicHumeShieldController).RegenerationCooldown = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the player's current gravity. Default value is <see cref="FpcMotor.DefaultGravity"/>.<br/>
+    /// If the player's current role is not first person controlled (inherit from <see cref="IFpcRole"/> then <see cref="Vector3.zero"/> is returned.<br/>
+    /// Y-axis is up and down. Negative values makes the player go down. Positive upwards. Player must not be grounded in order for gravity to take effect.
+    /// </summary>
+    public Vector3 Gravity
+    {
+        get
+        {
+            if (ReferenceHub.roleManager.CurrentRole is IFpcRole role)
+                return role.FpcModule.Motor.GravityController.Gravity;
+
+            return Vector3.zero;
+        }
+        set
+        {
+            if (ReferenceHub.roleManager.CurrentRole is IFpcRole role)
+                role.FpcModule.Motor.GravityController.Gravity = value;
+        }
+    }
 
     /// <summary>
     /// Gets a value indicating whether the player has remote admin access.
@@ -264,17 +358,53 @@ public class Player
     }
 
     /// <summary>
-    /// Gets or sets the player's current <see cref="ItemBase">item</see>.
+    /// Gets the player this player is currently spectating.<br/>
+    /// Returns null if current player is not spectator or the spectated player is not valid.
     /// </summary>
-    public ItemBase CurrentItem
+    public Player? CurrentlySpectating
     {
-        get => Inventory.CurInstance;
+        get
+        {
+            if (RoleBase is not SpectatorRole sr)
+                return null;
+
+            if (!ReferenceHub.TryGetHubNetID(sr.SyncedSpectatedNetId, out ReferenceHub hub))
+                return null;
+
+            return Player.Get(hub);
+        }
+    }
+
+    /// <summary>
+    /// Gets a pooled list of players who are currently spectating this player.
+    /// </summary>
+    public List<Player> CurrentSpectators
+    {
+        get
+        {
+            List<Player> list = ListPool<Player>.Shared.Rent();
+            foreach (Player player in List)
+            {
+                if (ReferenceHub.IsSpectatedBy(player.ReferenceHub))
+                    list.Add(player);
+            }
+
+            return list;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the player's current <see cref="Item">item</see>.
+    /// </summary>
+    public Item CurrentItem
+    {
+        get => Item.Get(Inventory.CurInstance);
         set
         {
-            if (value == null || value.ItemTypeId == ItemType.None)
+            if (value == null || value.Type == ItemType.None)
                 Inventory.ServerSelectItem(0);
             else
-                Inventory.ServerSelectItem(value.ItemSerial);
+                Inventory.ServerSelectItem(value.Serial);
         }
     }
 
@@ -294,9 +424,9 @@ public class Player
     public FacilityZone Zone => Room?.Zone ?? FacilityZone.None;
 
     /// <summary>
-    /// Gets the <see cref="ItemBase">items</see> in the player's inventory.
+    /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IReadOnlyCollection<ItemBase> Items => Inventory.UserInventory.Items.Values;
+    public IReadOnlyCollection<Item> Items => (IReadOnlyCollection<Item>)Inventory.UserInventory.Items.Values.Select(Item.Get);
 
     /// <summary>
     /// Gets the player's Reserve Ammo.
@@ -912,8 +1042,9 @@ public class Player
     /// Adds an item of the specified type to the player's inventory.
     /// </summary>
     /// <param name="item">The type of item.</param>
+    /// <param name="reason">The reason why is this item being added.</param>
     /// <returns>The <see cref="Item"/> added or null if it could not be added.</returns>
-    public Item? AddItem(ItemType item) => Item.Get(Inventory.ServerAddItem(item, ItemAddReason.AdminCommand));
+    public Item? AddItem(ItemType item, ItemAddReason reason = ItemAddReason.AdminCommand) => Item.Get(Inventory.ServerAddItem(item, reason));
 
     /// <summary>
     /// Removes a specific <see cref="Item"/> from the player's inventory.
@@ -949,7 +1080,7 @@ public class Player
         int count = 0;
         for (int i = 0; i < Items.Count; i++)
         {
-            ItemBase? itemBase = Items.ElementAt(i);
+            ItemBase? itemBase = Items.ElementAt(i).Base;
             if (itemBase.ItemTypeId != item)
                 continue;
 
@@ -963,31 +1094,31 @@ public class Player
     /// Drops the specified <see cref="Item"/> from the player's inventory.
     /// </summary>
     /// <param name="item">The item.</param>
-    /// <returns>The dropped <see cref="ItemPickupBase">item pickup</see>.</returns>
-    public ItemPickupBase DropItem(Item item) => DropItem(item.Base);
+    /// <returns>The dropped <see cref="Pickup">item pickup</see>.</returns>
+    public Pickup DropItem(Item item) => DropItem(item.Base);
 
     /// <summary>
     /// Drops the specified <see cref="ItemBase"/> from the player's inventory.
     /// </summary>
     /// <param name="item">The item.</param>
-    /// <returns>The dropped <see cref="ItemPickupBase">item pickup</see>.</returns>
-    public ItemPickupBase DropItem(ItemBase item) => DropItem(item.ItemSerial);
+    /// <returns>The dropped <see cref="Pickup">item pickup</see>.</returns>
+    public Pickup DropItem(ItemBase item) => DropItem(item.ItemSerial);
 
     /// <summary>
     /// Drops the item with the specified serial from the player's inventory.
     /// </summary>
     /// <param name="serial">The serial of the item.</param>
-    /// <returns>The dropped <see cref="ItemPickupBase">item pickup</see>.</returns>
-    public ItemPickupBase DropItem(ushort serial) => Inventory.ServerDropItem(serial);
+    /// <returns>The dropped <see cref="Pickup">item pickup</see>.</returns>
+    public Pickup DropItem(ushort serial) => Pickup.Get(Inventory.ServerDropItem(serial));
 
     /// <summary>
     /// Drops all items from the player's inventory.
     /// </summary>
-    /// <returns>The list of dropped items.</returns>
-    public List<ItemPickupBase> DropAllItems()
+    /// <returns>The pooled list of dropped items. Please return when your done with it.</returns>
+    public List<Pickup> DropAllItems()
     {
-        List<ItemPickupBase> items = ListPool<ItemPickupBase>.Shared.Rent();
-        foreach (ItemBase item in Items)
+        List<Pickup> items = ListPool<Pickup>.Shared.Rent();
+        foreach (Item item in Items)
             items.Add(DropItem(item));
 
         return items;
@@ -1039,7 +1170,7 @@ public class Player
     /// </summary>
     public void ClearItems()
     {
-        foreach (ItemBase item in Items)
+        foreach (Item item in Items)
             RemoveItem(item);
     }
 
@@ -1073,6 +1204,24 @@ public class Player
     /// </summary>
     /// <param name="amount">The amount to heal.</param>
     public void Heal(float amount) => ReferenceHub.playerStats.GetModule<HealthStat>().ServerHeal(amount);
+
+    /// <summary>
+    /// Creates and run a new AHP proccess.
+    /// </summary>
+    /// <param name="amount">Amount of AHP to be added.</param>
+    /// <param name="limit">Adds limit to the AHP.</param>
+    /// <param name="decay">Rate of AHP decay (per second).</param>
+    /// <param name="efficacy">Value between 0 and 1. Defines what % of damage will be absorbed.</param>
+    /// <param name="sustain">Pauses decay for specified amount of seconds.</param>
+    /// <param name="persistant">If true, it won't be automatically removed when reaches 0.</param>
+    /// <returns>Returns process in case it needs to be removed. Use <see cref="ServerKillProcess(AhpProcess)"/> to kill it.</returns>
+    public AhpProcess CreateAhpProcess(float amount, float limit, float decay, float efficacy, float sustain, bool persistant) => ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
+
+    /// <summary>
+    /// Kills the AHP process.
+    /// </summary>
+    /// <param name="process">Process to be killed.</param>
+    public void ServerKillProcess(AhpProcess process) => ReferenceHub.playerStats.GetModule<AhpStat>().ServerKillProcess(process.KillCode);
 
     /// <summary>
     /// Sets the player's role.

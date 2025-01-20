@@ -1,5 +1,6 @@
 ﻿using System;
-using LabApi.Events.Handlers;
+
+namespace LabApi.Events.Arguments.ServerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="ServerEvents.MapGenerated"/> event.
