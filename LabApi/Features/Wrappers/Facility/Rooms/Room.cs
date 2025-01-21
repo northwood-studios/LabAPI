@@ -99,7 +99,8 @@ public class Room
     }
 
     /// <summary>
-    /// Gets all light controllers for this specified room.<br></br> Some rooms such as 049, warhead and etc may have multiple light controllers as they are split by the elevator.
+    /// Gets all light controllers for this specified room.<br/>
+    /// Some rooms such as 049, warhead and etc may have multiple light controllers as they are split by the elevator.
     /// </summary>
     public IEnumerable<LightsController> AllLightControllers
     {
@@ -174,7 +175,7 @@ public class Room
     /// Gets the closest <see cref="LightsController"/> to the specified player.
     /// </summary>
     /// <param name="player">The player to check the closest light controller for.</param>
-    /// <returns>The closest light controller. May return null if player is not alive or is not in any room.</returns>
+    /// <returns>The closest light controller. May return <see langword="null"/> if player is not alive or is not in any room.</returns>
     public LightsController? GetClosestLightController(Player player)
     {
         RoomLightController rlc = Base.GetClosestLightController(player.ReferenceHub);
@@ -204,7 +205,7 @@ public class Room
     /// Gets the room at the specified position.
     /// </summary>
     /// <param name="position">The position to get the room at.</param>
-    /// <returns>The room at the specified position or null if no room was found.</returns>
+    /// <returns>The room at the specified position or <see langword="null"/> if no room was found.</returns>
     public static Room? GetRoomAtPosition(Vector3 position) => TryGetRoomAtPosition(position, out Room? room) ? room : null;
 
     /// <summary>

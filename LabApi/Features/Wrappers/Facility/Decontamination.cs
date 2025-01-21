@@ -53,7 +53,7 @@ public static class Decontamination
 
     /// <summary>
     /// Gets or sets the text of the wall elevator display in HCZ part of the elevators.
-    /// Setting this to <see cref="string.Empty"/> or null will reset both texts to the default one.
+    /// Setting this to <see cref="string.Empty"/> or <see langword="null"/> will reset both texts to the default one.
     /// </summary>s
     public static string ElevatorsText
     {

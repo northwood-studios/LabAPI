@@ -191,7 +191,7 @@ public class Generator
         Dictionary.TryGetValue(scp079generator, out Generator generator) ? generator : new Generator(scp079generator);
 
     /// <summary>
-    /// Gets the generator wrapper from the <see cref="GeneratorsByRoom"/> or returns null if specified room does not have any.
+    /// Gets the generator wrapper from the <see cref="GeneratorsByRoom"/> or returns <see langword="null"/> if specified room does not have any.
     /// </summary>
     /// <param name="room">Target room.</param>
     /// <returns>Whether the generator was found.</returns>

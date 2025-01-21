@@ -90,14 +90,14 @@ public class Camera
     /// Gets the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
     /// </summary>
     /// <param name="camera">The <see cref="Scp079Camera"/> to get the camera from.</param>
-    /// <returns>The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or null if it doesn't exist.</returns>
+    /// <returns>The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or <see langword="null"/> if it doesn't exist.</returns>
     public static Camera? Get(Scp079Camera camera) => TryGet(camera, out Camera? cam) ? cam : null;
 
     /// <summary>
     /// Tries to get the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
     /// </summary>
     /// <param name="camera">The <see cref="Scp079Camera"/> to get the camera from.</param>
-    /// <param name="wrapper">The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or null if it doesn't exist.</param>
+    /// <param name="wrapper">The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or <see langword="null"/> if it doesn't exist.</param>
     /// <returns>Whether the camera was successfully retrieved.</returns>
     public static bool TryGet(Scp079Camera camera, [NotNullWhen(true)] out Camera? wrapper)
     {

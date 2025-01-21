@@ -33,7 +33,7 @@ namespace LabApi.Features.Wrappers
         public TeslaGate Base { get; }
 
         /// <summary>
-        /// Gets tesla gate's position´.
+        /// Gets tesla gate's position.
         /// </summary>
         public Vector3 Position => Base.Position;
 
@@ -71,27 +71,27 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// Returns if <see cref="Player"/> is in range where tesla gate starts idling.
         /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <param name="player">The player to check on.</param>
+        /// <returns>Whethet the player is in idle range.</returns>
         public bool IsPlayerInIdleRange(Player player) => Base.IsInIdleRange(player.ReferenceHub);
 
         /// <summary>
         /// Returns if <see cref="Player"/> is in range where tesla gate starts to burst.
         /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <param name="player">The player to check on.</param>
+        /// <returns>Whether the player is within activation range.</returns>
         public bool IsPlayerInRange(Player player) => Base.PlayerInRange(player.ReferenceHub);
 
         /// <summary>
         /// Returns if any <see cref="Player"/> is in range where tesla gate starts idling.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Whether any player is within the idle range.</returns>
         public bool IsAnyPlayerInIdleRange() => HashsetExtensions.Any(ReferenceHub.AllHubs, Base.IsInIdleRange);
 
         /// <summary>
         /// Returns if any <see cref="Player"/> is in range where tesla gate starts to burst.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Whether any player is within activation range.</returns>
         public bool IsAnyPlayerInRange() => HashsetExtensions.Any(ReferenceHub.AllHubs, Base.PlayerInRange);
 
         /// <summary>

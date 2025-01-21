@@ -466,7 +466,7 @@ public static partial class PlayerEvents
     /// Gets called when the player is searching for ammo.
     /// </summary>
     public static event LabEventHandler<PlayerSearchingAmmoEventArgs>? SearchingAmmo;
-    
+
     /// <summary>
     /// Gets called when the player has searched for ammo.
     /// </summary>
@@ -636,4 +636,39 @@ public static partial class PlayerEvents
     /// Gets called when the player has used the radio.
     /// </summary>
     public static event LabEventHandler<PlayerUsedRadioEventArgs>? UsedRadio;
+
+    /// <summary>
+    /// Gets called when the player is attempting to toggle noclip (pressed alt).
+    /// </summary>
+    public static event LabEventHandler<PlayerTogglingNoclipEventArgs>? TogglingNoclip;
+
+    /// <summary>
+    /// Gets called when the player has toggled the noclip.
+    /// </summary>
+    public static event LabEventHandler<PlayerToggledNoclipEventArgs>? ToggledNoclip;
+
+    /// <summary>
+    /// Gets called when player is entering any environmental hazard.
+    /// </summary>
+    public static event LabEventHandler<PlayerEnteringHazardEventArgs>? EnteringHazard;
+
+    /// <summary>
+    /// Gets called when player has entered any environmental hazard.
+    /// </summary>
+    public static event LabEventHandler<PlayerEnteredHazardEventArgs>? EnteredHazard;
+
+    /// <summary>
+    /// Gets called when player has entered any environmental hazard.
+    /// </summary>
+    public static event LabEventHandler<PlayersStayingInHazardEventArgs>? StayingInHazard;
+
+    /// <summary>
+    /// Gets called when player is leaving any environmental hazard.
+    /// </summary>
+    public static event LabEventHandler<PlayerLeavingHazardEventArgs>? LeavingHazard;
+
+    /// <summary>
+    /// Gets called when player has left any environmental hazard.
+    /// </summary>
+    public static event LabEventHandler<PlayerLeftHazardEventArgs>? LeftHazard;
 }

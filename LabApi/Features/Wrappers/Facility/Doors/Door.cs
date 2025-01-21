@@ -279,6 +279,12 @@ public class Door
     /// <summary>
     /// Gets the door in specified room.
     /// </summary>
+    /// <param name="roomId">Target room wrapper.</param>
+    public static IEnumerable<Door> Get(Room roomId) => Get(roomId.Base);
+
+    /// <summary>
+    /// Gets the door in specified room.
+    /// </summary>
     /// <param name="roomId">Target room identifier.</param>
     public static IEnumerable<Door> Get(RoomIdentifier roomId) =>
         List.Where(x => x.Rooms.First().Equals(roomId));
