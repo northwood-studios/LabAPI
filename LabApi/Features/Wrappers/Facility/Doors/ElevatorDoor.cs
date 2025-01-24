@@ -54,7 +54,7 @@ public class ElevatorDoor : Door
     /// <summary>
     /// Gets the <see cref="ElevatorManager.ElevatorGroup"/> this door belongs to.
     /// </summary>
-    public ElevatorManager.ElevatorGroup Group => Base.Group;
+    public ElevatorGroup Group => Base.Group;
 
     /// <summary>
     /// Gets the <see cref="ElevatorDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.

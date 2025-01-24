@@ -53,7 +53,7 @@ public class Elevator
     /// <summary>
     /// Gets the current destination / location of the elevator.
     /// </summary>
-    public ElevatorDoor CurrentDestination => Base.DestinationDoor;
+    public ElevatorDoor CurrentDestination => ElevatorDoor.Get(Base.DestinationDoor);
 
     /// <summary>
     /// Gets the destination/current floor of the elevator.
@@ -63,7 +63,7 @@ public class Elevator
     /// <summary>
     /// Gets the destination this elevator will head towards once activated.
     /// </summary>
-    public ElevatorDoor NextDestination => Base.NextDestinationDoor;
+    public ElevatorDoor NextDestination => ElevatorDoor.Get(Base.NextDestinationDoor);
 
     /// <summary>
     /// Gets the destination floor index this elevator will head towards once activated.

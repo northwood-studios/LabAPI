@@ -123,7 +123,7 @@ public class PocketItem
             return pocketItem;
 
         pickup.Position = PocketDimension.Instance!.Position + Vector3.up;
-        Scp106PocketItemManager.AddItem(pickup);
+        Scp106PocketItemManager.AddItem(pickup.Base);
         return Get(pickup)!;
     }
 }

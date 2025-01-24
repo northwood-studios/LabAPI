@@ -52,7 +52,7 @@ public class Scp914 : Room
     /// <summary>
     /// Gets the main <see cref="Wrappers.Gate"/> of the SCP-914 room.
     /// </summary>
-    public Gate Gate => Doors.FirstOrDefault(x => x is Gate);
+    public Gate Gate => (Gate)Doors.FirstOrDefault(x => x is Gate);
 
     /// <summary>
     /// Gets the entrance <see cref="Door"/> of the SCP-914 room.
@@ -154,7 +154,7 @@ public class Scp914 : Room
     /// </remarks>
     public static float SequenceCooldown
     {
-        get => Scp914Controller.Singleton.RremainingCooldown;
+        get => Scp914Controller.Singleton.RemainingCooldown;
         set => Scp914Controller.Singleton.RemainingCooldown = value;
     }
 

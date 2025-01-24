@@ -16,8 +16,8 @@ public class PocketTeleport
     [InitializeWrapper]
     internal static void Initialize()
     {
-        PocketDimensionTeleport.OnAdded += (teleport) => OnAdded;
-        PocketDimensionTeleport.OnRemoved += (teleport) => OnRemoved;
+        PocketDimensionTeleport.OnAdded += OnAdded;
+        PocketDimensionTeleport.OnRemoved += OnRemoved;
     }
 
     /// <summary>

@@ -45,8 +45,8 @@ public class PocketDimension : Room
     /// </summary>
     public static float MinPocketItemTriggerDelay
     {
-        get => Scp106PocketItemManager.TimerRage.x;
-        set => Scp106PocketItemManager.TimerRage = Scp106PocketItemManager.TimerRage with
+        get => Scp106PocketItemManager.TimerRange.x;
+        set => Scp106PocketItemManager.TimerRange = Scp106PocketItemManager.TimerRange with
         {
             x = value
         };
@@ -57,8 +57,8 @@ public class PocketDimension : Room
     /// </summary>
     public static float MaxPocketItemTriggerDelay
     {
-        get => Scp106PocketItemManager.TimerRage.y;
-        set => Scp106PocketItemManager.TimerRage = Scp106PocketItemManager.TimerRage with
+        get => Scp106PocketItemManager.TimerRange.y;
+        set => Scp106PocketItemManager.TimerRange = Scp106PocketItemManager.TimerRange with
         {
             y = value
         };
