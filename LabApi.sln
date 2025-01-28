@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HelloWorld", "HelloWorld", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin-Custom", "LabApi.Examples\HelloWorld\HelloWorldPlugin-Custom\HelloWorldPlugin-Custom.csproj", "{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Log", "Log", "{EF43FF45-BD69-465B-9A90-68A4170A51B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogPlugin", "LabApi.Examples\LogAll\LogPlugin\LogPlugin.csproj", "{73BCCB73-0A7A-4042-932C-D9A25A478CB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,10 @@ Global
 		{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73BCCB73-0A7A-4042-932C-D9A25A478CB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BCCB73-0A7A-4042-932C-D9A25A478CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BCCB73-0A7A-4042-932C-D9A25A478CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BCCB73-0A7A-4042-932C-D9A25A478CB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,5 +55,6 @@ Global
 		{E309AD40-F135-4052-9785-5A6BAC3549FE} = {7E890945-2C1C-4026-9CEE-A95BA7C05BD0}
 		{DB841A42-2A47-4CCC-B164-9F3F89780921} = {E309AD40-F135-4052-9785-5A6BAC3549FE}
 		{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F} = {E309AD40-F135-4052-9785-5A6BAC3549FE}
+		{73BCCB73-0A7A-4042-932C-D9A25A478CB0} = {EF43FF45-BD69-465B-9A90-68A4170A51B6}
 	EndGlobalSection
 EndGlobal
