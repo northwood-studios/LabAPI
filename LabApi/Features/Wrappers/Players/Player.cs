@@ -200,7 +200,9 @@ public class Player
     public string LogName => IsServer ? "SERVER CONSOLE" : $"{Nickname} ({UserId})";
 
     /// <summary>
-    /// Gets or sets the player's custom info.
+    /// Gets or sets the player's custom info.<br/>
+    /// Do note that custom info is restriced by several things listed in <see cref="ValidateCustomInfo"/>. 
+    /// Please use this method to validate your string as it is validated on the client by the same method.
     /// </summary>
     public string CustomInfo
     {
@@ -713,6 +715,22 @@ public class Player
         get => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue;
         set => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue = value;
     }
+
+    /// <summary>
+    /// Validates the custom info text and returns result whether it is valid or invalid.<br/>
+    /// Current validation requirements are the following:
+    /// 
+    /// <list type="bullet">
+    /// <item>Match the <see cref="Misc.PlayerCustomInfoRegex"/> regex.</item>
+    /// <item>Use only color,i,b and size rich text tags.</item>
+    /// <item>Colors used have to be from <see cref="Misc.AcceptedColours"/></item>
+    /// </list>
+    /// 
+    /// </summary>
+    /// <param name="text">The text to check on.</param>
+    /// <param name="rejectionReason">Out parameter containing rejection reason.</param>
+    /// <returns>Whether is the info parameter valid.</returns>
+    public static bool ValidateCustomInfo(string text, out string rejectionReason) => NicknameSync.ValidateCustomInfo(text, out rejectionReason);
 
     #region Player Getters
 

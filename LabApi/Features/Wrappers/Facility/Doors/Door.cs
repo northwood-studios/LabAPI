@@ -247,9 +247,6 @@ public class Door
         if (doorVariant == null)
             return null;
 
-        Door d = Get(doorVariant);
-        d.IsOpened = true;
-
         if (Dictionary.TryGetValue(doorVariant, out Door door))
             return door;
 
@@ -260,7 +257,7 @@ public class Door
     /// Gets the door by it's nametag.
     /// </summary>
     /// <param name="nametag">The door's nametag</param>
-    /// <returns><The requested door. May be null if door with provided nametag does not exist./returns>
+    /// <returns>The requested door. May be null if door with provided nametag does not exist.</returns>
     public static Door? Get(string nametag)
     {
         if (!DoorNametagExtension.NamedDoors.TryGetValue(nametag, out DoorNametagExtension doorNametagExtension))
