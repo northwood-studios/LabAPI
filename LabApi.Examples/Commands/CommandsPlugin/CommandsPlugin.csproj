@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <OutputType>Library</OutputType>
+
+        <LangVersion>12.0</LangVersion>
+        <Platforms>AnyCPU</Platforms>
+        <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+        <AssemblyName>CommandsPlugin</AssemblyName>
+        <RootNamespace>CommandsPlugin</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="LabApi" HintPath="$(SL_REFERENCES)\LabApi.dll" />
+        <Reference Include="Assembly-CSharp" HintPath="$(SL_REFERENCES)\Assembly-CSharp.dll" />
+        <Reference Include="CommandSystem.Core" HintPath="$(SL_REFERENCES)\CommandSystem.Core.dll" />
+        <Reference Include="Mirror" HintPath="$(SL_REFERENCES)\Mirror.dll" />
+        <Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
+    </ItemGroup>
+</Project>
