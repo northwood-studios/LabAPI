@@ -3,6 +3,7 @@ using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using LabApi.Features.Enums;
 using MapGeneration;
+using MapGeneration.RoomConnectors;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -25,7 +26,13 @@ public class Door
         Register<Interactables.Interobjects.BreakableDoor>(x => new BreakableDoor(x));
         Register<Interactables.Interobjects.ElevatorDoor>(x => new ElevatorDoor(x));
         Register<Timed173PryableDoor>(x => new Timed173Gate(x));
-        Register<PryableDoor>(x => new Gate(x));
+        Register<PryableDoor>(x =>
+        {
+            if (x.name.StartsWith("HCZ BulkDoor"))
+                return new BulkheadDoor(x);
+            else
+                return new Gate(x);
+        });
         Register<BasicNonInteractableDoor>(x => new NonInteractableDoor(x));
         Register<Interactables.Interobjects.CheckpointDoor>(x => new CheckpointDoor(x));
         Register<Interactables.Interobjects.DummyDoor>(x => new DummyDoor(x));
@@ -160,6 +167,15 @@ public class Door
     /// Gets whether or not the door can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Base.AllowInteracting(null, 0);
+
+    /// <summary>
+    /// A value from 0.0f to 1.0f used to determine the intermediate state between fully closed and fully open.
+    /// </summary>
+    /// <remarks>
+    /// When a door is fully closed and fully open and how to interpolate between that is implementation dependent
+    /// so using this value to compare between doors of different type is not recommend.
+    /// </remarks>
+    public float ExactState => Base.GetExactState();
 
     /// <summary>
     /// Gets or sets whether or not the door is locked.
