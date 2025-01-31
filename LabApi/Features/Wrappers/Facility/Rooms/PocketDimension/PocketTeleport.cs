@@ -1,6 +1,7 @@
 ﻿using Generators;
 using Mirror;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
@@ -133,8 +134,12 @@ public class PocketTeleport
     /// </summary>
     /// <param name="pocketTeleport">The base game object.</param>
     /// <returns>The associated wrapper.</returns>
-    public PocketTeleport Get(PocketDimensionTeleport pocketTeleport)
+    [return: NotNullIfNotNull(nameof(pocketTeleport))]
+    public static PocketTeleport? Get(PocketDimensionTeleport? pocketTeleport)
     {
+        if(pocketTeleport == null) 
+            return null;
+
         if (Dictionary.TryGetValue(pocketTeleport, out PocketTeleport pt))
             return pt;
 

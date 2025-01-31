@@ -112,7 +112,7 @@ public class PocketDimension : Room
     /// </remarks>
     public static void ForceExit(Player player)
     {
-        PocketDimensionTeleport.Exit(player.ReferenceHub);
+        PocketDimensionTeleport.Exit(null, player.ReferenceHub);
     }
 
     /// <summary>
@@ -125,7 +125,7 @@ public class PocketDimension : Room
     /// </remarks>
     public static void ForceKill(Player player)
     {
-        PocketDimensionTeleport.Kill(player.ReferenceHub);
+        PocketDimensionTeleport.Kill(null, player.ReferenceHub);
     }
 
     /// <summary>
