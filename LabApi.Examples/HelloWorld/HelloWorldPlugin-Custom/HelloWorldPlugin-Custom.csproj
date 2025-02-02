@@ -14,7 +14,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="LabApi" HintPath="$(SL_REFERENCES)\LabApi.dll" />
         <Reference Include="Assembly-CSharp" HintPath="$(SL_REFERENCES)\Assembly-CSharp.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\LabApi\LabApi.csproj" />
     </ItemGroup>
 </Project>

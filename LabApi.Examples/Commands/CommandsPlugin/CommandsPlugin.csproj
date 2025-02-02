@@ -14,10 +14,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="LabApi" HintPath="$(SL_REFERENCES)\LabApi.dll" />
         <Reference Include="Assembly-CSharp" HintPath="$(SL_REFERENCES)\Assembly-CSharp.dll" />
         <Reference Include="CommandSystem.Core" HintPath="$(SL_REFERENCES)\CommandSystem.Core.dll" />
         <Reference Include="Mirror" HintPath="$(SL_REFERENCES)\Mirror.dll" />
         <Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\LabApi\LabApi.csproj" />
     </ItemGroup>
 </Project>
