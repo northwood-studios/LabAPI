@@ -1,25 +1,31 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabApi", "LabApi\LabApi.csproj", "{EE58A308-B929-4BBE-A984-54B2D2A2C735}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabApi.SourceGenerators", "LabApi.SourceGenerators\LabApi.SourceGenerators\LabApi.SourceGenerators.csproj", "{64C04891-7EE3-469F-AB18-8F52B51CBC43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabApi.SourceGenerators", "LabApi.SourceGenerators\LabApi.SourceGenerators\LabApi.SourceGenerators.csproj", "{64C04891-7EE3-469F-AB18-8F52B51CBC43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabApi.SourceGenerators.Tests", "LabApi.SourceGenerators\LabApi.SourceGenerators.Tests\LabApi.SourceGenerators.Tests.csproj", "{07ACA71C-633D-455D-BACA-491F10FD5C22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabApi.SourceGenerators.Tests", "LabApi.SourceGenerators\LabApi.SourceGenerators.Tests\LabApi.SourceGenerators.Tests.csproj", "{07ACA71C-633D-455D-BACA-491F10FD5C22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin-Legacy", "LabApi.Examples\HelloWorld\HelloWorldPlugin-Legacy\HelloWorldPlugin-Legacy.csproj", "{DB841A42-2A47-4CCC-B164-9F3F89780921}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorldPlugin-Legacy", "LabApi.Examples\HelloWorld\HelloWorldPlugin-Legacy\HelloWorldPlugin-Legacy.csproj", "{DB841A42-2A47-4CCC-B164-9F3F89780921}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{7E890945-2C1C-4026-9CEE-A95BA7C05BD0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HelloWorld", "HelloWorld", "{E309AD40-F135-4052-9785-5A6BAC3549FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin-Custom", "LabApi.Examples\HelloWorld\HelloWorldPlugin-Custom\HelloWorldPlugin-Custom.csproj", "{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorldPlugin-Custom", "LabApi.Examples\HelloWorld\HelloWorldPlugin-Custom\HelloWorldPlugin-Custom.csproj", "{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Log", "Log", "{EF43FF45-BD69-465B-9A90-68A4170A51B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogPlugin", "LabApi.Examples\LogAll\LogPlugin\LogPlugin.csproj", "{73BCCB73-0A7A-4042-932C-D9A25A478CB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogPlugin", "LabApi.Examples\LogAll\LogPlugin\LogPlugin.csproj", "{73BCCB73-0A7A-4042-932C-D9A25A478CB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{3BE1413D-1D59-4FA8-B860-F733FBC411C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandsPlugin", "LabApi.Examples\Commands\CommandsPlugin\CommandsPlugin.csproj", "{DFDB27D3-70C9-44A6-B2D3-6D8D0716D6FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandsPlugin", "LabApi.Examples\Commands\CommandsPlugin\CommandsPlugin.csproj", "{DFDB27D3-70C9-44A6-B2D3-6D8D0716D6FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandsPlugin2", "LabApi.Examples\Commands\CommandsPlugin2\CommandsPlugin2.csproj", "{295205EA-B4A2-42CF-8B91-7F9BF6909694}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,16 +61,21 @@ Global
 		{DFDB27D3-70C9-44A6-B2D3-6D8D0716D6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFDB27D3-70C9-44A6-B2D3-6D8D0716D6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFDB27D3-70C9-44A6-B2D3-6D8D0716D6FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295205EA-B4A2-42CF-8B91-7F9BF6909694}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295205EA-B4A2-42CF-8B91-7F9BF6909694}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295205EA-B4A2-42CF-8B91-7F9BF6909694}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295205EA-B4A2-42CF-8B91-7F9BF6909694}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E309AD40-F135-4052-9785-5A6BAC3549FE} = {7E890945-2C1C-4026-9CEE-A95BA7C05BD0}
 		{DB841A42-2A47-4CCC-B164-9F3F89780921} = {E309AD40-F135-4052-9785-5A6BAC3549FE}
+		{E309AD40-F135-4052-9785-5A6BAC3549FE} = {7E890945-2C1C-4026-9CEE-A95BA7C05BD0}
 		{F9C64B0A-A7C6-40C0-99DC-7DE1A5DE0E0F} = {E309AD40-F135-4052-9785-5A6BAC3549FE}
 		{73BCCB73-0A7A-4042-932C-D9A25A478CB0} = {EF43FF45-BD69-465B-9A90-68A4170A51B6}
 		{3BE1413D-1D59-4FA8-B860-F733FBC411C2} = {7E890945-2C1C-4026-9CEE-A95BA7C05BD0}
 		{DFDB27D3-70C9-44A6-B2D3-6D8D0716D6FC} = {3BE1413D-1D59-4FA8-B860-F733FBC411C2}
+		{295205EA-B4A2-42CF-8B91-7F9BF6909694} = {3BE1413D-1D59-4FA8-B860-F733FBC411C2}
 	EndGlobalSection
 EndGlobal

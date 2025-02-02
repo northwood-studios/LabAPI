@@ -320,7 +320,7 @@ public class Player
     }
 
     /// <summary>
-    /// Gets or sets the player's current gravity. Default value is <see cref="FpcMotor.DefaultGravity"/>.<br/>
+    /// Gets or sets the player's current gravity. Default value is <see cref="FpcGravityController.DefaultGravity"/>.<br/>
     /// If the player's current role is not first person controlled (inherit from <see cref="IFpcRole"/> then <see cref="Vector3.zero"/> is returned.<br/>
     /// Y-axis is up and down. Negative values makes the player go down. Positive upwards. Player must not be grounded in order for gravity to take effect.
     /// </summary>
