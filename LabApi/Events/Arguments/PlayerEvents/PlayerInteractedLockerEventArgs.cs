@@ -1,7 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
-using MapGeneration.Distributors;
 using System;
+using BaseLocker = MapGeneration.Distributors.Locker;
+using BaseLockerChamber = MapGeneration.Distributors.LockerChamber;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
@@ -15,13 +16,13 @@ public class PlayerInteractedLockerEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player who is interacted with the locker.</param>
     /// <param name="locker">The locker that was interacted with.</param>
-    /// <param name="chamber">The chamber that was targered.</param>
-    /// <param name="canOpen">Whenever the player was allowed to open it.</param>
-    public PlayerInteractedLockerEventArgs(ReferenceHub player, Locker locker, LockerChamber chamber, bool canOpen)
+    /// <param name="chamber">The chamber that was targeted.</param>
+    /// <param name="canOpen">Whether the player was allowed to open it.</param>
+    public PlayerInteractedLockerEventArgs(ReferenceHub player, BaseLocker locker, BaseLockerChamber chamber, bool canOpen)
     {
         Player = Player.Get(player);
-        Locker = locker;
-        Chamber = chamber;
+        Locker = (Locker)Structure.Get(locker);
+        Chamber = LockerChamber.Get(chamber);
         CanOpen = canOpen;
     }
 
@@ -36,7 +37,7 @@ public class PlayerInteractedLockerEventArgs : EventArgs, IPlayerEvent
     public Locker Locker { get; }
 
     /// <summary>
-    /// Gets the chamber that was targered.
+    /// Gets the chamber that was targeted.
     /// </summary>
     public LockerChamber Chamber { get; }
 

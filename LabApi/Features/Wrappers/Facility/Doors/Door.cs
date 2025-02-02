@@ -6,6 +6,7 @@ using MapGeneration;
 using MapGeneration.RoomConnectors;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
@@ -42,7 +43,7 @@ public class Door
     /// <summary>
     /// Contains all the handlers for constructing wrappers for the associated base game types.
     /// </summary>
-    private static Dictionary<Type, Func<DoorVariant, Door>> typeWrappers = [];
+    private static readonly Dictionary<Type, Func<DoorVariant, Door>> typeWrappers = [];
 
     /// <summary>
     /// Contains all the <see cref="Enums.DoorName"/> values for the associated <see cref="NameTag"/>.

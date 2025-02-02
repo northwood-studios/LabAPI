@@ -8,6 +8,7 @@ using InventorySystem.Items.Usables;
 using NorthwoodLib.Pools;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -23,7 +24,7 @@ public class Item
     /// <summary>
     /// Contains all the handlers for constructing wrappers for the associated base game types.
     /// </summary>
-    private static Dictionary<Type, Func<ItemBase, Item>> typeWrappers = [];
+    private static readonly Dictionary<Type, Func<ItemBase, Item>> typeWrappers = [];
 
     /// <summary>
     /// Contains all the cached items, accessible through their <see cref="Base"/>.

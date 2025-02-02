@@ -3,13 +3,12 @@ using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace LabApi.Features.Wrappers.Facility.Structures;
+namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper over the <see cref="WorkstationController"/> object.
 /// </summary>
 // TODO: add event to allow/deny attachment changes.
-/*
 public class Workstation : Structure
 {
     /// <summary>
@@ -25,7 +24,7 @@ public class Workstation : Structure
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="spawnableStructure"></param>
+    /// <param name="spawnableStructure">The base <see cref="SpawnableStructure"/> object.</param>
     internal Workstation(SpawnableStructure spawnableStructure) : base(spawnableStructure)
     {
         BaseController = spawnableStructure.GetComponent<WorkstationController>();
@@ -87,4 +86,3 @@ public class Workstation : Structure
         BaseController.ServerInteract(player.ReferenceHub, BaseController.ActivateCollider.ColliderId);
     }
 }
-*/

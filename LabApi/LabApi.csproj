@@ -29,6 +29,7 @@
 		<Reference Include="Pooling" HintPath="$(SL_REFERENCES)\Pooling.dll" />
 		<Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
 		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.PhysicsModule.dll" />
+		<Reference Include="UnityEngine.AudioModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.AudioModule.dll" />
 		<Reference Include="mscorlib" HintPath="$(UNITY_REFERENCES)\mscorlib.dll" />
 	</ItemGroup>
 

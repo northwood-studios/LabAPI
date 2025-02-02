@@ -11,12 +11,12 @@ namespace LabApi.Features.Wrappers;
 /// <summary>
 /// The wrapper representing <see cref="Scp079Generator">generators</see>, the in-game generators.
 /// </summary>
-public class Generator
+public class Generator : Structure
 {
     /// <summary>
     /// Contains all the cached <see cref="Scp079Generator">generators</see> in the game, accessible through their <see cref="Scp079Generator"/>.
     /// </summary>
-    public static Dictionary<Scp079Generator, Generator> Dictionary { get; } = [];
+    public new static Dictionary<Scp079Generator, Generator> Dictionary { get; } = [];
 
     /// <summary>
     /// Contains generators in a list by room they are in. Generators that have been spawned without an assigned room are not inside of this collection.
@@ -26,41 +26,14 @@ public class Generator
     /// <summary>
     /// A reference to all <see cref="Generator"/> instances currently in the game.
     /// </summary>
-    public static IReadOnlyCollection<Generator> List => Dictionary.Values;
+    public new static IReadOnlyCollection<Generator> List => Dictionary.Values;
 
     /// <summary>
-    /// Initializes the Generator wrapper by subscribing to the generator events.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        Scp079Generator.OnAdded += (generator) => _ = new Generator(generator);
-        Scp079Generator.OnRemoved += (generator) =>
-        {
-            if (generator.Room == null)
-            {
-                Dictionary.Remove(generator);
-                return;
-            }
-
-            if (GeneratorsByRoom.TryGetValue(generator.Room, out List<Generator> list))
-            {
-                list.Remove(Get(generator));
-
-                if (list.Count == 0)
-                {
-                    GeneratorsByRoom.Remove(generator.Room);
-                }
-            }
-            Dictionary.Remove(generator);
-        };
-    }
-
-    /// <summary>
-    /// A private constructor to prevent external instantiation.
+    /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="generator">The <see cref="Scp079Generator"/> of the generator.</param>
-    private Generator(Scp079Generator generator)
+    internal Generator(Scp079Generator generator)
+        :base(generator)
     {
         Dictionary.Add(generator, this);
         Base = generator;
@@ -79,14 +52,38 @@ public class Generator
     }
 
     /// <summary>
+    /// An internal method remove itself from the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        if (Base.Room == null)
+        {
+            Dictionary.Remove(Base);
+            return;
+        }
+
+        if (GeneratorsByRoom.TryGetValue(Base.Room, out List<Generator> list))
+        {
+            list.Remove(Get(Base));
+
+            if (list.Count == 0)
+            {
+                GeneratorsByRoom.Remove(Base.Room);
+            }
+        }
+        Dictionary.Remove(Base);
+    }
+
+    /// <summary>
     /// The base object.
     /// </summary>
-    public Scp079Generator Base { get; }
+    public new Scp079Generator Base { get; }
 
     /// <summary>
     /// The room where this generator is located.
     /// </summary>
-    public Room? Room => Base.Room == null ? null : Room.Get(Base.Room);
+    public new Room? Room => Base.Room == null ? null : Room.Get(Base.Room);
 
     /// <summary>
     /// Gets or sets the activation time it takes for generator to go from <see cref="TotalActivationTime">maximum time</see> (this value) to 0.
