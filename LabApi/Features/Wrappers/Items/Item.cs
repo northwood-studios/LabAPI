@@ -5,6 +5,7 @@ using InventorySystem.Items.Armor;
 using InventorySystem.Items.Coin;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Usables;
+using LabApi.Features.Wrappers.Items.Usable;
 using NorthwoodLib.Pools;
 using System;
 using System.Collections.Generic;
@@ -152,6 +153,7 @@ public class Item
         Register<InventorySystem.Items.Usables.Scp330.Scp330Bag>(x => new Scp330Item(x));
         Register<InventorySystem.Items.Usables.Scp244.Scp244Item>(x => new Scp244Item(x));
         Register<Scp268>(x => new Scp268Item(x));
+        Register<InventorySystem.Items.Usables.Scp1344.Scp1344Item>(x => new Scp1344Item(x));
 
         Register<Firearm>(x => new FirearmItem(x));
         Register<ParticleDisruptor>(x => new ParticleDisruptorItem(x));

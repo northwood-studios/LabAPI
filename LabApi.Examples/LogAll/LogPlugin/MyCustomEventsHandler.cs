@@ -416,19 +416,19 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerPreAuthenticated)} triggered by {ev.UserId}");
     }
 
-    public override void OnPlayerReceivingEffect(PlayerReceivingEffectEventArgs ev)
+    public override void OnPlayerUpdatingEffect(PlayerEffectUpdatingEventArgs ev)
     {
-        Logger.Info($"{nameof(OnPlayerReceivingEffect)} triggered by {ev.Player.UserId}");
+        Logger.Info($"{nameof(OnPlayerUpdatingEffect)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerUpdatedEffect(PlayerEffectUpdatedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerUpdatedEffect)} triggered by {ev.Player.UserId}");
     }
 
     public override void OnPlayerReceivingVoiceMessage(PlayerReceivingVoiceMessageEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerReceivingVoiceMessage)} triggered by {ev.Player.UserId}");
-    }
-
-    public override void OnPlayerReceivedEffect(PlayerReceivedEffectEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerReceivedEffect)} triggered by {ev.Player.UserId}");
     }
 
     public override void OnPlayerReloadingWeapon(PlayerReloadingWeaponEventArgs ev)

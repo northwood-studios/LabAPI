@@ -739,7 +739,7 @@ public class Player
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
     /// <returns>The requested player or null if the reference hub is null.</returns>
-    [return: NotNullIfNotNull("referenceHub")]
+    [return: NotNullIfNotNull(nameof(referenceHub))]
     public static Player? Get(ReferenceHub? referenceHub)
     {
         if (referenceHub == null)

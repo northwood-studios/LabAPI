@@ -410,17 +410,17 @@ public static partial class PlayerEvents
     /// <summary>
     /// Gets called when the player is receiving an effect.
     /// </summary>
-    public static event LabEventHandler<PlayerReceivingEffectEventArgs>? ReceivingEffect;
+    public static event LabEventHandler<PlayerEffectUpdatingEventArgs>? UpdatingEffect;
+
+    /// <summary>
+    /// Gets called when the player has received an effect.
+    /// </summary>
+    public static event LabEventHandler<PlayerEffectUpdatedEventArgs>? UpdatedEffect;
 
     /// <summary>
     /// Gets called when the player is receiving a voice message.
     /// </summary>
     public static event LabEventHandler<PlayerReceivingVoiceMessageEventArgs>? ReceivingVoiceMessage;
-
-    /// <summary>
-    /// Gets called when the player has received an effect.
-    /// </summary>
-    public static event LabEventHandler<PlayerReceivedEffectEventArgs>? ReceivedEffect;
 
     /// <summary>
     /// Gets called when the player is reloading a weapon.

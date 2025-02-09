@@ -15,10 +15,12 @@ public class PlayerPlacedBloodEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player whose blood it is.</param>
     /// <param name="hitPosition">Position at which blood has been spawned.</param>
-    public PlayerPlacedBloodEventArgs(ReferenceHub player, Vector3 hitPosition)
+    /// <param name="startRaycast">Position where the blood decal raycast will start for it to be properly attached to surface.</param>
+    public PlayerPlacedBloodEventArgs(ReferenceHub player, Vector3 hitPosition, Vector3 startRaycast)
     {
         Player = Player.Get(player);
         HitPosition = hitPosition;
+        RaycastStart = startRaycast;
     }
 
     /// <summary>
@@ -30,4 +32,9 @@ public class PlayerPlacedBloodEventArgs : EventArgs, IPlayerEvent
     /// Gets the position at which blood has been spawned.
     /// </summary>
     public Vector3 HitPosition { get; }
+
+    /// <summary>
+    /// Gets or sets the position where the blood decal raycast will start for it to be properly attached to surface.
+    /// </summary>
+    public Vector3 RaycastStart { get; set; }
 }
