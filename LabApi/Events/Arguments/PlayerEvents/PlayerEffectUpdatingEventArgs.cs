@@ -6,18 +6,18 @@ using System;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReceivingEffect"/> event.
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.UpdatingEffect"/> event.
 /// </summary>
-public class PlayerReceivingEffectEventArgs : EventArgs, ICancellableEvent
+public class PlayerEffectUpdatingEventArgs : EventArgs, ICancellableEvent
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerReceivingEffectEventArgs"/> class.
+    /// Initializes a new instance of the <see cref="PlayerEffectUpdatingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is receiving the effect.</param>
-    /// <param name="effect">The effect that is being applied.</param>
+    /// <param name="player">The player whose effect is being updated.</param>
+    /// <param name="effect">The effect that is being updated.</param>
     /// <param name="intensity">Intesity of the effect.</param>
     /// <param name="duration">Duration of the effect in seconds.</param>
-    public PlayerReceivingEffectEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
+    public PlayerEffectUpdatingEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
     {
         IsAllowed = true;
         Player = Player.Get(player);
@@ -27,22 +27,22 @@ public class PlayerReceivingEffectEventArgs : EventArgs, ICancellableEvent
     }
 
     /// <summary>
-    /// Gets the player who is receiving the effect.
+    /// Gets the player whose effect is being updated.
     /// </summary>
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the effect that is being applied.
+    /// Gets the effect that is being updated.
     /// </summary>
     public StatusEffectBase Effect { get; }
 
     /// <summary>
-    /// Gets or sets the intesity of the effect.
+    /// Gets or sets the new intesity of the effect.
     /// </summary>
     public byte Intensity { get; set; }
 
     /// <summary>
-    /// Gets or sets the duration of the effect in seconds.
+    /// Gets or sets the new duration of the effect in seconds.
     /// </summary>
     public float Duration { get; set; }
 

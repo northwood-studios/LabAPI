@@ -8,16 +8,16 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReceviedEffect"/> event.
 /// </summary>
-public class PlayerReceivedEffectEventArgs : EventArgs, IPlayerEvent
+public class PlayerEffectUpdatedEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReceivingLoadoutEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is received the effect.</param>
-    /// <param name="effect">The effect that is being applied.</param>
+    /// <param name="player">The player whose effect has been updated.</param>
+    /// <param name="effect">The effect that is being updated.</param>
     /// <param name="intensity">Intesity of the effect.</param>
     /// <param name="duration">Duration of the effect in seconds.</param>
-    public PlayerReceivedEffectEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
+    public PlayerEffectUpdatedEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
     {
         Player = Player.Get(player);
         Effect = effect;
@@ -26,22 +26,22 @@ public class PlayerReceivedEffectEventArgs : EventArgs, IPlayerEvent
     }
 
     /// <summary>
-    /// Gets the player who is received the effect.
+    /// Gets the player whose effect has been updated.
     /// </summary>
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the effect that is being applied.
+    /// Gets the effect that is being updated.
     /// </summary>
     public StatusEffectBase Effect { get; }
 
     /// <summary>
-    /// Gets the intesity of the effect.
+    /// Gets the new intesity of the effect.
     /// </summary>
     public byte Intensity { get; }
 
     /// <summary>
-    /// Gets the duration of the effect in seconds.
+    /// Gets the new duration of the effect in seconds.
     /// </summary>
     public float Duration { get; }
 }

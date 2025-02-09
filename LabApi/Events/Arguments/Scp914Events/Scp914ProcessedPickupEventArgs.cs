@@ -41,7 +41,7 @@ public class Scp914ProcessedPickupEventArgs : EventArgs, IScp914Event, IPickupEv
     public Scp914KnobSetting KnobSetting { get; }
 
     /// <summary>
-    /// The new pickup that has been processed by SCP-914.
+    /// The new pickup that has been processed by SCP-914. Can be null if item has been destroyed by 914 recipe.
     /// </summary>
-    public Pickup Pickup { get; }
+    public Pickup? Pickup { get; }
 }

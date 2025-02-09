@@ -26,10 +26,10 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerActivatedGenerator)} triggered by {ev.Player.UserId}");
     }
 
-    public override void OnPlayerAimingWeapon(PlayerAimingWeaponEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerAimingWeapon)} triggered by {ev.Player.UserId}");
-    }
+    //public override void OnPlayerAimingWeapon(PlayerAimingWeaponEventArgs ev)
+    //{
+    //    Logger.Info($"{nameof(OnPlayerAimingWeapon)} triggered by {ev.Player.UserId}");
+    //}
 
     public override void OnPlayerAimedWeapon(PlayerAimedWeaponEventArgs ev)
     {
@@ -316,16 +316,6 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerLeftPocketDimension)} triggered by {ev.Player.UserId}");
     }
 
-    public override void OnPlayerMakingNoise(PlayerMakingNoiseEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerMakingNoise)} triggered by {ev.Player?.UserId ?? "Unknown"}");
-    }
-
-    public override void OnPlayerMadeNoise(PlayerMadeNoiseEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerMadeNoise)} triggered by {ev.Player?.UserId ?? "Unknown"}");
-    }
-
     public override void OnPlayerMuting(PlayerMutingEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerMuting)} triggered by {ev.Player.UserId}");
@@ -416,19 +406,19 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerPreAuthenticated)} triggered by {ev.UserId}");
     }
 
-    public override void OnPlayerReceivingEffect(PlayerReceivingEffectEventArgs ev)
+    public override void OnPlayerUpdatingEffect(PlayerEffectUpdatingEventArgs ev)
     {
-        Logger.Info($"{nameof(OnPlayerReceivingEffect)} triggered by {ev.Player.UserId}");
+        Logger.Info($"{nameof(OnPlayerUpdatingEffect)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerUpdatedEffect(PlayerEffectUpdatedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerUpdatedEffect)} triggered by {ev.Player.UserId}");
     }
 
     public override void OnPlayerReceivingVoiceMessage(PlayerReceivingVoiceMessageEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerReceivingVoiceMessage)} triggered by {ev.Player.UserId}");
-    }
-
-    public override void OnPlayerReceivedEffect(PlayerReceivedEffectEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerReceivedEffect)} triggered by {ev.Player.UserId}");
     }
 
     public override void OnPlayerReloadingWeapon(PlayerReloadingWeaponEventArgs ev)

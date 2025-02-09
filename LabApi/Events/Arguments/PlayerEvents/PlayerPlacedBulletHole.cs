@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using Decals;
+using LabApi.Features.Wrappers;
 using System;
 using UnityEngine;
 
@@ -13,11 +14,15 @@ public class PlayerPlacedBulletHoleEventArgs : EventArgs
     /// Initializes a new instance of the <see cref="PlayerPlacedBulletHoleEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who caused this bullet hole.</param>
+    /// <param name="type">Decal type which has spawned.</param>
     /// <param name="hitPosition">Position at which bullet hole has spawned.</param>
-    public PlayerPlacedBulletHoleEventArgs(ReferenceHub player, Vector3 hitPosition)
+    /// <param name="startRaycast">Position where the bullet hole raycast has started for it to be properly attached to surface.</param>
+    public PlayerPlacedBulletHoleEventArgs(ReferenceHub player, DecalPoolType type, Vector3 hitPosition, Vector3 startRaycast)
     {
         Player = Player.Get(player);
+        DecalType = type;
         HitPosition = hitPosition;
+        RaycastStart = startRaycast;
     }
 
     /// <summary>
@@ -26,7 +31,17 @@ public class PlayerPlacedBulletHoleEventArgs : EventArgs
     public Player Player { get; }
 
     /// <summary>
+    /// Gets or sets the decal type to be spawned.
+    /// </summary>
+    public DecalPoolType DecalType { get; set; }
+
+    /// <summary>
     /// Gets the position at which bullet hole has spawned.
     /// </summary>
     public Vector3 HitPosition { get; }
+
+    /// <summary>
+    /// Gets or sets the position where the bullet hole raycast will start for it to be properly attached to surface.
+    /// </summary>
+    public Vector3 RaycastStart { get; }
 }

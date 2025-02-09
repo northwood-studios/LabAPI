@@ -188,8 +188,16 @@ public class Pickup
     /// </summary>
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
     /// <returns>The requested item <see cref="Pickup">.</returns>
-    public static Pickup Get(ItemPickupBase itemPickupBase) =>
-                Dictionary.TryGetValue(itemPickupBase, out Pickup pickup) ? pickup : new Pickup(itemPickupBase);
+    public static Pickup? Get(ItemPickupBase itemPickupBase)
+    {
+        if (itemPickupBase == null)
+            return null;
+
+        if (Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
+            return pickup;
+
+        return new Pickup(itemPickupBase);
+    }
 
     /// <summary>
     /// Gets the pickup wrapper from the <see cref="SerialCache"/>.

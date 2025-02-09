@@ -118,5 +118,5 @@ public static class EventManager
     /// <param name="exception">The <see cref="Exception"/> that occurred.</param>
     /// <returns></returns>
     public static string FormatErrorMessage(Delegate eventHandler, Exception exception)
-        => $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}'";
+        => $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
 }

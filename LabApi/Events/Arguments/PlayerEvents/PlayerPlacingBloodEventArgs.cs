@@ -15,11 +15,13 @@ public class PlayerPlacingBloodEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// </summary>
     /// <param name="player">The player whose blood it is.</param>
     /// <param name="hitPosition">Position at which is blood being placed.</param>
-    public PlayerPlacingBloodEventArgs(ReferenceHub player, Vector3 hitPosition)
+    /// <param name="startRaycast">Position where the blood decal raycast will start for it to be properly attached to surface.</param>
+    public PlayerPlacingBloodEventArgs(ReferenceHub player, Vector3 hitPosition, Vector3 startRaycast)
     {
         IsAllowed = true;
         Player = Player.Get(player);
         HitPosition = hitPosition;
+        RaycastStart = startRaycast;
     }
 
     /// <summary>
@@ -31,6 +33,11 @@ public class PlayerPlacingBloodEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// Gets the position at which is blood being placed.
     /// </summary>
     public Vector3 HitPosition { get; set; }
+
+    /// <summary>
+    /// Gets or sets the position where the blood decal raycast will start for it to be properly attached to surface.
+    /// </summary>
+    public Vector3 RaycastStart { get; set; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

@@ -17,10 +17,10 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerActivatedGeneratorEventArgs>? ActivatedGenerator;
 
-    /// <summary>
-    /// Gets called when the player is aiming the weapon.
-    /// </summary>
-    public static event LabEventHandler<PlayerAimingWeaponEventArgs>? AimingWeapon;
+    ///// <summary>
+    ///// Gets called when the player is aiming the weapon.
+    ///// </summary>
+    //public static event LabEventHandler<PlayerAimingWeaponEventArgs>? AimingWeapon;
 
     /// <summary>
     /// Gets called when the player aimed the weapon.
@@ -308,16 +308,6 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerLeftPocketDimensionEventArgs>? LeftPocketDimension;
 
     /// <summary>
-    /// Gets called when the player is making noise.
-    /// </summary>
-    public static event LabEventHandler<PlayerMakingNoiseEventArgs>? MakingNoise;
-
-    /// <summary>
-    /// Gets called when the player has made a noise.
-    /// </summary>
-    public static event LabEventHandler<PlayerMadeNoiseEventArgs>? MadeNoise;
-
-    /// <summary>
     /// Gets called when the player is being muted.
     /// </summary>
     public static event LabEventHandler<PlayerMutingEventArgs>? Muting;
@@ -410,17 +400,17 @@ public static partial class PlayerEvents
     /// <summary>
     /// Gets called when the player is receiving an effect.
     /// </summary>
-    public static event LabEventHandler<PlayerReceivingEffectEventArgs>? ReceivingEffect;
+    public static event LabEventHandler<PlayerEffectUpdatingEventArgs>? UpdatingEffect;
+
+    /// <summary>
+    /// Gets called when the player has received an effect.
+    /// </summary>
+    public static event LabEventHandler<PlayerEffectUpdatedEventArgs>? UpdatedEffect;
 
     /// <summary>
     /// Gets called when the player is receiving a voice message.
     /// </summary>
     public static event LabEventHandler<PlayerReceivingVoiceMessageEventArgs>? ReceivingVoiceMessage;
-
-    /// <summary>
-    /// Gets called when the player has received an effect.
-    /// </summary>
-    public static event LabEventHandler<PlayerReceivedEffectEventArgs>? ReceivedEffect;
 
     /// <summary>
     /// Gets called when the player is reloading a weapon.

@@ -15,6 +15,7 @@ public class Scp096TryingNotToCryEventArgs : EventArgs, ICancellableEvent, IPlay
     public Scp096TryingNotToCryEventArgs(ReferenceHub player)
     {
         Player = Player.Get(player);
+        IsAllowed = true;
     }
 
     /// <summary>
