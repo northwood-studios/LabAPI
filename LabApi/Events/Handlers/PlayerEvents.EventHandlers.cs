@@ -17,10 +17,10 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerActivatedGeneratorEventArgs>? ActivatedGenerator;
 
-    /// <summary>
-    /// Gets called when the player is aiming the weapon.
-    /// </summary>
-    public static event LabEventHandler<PlayerAimingWeaponEventArgs>? AimingWeapon;
+    ///// <summary>
+    ///// Gets called when the player is aiming the weapon.
+    ///// </summary>
+    //public static event LabEventHandler<PlayerAimingWeaponEventArgs>? AimingWeapon;
 
     /// <summary>
     /// Gets called when the player aimed the weapon.
@@ -306,16 +306,6 @@ public static partial class PlayerEvents
     /// Gets called when the player has left the pocket dimension.
     /// </summary>
     public static event LabEventHandler<PlayerLeftPocketDimensionEventArgs>? LeftPocketDimension;
-
-    /// <summary>
-    /// Gets called when the player is making noise.
-    /// </summary>
-    public static event LabEventHandler<PlayerMakingNoiseEventArgs>? MakingNoise;
-
-    /// <summary>
-    /// Gets called when the player has made a noise.
-    /// </summary>
-    public static event LabEventHandler<PlayerMadeNoiseEventArgs>? MadeNoise;
 
     /// <summary>
     /// Gets called when the player is being muted.

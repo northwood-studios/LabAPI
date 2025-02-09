@@ -26,10 +26,10 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerActivatedGenerator)} triggered by {ev.Player.UserId}");
     }
 
-    public override void OnPlayerAimingWeapon(PlayerAimingWeaponEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerAimingWeapon)} triggered by {ev.Player.UserId}");
-    }
+    //public override void OnPlayerAimingWeapon(PlayerAimingWeaponEventArgs ev)
+    //{
+    //    Logger.Info($"{nameof(OnPlayerAimingWeapon)} triggered by {ev.Player.UserId}");
+    //}
 
     public override void OnPlayerAimedWeapon(PlayerAimedWeaponEventArgs ev)
     {
@@ -314,16 +314,6 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnPlayerLeftPocketDimension(PlayerLeftPocketDimensionEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerLeftPocketDimension)} triggered by {ev.Player.UserId}");
-    }
-
-    public override void OnPlayerMakingNoise(PlayerMakingNoiseEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerMakingNoise)} triggered by {ev.Player?.UserId ?? "Unknown"}");
-    }
-
-    public override void OnPlayerMadeNoise(PlayerMadeNoiseEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerMadeNoise)} triggered by {ev.Player?.UserId ?? "Unknown"}");
     }
 
     public override void OnPlayerMuting(PlayerMutingEventArgs ev)
