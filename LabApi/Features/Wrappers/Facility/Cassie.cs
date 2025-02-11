@@ -29,7 +29,7 @@ namespace LabApi.Features.Wrappers
 
         /// <summary>
         /// Checks whether a specified word is valid for cassie.
-        /// <note>String comparison is case insensitive.</note>
+        /// <note>String comparison is case-insensitive.</note>
         /// </summary>
         /// <param name="word">The word to check.</param>
         /// <returns>Whether the word is valid.</returns>
@@ -93,7 +93,7 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// Converts player's <see cref="RoleTypeId"/> into an SCP <b>number</b> identifier.
         /// </summary>
-        /// <param name="roleName">The target role id.</param>
+        /// <param name="role">The target <see cref="RoleTypeId"/>.</param>
         /// <param name="withoutSpace">The SCP number without spaces between. Used by Cassie.</param>
         /// <param name="withSpace">The SCP number with spaces between. Used by Subtitles.</param>
         public static void ConvertSCP(RoleTypeId role, out string withoutSpace, out string withSpace) => NineTailedFoxAnnouncer.ConvertSCP(role, out withoutSpace, out withSpace);

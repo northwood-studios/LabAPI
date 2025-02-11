@@ -59,7 +59,7 @@ public class PedestalLocker : Locker
     }
 
     /// <summary>
-    /// Gets whether or not the pedestal can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the pedestal can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Chamber.CanInteract;
 

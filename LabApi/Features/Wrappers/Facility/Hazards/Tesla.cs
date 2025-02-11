@@ -148,8 +148,6 @@ namespace LabApi.Features.Wrappers
         /// <param name="tesla">The tesla to be returned.</param>
         /// <returns>Whether the tesla is in out parameter.</returns>
         public static bool TryGet(Room room, [NotNullWhen(true)] out Tesla? tesla)
-        {
-            return TeslaByRoom.TryGetValue(room.Base, out tesla);
-        }
+            => TeslaByRoom.TryGetValue(room.Base, out tesla);
     }
 }

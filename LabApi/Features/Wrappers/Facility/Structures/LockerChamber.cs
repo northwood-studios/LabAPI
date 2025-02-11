@@ -59,7 +59,7 @@ public class LockerChamber
     public byte Id { get; }
 
     /// <summary>
-    /// Gets or sets whether or not the chamber door is open.
+    /// Gets or sets whether the chamber door is open.
     /// </summary>
     public bool IsOpen
     {
@@ -72,12 +72,12 @@ public class LockerChamber
     }
 
     /// <summary>
-    /// Gets whether or not the chamber can be interacted by a <see cref="Player"/>.
+    /// Gets whether  the chamber can be interacted by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Base.CanInteract;
 
     /// <summary>
-    /// Gets whether or not the chamber contains no items.
+    /// Gets whether the chamber contains no items.
     /// </summary>
     public bool IsEmpty => Base.Content.All(x => x == null);
 
@@ -103,7 +103,7 @@ public class LockerChamber
     }
 
     /// <summary>
-    /// Gets whether or not <see cref="Pickup"/> instances are spawned on the client only when the chamber is first opened.
+    /// Gets whether <see cref="Pickup"/> instances are spawned on the client only when the chamber is first opened.
     /// </summary>
     public bool SpawnOnFirstOpening => Base.SpawnOnFirstChamberOpening;
 
@@ -125,7 +125,7 @@ public class LockerChamber
     public void Fill()
     {
         Locker.Base.FillChamber(Base);
-        foreach(ItemPickupBase pickupBase in Base.Content)
+        foreach (ItemPickupBase pickupBase in Base.Content)
         {
             if (!pickupBase.TryGetComponent(out Rigidbody rigidbody))
                 continue;
@@ -221,10 +221,7 @@ public class LockerChamber
     /// <summary>
     /// Plays the Access Denied sound for this chamber.
     /// </summary>
-    public void PlayDeniedSound()
-    {
-        Locker.Base.RpcPlayDenied(Id);
-    }
+    public void PlayDeniedSound() => Locker.Base.RpcPlayDenied(Id);
 
     /// <summary>
     /// Gets the locker chamber wrapper from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseLockerChamber"/> was not null.

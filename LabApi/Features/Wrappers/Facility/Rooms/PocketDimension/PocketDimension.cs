@@ -87,20 +87,14 @@ public class PocketDimension : Room
     /// Force a <see cref="Player"/> inside the pocket dimension.
     /// </summary>
     /// <param name="player">The <see cref="Player"/> to send.</param>
-    public static void ForceInside(Player player)
-    {
-        player.EnableEffect<PocketCorroding>();
-    }
+    public static void ForceInside(Player player) => player.EnableEffect<PocketCorroding>();
 
     /// <summary>
-    /// Gets whether or not a <see cref="Player"/> is considered inside the pocket dimension.
+    /// Gets whether a <see cref="Player"/> is considered inside the pocket dimension.
     /// </summary>
     /// <param name="player">The <see cref="Player"/> to check.</param>
     /// <returns>True if inside otherwise false.</returns>
-    public static bool IsPlayerInside(Player player)
-    {
-        return player.HasEffect<PocketCorroding>();
-    }
+    public static bool IsPlayerInside(Player player) => player.HasEffect<PocketCorroding>();
 
     /// <summary>
     /// Force a player to exit the pocket dimension.
@@ -134,17 +128,12 @@ public class PocketDimension : Room
     /// <param name="pickup">The <see cref="Pickup"/> to check.</param>
     /// <returns>True if inside otherwise false.</returns>
     public static bool IsPickupInside(Pickup pickup)
-    {
-        return Scp106PocketItemManager.TrackedItems.ContainsKey(pickup.Base);
-    }
+        => Scp106PocketItemManager.TrackedItems.ContainsKey(pickup.Base);
 
     /// <summary>
     /// Randomizes which pocket dimension's teleports are exits. 
     /// </summary>
-    public static void RandomizeExits()
-    {
-        PocketDimensionGenerator.RandomizeTeleports();
-    }
+    public static void RandomizeExits() => PocketDimensionGenerator.RandomizeTeleports();
 
     /// <summary>
     /// Gets the poses used for exits for the pocket dimension.
@@ -152,9 +141,7 @@ public class PocketDimension : Room
     /// <param name="zone">The zone that the exits are associated with.</param>
     /// <returns>A collection of exit <see cref="Pose"/> instances.</returns>
     public static IReadOnlyCollection<Pose> GetExitPosesForZone(FacilityZone zone)
-    {
-        return Scp106PocketExitFinder.GetPosesForZone(zone);
-    }
+        => Scp106PocketExitFinder.GetPosesForZone(zone);
 
     /// <summary>
     /// Adds the specified <see cref="Pose">poses</see> to be used as exits for the pocket dimension.
@@ -210,12 +197,10 @@ public class PocketDimension : Room
     /// <summary>
     /// Gets the rarity of the item using its <see cref="Pickup"/> wrapper see <see cref="RecycleChances"/>.
     /// </summary>
-    /// <param name="item">The <see cref="Pickup"/> to get the rarity from.</param>
+    /// <param name="pickup">The <see cref="Pickup"/> to get the rarity from.</param>
     /// <returns>The rarity of the item.</returns>
     public static int GetRarity(Pickup pickup)
-    {
-        return GetRarity(InventoryItemLoader.AvailableItems[pickup.Type]);
-    }
+        => GetRarity(InventoryItemLoader.AvailableItems[pickup.Type]);
 
     /// <summary>
     /// Gets the rarity of the item using its <see cref="Item"/> wrapper see <see cref="RecycleChances"/>.
@@ -230,7 +215,5 @@ public class PocketDimension : Room
     /// <param name="item">The <see cref="ItemBase"/> to get the rarity from.</param>
     /// <returns>The rarity of the item.</returns>
     public static int GetRarity(ItemBase item)
-    {
-        return Scp106PocketItemManager.GetRarity(item);
-    }
+        => Scp106PocketItemManager.GetRarity(item);
 }

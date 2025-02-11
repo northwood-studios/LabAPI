@@ -236,7 +236,7 @@ public static class Warhead
     /// </summary>
     public static void OpenBlastDoors()
     {
-        foreach (var door in BlastDoor.Instances)
+        foreach (BlastDoor door in BlastDoor.Instances)
             door.ServerSetTargetState(true);
     }
 
@@ -245,17 +245,14 @@ public static class Warhead
     /// </summary>
     public static void CloseBlastDoors()
     {
-        foreach (var door in BlastDoor.Instances)
+        foreach (BlastDoor door in BlastDoor.Instances)
             door.ServerSetTargetState(false);
     }
 
     /// <summary>
     /// Plays the warhead detonation effect on all clients in the facility.
     /// </summary>
-    public static void Shake()
-    {
-        BaseController?.RpcShake(false);
-    }
+    public static void Shake() => BaseController?.RpcShake(false);
 
     /// <summary>
     /// Handles the creation of the warhead components.

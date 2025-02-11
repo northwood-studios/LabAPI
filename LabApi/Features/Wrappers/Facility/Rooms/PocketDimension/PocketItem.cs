@@ -69,7 +69,7 @@ public class PocketItem
     }
 
     /// <summary>
-    /// Gets or sets whether or not the item pickup is destroyed after the <see cref="TriggerDelay"/>.
+    /// Gets or sets whether the item pickup is destroyed after the <see cref="TriggerDelay"/>.
     /// </summary>
     public bool WillBeDestroyed
     {
@@ -98,9 +98,7 @@ public class PocketItem
     /// <param name="pocketItem">The <see cref="PocketItem"/> associated with <see cref="Wrappers.Pickup"/> or null if it doesn't exists.</param>
     /// <returns>Whether the <see cref="PocketItem"/> was successfully retrieved.</returns>
     public static bool TryGet(Pickup pickup, [NotNullWhen(true)] out PocketItem? pocketItem)
-    {
-        return Dictionary.TryGetValue(pickup.Base, out pocketItem);
-    }
+        => Dictionary.TryGetValue(pickup.Base, out pocketItem);
 
     /// <summary>
     /// Gets the <see cref="PocketItem"/> associated with the <see cref="Wrappers.Pickup"/>.

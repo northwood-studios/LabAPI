@@ -62,7 +62,7 @@ namespace LabApi.Features.Wrappers
         public static SinkholeHazard Spawn(Vector3 position, Quaternion rotation, Vector3 scale)
         {
             if (BasePrefab == null)
-                BasePrefab = Hazard.GetPrefab<SinkholeEnvironmentalHazard>();
+                BasePrefab = GetPrefab<SinkholeEnvironmentalHazard>();
 
             SinkholeHazard hazard = (SinkholeHazard)Hazard.Spawn(BasePrefab, position, rotation, scale);
             hazard.IsActive = true;

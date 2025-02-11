@@ -90,25 +90,13 @@ public class Room
     /// Gets the first light controller for this room.<br></br>
     /// <note>Please see <see cref="AllLightControllers"/> if you wish to modify all lights in this room.</note>
     /// </summary>
-    public LightsController? LightController
-    {
-        get
-        {
-            return Base.LightControllers.Count > 0 ? LightsController.Get(Base.LightControllers[0]) : null;
-        }
-    }
+    public LightsController? LightController => Base.LightControllers.Count > 0 ? LightsController.Get(Base.LightControllers[0]) : null;
 
     /// <summary>
     /// Gets all light controllers for this specified room.<br/>
     /// Some rooms such as 049, warhead and etc may have multiple light controllers as they are split by the elevator.
     /// </summary>
-    public IEnumerable<LightsController> AllLightControllers
-    {
-        get
-        {
-            return Base.LightControllers.Select(LightsController.Get);
-        }
-    }
+    public IEnumerable<LightsController> AllLightControllers => Base.LightControllers.Select(LightsController.Get);
 
     /// <summary>
     /// Gets the room's <see cref="UnityEngine.Transform"/>.
@@ -215,10 +203,7 @@ public class Room
     // TODO: use factory instead.
     private static void AddRoom(RoomIdentifier roomIdentifier)
     {
-        if (roomIdentifier.Name == RoomName.Pocket)
-            _ = new PocketDimension(roomIdentifier);
-        else
-            _ = new Room(roomIdentifier);
+        _ = roomIdentifier.Name == RoomName.Pocket ? new PocketDimension(roomIdentifier) : (PocketDimension)new Room(roomIdentifier);
     }
 
     /// <summary>

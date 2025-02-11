@@ -132,7 +132,6 @@ namespace LabApi.Features.Wrappers
         /// </summary>
         internal virtual void OnRemove()
         {
-
         }
 
         /// <summary>
@@ -156,7 +155,7 @@ namespace LabApi.Features.Wrappers
         /// Attempts to get the prefab from <see cref="NetworkClient.prefabs"/>.
         /// </summary>
         /// <typeparam name="T">Type of the hazard.</typeparam>
-        /// <returns>Prefab gameobject if it was found. Otherwise <see langword="null"/></returns>
+        /// <returns>Prefab <see cref="GameObject"/> if it was found. Otherwise <see langword="null"/></returns>
         protected static T? GetPrefab<T>() where T : EnvironmentalHazard
         {
             foreach (GameObject prefab in NetworkClient.prefabs.Values)

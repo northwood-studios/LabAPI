@@ -68,10 +68,7 @@ namespace LabApi.Features.Wrappers
         /// Destroys this hazard.<br/>
         /// Do note that subclasses usually implement few seconds delay before the actual object is destroyed. (Usually to wait for animations to finish on clients)
         /// </summary>
-        public override void Destroy()
-        {
-            Base.ServerDestroy();
-        }
+        public override void Destroy() => Base.ServerDestroy();
 
         /// <inheritdoc/>
         internal override void OnRemove()

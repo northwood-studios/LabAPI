@@ -16,18 +16,12 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// Gets or sets whether the round has started or not.
         /// </summary>
-        public static bool IsRoundStarted
-        {
-            get => RoundSummary.RoundInProgress();
-        }
+        public static bool IsRoundStarted => RoundSummary.RoundInProgress();
 
         /// <summary>
         /// Gets a value indicating whether the round is ended or not.
         /// </summary>
-        public static bool IsRoundEnded
-        {
-            get => !IsRoundStarted && Duration.Seconds > 1;
-        }
+        public static bool IsRoundEnded => !IsRoundStarted && Duration.Seconds > 1;
 
         /// <summary>
         /// Gets whether the round can end if there is only 1 team alive remaining.<br/>
@@ -40,10 +34,7 @@ namespace LabApi.Features.Wrappers
                 if (IsLocked || KeepRoundOnOne && ReferenceHub.AllHubs.Count(x => x.authManager.InstanceMode != ClientInstanceMode.DedicatedServer) < 2 || !IsRoundStarted)
                     return false;
 
-                if (!IsRoundStarted || IsLocked)
-                    return false;
-
-                return true;
+                return IsRoundStarted && !IsLocked;
             }
         }
 

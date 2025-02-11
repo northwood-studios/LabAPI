@@ -76,7 +76,16 @@ public static class Server
     /// <summary>
     /// Gets the Ticks Per Second of the server.
     /// </summary>
-    public static double TPS => Math.Round(1f / Time.smoothDeltaTime);
+    public static double Tps => Math.Round(1f / Time.smoothDeltaTime);
+
+    /// <summary>
+    /// Gets the max Ticks Per Second of the server.
+    /// </summary>
+    public static short MaxTps
+    {
+        get => ServerStatic.ServerTickrate;
+        set => ServerStatic.ServerTickrate = value;
+    }
 
     /// <summary>
     /// Gets or sets the spawn protection duration for players.
@@ -88,7 +97,7 @@ public static class Server
     }
 
     /// <summary>
-    /// Gets whether or not the server is in Idle Mode.
+    /// Gets whether the server is in Idle Mode.
     /// </summary>
     public static bool IdleModeActive => IdleMode.IdleModeActive;
 

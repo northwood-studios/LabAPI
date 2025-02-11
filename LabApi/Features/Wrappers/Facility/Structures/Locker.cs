@@ -42,7 +42,7 @@ public class Locker : Structure
         base.OnRemove();
         Dictionary.Remove(Base);
 
-        foreach(var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.OnRemove();
     }
 
@@ -92,7 +92,7 @@ public class Locker : Structure
     }
 
     /// <summary>
-    /// Gets whether or not all the <see cref="Chambers"/> are <see cref="LockerChamber.IsEmpty"/>.
+    /// Gets whether all the <see cref="Chambers"/> are <see cref="LockerChamber.IsEmpty"/>.
     /// </summary>
     public bool IsEmpty => Chambers.All(x => x.IsEmpty);
 
@@ -166,7 +166,7 @@ public class Locker : Structure
     /// </remarks>
     public void FillAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.Fill();
     }
 
@@ -175,7 +175,7 @@ public class Locker : Structure
     /// </summary>
     public void ClearAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.RemoveAllItems();
     }
 
@@ -184,7 +184,7 @@ public class Locker : Structure
     /// </summary>
     public void OpenAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.IsOpen = true;
     }
 
@@ -193,7 +193,7 @@ public class Locker : Structure
     /// </summary>
     public void CloseAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.IsOpen = false;
     }
 }

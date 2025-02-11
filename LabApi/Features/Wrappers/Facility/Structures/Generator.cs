@@ -39,15 +39,14 @@ public class Generator : Structure
         Base = generator;
 
         if (generator.Room == null)
-        {
             return;
-        }
 
         if (!GeneratorsByRoom.TryGetValue(generator.Room, out List<Generator> list))
         {
             list = new List<Generator>();
             GeneratorsByRoom.Add(generator.Room, list);
         }
+
         list.Add(this);
     }
 
@@ -123,7 +122,7 @@ public class Generator : Structure
     public bool ActivationReady => Base.ActivationReady;
 
     /// <summary>
-    /// Gets or sets whether or not the generator is opened.
+    /// Gets or sets whether the generator is opened.
     /// </summary>
     public bool IsOpen
     {
@@ -132,7 +131,7 @@ public class Generator : Structure
     }
 
     /// <summary>
-    /// Gets or sets whether or not the generator is unlocked.
+    /// Gets or sets whether the generator is unlocked.
     /// </summary>
     public bool IsUnlocked
     {

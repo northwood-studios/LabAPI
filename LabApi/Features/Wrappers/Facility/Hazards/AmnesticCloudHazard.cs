@@ -156,6 +156,7 @@ namespace LabApi.Features.Wrappers
             base.OnRemove();
             Dictionary.Remove(Base);
         }
+
         /// <summary>
         /// Gets the hazard wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Scp939AmnesticCloudInstance"/> was not <see langword="null"/>.
         /// </summary>

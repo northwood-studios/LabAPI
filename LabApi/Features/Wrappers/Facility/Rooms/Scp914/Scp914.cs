@@ -95,8 +95,8 @@ public class Scp914 : Room
             { 
                 Scp914Controller.Singleton.IsUpgrading = value;
                 SequenceCooldown = 0.0f;
+            }
         }
-    }
     }
 
     /// <summary>
@@ -213,9 +213,7 @@ public class Scp914 : Room
     /// </summary>
     /// <param name="sound">The sound to play.</param>
     public static void PlaySound(Scp914Sound sound)
-    {
-        Scp914Controller.Singleton.RpcPlaySound((byte)sound);
-    }
+        => Scp914Controller.Singleton.RpcPlaySound((byte)sound);
 
     /// <summary>
     /// Gets the <see cref="IScp914ItemProcessor"/> for the specified type.
@@ -232,17 +230,16 @@ public class Scp914 : Room
 
         if (ItemProcessorCache.TryGetValue(item, out var processor))
             return processor;
-        else if(item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
-        {
-            if (baseProcessor is ItemProcessorAdapter adaptor)
-                ItemProcessorCache[item] = adaptor.Processor;
-            else
-                ItemProcessorCache[item] = new BaseGameItemProcessor(baseProcessor);
 
-            return ItemProcessorCache[item];
-        }
-        else
+        if (!item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
             return null;
+
+        if (baseProcessor is ItemProcessorAdapter adaptor)
+            ItemProcessorCache[item] = adaptor.Processor;
+        else
+            ItemProcessorCache[item] = new BaseGameItemProcessor(baseProcessor);
+
+        return ItemProcessorCache[item];
     }
 
     /// <summary>

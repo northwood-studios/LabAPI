@@ -344,7 +344,6 @@ public static class Map
             lc.FlickerLights(duration);
     }
 
-
     /// <summary>
     /// Turns off all lights.
     /// </summary>

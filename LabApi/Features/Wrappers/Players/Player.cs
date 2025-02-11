@@ -87,7 +87,7 @@ public class Player
     }
 
     /// <summary>
-    /// A internal constructor to prevent external instantiation.
+    /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
     internal Player(ReferenceHub referenceHub)
@@ -230,7 +230,7 @@ public class Player
 
     /// <summary>
     /// Gets or sets the player's current artificial health.<br/>
-    /// Setting the value will clear all of the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
+    /// Setting the value will clear all the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
     /// Note: This value cannot be greater than <see cref="MaxArtificialHealth"/>. Set it to your desired value first if its over <see cref="AhpStat.DefaultMax"/> and then set this one.
     /// </summary>
     public float ArtificialHealth
@@ -398,7 +398,7 @@ public class Player
     /// <summary>
     /// Gets or sets the player's current <see cref="Item">item</see>.
     /// </summary>
-    public Item CurrentItem
+    public Item? CurrentItem
     {
         get => Item.Get(Inventory.CurInstance);
         set
@@ -661,19 +661,8 @@ public class Player
     /// </summary>
     public Vector3 Position
     {
-        get
-        {
-            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
-            {
-                return Vector3.zero;
-            }
-
-            return fpcRole.FpcModule.Position;
-        }
-        set
-        {
-            ReferenceHub.TryOverridePosition(value);
-        }
+        get => ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole ? Vector3.zero : fpcRole.FpcModule.Position;
+        set => ReferenceHub.TryOverridePosition(value);
     }
 
     /// <summary>
@@ -694,17 +683,12 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
-            {
                 return Vector2.zero;
-            }
 
             FpcMouseLook mouseLook = fpcRole.FpcModule.MouseLook;
             return new Vector2(mouseLook.CurrentVertical, mouseLook.CurrentHorizontal);
         }
-        set
-        {
-            ReferenceHub.TryOverrideRotation(value);
-        }
+        set => ReferenceHub.TryOverrideRotation(value);
     }
 
     /// <summary>
