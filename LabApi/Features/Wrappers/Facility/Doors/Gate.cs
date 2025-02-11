@@ -45,7 +45,7 @@ public class Gate : Door
     public new PryableDoor Base { get; }
 
     /// <summary>
-    /// Gets or sets whether or not SCP-106 can pass through the door when its not closed and locked.
+    /// Gets or sets whether SCP-106 can pass through the door when its not closed and locked.
     /// </summary>
     public bool Is106Passable
     {
@@ -66,10 +66,7 @@ public class Gate : Door
     /// <summary>
     /// Play the Pry animation.
     /// </summary>
-    public void Pry()
-    {
-        Base.RpcPryGate();
-    }
+    public void Pry() => Base.RpcPryGate();
 
     /// <summary>
     /// Gets the <see cref="Gate"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.

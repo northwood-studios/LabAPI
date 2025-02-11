@@ -55,7 +55,7 @@ public class CheckpointDoor : Door
     public Door[] SubDoors { get; }
 
     /// <summary>
-    /// Gets or sets whether or not all the sub doors are open.
+    /// Gets or sets whether all the sub doors are open.
     /// </summary>
     public bool IsSubOpened
     {
@@ -172,9 +172,7 @@ public class CheckpointDoor : Door
     /// <param name="type">The <see cref="DoorDamageType"/> to apply.</param>
     /// <returns>True if the doors took damage, otherwise false.</returns>
     public bool TryDamage(float damage, DoorDamageType type = DoorDamageType.ServerCommand)
-    {
-        return Base.ServerDamage(damage, type);
-    }
+        => Base.ServerDamage(damage, type);
 
     /// <summary>
     /// Break all the sub doors.
@@ -182,17 +180,12 @@ public class CheckpointDoor : Door
     /// <param name="type">The <see cref="DoorDamageType"/> to apply.</param>
     /// <returns>True if the doors took damage, otherwise false.</returns>
     public bool TryBreak(DoorDamageType type = DoorDamageType.ServerCommand)
-    {
-        return Base.ServerDamage(float.MaxValue, type);
-    }
+        => TryDamage(float.MaxValue, type);
 
     /// <summary>
     /// Plays a sound and sets the panel state to error. Error state can not be undone.
     /// </summary>
-    public void PlayErrorAnimation()
-    {
-        Base.RpcPlayBeepSound(2);
-    }
+    public void PlayErrorAnimation() => Base.RpcPlayBeepSound(2);
 
     /// <summary>
     /// Gets the <see cref="CheckpointDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
