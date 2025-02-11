@@ -52,7 +52,7 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// The base object.
         /// </summary>
-        public TemporaryHazard Base { get; private set; }
+        public new TemporaryHazard Base { get; private set; }
 
         /// <summary>
         /// An internal constructor to prevent external instantiation.

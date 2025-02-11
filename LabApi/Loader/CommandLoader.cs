@@ -148,7 +148,7 @@ public static class CommandLoader
     /// <param name="command">The registered command if the command was successfully registered.</param>
     public static bool TryRegisterCommand(Type commandType, Type commandHandlerType, [NotNullWhen(true)] out ICommand? command, string logName)
     {
-        command = default;
+        command = null;
 
         if (CommandHandlers.ContainsKey(commandType))
         {
@@ -192,7 +192,7 @@ public static class CommandLoader
     /// <param name="command">The <see cref="ICommand"/> to register.</param>
     /// <param name="commandHandler">The <see cref="CommandHandler"/> to register the command to.</param>
     /// <param name="logName">The name of the plugin to log to use when logging errors.</param>
-    /// <returns>Whether or not the command was successfully registered.</returns>
+    /// <returns>Whether the command was successfully registered.</returns>
     public static bool TryRegisterCommand(ICommand command, CommandHandler commandHandler, string logName)
     {
         try

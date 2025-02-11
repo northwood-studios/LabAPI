@@ -63,7 +63,7 @@ public static class ConfigurationLoader
     public static bool TryReadConfig<TConfig>(this Plugin plugin, string fileName, [NotNullWhen(true)] out TConfig? config)
         where TConfig : class, new()
     {
-        config = default;
+        config = null;
 
         try
         {
@@ -101,7 +101,7 @@ public static class ConfigurationLoader
     public static bool TryLoadConfig<TConfig>(this Plugin plugin, string fileName, [NotNullWhen(true)] out TConfig? config)
         where TConfig : class, new()
     {
-        config = default;
+        config = null;
 
         // We retrieve the path of the configuration file.
         string path = plugin.GetConfigPath(fileName);
@@ -167,7 +167,7 @@ public static class ConfigurationLoader
     public static bool TryCreateDefaultConfig<TConfig>(this Plugin plugin, [NotNullWhen(true)] out TConfig? config)
         where TConfig : class, new()
     {
-        config = default;
+        config = null;
 
         try
         {

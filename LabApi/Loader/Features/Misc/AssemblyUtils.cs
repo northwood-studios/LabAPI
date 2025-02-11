@@ -53,7 +53,7 @@ public static class AssemblyUtils
 
             Logger.Error(exception.ToString());
 
-            types = default;
+            types = null;
             return true; // True = missing dependencies.
         }
     }

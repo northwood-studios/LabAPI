@@ -30,7 +30,7 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// The base object.
         /// </summary>
-        public SinkholeEnvironmentalHazard Base { get; private set; }
+        public new SinkholeEnvironmentalHazard Base { get; private set; }
 
         /// <summary>
         /// An internal constructor to prevent external instantiation.

@@ -21,7 +21,7 @@ public class BreakableDoor : Door
     public new static IReadOnlyCollection<BreakableDoor> List => Dictionary.Values;
 
     /// <summary>
-    /// An internal constructor the prevent external instantiation.
+    /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseBreakableDoor">The base <see cref="BaseBreakableDoor"/> object.</param>
     internal BreakableDoor(BaseBreakableDoor baseBreakableDoor)
@@ -46,7 +46,7 @@ public class BreakableDoor : Door
     public new BaseBreakableDoor Base { get; }
 
     /// <summary>
-    /// Gets or sets whether SCP-106 can pass through the door when its not closed and locked.
+    /// Gets or sets whether SCP-106 can pass through the door when it's not closed and locked.
     /// </summary>
     public bool Is106Passable
     {
