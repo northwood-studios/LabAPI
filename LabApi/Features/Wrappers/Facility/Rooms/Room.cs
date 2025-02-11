@@ -76,15 +76,9 @@ public class Room
     public HashSet<RoomIdentifier> ConnectedRooms => Base.ConnectedRooms;
 
     /// <summary>
-    /// Gets the doors that are a part of this room.
+    /// Gets the doors that are a part of this room. TODO: Cache in base game code?
     /// </summary>
-    public IEnumerable<Door> Doors
-    {
-        get
-        {
-            return Doors.Where(n => n.Rooms.Contains(Base)); // TODO: Cache the result in base game code?
-        }
-    }
+    public IEnumerable<Door> Doors => Door.List.Where(d => d.Rooms.Contains(Base));
 
     /// <summary>
     /// Gets the first light controller for this room.<br></br>
@@ -117,6 +111,11 @@ public class Room
     /// Gets the room's rotation.
     /// </summary>
     public Quaternion Rotation => Transform.rotation;
+
+    /// <summary>
+    /// Gets a collection of players in the room.
+    /// </summary>
+    public IEnumerable<Player> Players => Player.List.Where(p => p.Room == this);
 
     /// <summary>
     /// Gets the room wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
@@ -157,7 +156,6 @@ public class Room
     /// <returns>The requested rooms.</returns>
     public static IEnumerable<Room> Get(IEnumerable<RoomIdentifier> roomIdentifiers) =>
         roomIdentifiers.Select(Get);
-
 
     /// <summary>
     /// Gets the closest <see cref="LightsController"/> to the specified player.

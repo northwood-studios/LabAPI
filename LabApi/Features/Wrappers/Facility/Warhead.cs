@@ -286,9 +286,9 @@ public static class Warhead
         /// <summary>
         /// Internal constructor to prevent external instantiation.
         /// </summary>
-        /// <param name="detonationScenario"></param>
-        /// <param name="id"></param>
-        /// <param name="type"></param>
+        /// <param name="detonationScenario">The <see cref="DetonationScenario"/>.</param>
+        /// <param name="id">The <see cref="byte"/> id of the scenario.</param>
+        /// <param name="type">The <see cref="WarheadScenarioType"/>.</param>
         internal DetonationScenario(AlphaWarheadController.DetonationScenario detonationScenario, byte id, WarheadScenarioType type)
         {
             TimeToDetonate = detonationScenario.TimeToDetonate;
