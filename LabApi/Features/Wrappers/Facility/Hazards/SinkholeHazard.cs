@@ -30,13 +30,14 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// The base object.
         /// </summary>
-        public new SinkholeEnvironmentalHazard Base { get; private set; }
+        public new SinkholeEnvironmentalHazard Base { get; }
 
         /// <summary>
         /// An internal constructor to prevent external instantiation.
         /// </summary>
         /// <param name="hazard">The base <see cref="SinkholeEnvironmentalHazard"/> object.</param>
-        internal SinkholeHazard(SinkholeEnvironmentalHazard hazard) : base(hazard)
+        internal SinkholeHazard(SinkholeEnvironmentalHazard hazard)
+            : base(hazard)
         {
             Base = hazard;
             Dictionary.Add(hazard, this);

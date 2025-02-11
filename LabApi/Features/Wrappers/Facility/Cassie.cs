@@ -38,7 +38,7 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// Calculates duration of specific message.
         /// </summary>
-        /// <param name="tts">The message.</param>
+        /// <param name="message">The message.</param>
         /// <param name="rawNumber">Raw numbers.</param>
         /// <param name="speed">The speed of message.</param>
         /// <returns>Duration of the specific message in seconds.</returns>
@@ -96,7 +96,7 @@ namespace LabApi.Features.Wrappers
         /// <param name="role">The target <see cref="RoleTypeId"/>.</param>
         /// <param name="withoutSpace">The SCP number without spaces between. Used by Cassie.</param>
         /// <param name="withSpace">The SCP number with spaces between. Used by Subtitles.</param>
-        public static void ConvertSCP(RoleTypeId role, out string withoutSpace, out string withSpace) => NineTailedFoxAnnouncer.ConvertSCP(role, out withoutSpace, out withSpace);
+        public static void ConvertScp(RoleTypeId role, out string withoutSpace, out string withSpace) => NineTailedFoxAnnouncer.ConvertSCP(role, out withoutSpace, out withSpace);
 
         /// <summary>
         /// Converts player's role name into an SCP <b>number</b> identifier.
@@ -104,6 +104,6 @@ namespace LabApi.Features.Wrappers
         /// <param name="roleName">The targets role name</param>
         /// <param name="withoutSpace">The SCP number without spaces between. Used by Cassie.</param>
         /// <param name="withSpace">The SCP number with spaces between. Used by Subtitles.</param>
-        public static void ConvertSCP(string roleName, out string withoutSpace, out string withSpace) => NineTailedFoxAnnouncer.ConvertSCP(roleName, out withoutSpace, out withSpace);
+        public static void ConvertScp(string roleName, out string withoutSpace, out string withSpace) => NineTailedFoxAnnouncer.ConvertSCP(roleName, out withoutSpace, out withSpace);
     }
 }

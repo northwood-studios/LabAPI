@@ -64,7 +64,7 @@ public class CheckpointDoor : Door
     }
 
     /// <summary>
-    /// Gets or sets whether or not the doors are broken.
+    /// Gets or sets whether the doors are broken.
     /// </summary>
     /// <remarks>
     /// Some doors can not be unbroken.

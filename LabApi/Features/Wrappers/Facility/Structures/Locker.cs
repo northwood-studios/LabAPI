@@ -27,7 +27,7 @@ public class Locker : Structure
     /// </summary>
     /// <param name="baseLocker">The base <see cref="BaseLocker"/> object.</param>
     internal Locker(BaseLocker baseLocker)
-        :base(baseLocker)
+        : base(baseLocker)
     {
         Dictionary.Add(baseLocker, this);
         Base = baseLocker;
@@ -152,7 +152,7 @@ public class Locker : Structure
                 chambers.RemoveAt(Random.Range(0, chambers.Count));
         }
 
-        foreach (var chamber in chambers)
+        foreach (LockerChamber chamber in chambers)
             chamber.Fill();
 
         ListPool<LockerChamber>.Shared.Return(chambers);

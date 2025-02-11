@@ -41,7 +41,7 @@ public class PocketItem
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="item">The item pickup in the pocket dimension.</param>
+    /// <param name="pickup">The item pickup in the pocket dimension.</param>
     internal PocketItem(ItemPickupBase pickup, Scp106PocketItemManager.PocketItem pocketItem)
     {
         Dictionary.Add(pickup, this);
@@ -105,7 +105,7 @@ public class PocketItem
     /// </summary>
     /// <param name="pickup">The <see cref="Wrappers.Pickup"/> inside the pocket dimension to get the <see cref="PocketItem"/> from.</param>
     /// <returns>The associated <see cref="PocketItem"/> for the <see cref="Wrappers.Pickup"/> or null if it doesn't exist.</returns>
-    public static PocketItem? Get(Pickup pickup) => TryGet(pickup, out var pocketItem) ? pocketItem : null;
+    public static PocketItem? Get(Pickup pickup) => TryGet(pickup, out PocketItem? pocketItem) ? pocketItem : null;
 
     /// <summary>
     /// Gets or adds a <see cref="PocketItem"/>.
@@ -117,7 +117,7 @@ public class PocketItem
     /// </remarks>
     public static PocketItem GetOrAdd(Pickup pickup)
     {
-        if (Dictionary.TryGetValue(pickup.Base, out var pocketItem))
+        if (Dictionary.TryGetValue(pickup.Base, out PocketItem? pocketItem))
             return pocketItem;
 
         pickup.Position = PocketDimension.Instance!.Position + Vector3.up;

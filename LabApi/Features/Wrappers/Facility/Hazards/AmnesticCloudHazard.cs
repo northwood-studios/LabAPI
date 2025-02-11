@@ -89,13 +89,14 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// The base object.
         /// </summary>
-        public new Scp939AmnesticCloudInstance Base { get; private set; }
+        public new Scp939AmnesticCloudInstance Base { get; }
 
         /// <summary>
         /// Internal constructor preventing external instantiation.
         /// </summary>
         /// <param name="hazard">The base amnestic cloud hazard.</param>
-        internal AmnesticCloudHazard(Scp939AmnesticCloudInstance hazard) : base(hazard)
+        internal AmnesticCloudHazard(Scp939AmnesticCloudInstance hazard)
+            : base(hazard)
         {
             Base = hazard;
             Dictionary.Add(hazard, this);

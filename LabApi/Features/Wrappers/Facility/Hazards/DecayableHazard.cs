@@ -52,13 +52,14 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// The base object.
         /// </summary>
-        public new TemporaryHazard Base { get; private set; }
+        public new TemporaryHazard Base { get; }
 
         /// <summary>
         /// An internal constructor to prevent external instantiation.
         /// </summary>
         /// <param name="hazard">The base game object.</param>
-        protected DecayableHazard(TemporaryHazard hazard) : base(hazard)
+        protected DecayableHazard(TemporaryHazard hazard)
+            : base(hazard)
         {
             Base = hazard;
             Dictionary.Add(hazard, this);

@@ -45,7 +45,6 @@ public class ExperimentalWeaponLocker : Locker
     /// </summary>
     public new BaseExperimentalWeaponLocler Base { get; }
 
-
     /// <summary>
     /// The experimental weapon's chamber.
     /// </summary>

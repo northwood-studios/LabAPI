@@ -73,7 +73,7 @@ public class BreakableDoor : Door
     }
 
     /// <summary>
-    /// Gets or sets whether or not the door is broken.
+    /// Gets or sets whether the door is broken.
     /// </summary>
     /// <remarks>
     /// Some doors can not be unbroken.

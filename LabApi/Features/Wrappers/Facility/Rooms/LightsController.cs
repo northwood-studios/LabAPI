@@ -38,10 +38,11 @@ namespace LabApi.Features.Wrappers
             RoomLightController.OnAdded += (roomLightController) => _ = new LightsController(roomLightController);
             RoomLightController.OnRemoved += (roomLightController) => Dictionary.Remove(roomLightController);
         }
+
         /// <summary>
         /// The base game object.
         /// </summary>
-        public RoomLightController Base { get; private set; }
+        public RoomLightController Base { get; }
 
         /// <summary>
         /// The room this controller is assigned to.
@@ -70,8 +71,7 @@ namespace LabApi.Features.Wrappers
         /// Blackouts the room for specified duration.
         /// </summary>
         /// <param name="duration">Duration of light shutdown in seconds.</param>
-        public void FlickerLights(float duration) =>
-            Base.ServerFlickerLights(duration);
+        public void FlickerLights(float duration) => Base.ServerFlickerLights(duration);
 
         /// <summary>
         /// Gets the controller wrapper from <see cref="Dictionary"/>, or creates a new one if it doesnt exists.

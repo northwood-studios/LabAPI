@@ -50,7 +50,7 @@ public class PedestalLocker : Locker
     public LockerChamber Chamber => Chambers.First();
 
     /// <summary>
-    /// Gets or sets whether or not the pedestal is open.
+    /// Gets or sets whether the pedestal is open.
     /// </summary>
     public bool IsOpen
     {

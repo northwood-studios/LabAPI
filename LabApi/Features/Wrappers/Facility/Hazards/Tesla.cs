@@ -72,7 +72,7 @@ namespace LabApi.Features.Wrappers
         /// Returns if <see cref="Player"/> is in range where tesla gate starts idling.
         /// </summary>
         /// <param name="player">The player to check on.</param>
-        /// <returns>Whethet the player is in idle range.</returns>
+        /// <returns>Whether the player is in idle range.</returns>
         public bool IsPlayerInIdleRange(Player player) => Base.IsInIdleRange(player.ReferenceHub);
 
         /// <summary>
@@ -86,21 +86,18 @@ namespace LabApi.Features.Wrappers
         /// Returns if any <see cref="Player"/> is in range where tesla gate starts idling.
         /// </summary>
         /// <returns>Whether any player is within the idle range.</returns>
-        public bool IsAnyPlayerInIdleRange() => HashsetExtensions.Any(ReferenceHub.AllHubs, Base.IsInIdleRange);
+        public bool IsAnyPlayerInIdleRange() => ReferenceHub.AllHubs.Any(Base.IsInIdleRange);
 
         /// <summary>
         /// Returns if any <see cref="Player"/> is in range where tesla gate starts to burst.
         /// </summary>
         /// <returns>Whether any player is within activation range.</returns>
-        public bool IsAnyPlayerInRange() => HashsetExtensions.Any(ReferenceHub.AllHubs, Base.PlayerInRange);
+        public bool IsAnyPlayerInRange() => ReferenceHub.AllHubs.Any(Base.PlayerInRange);
 
         /// <summary>
         /// Tesla gate electric burst. Will not do anything if burst is being active.
         /// </summary>
-        public void Trigger()
-        {
-            Base.ServerSideCode();
-        }
+        public void Trigger() => Base.ServerSideCode();
 
         /// <summary>
         /// Tesla gate instant burst.

@@ -35,7 +35,7 @@ public class Scp914 : Room
     /// </summary>
     /// <param name="roomIdentifier">The room identifier for the pocket dimension.</param>
     internal Scp914(RoomIdentifier roomIdentifier)
-        :base(roomIdentifier)
+        : base(roomIdentifier)
     {
         Instance = this;
     }

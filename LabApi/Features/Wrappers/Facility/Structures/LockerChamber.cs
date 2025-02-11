@@ -26,7 +26,7 @@ public class LockerChamber
     /// </summary>
     /// <param name="baseLockerChamber">The base <see cref="BaseLockerChamber"/> object.</param>
     /// <param name="locker">The <see cref="Wrappers.Locker"/> that has this chamber.</param>
-    /// <param name="id">The Id of the chamber inside the locker.</param>
+    /// <param name="id">The id of the chamber inside the locker.</param>
     internal LockerChamber(BaseLockerChamber baseLockerChamber, Locker locker, byte id)
     {
         Dictionary.Add(baseLockerChamber, this);

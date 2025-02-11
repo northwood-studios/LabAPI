@@ -150,7 +150,7 @@ public class Door
     public FacilityZone Zone => Rooms.FirstOrDefault()?.Zone ?? FacilityZone.Other;
 
     /// <summary>
-    /// Gets or sets whether or not the door is open.
+    /// Gets or sets whether the door is open.
     /// </summary>
     public bool IsOpened
     {
@@ -173,7 +173,7 @@ public class Door
     public float ExactState => Base.GetExactState();
 
     /// <summary>
-    /// Gets or sets whether or not the door is locked.
+    /// Gets or sets whether the door is locked.
     /// </summary>
     public bool IsLocked
     {

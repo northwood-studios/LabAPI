@@ -69,7 +69,7 @@ public class PocketDimension : Room
     /// </summary>
     /// <param name="room">The room identifier for the pocket dimension.</param>
     internal PocketDimension(RoomIdentifier room) 
-        :base(room) 
+        : base(room) 
     {
         Instance = this;
     }
@@ -172,12 +172,12 @@ public class PocketDimension : Room
     {
         Scp106PocketExitFinder.PosesForZoneCache[zone] = [];
     }
-
+    
     /// <summary>
     /// Removes the specified <see cref="Pose">poses</see> from use as exits for the pocket dimension.
     /// </summary>
     /// <param name="zone">The zone to remove exits from.</param>
-    /// <param name="poses">the <see cref="Poses">poses</see> to remove.</param>
+    /// <param name="poses">the <see cref="Pose">poses</see> to remove.</param>
     public static void RemoveExitPosesForZone(FacilityZone zone, IEnumerable<Pose> poses)
     {
         // Attempts to generate the pose array as it could be empty.

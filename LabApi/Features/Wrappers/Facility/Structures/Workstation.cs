@@ -73,16 +73,12 @@ public class Workstation : Structure
     /// <param name="player">The <see cref="Player"/> to test.</param>
     /// <returns>Whether the player was close enough.</returns>
     public bool IsInRange(Player player)
-    {
-        return BaseController.IsInRange(player.ReferenceHub);
-    }
+        => BaseController.IsInRange(player.ReferenceHub);
 
     /// <summary>
     /// Interact with the workstation.
     /// </summary>
     /// <param name="player">The <see cref="Player"/> that interacted.</param>
     public void Interact(Player player)
-    {
-        BaseController.ServerInteract(player.ReferenceHub, BaseController.ActivateCollider.ColliderId);
-    }
+        => BaseController.ServerInteract(player.ReferenceHub, BaseController.ActivateCollider.ColliderId);
 }

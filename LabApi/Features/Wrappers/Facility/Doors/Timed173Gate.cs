@@ -28,7 +28,7 @@ public class Timed173Gate : Gate
     /// </summary>
     /// <param name="timed173PryableDoor">The base <see cref="Timed173PryableDoor"/> object.</param>
     internal Timed173Gate(Timed173PryableDoor timed173PryableDoor)
-        :base(timed173PryableDoor)
+        : base(timed173PryableDoor)
     {
         Dictionary.Add(timed173PryableDoor, this);
         Base = timed173PryableDoor;

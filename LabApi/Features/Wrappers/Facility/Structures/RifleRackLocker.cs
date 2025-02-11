@@ -39,7 +39,7 @@ public class RifleRackLocker : Locker
     }
 
     /// <summary>
-    /// Gets or sets whether or not the rifle rack is open.
+    /// Gets or sets whether the rifle rack is open.
     /// </summary>
     public bool IsOpen
     {

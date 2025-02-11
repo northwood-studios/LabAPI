@@ -24,7 +24,7 @@ public class Gate : Door
     /// </summary>
     /// <param name="pryableDoor">The base <see cref="PryableDoor"/> object.</param>
     internal Gate(PryableDoor pryableDoor)
-        :base(pryableDoor)
+        : base(pryableDoor)
     {
         Dictionary.Add(pryableDoor, this);
         Base = pryableDoor;

@@ -103,7 +103,7 @@ namespace LabApi.Features.Wrappers
         public Room? Room => Room.GetRoomAtPosition(SourcePosition);
 
         /// <summary>
-        /// Initializes the <see cref="Hazard"/> class to subscribe to <see cref=EnvironmentalHazard"/> events and handle the item caching.
+        /// Initializes the <see cref="Hazard"/> class to subscribe to <see cref="EnvironmentalHazard"/> events and handle the item caching.
         /// </summary>
         protected Hazard(EnvironmentalHazard hazard)
         {

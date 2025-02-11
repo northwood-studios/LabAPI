@@ -181,15 +181,16 @@ public class Generator : Structure
     /// <summary>
     /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>
-    /// <param name="scp079generator">The <see cref="Scp079Generator"/> of the generator.</param>
+    /// <param name="scp079Generator">The <see cref="Scp079Generator"/> of the generator.</param>
     /// <returns>The requested generator.</returns>
-    public static Generator Get(Scp079Generator scp079generator) =>
-        Dictionary.TryGetValue(scp079generator, out Generator generator) ? generator : new Generator(scp079generator);
+    public static Generator Get(Scp079Generator scp079Generator) =>
+        Dictionary.TryGetValue(scp079Generator, out Generator generator) ? generator : new Generator(scp079Generator);
 
     /// <summary>
     /// Gets the generator wrapper from the <see cref="GeneratorsByRoom"/> or returns <see langword="null"/> if specified room does not have any.
     /// </summary>
     /// <param name="room">Target room.</param>
+    /// <param name="generators">Generators found.</param>
     /// <returns>Whether the generator was found.</returns>
-    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generator) => GeneratorsByRoom.TryGetValue(room.Base, out generator);
+    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generators) => GeneratorsByRoom.TryGetValue(room.Base, out generators);
 }

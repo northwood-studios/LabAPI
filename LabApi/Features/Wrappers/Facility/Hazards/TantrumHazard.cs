@@ -50,13 +50,14 @@ namespace LabApi.Features.Wrappers
         /// <summary>
         /// The base object.
         /// </summary>
-        public new TantrumEnvironmentalHazard Base { get; private set; }
+        public new TantrumEnvironmentalHazard Base { get; }
 
         /// <summary>
         /// An internal constructor to prevent external instantiation.
         /// </summary>
         /// <param name="hazard">The base game tantrum hazard.</param>
-        internal TantrumHazard(TantrumEnvironmentalHazard hazard) : base(hazard)
+        internal TantrumHazard(TantrumEnvironmentalHazard hazard)
+            : base(hazard)
         {
             Base = hazard;
 
