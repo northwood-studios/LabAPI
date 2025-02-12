@@ -127,6 +127,8 @@ public static partial class PluginLoader
     /// <param name="files">The collection of assemblies to load.</param>
     public static void LoadPlugins(IEnumerable<FileInfo> files)
     {
+        List<(FileInfo File, Assembly Assembly)> plugins = [];
+
         foreach (FileInfo file in files)
         {
             try
@@ -141,30 +143,48 @@ public static partial class PluginLoader
                     // Otherwise, we load the assembly without any debug information.
                     : Assembly.Load(File.ReadAllBytes(file.FullName));
 
-                // If the assembly has missing dependencies, we skip it.
-                if (AssemblyUtils.HasMissingDependencies(pluginAssembly, file.FullName, out Type[]? types))
-                    continue;
-
-                foreach (Type type in types)
-                {
-                    // We check if the type is derived from Plugin.
-                    if (!type.IsSubclassOf(typeof(Plugin)))
-                        continue;
-
-                    // We create an instance of the type and check if it was successfully created.
-                    if (Activator.CreateInstance(type) is not Plugin plugin)
-                        continue;
-
-                    // In that case, we add the plugin to the plugins list and log that it has been loaded.
-                    Plugins.Add(plugin, pluginAssembly);
-                    Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
-                }
+                plugins.Add((file, pluginAssembly));
             }
             catch (Exception e)
             {
                 Logger.Error($"{LoggerPrefix} Couldn't load the plugin inside '{file.FullName}'");
                 Logger.Error(e);
             }
+        }
+
+        foreach ((FileInfo file, Assembly assembly) in plugins)
+        {
+            try
+            {
+                // If the assembly has missing dependencies, we skip it.
+                if (AssemblyUtils.HasMissingDependencies(assembly, file.FullName, out Type[]? types))
+                    continue;
+
+                InstantiatePlugins(types, assembly);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"{LoggerPrefix} Couldn't load the plugin inside '{file.FullName}'");
+                Logger.Error(e);
+            }
+        }
+    }
+
+    private static void InstantiatePlugins(Type[] types, Assembly assembly)
+    {
+        foreach (Type type in types)
+        {
+            // We check if the type is derived from Plugin.
+            if (!type.IsSubclassOf(typeof(Plugin)))
+                continue;
+
+            // We create an instance of the type and check if it was successfully created.
+            if (Activator.CreateInstance(type) is not Plugin plugin)
+                continue;
+
+            // In that case, we add the plugin to the plugins list and log that it has been loaded.
+            Plugins.Add(plugin, assembly);
+            Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
         }
     }
 
