@@ -33,7 +33,7 @@ public static class Server
     /// <summary>
     /// The <see cref="Server"/> Instance.
     /// </summary>
-    public static Player? Host { get; private set; } = null;
+    public static Player? Host { get; private set; }
 
     /// <summary>
     /// Gets the IP address of the server.
