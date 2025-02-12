@@ -36,7 +36,7 @@ public class PocketDimension : Room
     /// Gets an array of the recycle chances.
     /// </summary>
     /// <remarks>
-    /// Indexing the array by the rarity of the item see <see cref="GetRarity"/> gives the chance for the item to be dropped from 0.0 to 1.0.
+    /// Indexing the array by the rarity of the item see <see cref="GetRarity(Item)"/> gives the chance for the item to be dropped from 0.0 to 1.0.
     /// </remarks>
     public static float[] RecycleChances => Scp106PocketItemManager.RecycleChances;
 

@@ -54,7 +54,7 @@ public class Timed173Gate : Gate
     public Stopwatch Stopwatch => Base.Stopwatch;
 
     /// <summary>
-    /// Gets or sets whether the gate will open if a SCP-173 is present.
+    /// Gets or sets whether the gate will open if an SCP-173 is present.
     /// </summary>
     /// <remarks>
     /// The gate is still unlocked after the specified time regardless of this setting.

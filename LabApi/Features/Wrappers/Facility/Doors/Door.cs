@@ -3,10 +3,8 @@ using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using LabApi.Features.Enums;
 using MapGeneration;
-using MapGeneration.RoomConnectors;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
@@ -42,7 +40,7 @@ public class Door
     /// <summary>
     /// Contains all the <see cref="Enums.DoorName"/> values for the associated <see cref="NameTag"/>.
     /// </summary>
-    private readonly static Dictionary<string, DoorName> doorNameDictionary = new()
+    private static readonly Dictionary<string, DoorName> doorNameDictionary = new()
     {
         { "LCZ_CAFE", DoorName.LczPc },
         { "LCZ_WC", DoorName.LczWc },

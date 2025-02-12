@@ -111,6 +111,7 @@ namespace LabApi.Features.Wrappers
         /// <param name="scale">The target scale to spawn with.</param>
         /// <param name="duration">The duration in seconds for which this cloud will be alive for.</param>
         /// <param name="size">The size of the cloud.</param>
+        /// <param name="owner">The owner of the cloud.</param>
         /// <returns>A new hazard.</returns>
         public static AmnesticCloudHazard Spawn(Vector3 position, Quaternion rotation, Vector3 scale, float duration = 90f, byte size = 255, Player? owner = null)
         {
