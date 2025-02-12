@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using LabApi.Features.Stores;
 using UnityEngine;
 using Utils.Networking;
 using Utils.NonAllocLINQ;
@@ -94,6 +95,7 @@ public class Player
     {
         Dictionary.Add(referenceHub, this);
         ReferenceHub = referenceHub;
+        CustomDataStoreManager.AddPlayer(this);
     }
 
     /// <summary>
@@ -1439,6 +1441,17 @@ public class Player
     // DamageManager seems to have been unused previously. Also relies on DataStorage/SharedStorage
 
     /// <summary>
+    /// Gets the <see cref="CustomDataStore"/> associated with the player, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
+    /// <returns>The <see cref="CustomDataStore"/> associated with the player.</returns>
+    public TStore GetDataStore<TStore>()
+        where TStore : CustomDataStore
+    {
+        return CustomDataStore.GetOrAdd<TStore>(this);
+    }
+
+    /// <summary>
     /// Handles the creation of a player in the server.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
@@ -1456,6 +1469,9 @@ public class Player
     {
         if (referenceHub.authManager.UserId != null)
             UserIdCache.Remove(referenceHub.authManager.UserId);
+        
+        if (TryGet(referenceHub.gameObject, out Player? player))
+            CustomDataStoreManager.RemovePlayer(player);
 
         Dictionary.Remove(referenceHub);
     }
