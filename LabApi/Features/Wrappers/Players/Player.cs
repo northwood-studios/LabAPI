@@ -445,7 +445,7 @@ public class Player
     }
 
     /// <summary>
-    /// Gets or sets the player's group name.
+    /// Gets or sets what is displayed for the player's group.
     /// </summary>
     public string GroupName
     {
