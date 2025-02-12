@@ -256,7 +256,7 @@ public static class Server
     /// <param name="reason">The ban reason.</param>
     /// <param name="duration">The duration of the ban.</param>
     /// <param name="bannedPlayerNickname">The nickname of the banned player.</param>
-    /// <returns>Whether or not the ban was successful.</returns>
+    /// <returns>Whether the ban was successful.</returns>
     public static bool BanUserId(string userId, Player issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
     {
         if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(reason) || issuer == null)
@@ -280,7 +280,7 @@ public static class Server
     /// <param name="reason">The ban reason.</param>
     /// <param name="duration">The duration of the ban.</param>
     /// <param name="bannedPlayerNickname">The nickname of the banned player.</param>
-    /// <returns>Whether or not the ban was successful.</returns>
+    /// <returns>Whether the ban was successful.</returns>
     public static bool BanIpAddress(string ipAddress, string reason, long duration, string bannedPlayerNickname = "UnknownName") =>
         BanIpAddress(ipAddress, Host!, reason, duration, bannedPlayerNickname);
 
@@ -292,7 +292,7 @@ public static class Server
     /// <param name="reason">The ban reason.</param>
     /// <param name="duration">The duration of the ban.</param>
     /// <param name="bannedPlayerNickname">The nickname of the banned player.</param>
-    /// <returns>Whether or not the ban was successful.</returns>
+    /// <returns>Whether the ban was successful.</returns>
     public static bool BanIpAddress(string ipAddress, Player issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
     {
         if (string.IsNullOrEmpty(ipAddress) || string.IsNullOrEmpty(reason) || issuer == null)
@@ -313,7 +313,7 @@ public static class Server
     /// Unbans a player from the server.
     /// </summary>
     /// <param name="userId">The User ID of the player to unban.</param>
-    /// <returns>Whether or not the unban was successful.</returns>
+    /// <returns>Whether the unban was successful.</returns>
     public static bool UnbanUserId(string userId)
     {
         if (string.IsNullOrEmpty(userId) || !IsPlayerBanned(userId))
@@ -338,10 +338,10 @@ public static class Server
     }
 
     /// <summary>
-    /// Checks whether or not a player is banned.
+    /// Checks whether a player is banned.
     /// </summary>
     /// <param name="value">The User ID or IP address of the player.</param>
-    /// <returns>Whether or not the player is banned.</returns>
+    /// <returns>Whether the player is banned.</returns>
     public static bool IsPlayerBanned(string value)
     {
         if (string.IsNullOrEmpty(value))
@@ -499,10 +499,7 @@ public static class Server
         /// <inheritdoc/>
         public sbyte this[ItemCategory category]
         {
-            get
-            {
-                return InventoryLimits.StandardCategoryLimits[category];
-            }
+            get => InventoryLimits.StandardCategoryLimits[category];
             set
             {
                 if (!InventoryLimits.StandardCategoryLimits.ContainsKey(category))
