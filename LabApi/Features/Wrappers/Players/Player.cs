@@ -661,7 +661,13 @@ public class Player
     /// </summary>
     public Vector3 Position
     {
-        get => ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole ? Vector3.zero : fpcRole.FpcModule.Position;
+        get
+        {
+            if (RoleBase is not IFpcRole fpcRole)
+                return Vector3.zero;
+
+            return fpcRole.FpcModule.Position;
+        }
         set => ReferenceHub.TryOverridePosition(value);
     }
 
