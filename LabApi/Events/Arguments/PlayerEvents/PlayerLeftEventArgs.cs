@@ -1,6 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using LiteNetLib;
+using Mirror.LiteNetLib4Mirror;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
@@ -16,10 +18,16 @@ public class PlayerLeftEventArgs : EventArgs, IPlayerEvent
     public PlayerLeftEventArgs(ReferenceHub player)
     {
         Player = Player.Get(player);
+        Reason = LiteNetLib4MirrorCore.LastDisconnectReason;
     }
 
     /// <summary>
     /// Gets the player who left.
     /// </summary>
     public Player Player { get; }
+    
+    /// <summary>
+    /// Gets the reason why the player left.
+    /// </summary>
+    public DisconnectReason Reason { get; }
 }
