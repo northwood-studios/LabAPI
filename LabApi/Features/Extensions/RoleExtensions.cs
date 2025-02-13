@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace LabApi.Features.Extensions;
 
+/// <summary>
+/// Adds extension methods to access information about <see cref="RoleTypeId"/>s.
+/// </summary>
 public static class RoleExtensions
 {
     /// <summary>
