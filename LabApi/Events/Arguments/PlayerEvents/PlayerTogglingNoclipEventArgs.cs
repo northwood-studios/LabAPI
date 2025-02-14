@@ -32,8 +32,8 @@ namespace LabApi.Events.Arguments.PlayerEvents
 
         /// <summary>
         /// Whether the event is allowed to run.
-        /// <remarks>This value is assigned on based on whether the player has noclip permitted. So it may not be allowed by default for some players.</remarks>
         /// </summary>
+        /// <remarks>This value is assigned on based on whether the player has noclip permitted. So it may not be allowed by default for some players.</remarks>
         public bool IsAllowed { get; set; }
     }
 }
