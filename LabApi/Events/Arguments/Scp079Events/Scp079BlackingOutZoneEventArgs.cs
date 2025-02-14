@@ -21,6 +21,7 @@ public class Scp079BlackingOutZoneEventArgs : EventArgs, ICancellableEvent, IPla
         Zone = zone;
         IsAllowed = true;
     }
+
     /// <summary>
     /// The SCP-079 player instance.
     /// </summary>

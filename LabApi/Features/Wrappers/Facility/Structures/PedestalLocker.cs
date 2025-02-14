@@ -24,7 +24,7 @@ public class PedestalLocker : Locker
     /// </summary>
     /// <param name="pedestalScpLocker">The base <see cref="PedestalScpLocker"/> object.</param>
     internal PedestalLocker(PedestalScpLocker pedestalScpLocker)
-        :base(pedestalScpLocker)
+        : base(pedestalScpLocker)
     {
         Base = pedestalScpLocker;
         Dictionary.Add(pedestalScpLocker, this);

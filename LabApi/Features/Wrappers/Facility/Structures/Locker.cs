@@ -126,18 +126,12 @@ public class Locker : Structure
     /// Removes an existing <see cref="LockerLoot"/> from the possible spawnable <see cref="Loot"/>.
     /// </summary>
     /// <param name="loot">The <see cref="LockerLoot"/> instance to remove.</param>
-    public void RemoveLockerLoot(LockerLoot loot)
-    {
-        Base.Loot = Base.Loot.Except([loot]).ToArray();
-    }
+    public void RemoveLockerLoot(LockerLoot loot) => Base.Loot = Base.Loot.Except([loot]).ToArray();
 
     /// <summary>
     /// Removes all <see cref="LockerLoot"/> instances from <see cref="Loot"/>.
     /// </summary>
-    public void ClearLockerLoot()
-    {
-        Base.Loot = [];
-    }
+    public void ClearLockerLoot() => Base.Loot = [];
 
     /// <summary>
     /// Fill chambers randomly with items chosen from <see cref="Loot"/>.

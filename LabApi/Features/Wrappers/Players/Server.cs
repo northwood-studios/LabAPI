@@ -327,7 +327,7 @@ public static class Server
     /// Unbans a player from the server.
     /// </summary>
     /// <param name="ipAddress">The IP address of the player.</param>
-    /// <returns>Whether or not the unban was successful.</returns>
+    /// <returns>Whether the unban was successful.</returns>
     public static bool UnbanIpAddress(string ipAddress)
     {
         if (string.IsNullOrEmpty(ipAddress) || !IsPlayerBanned(ipAddress))

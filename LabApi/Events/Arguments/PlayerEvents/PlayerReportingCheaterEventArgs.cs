@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReportingCheater"/> event.
 /// </summary>
-public class PlayerReportingCheaterEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
+public class PlayerReportingCheaterEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReportingCheaterEventArgs"/> class.

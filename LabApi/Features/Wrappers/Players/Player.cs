@@ -373,7 +373,7 @@ public class Player
             if (!ReferenceHub.TryGetHubNetID(sr.SyncedSpectatedNetId, out ReferenceHub hub))
                 return null;
 
-            return Player.Get(hub);
+            return Get(hub);
         }
     }
 
@@ -1331,6 +1331,15 @@ public class Player
     public bool TryGetEffect<T>([NotNullWhen(true)] out T? effect)
         where T : StatusEffectBase => ReferenceHub.playerEffectsController.TryGetEffect(out effect) && effect != null;
 
+    /// <summary>
+    /// Tries to get a specific <see cref="StatusEffectBase"/> based on its name.
+    /// </summary>
+    /// <param name="effectName">The name of the effect to get.</param>
+    /// <param name="effect">The effect found.</param>
+    /// <returns>Whether the <see cref="StatusEffectBase"/> was successfully found.</returns>
+    public bool TryGetEffect(string effectName, [NotNullWhen(true)] out StatusEffectBase? effect)
+        => ReferenceHub.playerEffectsController.TryGetEffect(effectName, out effect) && effect != null;
+    
     /// <summary>
     /// Gets a specific <see cref="StatusEffectBase">status effect</see>.
     /// </summary>

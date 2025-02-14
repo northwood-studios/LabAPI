@@ -1,5 +1,4 @@
-﻿using Generators;
-using Interactables.Interobjects.DoorUtils;
+﻿using Interactables.Interobjects.DoorUtils;
 using MapGeneration;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ public class Generator : Structure
     /// </summary>
     /// <param name="generator">The <see cref="Scp079Generator"/> of the generator.</param>
     internal Generator(Scp079Generator generator)
-        :base(generator)
+        : base(generator)
     {
         Dictionary.Add(generator, this);
         Base = generator;
@@ -71,6 +70,7 @@ public class Generator : Structure
                 GeneratorsByRoom.Remove(Base.Room);
             }
         }
+
         Dictionary.Remove(Base);
     }
 

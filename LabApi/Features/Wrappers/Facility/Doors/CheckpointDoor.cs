@@ -74,7 +74,7 @@ public class CheckpointDoor : Door
         get => Base.IsDestroyed;
         set
         {
-            foreach(DoorVariant doorVariant in Base.SubDoors)
+            foreach (DoorVariant doorVariant in Base.SubDoors)
             {
                 if (doorVariant is not IDamageableDoor damageableDoor)
                     continue;
@@ -115,7 +115,7 @@ public class CheckpointDoor : Door
     /// Gets or sets the time in seconds to open the doors after the <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Granted"/>.
     /// </summary>
     /// <remarks>
-    /// Does not effect the speed of the animations of the door it only influences the timing of when when to move on to the next stage.
+    /// Does not affect the speed of the animations of the door it only influences the timing of when when to move on to the next stage.
     /// <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Open"/> after the delay.
     /// </remarks>
     public float OpeningDuration
@@ -152,7 +152,7 @@ public class CheckpointDoor : Door
     /// Gets or sets the current sequence time in seconds.
     /// </summary>
     /// <remarks>
-    /// Represents the value of the internal timer used to switch <see cref="SequenceState"/> depending on <see cref="OpeningDelay"/>, <see cref="WaitDuration"/> and <see cref="WarningDuration"/>. 
+    /// Represents the value of the internal timer used to switch <see cref="SequenceState"/> depending on <see cref="OpeningDuration"/>, <see cref="WaitDuration"/> and <see cref="WarningDuration"/>. 
     /// </remarks>
     public float SequenceTime
     {

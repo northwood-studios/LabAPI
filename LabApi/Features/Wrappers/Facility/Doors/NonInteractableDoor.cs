@@ -24,7 +24,7 @@ public class NonInteractableDoor : Door
     /// </summary>
     /// <param name="basicNonInteractableDoor">The base <see cref="BasicNonInteractableDoor"/> object.</param>
     internal NonInteractableDoor(BasicNonInteractableDoor basicNonInteractableDoor)
-        :base(basicNonInteractableDoor)
+        : base(basicNonInteractableDoor)
     {
         Dictionary.Add(basicNonInteractableDoor, this);
         Base = basicNonInteractableDoor;

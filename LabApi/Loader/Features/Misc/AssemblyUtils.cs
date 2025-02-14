@@ -171,7 +171,7 @@ public static class AssemblyUtils
     /// </summary>
     /// <param name="plugin">The <see cref="Plugin"/> to get the assembly from.</param>
     /// <param name="assembly">The assembly of the loaded <see cref="Plugin"/>.</param>
-    /// <returns>Whether or not the assembly was successfully retrieved.</returns>
+    /// <returns>Whether the assembly was successfully retrieved.</returns>
     public static bool TryGetLoadedAssembly(this Plugin plugin, out Assembly assembly)
     {
         // We try to get the assembly of the specified plugin inside the plugin loader.

@@ -13,7 +13,7 @@ public class PlayerPreAuthenticatingEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPreAuthenticatingEventArgs"/> class.
     /// </summary>
-    /// <param name="canJoin">Whenever the player can join.</param>
+    /// <param name="canJoin">Whether the player can join.</param>
     /// <param name="userId">User ID of the player.</param>
     /// <param name="ipAddress">IP Address the of player.</param>
     /// <param name="expiration">Expiration of the authentication.</param>

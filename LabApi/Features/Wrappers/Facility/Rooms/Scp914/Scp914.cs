@@ -92,7 +92,7 @@ public class Scp914 : Room
             if (value)
                 Scp914Controller.Singleton.Upgrade();
             else
-            { 
+            {
                 Scp914Controller.Singleton.IsUpgrading = value;
                 SequenceCooldown = 0.0f;
             }
@@ -202,8 +202,7 @@ public class Scp914 : Room
     /// </remarks>
     public static void Interact(Scp914InteractCode interactCode, Player? player = null)
     {
-        if (player == null)
-            player = Server.Host;
+        player ??= Server.Host;
 
         Scp914Controller.Singleton.ServerInteract(player.ReferenceHub, (byte)interactCode);
     }
@@ -328,7 +327,7 @@ public class Scp914 : Room
     /// </remarks>
     public static void SetItemProcessor<T>(Func<Item, bool> predicate) where T : Scp914ItemProcessor, new()
     {
-        foreach(ItemType type in Enum.GetValues(typeof(ItemType)))
+        foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
         {
             if (!InventoryItemLoader.TryGetItem(type, out ItemBase item) || !predicate(Item.Get(item)))
                 continue;

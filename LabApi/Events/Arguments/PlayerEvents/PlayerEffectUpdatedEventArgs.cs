@@ -6,7 +6,7 @@ using System;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReceviedEffect"/> event.
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.UpdatedEffect"/> event.
 /// </summary>
 public class PlayerEffectUpdatedEventArgs : EventArgs, IPlayerEvent
 {

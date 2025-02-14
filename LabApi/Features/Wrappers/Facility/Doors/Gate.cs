@@ -58,10 +58,7 @@ public class Gate : Door
     /// </summary>
     /// <param name="player">The player to pry the gate.</param>
     /// <returns>True if the player can pry the gate, otherwise false.</returns>
-    public bool TryPry(Player player)
-    {
-        return Base.TryPryGate(player.ReferenceHub);
-    }
+    public bool TryPry(Player player) => Base.TryPryGate(player.ReferenceHub);
 
     /// <summary>
     /// Play the Pry animation.

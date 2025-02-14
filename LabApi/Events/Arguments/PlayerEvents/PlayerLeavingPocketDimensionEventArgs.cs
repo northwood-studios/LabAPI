@@ -37,7 +37,7 @@ public class PlayerLeavingPocketDimensionEventArgs : EventArgs, IPlayerEvent, IC
     public PocketTeleport? Teleport { get; }
 
     /// <summary>
-    /// Gets whether it is gonna be success.
+    /// Gets or sets whether it is going to be success.
     /// </summary>
     public bool IsSuccessful { get; set; }
 

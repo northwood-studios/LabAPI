@@ -105,9 +105,7 @@ public class PocketDimension : Room
     /// Triggers pocket dimension leaving/left events.
     /// </remarks>
     public static void ForceExit(Player player)
-    {
-        PocketDimensionTeleport.Exit(null, player.ReferenceHub);
-    }
+        => PocketDimensionTeleport.Exit(null, player.ReferenceHub);
 
     /// <summary>
     /// Force a player to be killed by the pocket dimension.
@@ -118,9 +116,7 @@ public class PocketDimension : Room
     /// Triggers pocket dimension leaving/left events.
     /// </remarks>
     public static void ForceKill(Player player)
-    {
-        PocketDimensionTeleport.Kill(null, player.ReferenceHub);
-    }
+        => PocketDimensionTeleport.Kill(null, player.ReferenceHub);
 
     /// <summary>
     /// Gets whether a <see cref="Pickup"/> is inside the pocket dimension.
@@ -169,9 +165,7 @@ public class PocketDimension : Room
     /// </summary>
     /// <param name="zone">The zone to remove exits from.</param>
     public static void RemoveAllExitPosesForZone(FacilityZone zone)
-    {
-        Scp106PocketExitFinder.PosesForZoneCache[zone] = [];
-    }
+        => Scp106PocketExitFinder.PosesForZoneCache[zone] = [];
     
     /// <summary>
     /// Removes the specified <see cref="Pose">poses</see> from use as exits for the pocket dimension.
