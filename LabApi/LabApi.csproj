@@ -7,6 +7,7 @@
 
 		<LangVersion>12.0</LangVersion>
 		
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Nullable>enable</Nullable>
 		<Platforms>AnyCPU</Platforms>
@@ -39,5 +40,5 @@
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="$(SL_SOURCE)\Assets\Plugins" Condition=" '$(SL_SOURCE)' != '' " />
-	</Target>
+	</Target>	
 </Project>
