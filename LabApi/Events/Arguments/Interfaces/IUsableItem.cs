@@ -3,7 +3,7 @@
 namespace LabApi.Events.Arguments.Interfaces;
 
 /// <summary>
-/// Represents an event that involves an usable item.
+/// Represents an event that involves a usable item.
 /// </summary>
 public interface IUsableItem
 {

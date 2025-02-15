@@ -26,7 +26,7 @@ public class ElevatorDoor : Door
     /// </summary>
     /// <param name="baseElevatorDoor">The base <see cref="BaseElevatorDoor"/> object.</param>
     internal ElevatorDoor(BaseElevatorDoor baseElevatorDoor)
-        :base(baseElevatorDoor)
+        : base(baseElevatorDoor)
     {
         Dictionary.Add(baseElevatorDoor, this);
         Base = baseElevatorDoor;

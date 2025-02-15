@@ -18,12 +18,12 @@ public static class AssemblyUtils
     private const string LoggerPrefix = "[ASSEMBLY_LOADER]";
 
     /// <summary>
-    /// Checks whether or not the specified <see cref="Assembly"/> has missing dependencies and gets the types if it is loaded.
+    /// Checks whether the specified <see cref="Assembly"/> has missing dependencies and gets the types if it is loaded.
     /// </summary>
     /// <param name="assembly">The assembly to check missing dependencies for.</param>
     /// <param name="assemblyPath">The path of the assembly to log an error message.</param>
     /// <param name="types">The types of the assembly if it is loaded.</param>
-    /// <returns>Whether or not the specified <see cref="Assembly"/> has missing dependencies.</returns>
+    /// <returns>Whether the specified <see cref="Assembly"/> has missing dependencies.</returns>
     public static bool HasMissingDependencies(Assembly assembly, string assemblyPath, [NotNullWhen(false)] out Type[]? types)
     {
         // We convert the missing dependencies to an array to avoid multiple iterations.
@@ -53,7 +53,7 @@ public static class AssemblyUtils
 
             Logger.Error(exception.ToString());
 
-            types = default;
+            types = null;
             return true; // True = missing dependencies.
         }
     }
@@ -171,7 +171,7 @@ public static class AssemblyUtils
     /// </summary>
     /// <param name="plugin">The <see cref="Plugin"/> to get the assembly from.</param>
     /// <param name="assembly">The assembly of the loaded <see cref="Plugin"/>.</param>
-    /// <returns>Whether or not the assembly was successfully retrieved.</returns>
+    /// <returns>Whether the assembly was successfully retrieved.</returns>
     public static bool TryGetLoadedAssembly(this Plugin plugin, out Assembly assembly)
     {
         // We try to get the assembly of the specified plugin inside the plugin loader.

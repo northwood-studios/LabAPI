@@ -1,5 +1,4 @@
-﻿using Generators;
-using Interactables.Interobjects.DoorUtils;
+﻿using Interactables.Interobjects.DoorUtils;
 using MapGeneration;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
@@ -33,21 +32,20 @@ public class Generator : Structure
     /// </summary>
     /// <param name="generator">The <see cref="Scp079Generator"/> of the generator.</param>
     internal Generator(Scp079Generator generator)
-        :base(generator)
+        : base(generator)
     {
         Dictionary.Add(generator, this);
         Base = generator;
 
         if (generator.Room == null)
-        {
             return;
-        }
 
         if (!GeneratorsByRoom.TryGetValue(generator.Room, out List<Generator> list))
         {
             list = new List<Generator>();
             GeneratorsByRoom.Add(generator.Room, list);
         }
+
         list.Add(this);
     }
 
@@ -72,6 +70,7 @@ public class Generator : Structure
                 GeneratorsByRoom.Remove(Base.Room);
             }
         }
+
         Dictionary.Remove(Base);
     }
 
@@ -123,7 +122,7 @@ public class Generator : Structure
     public bool ActivationReady => Base.ActivationReady;
 
     /// <summary>
-    /// Gets or sets whether or not the generator is opened.
+    /// Gets or sets whether the generator is opened.
     /// </summary>
     public bool IsOpen
     {
@@ -132,7 +131,7 @@ public class Generator : Structure
     }
 
     /// <summary>
-    /// Gets or sets whether or not the generator is unlocked.
+    /// Gets or sets whether the generator is unlocked.
     /// </summary>
     public bool IsUnlocked
     {
@@ -182,15 +181,16 @@ public class Generator : Structure
     /// <summary>
     /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>
-    /// <param name="scp079generator">The <see cref="Scp079Generator"/> of the generator.</param>
+    /// <param name="scp079Generator">The <see cref="Scp079Generator"/> of the generator.</param>
     /// <returns>The requested generator.</returns>
-    public static Generator Get(Scp079Generator scp079generator) =>
-        Dictionary.TryGetValue(scp079generator, out Generator generator) ? generator : new Generator(scp079generator);
+    public static Generator Get(Scp079Generator scp079Generator) =>
+        Dictionary.TryGetValue(scp079Generator, out Generator generator) ? generator : new Generator(scp079Generator);
 
     /// <summary>
     /// Gets the generator wrapper from the <see cref="GeneratorsByRoom"/> or returns <see langword="null"/> if specified room does not have any.
     /// </summary>
     /// <param name="room">Target room.</param>
+    /// <param name="generators">Generators found.</param>
     /// <returns>Whether the generator was found.</returns>
-    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generator) => GeneratorsByRoom.TryGetValue(room.Base, out generator);
+    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generators) => GeneratorsByRoom.TryGetValue(room.Base, out generators);
 }

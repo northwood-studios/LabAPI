@@ -1,4 +1,5 @@
 using LabApi.Features.Wrappers;
+
 namespace LabApi.Events.Arguments.Interfaces;
 
 /// <summary>

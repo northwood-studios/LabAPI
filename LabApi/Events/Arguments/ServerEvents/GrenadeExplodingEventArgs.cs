@@ -42,7 +42,7 @@ public class GrenadeExplodingEventArgs : EventArgs, ICancellableEvent, IPlayerEv
 
     /// <summary>
     /// Gets or sets if grenade should destroy doors.
-    /// </summary>    
+    /// </summary>
     public bool ExplodeDoors { get; set; } = true;
 
     /// <inheritdoc />

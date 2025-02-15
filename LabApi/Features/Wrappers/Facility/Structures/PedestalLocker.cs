@@ -24,7 +24,7 @@ public class PedestalLocker : Locker
     /// </summary>
     /// <param name="pedestalScpLocker">The base <see cref="PedestalScpLocker"/> object.</param>
     internal PedestalLocker(PedestalScpLocker pedestalScpLocker)
-        :base(pedestalScpLocker)
+        : base(pedestalScpLocker)
     {
         Base = pedestalScpLocker;
         Dictionary.Add(pedestalScpLocker, this);
@@ -50,7 +50,7 @@ public class PedestalLocker : Locker
     public LockerChamber Chamber => Chambers.First();
 
     /// <summary>
-    /// Gets or sets whether or not the pedestal is open.
+    /// Gets or sets whether the pedestal is open.
     /// </summary>
     public bool IsOpen
     {
@@ -59,7 +59,7 @@ public class PedestalLocker : Locker
     }
 
     /// <summary>
-    /// Gets whether or not the pedestal can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the pedestal can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Chamber.CanInteract;
 

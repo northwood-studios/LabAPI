@@ -23,7 +23,7 @@ public static partial class PluginLoader
     private const string PdbFileExtension = ".pdb";
 
     /// <summary>
-    /// Whether or not the <see cref="PluginLoader"/> has been initialized.
+    /// Whether the <see cref="PluginLoader"/> has been initialized.
     /// </summary>
     public static bool Initialized { get; private set; }
 

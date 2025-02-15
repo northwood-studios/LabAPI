@@ -35,7 +35,7 @@ public class Scp914 : Room
     /// </summary>
     /// <param name="roomIdentifier">The room identifier for the pocket dimension.</param>
     internal Scp914(RoomIdentifier roomIdentifier)
-        :base(roomIdentifier)
+        : base(roomIdentifier)
     {
         Instance = this;
     }
@@ -92,11 +92,11 @@ public class Scp914 : Room
             if (value)
                 Scp914Controller.Singleton.Upgrade();
             else
-            { 
+            {
                 Scp914Controller.Singleton.IsUpgrading = value;
                 SequenceCooldown = 0.0f;
+            }
         }
-    }
     }
 
     /// <summary>
@@ -202,8 +202,7 @@ public class Scp914 : Room
     /// </remarks>
     public static void Interact(Scp914InteractCode interactCode, Player? player = null)
     {
-        if (player == null)
-            player = Server.Host;
+        player ??= Server.Host;
 
         Scp914Controller.Singleton.ServerInteract(player.ReferenceHub, (byte)interactCode);
     }
@@ -213,9 +212,7 @@ public class Scp914 : Room
     /// </summary>
     /// <param name="sound">The sound to play.</param>
     public static void PlaySound(Scp914Sound sound)
-    {
-        Scp914Controller.Singleton.RpcPlaySound((byte)sound);
-    }
+        => Scp914Controller.Singleton.RpcPlaySound((byte)sound);
 
     /// <summary>
     /// Gets the <see cref="IScp914ItemProcessor"/> for the specified type.
@@ -232,17 +229,16 @@ public class Scp914 : Room
 
         if (ItemProcessorCache.TryGetValue(item, out var processor))
             return processor;
-        else if(item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
-        {
-            if (baseProcessor is ItemProcessorAdapter adaptor)
-                ItemProcessorCache[item] = adaptor.Processor;
-            else
-                ItemProcessorCache[item] = new BaseGameItemProcessor(baseProcessor);
 
-            return ItemProcessorCache[item];
-        }
-        else
+        if (!item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
             return null;
+
+        if (baseProcessor is ItemProcessorAdapter adaptor)
+            ItemProcessorCache[item] = adaptor.Processor;
+        else
+            ItemProcessorCache[item] = new BaseGameItemProcessor(baseProcessor);
+
+        return ItemProcessorCache[item];
     }
 
     /// <summary>
@@ -331,7 +327,7 @@ public class Scp914 : Room
     /// </remarks>
     public static void SetItemProcessor<T>(Func<Item, bool> predicate) where T : Scp914ItemProcessor, new()
     {
-        foreach(ItemType type in Enum.GetValues(typeof(ItemType)))
+        foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
         {
             if (!InventoryItemLoader.TryGetItem(type, out ItemBase item) || !predicate(Item.Get(item)))
                 continue;

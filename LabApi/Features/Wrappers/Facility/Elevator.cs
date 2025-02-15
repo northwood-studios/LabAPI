@@ -180,5 +180,5 @@ public class Elevator
     /// </summary>
     /// <param name="group">The specified elevator group.</param>
     /// <returns>Enumerable where the group is equal to the one specified.</returns>
-    public static IEnumerable<Elevator>? GetByGroup(ElevatorGroup group) => List.Where(n => n.Group == group);
+    public static IEnumerable<Elevator> GetByGroup(ElevatorGroup group) => List.Where(n => n.Group == group);
 }

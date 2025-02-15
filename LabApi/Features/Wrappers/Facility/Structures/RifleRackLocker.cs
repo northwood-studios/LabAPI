@@ -39,7 +39,7 @@ public class RifleRackLocker : Locker
     }
 
     /// <summary>
-    /// Gets or sets whether or not the rifle rack is open.
+    /// Gets or sets whether the rifle rack is open.
     /// </summary>
     public bool IsOpen
     {
@@ -48,7 +48,7 @@ public class RifleRackLocker : Locker
     }
     
     /// <summary>
-    /// Gets whether or not the rifle rack can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the rifle rack can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => MainChamber.CanInteract;
 

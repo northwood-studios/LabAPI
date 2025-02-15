@@ -88,7 +88,7 @@ public class Player
     }
 
     /// <summary>
-    /// A internal constructor to prevent external instantiation.
+    /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
     internal Player(ReferenceHub referenceHub)
@@ -232,7 +232,7 @@ public class Player
 
     /// <summary>
     /// Gets or sets the player's current artificial health.<br/>
-    /// Setting the value will clear all of the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
+    /// Setting the value will clear all the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
     /// Note: This value cannot be greater than <see cref="MaxArtificialHealth"/>. Set it to your desired value first if its over <see cref="AhpStat.DefaultMax"/> and then set this one.
     /// </summary>
     public float ArtificialHealth
@@ -375,7 +375,7 @@ public class Player
             if (!ReferenceHub.TryGetHubNetID(sr.SyncedSpectatedNetId, out ReferenceHub hub))
                 return null;
 
-            return Player.Get(hub);
+            return Get(hub);
         }
     }
 
@@ -400,7 +400,7 @@ public class Player
     /// <summary>
     /// Gets or sets the player's current <see cref="Item">item</see>.
     /// </summary>
-    public Item CurrentItem
+    public Item? CurrentItem
     {
         get => Item.Get(Inventory.CurInstance);
         set
@@ -447,7 +447,7 @@ public class Player
     }
 
     /// <summary>
-    /// Gets or sets the player's group name.
+    /// Gets or sets what is displayed for the player's group.
     /// </summary>
     public string GroupName
     {
@@ -665,17 +665,12 @@ public class Player
     {
         get
         {
-            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
-            {
+            if (RoleBase is not IFpcRole fpcRole)
                 return Vector3.zero;
-            }
 
             return fpcRole.FpcModule.Position;
         }
-        set
-        {
-            ReferenceHub.TryOverridePosition(value);
-        }
+        set => ReferenceHub.TryOverridePosition(value);
     }
 
     /// <summary>
@@ -696,17 +691,12 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
-            {
                 return Vector2.zero;
-            }
 
             FpcMouseLook mouseLook = fpcRole.FpcModule.MouseLook;
             return new Vector2(mouseLook.CurrentVertical, mouseLook.CurrentHorizontal);
         }
-        set
-        {
-            ReferenceHub.TryOverrideRotation(value);
-        }
+        set => ReferenceHub.TryOverrideRotation(value);
     }
 
     /// <summary>
@@ -1343,6 +1333,15 @@ public class Player
     public bool TryGetEffect<T>([NotNullWhen(true)] out T? effect)
         where T : StatusEffectBase => ReferenceHub.playerEffectsController.TryGetEffect(out effect) && effect != null;
 
+    /// <summary>
+    /// Tries to get a specific <see cref="StatusEffectBase"/> based on its name.
+    /// </summary>
+    /// <param name="effectName">The name of the effect to get.</param>
+    /// <param name="effect">The effect found.</param>
+    /// <returns>Whether the <see cref="StatusEffectBase"/> was successfully found.</returns>
+    public bool TryGetEffect(string effectName, [NotNullWhen(true)] out StatusEffectBase? effect)
+        => ReferenceHub.playerEffectsController.TryGetEffect(effectName, out effect) && effect != null;
+    
     /// <summary>
     /// Gets a specific <see cref="StatusEffectBase">status effect</see>.
     /// </summary>

@@ -22,13 +22,7 @@ public class Structure
         SpawnableStructure.OnAdded += OnAdded;
         SpawnableStructure.OnRemoved += OnRemoved;
 
-        Register<SpawnableStructure>(x =>
-        {
-            if (x.StructureType == StructureType.Workstation)
-                return new Workstation(x);
-
-            return null!;
-        });
+        Register<SpawnableStructure>(x => x.StructureType == StructureType.Workstation ? new Workstation(x) : null!);
         Register<Scp079Generator>(x => new Generator(x));
         Register<MapGeneration.Distributors.Locker>(x =>
         {
@@ -194,7 +188,7 @@ public class Structure
         if (!typeWrappers.TryGetValue(structure.GetType(), out Func<SpawnableStructure, Structure> handler))
             Console.Logger.Error($"Failed to create structure wrapper. Missing constructor handler for type {structure.GetType()}");
 
-        Structure wrapper = handler.Invoke(structure);
+        Structure? wrapper = handler?.Invoke(structure);
         if (wrapper == null)
             Console.Logger.Error($"Failed to create structure wrapper. A handler returned null for type {structure.GetType()}");
 

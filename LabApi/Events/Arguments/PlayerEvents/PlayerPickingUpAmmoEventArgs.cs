@@ -13,8 +13,8 @@ public class PlayerPickingUpAmmoEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickingUpAmmoEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is pickup the the ammo pickup.</param>
-    /// <param name="ammoType">Type of the ammo./param>
+    /// <param name="player">The player who is pickup the ammo pickup.</param>
+    /// <param name="ammoType">Type of the ammo.</param>
     /// <param name="ammoAmount">Amount of ammo that is being picked up.</param>
     /// <param name="pickup">Ammo pickup.</param>
     public PlayerPickingUpAmmoEventArgs(ReferenceHub player, ItemType ammoType, ushort ammoAmount, ItemPickupBase pickup)
@@ -27,7 +27,7 @@ public class PlayerPickingUpAmmoEventArgs : EventArgs, ICancellableEvent
     }
 
     /// <summary>
-    /// Gets the player who is pickup the the ammo pickup.
+    /// Gets the player who is picking up the ammo pickup.
     /// </summary>
     public Player Player { get; }
 

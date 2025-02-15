@@ -30,7 +30,7 @@ public class BulkheadDoor : Gate
         Dictionary.Add(pryableDoor, this);
         Base = pryableDoor;
         DoorCrusherExtension extension = pryableDoor.gameObject.GetComponent<DoorCrusherExtension>();
-        if(extension != null)
+        if (extension != null)
             Crusher = new DoorCrusher(extension);
     }
 

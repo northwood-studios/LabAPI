@@ -27,7 +27,7 @@ public class Locker : Structure
     /// </summary>
     /// <param name="baseLocker">The base <see cref="BaseLocker"/> object.</param>
     internal Locker(BaseLocker baseLocker)
-        :base(baseLocker)
+        : base(baseLocker)
     {
         Dictionary.Add(baseLocker, this);
         Base = baseLocker;
@@ -42,7 +42,7 @@ public class Locker : Structure
         base.OnRemove();
         Dictionary.Remove(Base);
 
-        foreach(var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.OnRemove();
     }
 
@@ -92,7 +92,7 @@ public class Locker : Structure
     }
 
     /// <summary>
-    /// Gets whether or not all the <see cref="Chambers"/> are <see cref="LockerChamber.IsEmpty"/>.
+    /// Gets whether all the <see cref="Chambers"/> are <see cref="LockerChamber.IsEmpty"/>.
     /// </summary>
     public bool IsEmpty => Chambers.All(x => x.IsEmpty);
 
@@ -126,18 +126,12 @@ public class Locker : Structure
     /// Removes an existing <see cref="LockerLoot"/> from the possible spawnable <see cref="Loot"/>.
     /// </summary>
     /// <param name="loot">The <see cref="LockerLoot"/> instance to remove.</param>
-    public void RemoveLockerLoot(LockerLoot loot)
-    {
-        Base.Loot = Base.Loot.Except([loot]).ToArray();
-    }
+    public void RemoveLockerLoot(LockerLoot loot) => Base.Loot = Base.Loot.Except([loot]).ToArray();
 
     /// <summary>
     /// Removes all <see cref="LockerLoot"/> instances from <see cref="Loot"/>.
     /// </summary>
-    public void ClearLockerLoot()
-    {
-        Base.Loot = [];
-    }
+    public void ClearLockerLoot() => Base.Loot = [];
 
     /// <summary>
     /// Fill chambers randomly with items chosen from <see cref="Loot"/>.
@@ -152,7 +146,7 @@ public class Locker : Structure
                 chambers.RemoveAt(Random.Range(0, chambers.Count));
         }
 
-        foreach (var chamber in chambers)
+        foreach (LockerChamber chamber in chambers)
             chamber.Fill();
 
         ListPool<LockerChamber>.Shared.Return(chambers);
@@ -166,7 +160,7 @@ public class Locker : Structure
     /// </remarks>
     public void FillAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.Fill();
     }
 
@@ -175,7 +169,7 @@ public class Locker : Structure
     /// </summary>
     public void ClearAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.RemoveAllItems();
     }
 
@@ -184,7 +178,7 @@ public class Locker : Structure
     /// </summary>
     public void OpenAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.IsOpen = true;
     }
 
@@ -193,7 +187,7 @@ public class Locker : Structure
     /// </summary>
     public void CloseAllChambers()
     {
-        foreach (var chamber in Chambers)
+        foreach (LockerChamber chamber in Chambers)
             chamber.IsOpen = false;
     }
 }

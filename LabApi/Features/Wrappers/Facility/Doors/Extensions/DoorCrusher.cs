@@ -55,7 +55,7 @@ public class DoorCrusher
     }
 
     /// <summary>
-    /// Gets or sets whether or not SCPs should be excluded from taking damage from the crusher.
+    /// Gets or sets whether SCPs should be excluded from taking damage from the crusher.
     /// </summary>
     public bool IgnoreScps
     {

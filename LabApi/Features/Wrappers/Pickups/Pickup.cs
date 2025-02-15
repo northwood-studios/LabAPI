@@ -187,7 +187,8 @@ public class Pickup
     /// Gets the pickup wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
     /// </summary>
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
-    /// <returns>The requested item <see cref="Pickup">.</returns>
+    /// <returns>The requested item <see cref="Pickup"/></returns>
+    [return: NotNullIfNotNull("itemPickupBase")]
     public static Pickup? Get(ItemPickupBase itemPickupBase)
     {
         if (itemPickupBase == null)
@@ -312,12 +313,12 @@ public class Pickup
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> being removed.</param>
     private static void RemovePickup(ItemPickupBase itemPickupBase)
     {
-        if (Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
-        {
-            pickup.UnsubscribeEvents();
-            Dictionary.Remove(itemPickupBase);
-            if (itemPickupBase.Info.Serial != 0)
-                SerialCache.Remove(itemPickupBase.Info.Serial);
-        }
+        if (!Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
+            return;
+
+        pickup.UnsubscribeEvents();
+        Dictionary.Remove(itemPickupBase);
+        if (itemPickupBase.Info.Serial != 0)
+            SerialCache.Remove(itemPickupBase.Info.Serial);
     }
 }

@@ -63,7 +63,7 @@ public static class ConfigurationLoader
     public static bool TryReadConfig<TConfig>(this Plugin plugin, string fileName, [NotNullWhen(true)] out TConfig? config)
         where TConfig : class, new()
     {
-        config = default;
+        config = null;
 
         try
         {
@@ -101,7 +101,7 @@ public static class ConfigurationLoader
     public static bool TryLoadConfig<TConfig>(this Plugin plugin, string fileName, [NotNullWhen(true)] out TConfig? config)
         where TConfig : class, new()
     {
-        config = default;
+        config = null;
 
         // We retrieve the path of the configuration file.
         string path = plugin.GetConfigPath(fileName);
@@ -119,7 +119,7 @@ public static class ConfigurationLoader
         // We try to read the configuration from its file.
         else if (plugin.TryReadConfig(fileName, out config))
         {
-            // We save the configuration to update new properties and return whether or not it was successfully saved.            
+            // We save the configuration to update new properties and return whether it was successfully saved.            
             return plugin.TrySaveConfig(config, fileName);
         }
 
@@ -145,7 +145,7 @@ public static class ConfigurationLoader
     /// <typeparam name="TConfig">The type of the configuration to read.</typeparam>
     /// <returns>The read configuration of the specified <see cref="Plugin"/> if successful, otherwise <see langword="null"/>.</returns>
     public static TConfig? ReadConfig<TConfig>(this Plugin plugin, string fileName)
-        where TConfig : class, new() => plugin.TryReadConfig(fileName, out TConfig? config) ? config : default;
+        where TConfig : class, new() => plugin.TryReadConfig(fileName, out TConfig? config) ? config : null;
 
     /// <summary>
     /// Reads the configuration of the specified <see cref="Plugin"/> and creates a default instance if it doesn't exist.
@@ -155,7 +155,7 @@ public static class ConfigurationLoader
     /// <typeparam name="TConfig">The type of the configuration to load.</typeparam>
     /// <returns>The loaded configuration of the specified <see cref="Plugin"/> if successful, otherwise <see langword="null"/>.</returns>
     public static TConfig? LoadConfig<TConfig>(this Plugin plugin, string fileName)
-        where TConfig : class, new() => plugin.TryLoadConfig(fileName, out TConfig? config) ? config : default;
+        where TConfig : class, new() => plugin.TryLoadConfig(fileName, out TConfig? config) ? config : null;
 
     /// <summary>
     /// Tries to create a default instance of the specified configuration.
@@ -167,7 +167,7 @@ public static class ConfigurationLoader
     public static bool TryCreateDefaultConfig<TConfig>(this Plugin plugin, [NotNullWhen(true)] out TConfig? config)
         where TConfig : class, new()
     {
-        config = default;
+        config = null;
 
         try
         {

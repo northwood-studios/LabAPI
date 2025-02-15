@@ -23,7 +23,7 @@ public class LargeLocker : Locker
     /// </summary>
     /// <param name="baseLocker">The base <see cref="BaseLocker"/> object.</param>
     internal LargeLocker(BaseLocker baseLocker)
-        :base(baseLocker)
+        : base(baseLocker)
     {
         Dictionary.Add(baseLocker, this);
     }
@@ -68,9 +68,9 @@ public class LargeLocker : Locker
     public LockerChamber MiddleLeft => Chambers[5];
 
     /// <summary>
-    /// Gets the small chamber that is at the middle middle.
+    /// Gets the small chamber that is at the center.
     /// </summary>
-    public LockerChamber MiddleMiddle => Chambers[6];
+    public LockerChamber Center => Chambers[6];
 
     /// <summary>
     /// Gets the small chamber that is at the middle right.

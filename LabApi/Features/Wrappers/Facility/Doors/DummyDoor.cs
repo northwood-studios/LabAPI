@@ -24,7 +24,7 @@ public class DummyDoor : Door
     /// </summary>
     /// <param name="baseDummyDoor">The base <see cref="BaseDummyDoor"/> object.</param>
     internal DummyDoor(BaseDummyDoor baseDummyDoor)
-        :base(baseDummyDoor)
+        : base(baseDummyDoor)
     {
         Dictionary.Add(baseDummyDoor, this);
         Base = baseDummyDoor;
