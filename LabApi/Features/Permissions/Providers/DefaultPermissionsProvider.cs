@@ -143,6 +143,8 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         ReloadPermissions();
     }
 
+    void IPermissionsProvider.ReloadPermissions() => ReloadPermissions();
+
     private void ReloadPermissions()
     {
         // We clear the special permissions and fill them again.

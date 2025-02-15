@@ -102,4 +102,15 @@ public static class PermissionsManager
             provider.RemovePermissions(player, permissions);
         }
     }
+
+    /// <summary>
+    /// Reloads all the registered <see cref="IPermissionsProvider"/>s.
+    /// </summary>
+    public static void ReloadAllPermissionsProviders()
+    {
+        foreach (IPermissionsProvider provider in PermissionProviders.Values)
+        {
+            provider.ReloadPermissions();
+        }
+    }
 }
