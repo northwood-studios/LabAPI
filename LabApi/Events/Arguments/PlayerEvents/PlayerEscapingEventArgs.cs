@@ -16,8 +16,7 @@ public class PlayerEscapingEventArgs : EventArgs, ICancellableEvent
     /// </summary>
     /// <param name="player">The player who is escaping.</param>
     /// <param name="newRole">The new role that is set after escape.</param>
-    /// <param name="ticketTeam">The team that will be granted tickets.</param>
-    /// <param name="tokens">The amount of tokens granted to team after escape.</param>
+    /// <param name="escapeScenario">The scenario of the escape.</param>
     public PlayerEscapingEventArgs(ReferenceHub player, RoleTypeId newRole, EscapeScenarioType escapeScenario)
     {
         IsAllowed = true;

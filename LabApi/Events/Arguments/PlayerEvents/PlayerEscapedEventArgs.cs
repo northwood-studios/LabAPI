@@ -16,11 +16,12 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player who escaped.</param>
     /// <param name="newRole">The new role.</param>
-    /// <param name="tokens">The amount of tokens granted to team after escape.</param>
+    /// <param name="escapeScenarioType">The scenario of the escape.</param>
     public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId newRole, EscapeScenarioType escapeScenarioType)
     {
         Player = Player.Get(player);
         NewRole = newRole;
+        EscapeScenarioType = escapeScenarioType;
     }
 
     /// <summary>

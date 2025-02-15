@@ -124,10 +124,7 @@ public class PocketTeleport
     /// <summary>
     /// Destroys the <see cref="PocketTeleport"/> removing it from the server.
     /// </summary>
-    public void Destroy()
-    {
-        Object.Destroy(Base);
-    }
+    public void Destroy() => Object.Destroy(Base);
 
     /// <summary>
     /// Gets the wrapper given the base game <see cref="PocketDimensionTeleport"/> instance.

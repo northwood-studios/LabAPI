@@ -40,6 +40,6 @@ public class GrenadeExplodedEventArgs : EventArgs
 
     /// <summary>
     /// Gets if grenade should destroy doors.
-    /// </summary>    
+    /// </summary>
     public bool ExplodeDoors { get; }
 }

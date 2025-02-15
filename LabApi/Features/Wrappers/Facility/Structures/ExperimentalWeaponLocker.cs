@@ -45,14 +45,13 @@ public class ExperimentalWeaponLocker : Locker
     /// </summary>
     public new BaseExperimentalWeaponLocler Base { get; }
 
-
     /// <summary>
     /// The experimental weapon's chamber.
     /// </summary>
     public LockerChamber Chamber => Chambers.First();
 
     /// <summary>
-    /// Gets or sets whether or not the experimental weapon locker is open.
+    /// Gets or sets whether the experimental weapon locker is open.
     /// </summary>
     public bool IsOpen
     {
@@ -61,7 +60,7 @@ public class ExperimentalWeaponLocker : Locker
     }
 
     /// <summary>
-    /// Gets whether or not the experimental weapon locker can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the experimental weapon locker can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Chamber.CanInteract;
 

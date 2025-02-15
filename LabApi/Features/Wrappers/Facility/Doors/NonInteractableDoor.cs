@@ -24,7 +24,7 @@ public class NonInteractableDoor : Door
     /// </summary>
     /// <param name="basicNonInteractableDoor">The base <see cref="BasicNonInteractableDoor"/> object.</param>
     internal NonInteractableDoor(BasicNonInteractableDoor basicNonInteractableDoor)
-        :base(basicNonInteractableDoor)
+        : base(basicNonInteractableDoor)
     {
         Dictionary.Add(basicNonInteractableDoor, this);
         Base = basicNonInteractableDoor;
@@ -45,7 +45,7 @@ public class NonInteractableDoor : Door
     public new BasicNonInteractableDoor Base { get; }
 
     /// <summary>
-    /// Gets or sets whether or not SCP-106 can pass through the door when its not closed and locked.
+    /// Gets or sets whether SCP-106 can pass through the door when its not closed and locked.
     /// </summary>
     public bool Is106Passable
     {

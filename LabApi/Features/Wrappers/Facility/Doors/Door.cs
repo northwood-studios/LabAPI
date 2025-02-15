@@ -3,10 +3,8 @@ using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using LabApi.Features.Enums;
 using MapGeneration;
-using MapGeneration.RoomConnectors;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
@@ -27,13 +25,7 @@ public class Door
         Register<Interactables.Interobjects.BreakableDoor>(x => new BreakableDoor(x));
         Register<Interactables.Interobjects.ElevatorDoor>(x => new ElevatorDoor(x));
         Register<Timed173PryableDoor>(x => new Timed173Gate(x));
-        Register<PryableDoor>(x =>
-        {
-            if (x.name.StartsWith("HCZ BulkDoor"))
-                return new BulkheadDoor(x);
-            else
-                return new Gate(x);
-        });
+        Register<PryableDoor>(x => x.name.StartsWith("HCZ BulkDoor") ? new BulkheadDoor(x) : new Gate(x));
         Register<BasicNonInteractableDoor>(x => new NonInteractableDoor(x));
         Register<Interactables.Interobjects.CheckpointDoor>(x => new CheckpointDoor(x));
         Register<Interactables.Interobjects.DummyDoor>(x => new DummyDoor(x));
@@ -48,7 +40,7 @@ public class Door
     /// <summary>
     /// Contains all the <see cref="Enums.DoorName"/> values for the associated <see cref="NameTag"/>.
     /// </summary>
-    private readonly static Dictionary<string, DoorName> doorNameDictionary = new()
+    private static readonly Dictionary<string, DoorName> doorNameDictionary = new()
     {
         { "LCZ_CAFE", DoorName.LczPc },
         { "LCZ_WC", DoorName.LczWc },
@@ -107,7 +99,7 @@ public class Door
         Dictionary.Add(doorVariant, this);
         Base = doorVariant;
 
-        if(doorVariant.TryGetComponent(out DoorNametagExtension nametag) && !string.IsNullOrEmpty(nametag.GetName))
+        if (doorVariant.TryGetComponent(out DoorNametagExtension nametag) && !string.IsNullOrEmpty(nametag.GetName))
         {
             if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorName doorName))
                 DoorName = doorName;
@@ -156,7 +148,7 @@ public class Door
     public FacilityZone Zone => Rooms.FirstOrDefault()?.Zone ?? FacilityZone.Other;
 
     /// <summary>
-    /// Gets or sets whether or not the door is open.
+    /// Gets or sets whether the door is open.
     /// </summary>
     public bool IsOpened
     {
@@ -165,7 +157,7 @@ public class Door
     }
 
     /// <summary>
-    /// Gets whether or not the door can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the door can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Base.AllowInteracting(null, 0);
 
@@ -179,7 +171,7 @@ public class Door
     public float ExactState => Base.GetExactState();
 
     /// <summary>
-    /// Gets or sets whether or not the door is locked.
+    /// Gets or sets whether the door is locked.
     /// </summary>
     public bool IsLocked
     {
@@ -196,7 +188,7 @@ public class Door
     /// Locks the door.
     /// </summary>
     /// <param name="reason">The reason.</param>
-    /// <param name="enabled">Whether or not the door lock reason is new.</param>
+    /// <param name="enabled">Whether the door lock reason is new.</param>
     public void Lock(DoorLockReason reason, bool enabled) => Base.ServerChangeLock(reason, enabled);
 
     /// <summary>
@@ -209,7 +201,7 @@ public class Door
     }
 
     /// <summary>
-    /// Gets or sets whether or not the door will bypass 2176.
+    /// Gets or sets whether the door will bypass 2176.
     /// </summary>
     public bool Bypass2176
     {
@@ -240,18 +232,12 @@ public class Door
     /// <summary>
     /// Plays a sound that indicates that lock bypass was denied.
     /// </summary>
-    public void PlayLockBypassDeniedSound()
-    {
-        Base.LockBypassDenied(null, 0);
-    }
+    public void PlayLockBypassDeniedSound() => Base.LockBypassDenied(null, 0);
 
     /// <summary>
     /// Plays a sound and flashes permission denied on the panel.
     /// </summary>
-    public void PlayPermissionDeniedAnimation()
-    {
-        Base.PermissionsDenied(null, 0);
-    }
+    public void PlayPermissionDeniedAnimation() => Base.PermissionsDenied(null, 0);
 
     /// <summary>
     /// Gets the door wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.

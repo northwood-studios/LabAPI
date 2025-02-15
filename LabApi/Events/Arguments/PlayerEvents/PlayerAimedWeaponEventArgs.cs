@@ -16,7 +16,7 @@ public class PlayerAimedWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent
     /// </summary>
     /// <param name="player">The player who aimed the weapon.</param>
     /// <param name="weapon">The weapon that the player aimed.</param>
-    /// <param name="aiming">Whether or not the player was aiming or unaiming their weapon.</param>
+    /// <param name="aiming">Whether the player was aiming or unaiming their weapon.</param>
     public PlayerAimedWeaponEventArgs(ReferenceHub player, ItemBase weapon, bool aiming)
     {
         Player = Player.Get(player);
@@ -30,7 +30,7 @@ public class PlayerAimedWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent
     public Player Player { get; }
 
     /// <summary>
-    /// Whether or not the player is aiming or unaiming.
+    /// Whether the player is aiming or unaiming.
     /// </summary>
     public bool Aiming { get; }
 

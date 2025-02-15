@@ -1,5 +1,4 @@
-﻿using InventorySystem.Items.Usables;
-using LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
 using UsableItem = InventorySystem.Items.Usables.UsableItem;

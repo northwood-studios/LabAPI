@@ -20,6 +20,7 @@ public class Scp079ChangedCameraEventArgs : EventArgs, IPlayerEvent
         Player = Player.Get(player);
         Camera = camera;
     }
+
     /// <summary>
     /// The SCP-079 player instance.
     /// </summary>

@@ -48,7 +48,7 @@ public class WallCabinet : Locker
     }
 
     /// <summary>
-    /// Gets or sets whether the or not the wall cabinet can be interacted with by a <see cref="Player"/>.
+    /// Gets or sets whether the wall cabinet can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => MainChamber.CanInteract;
 

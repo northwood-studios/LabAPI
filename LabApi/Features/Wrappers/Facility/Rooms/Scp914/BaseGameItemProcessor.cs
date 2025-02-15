@@ -30,13 +30,9 @@ public class BaseGameItemProcessor : IScp914ItemProcessor
 
     /// <inheritdoc/>
     public Scp914Result UpgradeItem(Scp914KnobSetting setting, Item item)
-    {
-        return Processor.UpgradeInventoryItem(setting, item.Base);
-    }
+        => Processor.UpgradeInventoryItem(setting, item.Base);
 
     /// <inheritdoc/>
     public Scp914Result UpgradePickup(Scp914KnobSetting setting, Pickup pickup)
-    {
-        return Processor.UpgradePickup(setting, pickup.Base);
-    }
+        => Processor.UpgradePickup(setting, pickup.Base);
 }

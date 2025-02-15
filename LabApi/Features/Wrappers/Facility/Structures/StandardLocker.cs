@@ -23,7 +23,7 @@ public class StandardLocker : Locker
     /// </summary>
     /// <param name="baseLocker">The base <see cref="BaseLocker"/> object.</param>
     internal StandardLocker(BaseLocker baseLocker)
-        :base(baseLocker)
+        : base(baseLocker)
     {
         Dictionary.Add(baseLocker, this);
     }

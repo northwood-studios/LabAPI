@@ -14,7 +14,7 @@ public class Properties
     public static Properties CreateDefault() => new();
 
     /// <summary>
-    /// Whether or not the <see cref="Plugin"/> is enabled.
+    /// Whether the <see cref="Plugin"/> is enabled.
     /// </summary>
     [Description("Whether or not the plugin is enabled.")]
     public bool IsEnabled { get; set; } = true;

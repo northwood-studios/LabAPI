@@ -16,7 +16,7 @@ public static class PermissionsManager
     /// <summary>
     /// Internal dictionary to store the registered permission providers.
     /// </summary>
-    private static readonly Dictionary<Type, IPermissionsProvider> PermissionProviders = new ();
+    private static readonly Dictionary<Type, IPermissionsProvider> PermissionProviders = new();
 
     /// <summary>
     /// Registers the given <see cref="IPermissionsProvider"/>.
@@ -62,7 +62,7 @@ public static class PermissionsManager
             return provider;
 
         Logger.Warn($"{LoggerPrefix} The permission provider of type {typeof(T).FullName} is not registered.");
-        return default;
+        return null;
     }
 
     /// <summary>

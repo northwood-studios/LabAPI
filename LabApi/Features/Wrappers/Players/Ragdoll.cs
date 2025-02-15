@@ -153,10 +153,7 @@ public class Ragdoll
     /// <summary>
     /// Forcefully freezes this ragdoll for all clients.
     /// </summary>
-    public void Freeze()
-    {
-        Base.ClientFreezeRpc();
-    }
+    public void Freeze() => Base.ClientFreezeRpc();
 
     /// <summary>
     /// Unfreezes this ragdoll by spawning a copy of it and destroying the original. Reference to the <see cref="Base"/> changes, but no other action is required if you are referencing this object. <br/>

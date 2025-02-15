@@ -76,39 +76,21 @@ public class Room
     public HashSet<RoomIdentifier> ConnectedRooms => Base.ConnectedRooms;
 
     /// <summary>
-    /// Gets the doors that are a part of this room.
+    /// Gets the doors that are a part of this room. TODO: Cache in base game code?
     /// </summary>
-    public IEnumerable<Door> Doors
-    {
-        get
-        {
-            return Doors.Where(n => n.Rooms.Contains(Base)); // TODO: Cache the result in base game code?
-        }
-    }
+    public IEnumerable<Door> Doors => Door.List.Where(d => d.Rooms.Contains(Base));
 
     /// <summary>
     /// Gets the first light controller for this room.<br></br>
     /// <note>Please see <see cref="AllLightControllers"/> if you wish to modify all lights in this room.</note>
     /// </summary>
-    public LightsController? LightController
-    {
-        get
-        {
-            return Base.LightControllers.Count > 0 ? LightsController.Get(Base.LightControllers[0]) : null;
-        }
-    }
+    public LightsController? LightController => Base.LightControllers.Count > 0 ? LightsController.Get(Base.LightControllers[0]) : null;
 
     /// <summary>
     /// Gets all light controllers for this specified room.<br/>
     /// Some rooms such as 049, warhead and etc may have multiple light controllers as they are split by the elevator.
     /// </summary>
-    public IEnumerable<LightsController> AllLightControllers
-    {
-        get
-        {
-            return Base.LightControllers.Select(LightsController.Get);
-        }
-    }
+    public IEnumerable<LightsController> AllLightControllers => Base.LightControllers.Select(LightsController.Get);
 
     /// <summary>
     /// Gets the room's <see cref="UnityEngine.Transform"/>.
@@ -129,6 +111,11 @@ public class Room
     /// Gets the room's rotation.
     /// </summary>
     public Quaternion Rotation => Transform.rotation;
+
+    /// <summary>
+    /// Gets a collection of players in the room.
+    /// </summary>
+    public IEnumerable<Player> Players => Player.List.Where(p => p.Room == this);
 
     /// <summary>
     /// Gets the room wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
@@ -169,7 +156,6 @@ public class Room
     /// <returns>The requested rooms.</returns>
     public static IEnumerable<Room> Get(IEnumerable<RoomIdentifier> roomIdentifiers) =>
         roomIdentifiers.Select(Get);
-
 
     /// <summary>
     /// Gets the closest <see cref="LightsController"/> to the specified player.
@@ -215,10 +201,7 @@ public class Room
     // TODO: use factory instead.
     private static void AddRoom(RoomIdentifier roomIdentifier)
     {
-        if (roomIdentifier.Name == RoomName.Pocket)
-            _ = new PocketDimension(roomIdentifier);
-        else
-            _ = new Room(roomIdentifier);
+        _ = roomIdentifier.Name == RoomName.Pocket ? new PocketDimension(roomIdentifier) : (PocketDimension)new Room(roomIdentifier);
     }
 
     /// <summary>

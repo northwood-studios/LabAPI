@@ -25,7 +25,7 @@ public static class Logger
     /// Logs a debug message to the server console.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    /// <param name="canBePrinted">Whether or not the message can be printed.</param>
+    /// <param name="canBePrinted">Whether the message can be printed.</param>
     public static void Debug(object message, bool canBePrinted = true)
     {
         if (!canBePrinted)

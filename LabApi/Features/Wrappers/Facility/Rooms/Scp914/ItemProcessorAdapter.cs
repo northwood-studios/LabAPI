@@ -23,15 +23,13 @@ internal class ItemProcessorAdapter : Scp914ItemProcessor
     {
         if (Processor.UsePickupMethodOnly)
             return base.UpgradeInventoryItem(setting, item);
-        else
-            return Processor.UpgradeItem(setting, Item.Get(item));
+
+        return Processor.UpgradeItem(setting, Item.Get(item));
     }
 
     /// <summary>
     /// Used internally by the base game.
     /// </summary>
     public override Scp914Result UpgradePickup(Scp914KnobSetting setting, ItemPickupBase pickup)
-    {
-        return Processor.UpgradePickup(setting, Pickup.Get(pickup));
-    }
+        => Processor.UpgradePickup(setting, Pickup.Get(pickup));
 }

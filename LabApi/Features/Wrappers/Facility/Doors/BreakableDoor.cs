@@ -21,7 +21,7 @@ public class BreakableDoor : Door
     public new static IReadOnlyCollection<BreakableDoor> List => Dictionary.Values;
 
     /// <summary>
-    /// An internal constructor the prevent external instantiation.
+    /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseBreakableDoor">The base <see cref="BaseBreakableDoor"/> object.</param>
     internal BreakableDoor(BaseBreakableDoor baseBreakableDoor)
@@ -46,7 +46,7 @@ public class BreakableDoor : Door
     public new BaseBreakableDoor Base { get; }
 
     /// <summary>
-    /// Gets or sets whether or not SCP-106 can pass through the door when its not closed and locked.
+    /// Gets or sets whether SCP-106 can pass through the door when it's not closed and locked.
     /// </summary>
     public bool Is106Passable
     {
@@ -73,7 +73,7 @@ public class BreakableDoor : Door
     }
 
     /// <summary>
-    /// Gets or sets whether or not the door is broken.
+    /// Gets or sets whether the door is broken.
     /// </summary>
     /// <remarks>
     /// Some doors can not be unbroken.
@@ -100,9 +100,7 @@ public class BreakableDoor : Door
     /// <param name="type">The <see cref="DoorDamageType"/> to apply.</param>
     /// <returns>True if the doors took damage, otherwise false.</returns>
     public bool TryDamage(float damage, DoorDamageType type = DoorDamageType.ServerCommand)
-    {
-        return Base.ServerDamage(damage, type);
-    }
+        => Base.ServerDamage(damage, type);
 
     /// <summary>
     /// Break the door.
@@ -110,19 +108,14 @@ public class BreakableDoor : Door
     /// <param name="type">The <see cref="DoorDamageType"/> to apply.</param>
     /// <returns>True if the doors took damage, otherwise false.</returns>
     public bool TryBreak(DoorDamageType type = DoorDamageType.ServerCommand)
-    {
-        return Base.ServerDamage(float.MaxValue, type);
-    }
+        => TryDamage(float.MaxValue, type);
 
     /// <summary>
     /// Tries to repair the door.
     /// <remarks>Sets the doors health back to <see cref="MaxHealth"/> if the door is broken otherwise it does nothing.</remarks>
     /// </summary>
     /// <returns>True if the door was repaired, otherwise false.</returns>
-    public bool TryRepair()
-    {
-        return Base.ServerRepair();
-    }
+    public bool TryRepair() => Base.ServerRepair();
 
     /// <summary>
     /// Gets the <see cref="BreakableDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
