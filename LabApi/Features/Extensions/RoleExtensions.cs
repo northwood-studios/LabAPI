@@ -16,13 +16,6 @@ public static class RoleExtensions
     public static PlayerRoleBase GetRoleBase(this RoleTypeId roleType) => PlayerRoleLoader.TryGetRoleTemplate(roleType, out PlayerRoleBase role) ? role : null!;
     
     /// <summary>
-    /// Gets the <see cref="Team"/> that a <see cref="RoleTypeId"/> belongs to.
-    /// </summary>
-    /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
-    /// <returns>The <see cref="Team"/>.</returns>
-    public static Team GetTeam(this RoleTypeId roleType) => PlayerRoleLoader.AllRoles.TryGetValue(roleType, out PlayerRoleBase prb) ? prb.Team : Team.OtherAlive;
-    
-    /// <summary>
     /// Gets the human-readable version of a <see cref="RoleTypeId"/>'s name.
     /// </summary>
     /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
