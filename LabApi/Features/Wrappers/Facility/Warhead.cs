@@ -1,5 +1,6 @@
 ﻿using GameCore;
 using Generators;
+using LabApi.Events.Handlers;
 using MapGeneration;
 using Mirror;
 using System;
@@ -16,7 +17,7 @@ public static class Warhead
     [InitializeWrapper]
     internal static void Initialize()
     {
-        SeedSynchronizer.OnGenerationFinished += OnMapGenerated;
+        ServerEvents.WaitingForPlayers += OnWaitingForPlayers;
         // TODO: Might want to handle this a different way as we are missing on destroy
     }
 
@@ -24,13 +25,13 @@ public static class Warhead
     /// The base <see cref="AlphaWarheadController"/>.
     /// Null if they have not been created yet, see <see cref="Exists"/>.
     /// </summary>
-    public static AlphaWarheadController? BaseController { get; private set; }
+    public static AlphaWarheadController? BaseController => AlphaWarheadController.Singleton;
 
     /// <summary>
     /// The base <see cref="AlphaWarheadNukesitePanel"/>.
     /// Null if they have not been created yet, see <see cref="Exists"/>.
     /// </summary>
-    public static AlphaWarheadNukesitePanel? BaseNukesitePanel { get; private set; }
+    public static AlphaWarheadNukesitePanel? BaseNukesitePanel => AlphaWarheadNukesitePanel.Singleton;
 
     /// <summary>
     /// The base <see cref="AlphaWarheadOutsitePanel"/>.
@@ -137,7 +138,7 @@ public static class Warhead
     {
         get
         {
-            if (BaseController == null) 
+            if (BaseController == null)
                 return new DetonationScenario();
 
             return ScenarioType switch
@@ -150,7 +151,7 @@ public static class Warhead
         }
         set
         {
-            if (BaseController == null) 
+            if (BaseController == null)
                 return;
 
             if (value.Equals(default))
@@ -257,10 +258,8 @@ public static class Warhead
     /// <summary>
     /// Handles the creation of the warhead components.
     /// </summary>
-    private static void OnMapGenerated()
+    private static void OnWaitingForPlayers()
     {
-        BaseController = UnityEngine.Object.FindObjectOfType<AlphaWarheadController>();
-        BaseNukesitePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
         BaseOutsidePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
 
         StartScenarios = BaseController.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
@@ -273,8 +272,6 @@ public static class Warhead
     /// </summary>
     private static void OnMapDestroyed()
     {
-        BaseController = null;
-        BaseNukesitePanel = null;
         BaseOutsidePanel = null;
     }
 

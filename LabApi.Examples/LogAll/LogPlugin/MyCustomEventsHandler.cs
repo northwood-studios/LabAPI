@@ -1171,14 +1171,24 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnServerCassieAnnounced)} triggered");
     }
 
-    public override void OnServerGrenadeExploding(GrenadeExplodingEventArgs ev)
+    public override void OnServerProjectileExploding(ProjectileExplodingEventArgs ev)
     {
-        Logger.Info($"{nameof(OnServerGrenadeExploding)} triggered by {ev.Player.UserId}");
+        Logger.Info($"{nameof(OnServerProjectileExploding)} triggered");
     }
 
-    public override void OnServerGrenadeExploded(GrenadeExplodedEventArgs ev)
+    public override void OnServerProjectileExploded(ProjectileExplodedEventArgs ev)
     {
-        Logger.Info($"{nameof(OnServerGrenadeExploded)} triggered by {ev.Player.UserId}");
+        Logger.Info($"{nameof(OnServerProjectileExploded)} triggered");
+    }
+
+    public override void OnServerExplosionSpawning(ExplosionSpawningEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerExplosionSpawning)} triggered");
+    }
+
+    public override void OnServerExplosionSpawned(ExplosionSpawnedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerExplosionSpawned)} triggered");
     }
 
     public override void OnServerGeneratorActivating(GeneratorActivatingEventArgs ev)

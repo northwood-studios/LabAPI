@@ -1,0 +1,42 @@
+﻿using InventorySystem.Items.ThrowableProjectiles;
+using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
+using System;
+using UnityEngine;
+
+namespace LabApi.Events.Arguments.ServerEvents;
+
+/// <summary>
+/// Represents the arguments for the <see cref="Handlers.ServerEvents.ProjectileExploded"/> event.
+/// </summary>
+public class ProjectileExplodedEventArgs : EventArgs, IPlayerEvent, ITimedGrenadeEvent
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProjectileExplodedEventArgs"/> class.
+    /// </summary>
+    /// <param name="projectile">The projectile which will cause explosion.</param>
+    /// <param name="player">The player which threw that grenade.</param>
+    /// <param name="position">The position of explosion.</param>
+    public ProjectileExplodedEventArgs(TimeGrenade projectile, ReferenceHub player, Vector3 position)
+    {
+        Projectile = TimedGrenadeProjectile.Get(projectile);
+        Player = Player.Get(player);
+        Position = position;
+    }
+
+    /// <summary>
+    /// Gets projectile which caused this explosion.
+    /// </summary>
+    public TimedGrenadeProjectile Projectile { get; }
+
+    /// <summary>
+    /// Gets who threw this grenade.
+    /// </summary>
+    public Player? Player { get; }
+
+    /// <summary>
+    /// Gets position of explosion.
+    /// </summary>
+    public Vector3 Position { get; }
+
+}

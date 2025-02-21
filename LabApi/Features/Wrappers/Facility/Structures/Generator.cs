@@ -37,37 +37,36 @@ public class Generator : Structure
         Dictionary.Add(generator, this);
         Base = generator;
 
-        if (generator.Room == null)
+        if (generator.ParentRoom == null)
             return;
-
-        if (!GeneratorsByRoom.TryGetValue(generator.Room, out List<Generator> list))
+        
+        if (!GeneratorsByRoom.TryGetValue(generator.ParentRoom, out List<Generator> list))
         {
             list = new List<Generator>();
-            GeneratorsByRoom.Add(generator.Room, list);
+            GeneratorsByRoom.Add(generator.ParentRoom, list);
         }
 
         list.Add(this);
     }
-
     /// <summary>
     /// An internal method remove itself from the cache when the base object is destroyed.
     /// </summary>
     internal override void OnRemove()
     {
         base.OnRemove();
-        if (Base.Room == null)
+        if (Base.ParentRoom == null)
         {
             Dictionary.Remove(Base);
             return;
         }
 
-        if (GeneratorsByRoom.TryGetValue(Base.Room, out List<Generator> list))
+        if (GeneratorsByRoom.TryGetValue(Base.ParentRoom, out List<Generator> list))
         {
             list.Remove(Get(Base));
 
             if (list.Count == 0)
             {
-                GeneratorsByRoom.Remove(Base.Room);
+                GeneratorsByRoom.Remove(Base.ParentRoom);
             }
         }
 
@@ -78,11 +77,6 @@ public class Generator : Structure
     /// The base object.
     /// </summary>
     public new Scp079Generator Base { get; }
-
-    /// <summary>
-    /// The room where this generator is located.
-    /// </summary>
-    public new Room? Room => Base.Room == null ? null : Room.Get(Base.Room);
 
     /// <summary>
     /// Gets or sets the activation time it takes for generator to go from <see cref="TotalActivationTime">maximum time</see> (this value) to 0.

@@ -6,6 +6,8 @@ using UnityEngine;
 using Mirror;
 using System.Diagnostics.CodeAnalysis;
 using Generators;
+using System;
+using InventorySystem.Items.ThrowableProjectiles;
 
 namespace LabApi.Features.Wrappers;
 
@@ -17,14 +19,9 @@ namespace LabApi.Features.Wrappers;
 public class Pickup
 {
     /// <summary>
-    /// Initializes the <see cref="Pickup"/> class.
+    /// Contains all the handlers for constructing wrappers for the associated base game types.
     /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        ItemPickupBase.OnPickupAdded += (pickup) => _ = AddPickup(pickup);
-        ItemPickupBase.OnPickupDestroyed += RemovePickup;
-    }
+    private static readonly Dictionary<Type, Func<ItemPickupBase, Pickup>> typeWrappers = [];
 
     /// <summary>
     /// Contains all the cached items that have a none zero serial, accessible through their serial.
@@ -46,15 +43,32 @@ public class Pickup
     public static IReadOnlyCollection<Pickup> List => Dictionary.Values;
 
     /// <summary>
-    /// A private constructor to prevent external instantiation.
+    /// Initializes the <see cref="Pickup"/> class.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        ItemPickupBase.OnPickupAdded += AddPickup;
+        ItemPickupBase.OnPickupDestroyed += RemovePickup;
+
+        Register<FlashbangGrenade>(n => new FlashbangProjectile(n));
+        Register<ExplosionGrenade>(n => new ExplosiveGrenadeProjectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.Scp018Projectile n) => new Scp018Projectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile n) => new Scp2176Projectile(n));
+    }
+
+    /// <summary>
+    /// A protected constructor to prevent external instantiation.
     /// </summary>
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
-    private Pickup(ItemPickupBase itemPickupBase)
+    protected Pickup(ItemPickupBase itemPickupBase)
     {
         Base = itemPickupBase;
 
-        if (itemPickupBase.Info.Serial == 0)
-            itemPickupBase.OnInfoChanged += OnPickupInfoChanged;
+        Dictionary.Add(itemPickupBase, this);
+
+        if (itemPickupBase.Info.Serial != 0)
+            SerialCache.Add(itemPickupBase.Info.Serial, this);
     }
 
     /// <summary>
@@ -116,7 +130,7 @@ public class Pickup
     /// <summary>
     /// Gets the <see cref="Wrappers.Room"/> at the pickup's current position.
     /// </summary>
-    public Room? Room => Wrappers.Room.GetRoomAtPosition(Position);
+    public Room? Room => Room.GetRoomAtPosition(Position);
 
     /// <summary>
     /// Gets the pickup's <see cref="InventorySystem.Items.Pickups.PickupStandardPhysics"/>.
@@ -188,7 +202,7 @@ public class Pickup
     /// </summary>
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
     /// <returns>The requested item <see cref="Pickup"/></returns>
-    [return: NotNullIfNotNull("itemPickupBase")]
+    [return: NotNullIfNotNull(nameof(itemPickupBase))]
     public static Pickup? Get(ItemPickupBase itemPickupBase)
     {
         if (itemPickupBase == null)
@@ -197,7 +211,32 @@ public class Pickup
         if (Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
             return pickup;
 
-        return new Pickup(itemPickupBase);
+        return CreateItemWrapper(itemPickupBase);
+    }
+
+    /// <summary>
+    /// Spawns the pickup.
+    /// </summary>
+    public void Spawn()
+    {
+        NetworkServer.Spawn(GameObject);
+    }
+
+    /// <summary>
+    /// Destroys the pickup.
+    /// </summary>
+    public void Destroy()
+    {
+        Base.DestroySelf();
+    }
+
+    /// <summary>
+    /// An internal virtual method to signal to derived implementations to uncache when the base object is destroyed.
+    /// </summary>
+    internal virtual void OnRemove()
+    {
+        Dictionary.Remove(Base);
+        SerialCache.Remove(Serial);
     }
 
     /// <summary>
@@ -250,75 +289,51 @@ public class Pickup
 
         ItemPickupBase newPickupBase = InventoryExtensions.ServerCreatePickup(itemBase, new PickupSyncInfo(type, itemBase.Weight), position, rotation, false);
         newPickupBase.transform.localScale = scale;
-        return AddPickup(newPickupBase);
+        return Get(newPickupBase);
     }
 
     /// <summary>
-    /// Spawns the pickup.
+    /// A private method to handle the creation of new hazards in the server.
     /// </summary>
-    public void Spawn()
+    /// <param name="pickup">The created <see cref="ItemPickupBase"/> instance.</param>
+    private static void AddPickup(ItemPickupBase pickup)
     {
-        NetworkServer.Spawn(GameObject);
+        if (!Dictionary.ContainsKey(pickup))
+            _ = CreateItemWrapper(pickup);
     }
 
     /// <summary>
-    /// Destroys the pickup.
+    /// A private method to handle the removal of hazards from the server.
     /// </summary>
-    public void Destroy()
+    /// <param name="pickup">The to be destroyed <see cref="ItemPickupBase"/> instance.</param>
+    private static void RemovePickup(ItemPickupBase pickup)
     {
-        Base.DestroySelf();
+        if (Dictionary.TryGetValue(pickup, out Pickup item))
+            item.OnRemove();
     }
 
     /// <summary>
-    /// Handles changes to the <see cref="ItemPickupBase.Info"/> that result in a serial being assigned.
+    /// A private method to handle the addition of wrapper handlers.
     /// </summary>
-    private void OnPickupInfoChanged()
+    /// <typeparam name="T">The derived base game type to handle.</typeparam>
+    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
+    private static void Register<T>(Func<T, Pickup> constructor) where T : ItemPickupBase
     {
-        if (Base.Info.Serial == 0)
-            return;
-
-        SerialCache[Base.Info.Serial] = this;
+        typeWrappers.Add(typeof(T), x => constructor((T)x));
     }
 
     /// <summary>
-    /// Removes all remaining subscriptions to the <see cref="ItemPickupBase"/> instance.
+    /// Creates a new wrapper from the base envronental hazard object.
     /// </summary>
-    private void UnsubscribeEvents()
+    /// <param name="hazard">The base object.</param>
+    /// <returns>The newly created wrapper.</returns>
+    protected static Pickup CreateItemWrapper(ItemPickupBase hazard)
     {
-        Base.OnInfoChanged -= OnPickupInfoChanged;
-    }
+        if (typeWrappers.TryGetValue(hazard.GetType(), out Func<ItemPickupBase, Pickup> ctorFunc))
+        {
+            return ctorFunc(hazard);
+        }
 
-    /// <summary>
-    /// Handles the addition of new or previously added <see cref="Pickup"/> wrappers.
-    /// </summary>
-    /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> being added.</param>
-    /// <returns>The new or previous item <see cref="Pickup"/> wrapper.</returns>
-    private static Pickup AddPickup(ItemPickupBase itemPickupBase)
-    {
-        if (Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
-            return pickup;
-
-        Pickup newPickup = new(itemPickupBase);
-        Dictionary.Add(itemPickupBase, newPickup);
-
-        if (itemPickupBase.Info.Serial != 0)
-            SerialCache.Add(itemPickupBase.Info.Serial, newPickup);
-
-        return newPickup;
-    }
-
-    /// <summary>
-    /// Handles the removal of a pickup from the server.
-    /// </summary>
-    /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> being removed.</param>
-    private static void RemovePickup(ItemPickupBase itemPickupBase)
-    {
-        if (!Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
-            return;
-
-        pickup.UnsubscribeEvents();
-        Dictionary.Remove(itemPickupBase);
-        if (itemPickupBase.Info.Serial != 0)
-            SerialCache.Remove(itemPickupBase.Info.Serial);
+        return new Pickup(hazard); // Default for unimplemented wrappers for specific items
     }
 }

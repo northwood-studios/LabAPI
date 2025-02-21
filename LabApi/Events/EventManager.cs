@@ -1,4 +1,5 @@
 using LabApi.Features.Console;
+using LabApi.Loader.Features.Plugins.Configuration;
 using NorthwoodLib.Pools;
 using System;
 using System.Reflection;
@@ -102,7 +103,11 @@ public static class EventManager
         StringBuilder stringBuilder = StringBuilderPool.Shared.Rent(eventHandler.Method.Name + ":");
 
         // We iterate through all the properties of the EventArgs and append them to the StringBuilder.
-        foreach (PropertyInfo property in typeof(TEventArgs).GetProperties())
+        PropertyInfo[] properties = typeof(TEventArgs).GetProperties();
+        if (properties.Length > 0)
+            stringBuilder.Append("\n");
+
+        foreach (PropertyInfo property in properties)
         {
             stringBuilder.AppendLine("\t- " + property.Name + ": " + property.GetValue(args));
         }

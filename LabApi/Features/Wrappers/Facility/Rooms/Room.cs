@@ -176,14 +176,13 @@ public class Room
     /// <returns>Whether the room was found at the specified position.</returns>
     public static bool TryGetRoomAtPosition(Vector3 position, [NotNullWhen(true)] out Room? room)
     {
-        RoomIdentifier? roomIdentifier = RoomIdUtils.RoomAtPosition(position) ?? RoomIdUtils.RoomAtPositionRaycasts(position);
-        if (roomIdentifier == null)
+        if (!RoomUtils.TryGetRoom(position, out RoomIdentifier baseRoom))
         {
             room = null;
             return false;
         }
 
-        room = Get(roomIdentifier);
+        room = Get(baseRoom);
         return true;
     }
 
@@ -201,7 +200,7 @@ public class Room
     // TODO: use factory instead.
     private static void AddRoom(RoomIdentifier roomIdentifier)
     {
-        _ = roomIdentifier.Name == RoomName.Pocket ? new PocketDimension(roomIdentifier) : (PocketDimension)new Room(roomIdentifier);
+        _ = roomIdentifier.Name == RoomName.Pocket ? new PocketDimension(roomIdentifier) : new Room(roomIdentifier);
     }
 
     /// <summary>

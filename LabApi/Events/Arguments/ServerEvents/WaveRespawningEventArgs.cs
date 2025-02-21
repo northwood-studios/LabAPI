@@ -1,9 +1,10 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
+using Respawning.Waves;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEngine.Pool;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -17,47 +18,34 @@ public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="WaveRespawningEventArgs"/> class.
     /// </summary>
-    /// <param name="team">The team that is respawning.</param>
+    /// <param name="wave">The wave that is respawning.</param>
     /// <param name="roles">The players that are respawning and roles they will spawn as.</param>
-    public WaveRespawningEventArgs(Team team, Dictionary<ReferenceHub, RoleTypeId> roles)
+    public WaveRespawningEventArgs(SpawnableWaveBase wave, Dictionary<ReferenceHub, RoleTypeId> roles)
     {
         IsAllowed = true;
-        Team = team;
-        _roles = roles;
+        Wave = RespawnWaves.Get(wave);
+        Roles = DictionaryPool<Player, RoleTypeId>.Get();
+
+        foreach (KeyValuePair<ReferenceHub, RoleTypeId> kvp in roles)
+            Roles.Add(Player.Get(kvp.Key), kvp.Value);
     }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 
     /// <summary>
-    /// Team that is respawning.
+    /// Team wave is respawning.
     /// </summary>
-    public Team Team { get; }
+    public RespawnWave Wave { get; }
 
     /// <summary>
     /// Gets all players that are about to respawn.
     /// </summary>
-    public IEnumerable<Player> SpawningPlayers => _roles.Keys.Select(n => Player.Get(n));
+    public IEnumerable<Player> SpawningPlayers => Roles.Keys;
 
     /// <summary>
-    /// Gets whether is this player spawning.
+    /// The dictionary containing players and their roles with will spawn with.<br/>
+    /// <b>Note that this dictionary is pooled and will be returned to one after this event runs. Do not save it outside of this event's scope.</b>
     /// </summary>
-    /// <param name="player">Player to check on.</param>
-    /// <returns>Whether the player is spawning the next spawn wave.</returns>
-    public bool IsSpawning(Player player) => _roles.ContainsKey(player.ReferenceHub);
-
-    /// <summary>
-    /// Removes the player from respawn team.
-    /// </summary>
-    /// <param name="player">The player to remove.</param>
-    /// <returns>Whether the player was removed.</returns>
-    public bool Remove(Player player) => _roles.Remove(player.ReferenceHub);
-
-    /// <summary>
-    /// Changes the role of player. Can also add a player.
-    /// </summary>
-    /// <param name="player"></param>
-    /// <param name="role"></param>
-    public void ChangeRole(Player player, RoleTypeId role) => _roles[player.ReferenceHub] = role;
-
+    public Dictionary<Player, RoleTypeId> Roles { get; private set; }
 }

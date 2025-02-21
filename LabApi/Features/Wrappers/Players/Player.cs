@@ -430,7 +430,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IReadOnlyCollection<Item> Items => (IReadOnlyCollection<Item>)Inventory.UserInventory.Items.Values.Select(Item.Get);
+    public IEnumerable<Item> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
 
     /// <summary>
     /// Gets the player's Reserve Ammo.
@@ -1088,7 +1088,7 @@ public class Player
     public void RemoveItem(ItemType item, int maxAmount = 1)
     {
         int count = 0;
-        for (int i = 0; i < Items.Count; i++)
+        for (int i = 0; i < Items.Count(); i++)
         {
             ItemBase? itemBase = Items.ElementAt(i).Base;
             if (itemBase.ItemTypeId != item)

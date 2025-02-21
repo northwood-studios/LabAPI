@@ -1,4 +1,6 @@
 ﻿using Generators;
+using InventorySystem.Items.MicroHID;
+using LabApi.Features.Wrappers.Facility.Structures;
 using MapGeneration.Distributors;
 using Mirror;
 using System;
@@ -36,6 +38,7 @@ public class Structure
         });
         Register<PedestalScpLocker>(x => new PedestalLocker(x));
         Register<MapGeneration.Distributors.ExperimentalWeaponLocker>(x => new ExperimentalWeaponLocker(x));
+        Register<MicroHIDPedestal>(x => new MicroPadestal(x));
     }
 
     /// <summary>
@@ -132,7 +135,7 @@ public class Structure
     /// <summary>
     /// Gets the <see cref="Room"/> based on the structures <see cref="Position"/>.
     /// </summary>
-    public Room? Room => Room.GetRoomAtPosition(Position);
+    public Room? Room => Room.Get(Base.ParentRoom);
 
     // TODO: implement structure spawning.
 

@@ -143,14 +143,24 @@ public static partial class ServerEvents
     public static event LabEventHandler<CassieAnnouncedEventArgs>? CassieAnnounced;
 
     /// <summary>
-    /// Gets called when the server will explode grenade.
+    /// Gets called when the server will explode projectile.
     /// </summary>
-    public static event LabEventHandler<GrenadeExplodingEventArgs>? GrenadeExploding;
+    public static event LabEventHandler<ProjectileExplodingEventArgs>? ProjectileExploding;
 
     /// <summary>
-    /// Gets called when the server exploded grenade.
+    /// Gets called when the server exploded projectile.
     /// </summary>
-    public static event LabEventHandler<GrenadeExplodedEventArgs>? GrenadeExploded;
+    public static event LabEventHandler<ProjectileExplodedEventArgs>? ProjectileExploded;
+
+    /// <summary>
+    /// Gets called when harmable explosion is spawning.
+    /// </summary>
+    public static event LabEventHandler<ExplosionSpawningEventArgs>? ExplosionSpawning;
+
+    /// <summary>
+    /// Gets called when explosion has spawned.
+    /// </summary>
+    public static event LabEventHandler<ExplosionSpawnedEventArgs>? ExplosionSpawned;
 
     /// <summary>
     /// Gets called when the server will activate generator.
