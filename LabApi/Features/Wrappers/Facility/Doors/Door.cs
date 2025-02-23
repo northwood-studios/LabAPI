@@ -69,6 +69,7 @@ public class Door
         { "NUKE_ARMORY", DoorName.HczNukeArmory },
         { "106_PRIMARY", DoorName.Hcz106Primiary },
         { "106_SECONDARY", DoorName.Hcz106Secondary },
+        { "HCZ_127_LAB", DoorName.Hcz127Lab },
         { "CHECKPOINT_EZ_HCZ_A", DoorName.HczCheckpoint },
         { "INTERCOM", DoorName.EzIntercom },
         { "GATE_A", DoorName.EzGateA },
