@@ -1173,6 +1173,34 @@ public class Player
     public Pickup DropItem(ushort serial) => Pickup.Get(Inventory.ServerDropItem(serial));
 
     /// <summary>
+    /// Drops items from the player's inventory according to predicate.
+    /// </summary>
+    /// <param name="predicate">Condition to satisfy.</param>
+    /// <param name="limit">Maximum amount of items that could be dropped.</param>
+    /// <returns>A collection of pickups that have been dropped.</returns>
+    /// <remarks>Returned collection is pooled. Please return it when you're done with it.</remarks>
+    public List<Pickup> DropItems(Func<Item, bool> predicate, int limit = 8)
+    {
+        List<Pickup> pickups = ListPool<Pickup>.Shared.Rent();
+
+        for (int i = 0; i < Items.Count; i++)
+        {
+            Item item = Items.ElementAt(i);
+            
+            if (!predicate(item))
+                continue;
+            
+            pickups.Add(DropItem(item));
+            i--;
+            
+            if (pickups.Count >= limit)
+                break;
+        }
+
+        return pickups;
+    }
+
+    /// <summary>
     /// Drops all items from the player's inventory.
     /// </summary>
     /// <returns>The pooled list of dropped items. Please return when your done with it.</returns>
