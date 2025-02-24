@@ -1065,6 +1065,23 @@ public class Player
     public Item? AddItem(ItemType item, ItemAddReason reason = ItemAddReason.AdminCommand) => Item.Get(Inventory.ServerAddItem(item, reason));
 
     /// <summary>
+    /// Adds a <see cref="Pickup"/> to the player's inventory.
+    /// </summary>
+    /// <param name="pickup">Pickup to add.</param>
+    /// <param name="destroyPickup">Whether the added pickup should be destroyed.</param>
+    /// <param name="reason">The reason why is this item being added.</param>
+    /// <returns>The <see cref="Item"/> added or <c>null</c> if item couldn't be added.</returns>
+    public Item? AddItem(Pickup pickup, bool destroyPickup = true, ItemAddReason reason = ItemAddReason.PickedUp)
+    {
+        Item item = Item.Get(Inventory.ServerAddItem(pickup.Type, reason, pickup: pickup.Base));
+        
+        if (destroyPickup)
+            pickup.Destroy();
+
+        return item;
+    }
+
+    /// <summary>
     /// Removes a specific <see cref="Item"/> from the player's inventory.
     /// </summary>
     /// <param name="item">The item to remove.</param>
@@ -1106,6 +1123,32 @@ public class Player
             if (++count >= maxAmount)
                 break;
         }
+    }
+
+    /// <summary>
+    /// Removes all items from the player's inventory according to condition.
+    /// </summary>
+    /// <param name="predicate">Condition to satisfy.</param>
+    /// <param name="maxAmount">The maximum amount of items that could be removed.</param>
+    /// <returns>The actual amount of items that got removed.</returns>
+    public int RemoveItems(Func<Item, bool> predicate, int maxAmount = 8)
+    {
+        int amount = 0;
+
+        for (int i = 0; i < Items.Count; i++)
+        {
+            Item item = Items.ElementAt(i);
+            
+            if (!predicate(item))
+                continue;
+
+            i--;
+            RemoveItem(item);
+            if (++amount >= maxAmount)
+                break;
+        }
+
+        return amount;
     }
 
     /// <summary>
