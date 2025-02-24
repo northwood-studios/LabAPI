@@ -18,6 +18,7 @@
     <Reference Include="Assembly-CSharp-firstpass" HintPath="$(SL_REFERENCES)\Assembly-CSharp-firstpass.dll" />
     <Reference Include="CommandSystem.Core" HintPath="$(SL_REFERENCES)\CommandSystem.Core.dll" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
+    <Reference Include="Mirror" HintPath="$(SL_REFERENCES)\Mirror.dll" />
   </ItemGroup>
 
   <ItemGroup>

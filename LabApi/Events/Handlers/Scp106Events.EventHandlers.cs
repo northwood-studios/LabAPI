@@ -46,4 +46,14 @@ public static partial class Scp106Events
     /// Gets called when SCP-106 has changed its submersion status.
     /// </summary>
     public static event LabEventHandler<Scp106ChangedSubmersionStatusEventArgs>? ChangedSubmersionStatus;
+
+    /// <summary>
+    /// Gets called when SCP-106 is teleporting a player.
+    /// </summary>
+    public static event LabEventHandler<Scp106TeleportingPlayerEvent>? TeleportingPlayer;
+
+    /// <summary>
+    /// Gets called when SCP-106 has teleported a player.
+    /// </summary>
+    public static event LabEventHandler<Scp106TeleportedPlayerEvent>? TeleportedPlayer;
 }

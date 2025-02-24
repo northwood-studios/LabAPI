@@ -10,5 +10,5 @@ public interface IPlayerEvent
     /// <summary>
     /// Gets the player that invoked the event.
     /// </summary>
-    public Player Player { get; }
+    public Player? Player { get; }
 }

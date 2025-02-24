@@ -6,7 +6,7 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.UsingTesla"/> event.
 /// </summary>
-public class Scp079UsingTeslaEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp079UsingTeslaEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, ITeslaEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079UsingTeslaEventArgs"/> class.
@@ -16,7 +16,7 @@ public class Scp079UsingTeslaEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     public Scp079UsingTeslaEventArgs(ReferenceHub player, TeslaGate tesla)
     {
         Player = Player.Get(player);
-        Tesla = tesla;
+        Tesla = Tesla.Get(tesla);
         IsAllowed = true;
     }
 
@@ -25,10 +25,8 @@ public class Scp079UsingTeslaEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     /// </summary>
     public Player Player { get; }
 
-    /// <summary>
-    /// The affected tesla instance.
-    /// </summary>
-    public TeslaGate Tesla { get; }
+    /// <inheritdoc />
+    public Tesla Tesla { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

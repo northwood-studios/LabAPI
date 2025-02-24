@@ -121,6 +121,16 @@ public static partial class ServerEvents
     /// Gets called when the server generated map.
     /// </summary>
     public static event LabEventHandler<MapGeneratedEventArgs>? MapGenerated;
+    
+    /// <summary>
+    /// Gets called when the server is sending an Admin Chat message.
+    /// </summary>
+    public static event LabEventHandler<SendingAdminChatEventArgs>? SendingAdminChat;
+    
+    /// <summary>
+    /// Gets called when the server sent an Admin Chat message.
+    /// </summary>
+    public static event LabEventHandler<SentAdminChatEventArgs>? SentAdminChat;
 
     /// <summary>
     /// Gets called when the server is spawning item on map.

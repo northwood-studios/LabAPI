@@ -10,5 +10,5 @@ public interface IItemEvent
     /// <summary>
     /// The item that is involved in the event.
     /// </summary>
-    public Item Item { get; }
+    public Item? Item { get; }
 }

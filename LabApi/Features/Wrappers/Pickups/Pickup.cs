@@ -201,7 +201,7 @@ public class Pickup
     /// Gets the pickup wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
     /// </summary>
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
-    /// <returns>The requested item <see cref="Pickup"/></returns>
+    /// <returns>The requested item <see cref="Pickup"/>.</returns>
     [return: NotNullIfNotNull(nameof(itemPickupBase))]
     public static Pickup? Get(ItemPickupBase itemPickupBase)
     {
@@ -243,14 +243,14 @@ public class Pickup
     /// Gets the pickup wrapper from the <see cref="SerialCache"/>.
     /// </summary>
     /// <param name="itemSerial">The serial of the pickup.</param>
-    /// <returns>The requested item <see cref="Pickup"> or null if it doesn't exist.</returns>
+    /// <returns>The requested item <see cref="Pickup"/> or null if it doesn't exist.</returns>
     public static Pickup? Get(ushort itemSerial) => SerialCache.GetValueOrDefault(itemSerial);
 
     /// <summary>
     /// Trys to get the pickup wrapper from the <see cref="SerialCache"/>.
     /// </summary>
     /// <param name="itemSerial">The serial of the pickup.</param>
-    /// <param name="pickup">The requested item <see cref="Pickup"> or null if it doesn't exist.</param>
+    /// <param name="pickup">The requested item <see cref="Pickup"/> or null if it doesn't exist.</param>
     /// <returns>True of the pickup exists, otherwise false.</returns>
     public static bool TryGet(ushort itemSerial, [NotNullWhen(true)] out Pickup? pickup) => SerialCache.TryGetValue(itemSerial, out pickup);
 
