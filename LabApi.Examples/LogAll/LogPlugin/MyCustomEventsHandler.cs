@@ -222,6 +222,11 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerFlippedCoin)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnPlayerGroupChanging(PlayerGroupChangingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerGroupChanging)} triggered by {ev.Player.UserId}");
+    }
+
     public override void OnPlayerGroupChanged(PlayerGroupChangedEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerGroupChanged)} triggered by {ev.Player.UserId}");
