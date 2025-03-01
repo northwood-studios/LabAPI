@@ -437,10 +437,10 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerUpdatedEffect)} triggered by {ev.Player.UserId}");
     }
 
-    public override void OnPlayerReceivingVoiceMessage(PlayerReceivingVoiceMessageEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerReceivingVoiceMessage)} triggered by {ev.Player.UserId}");
-    }
+    //public override void OnPlayerReceivingVoiceMessage(PlayerReceivingVoiceMessageEventArgs ev)
+    //{
+    //    Logger.Info($"{nameof(OnPlayerReceivingVoiceMessage)} triggered by {ev.Player.UserId}");
+    //}
 
     public override void OnPlayerReloadingWeapon(PlayerReloadingWeaponEventArgs ev)
     {
@@ -512,10 +512,10 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerSearchedPickup)} triggered by {ev.Player.UserId}");
     }
 
-    public override void OnPlayerSendingVoiceMessage(PlayerSendingVoiceMessageEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerSendingVoiceMessage)} triggered by {ev.Player.UserId}");
-    }
+    //public override void OnPlayerSendingVoiceMessage(PlayerSendingVoiceMessageEventArgs ev)
+    //{
+    //    Logger.Info($"{nameof(OnPlayerSendingVoiceMessage)} triggered by {ev.Player.UserId}");
+    //}
 
     public override void OnPlayerShootingWeapon(PlayerShootingWeaponEventArgs ev)
     {
