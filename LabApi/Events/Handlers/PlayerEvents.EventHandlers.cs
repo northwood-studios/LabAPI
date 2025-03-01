@@ -213,7 +213,12 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerFlippedCoinEventArgs>? FlippedCoin;
 
     /// <summary>
-    /// Gets called when the player group has changed.
+    /// Gets called when the player's group is changing.
+    /// </summary>
+    public static event LabEventHandler<PlayerGroupChangingEventArgs>? GroupChanging;
+
+    /// <summary>
+    /// Gets called when the player's group has changed.
     /// </summary>
     public static event LabEventHandler<PlayerGroupChangedEventArgs>? GroupChanged;
 

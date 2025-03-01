@@ -5,9 +5,9 @@ using System;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.PlayerEvents.GetGroup"/> event.
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.GroupChanged"/> event.
 /// </summary>
-public class PlayerGroupChangedEventArgs : EventArgs, IPlayerEvent
+public class PlayerGroupChangedEventArgs : EventArgs, IPlayerEvent, IGroupEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerGroupChangedEventArgs"/> class.
@@ -25,8 +25,6 @@ public class PlayerGroupChangedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     public Player Player { get; }
 
-    /// <summary>
-    /// Gets the new group.
-    /// </summary>
+    /// <inheritdoc cref="IGroupEvent.Group"/>
     public UserGroup Group { get; }
 }
