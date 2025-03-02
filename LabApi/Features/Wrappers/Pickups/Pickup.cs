@@ -49,7 +49,7 @@ public class Pickup
     internal static void Initialize()
     {
         ItemPickupBase.OnPickupAdded += AddPickup;
-        ItemPickupBase.OnPickupDestroyed += RemovePickup;
+        ItemPickupBase.OnBeforePickupDestroyed += RemovePickup;
 
         Register<FlashbangGrenade>(n => new FlashbangProjectile(n));
         Register<ExplosionGrenade>(n => new ExplosiveGrenadeProjectile(n));

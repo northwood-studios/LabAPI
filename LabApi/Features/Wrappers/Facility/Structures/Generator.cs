@@ -1,5 +1,4 @@
 ﻿using Interactables.Interobjects.DoorUtils;
-using MapGeneration;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -20,7 +19,7 @@ public class Generator : Structure
     /// <summary>
     /// Contains generators in a list by room they are in. Generators that have been spawned without an assigned room are not inside of this collection.
     /// </summary>
-    private static Dictionary<RoomIdentifier, List<Generator>> GeneratorsByRoom { get; } = [];
+    private static Dictionary<Room, List<Generator>> GeneratorsByRoom { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="Generator"/> instances currently in the game.
@@ -39,11 +38,12 @@ public class Generator : Structure
 
         if (generator.ParentRoom == null)
             return;
-        
-        if (!GeneratorsByRoom.TryGetValue(generator.ParentRoom, out List<Generator> list))
+
+        Room room = Room.Get(generator.ParentRoom);
+        if (!GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
         {
             list = new List<Generator>();
-            GeneratorsByRoom.Add(generator.ParentRoom, list);
+            GeneratorsByRoom.Add(room, list);
         }
 
         list.Add(this);
@@ -60,14 +60,13 @@ public class Generator : Structure
             return;
         }
 
-        if (GeneratorsByRoom.TryGetValue(Base.ParentRoom, out List<Generator> list))
+        Room room = Room.Get(Base.ParentRoom);
+        if (GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
         {
-            list.Remove(Get(Base));
+            list.Remove(this);
 
             if (list.Count == 0)
-            {
-                GeneratorsByRoom.Remove(Base.ParentRoom);
-            }
+                GeneratorsByRoom.Remove(room);
         }
 
         Dictionary.Remove(Base);
@@ -186,5 +185,5 @@ public class Generator : Structure
     /// <param name="room">Target room.</param>
     /// <param name="generators">Generators found.</param>
     /// <returns>Whether the generator was found.</returns>
-    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generators) => GeneratorsByRoom.TryGetValue(room.Base, out generators);
+    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generators) => GeneratorsByRoom.TryGetValue(room, out generators);
 }
