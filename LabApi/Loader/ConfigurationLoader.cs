@@ -2,6 +2,7 @@
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Configuration;
+using LabApi.Loader.Features.Yaml;
 using Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -35,7 +36,7 @@ public static class ConfigurationLoader
             string path = plugin.GetConfigPath(fileName);
 
             // We serialize the configuration.
-            string serializedConfig = YamlParser.Serializer.Serialize(config);
+            string serializedConfig = YamlConfigParser.Serializer.Serialize(config);
 
             // We finally write the serialized configuration to the file and return whether or not it was successful.
             File.WriteAllText(path, serializedConfig);
@@ -78,7 +79,7 @@ public static class ConfigurationLoader
             string serializedConfig = File.ReadAllText(path);
 
             // We deserialize the configuration and return whether or not it was successful.
-            config = YamlParser.Deserializer.Deserialize<TConfig>(serializedConfig);
+            config = YamlConfigParser.Deserializer.Deserialize<TConfig>(serializedConfig);
             return true;
         }
         catch (Exception e)
