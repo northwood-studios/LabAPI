@@ -91,7 +91,7 @@ public class Player
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
-    internal Player(ReferenceHub referenceHub)
+    protected Player(ReferenceHub referenceHub)
     {
         Dictionary.Add(referenceHub, this);
         ReferenceHub = referenceHub;
