@@ -45,6 +45,11 @@ public abstract class Plugin
     public Properties? Properties { get; internal set; }
 
     /// <summary>
+    /// The full path to the plugin's DLL file.
+    /// </summary>
+    public string FilePath { get; internal set; } = string.Empty;
+
+    /// <summary>
     /// Called when the <see cref="Plugin"/> is enabled.
     /// Should be used to register events, etc.
     /// </summary>
