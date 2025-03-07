@@ -58,6 +58,16 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerChangedItemEventArgs>? ChangedItem;
 
     /// <summary>
+    /// Gets called when a players' nickname is changing.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangingNicknameEventArgs>? ChangingNickname;
+
+    /// <summary>
+    /// Gets called when a players' nickname has changed.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangedNicknameEventArgs>? ChangedNickname;
+
+    /// <summary>
     /// Gets called when the player is changing range of their radio.
     /// </summary>
     public static event LabEventHandler<PlayerChangingRadioRangeEventArgs>? ChangingRadioRange;
@@ -203,7 +213,12 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerFlippedCoinEventArgs>? FlippedCoin;
 
     /// <summary>
-    /// Gets called when the player group has changed.
+    /// Gets called when the player's group is changing.
+    /// </summary>
+    public static event LabEventHandler<PlayerGroupChangingEventArgs>? GroupChanging;
+
+    /// <summary>
+    /// Gets called when the player's group has changed.
     /// </summary>
     public static event LabEventHandler<PlayerGroupChangedEventArgs>? GroupChanged;
 
@@ -216,6 +231,16 @@ public static partial class PlayerEvents
     /// Gets called when the player has been hurt.
     /// </summary>
     public static event LabEventHandler<PlayerHurtEventArgs>? Hurt;
+
+    /// <summary>
+    /// Gets called when a player is close enough to a Tesla-Gate for it to idle.
+    /// </summary>
+    public static event LabEventHandler<PlayerIdlingTeslaEventArgs>? IdlingTesla;
+
+    /// <summary>
+    /// Gets called when a player was close enough to a Tesla-Gate for it to idle.
+    /// </summary>
+    public static event LabEventHandler<PlayerIdledTeslaEventArgs>? IdledTesla;
 
     /// <summary>
     /// Gets called when the player is interacting with a door.
@@ -566,6 +591,16 @@ public static partial class PlayerEvents
     /// Gets called when the player has toggled a radio.
     /// </summary>
     public static event LabEventHandler<PlayerToggledRadioEventArgs>? ToggledRadio;
+
+    /// <summary>
+    /// Gets called when the player is triggering a <see cref="TeslaGate"/>.
+    /// </summary>
+    public static event LabEventHandler<PlayerTriggeringTeslaEventArgs>? TriggeringTesla;
+
+    /// <summary>
+    /// Gets called when the player has triggered a <see cref="TeslaGate"/>.
+    /// </summary>
+    public static event LabEventHandler<PlayerTriggeredTeslaEventArgs>? TriggeredTesla;
 
     /// <summary>
     /// Gets called when the player is being undisarmed.

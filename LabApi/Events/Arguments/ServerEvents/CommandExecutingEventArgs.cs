@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.CommandExecuting"/> event.
 /// </summary>
-public class CommandExecutingEventArgs : EventArgs, ICancellableEvent
+public class CommandExecutingEventArgs : EventArgs, ICommandSenderEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CommandExecutingEventArgs"/> class.

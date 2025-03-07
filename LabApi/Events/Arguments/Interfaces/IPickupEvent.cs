@@ -10,5 +10,5 @@ public interface IPickupEvent
     /// <summary>
     /// The pickup that is involved in the event.
     /// </summary>
-    public Pickup Pickup { get; }
+    public Pickup? Pickup { get; }
 }

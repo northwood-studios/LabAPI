@@ -10,5 +10,5 @@ public interface ITargetEvent
     /// <summary>
     /// Gets the player that was targeted in the event.
     /// </summary>
-    public Player Target { get; }
+    public Player? Target { get; }
 }

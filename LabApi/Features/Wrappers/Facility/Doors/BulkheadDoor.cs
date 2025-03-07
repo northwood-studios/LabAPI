@@ -62,7 +62,7 @@ public class BulkheadDoor : Gate
     /// <param name="pryableDoor">The <see cref="PryableDoor"/> of the door.</param>
     /// <returns>The requested door wrapper or null if the input was null.</returns>
     [return: NotNullIfNotNull(nameof(pryableDoor))]
-    public static BulkheadDoor? Get(PryableDoor? pryableDoor)
+    public new static BulkheadDoor? Get(PryableDoor? pryableDoor)
     {
         if (pryableDoor == null)
             return null;

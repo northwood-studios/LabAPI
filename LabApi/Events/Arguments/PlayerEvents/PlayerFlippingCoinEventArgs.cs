@@ -1,23 +1,26 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using InventorySystem.Items;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.FlippingCoin"/> event.
 /// </summary>
-public class PlayerFlippingCoinEventArgs : EventArgs, ICancellableEvent
+public class PlayerFlippingCoinEventArgs : EventArgs, ICancellableEvent, IItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFlippingCoinEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who is flipping the coin.</param>
+    /// <param name="item">The coin that is being flipped.</param>
     /// <param name="isTails">Whenever the coin flip is tails.</param>
-    public PlayerFlippingCoinEventArgs(ReferenceHub player, bool isTails)
+    public PlayerFlippingCoinEventArgs(ReferenceHub player, ItemBase item, bool isTails)
     {
         IsAllowed = true;
         Player = Player.Get(player);
+        Item = Item.Get(item);
         IsTails = isTails;
     }
 
@@ -33,4 +36,7 @@ public class PlayerFlippingCoinEventArgs : EventArgs, ICancellableEvent
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+
+    /// <inheritdoc />
+    public Item Item { get; }
 }

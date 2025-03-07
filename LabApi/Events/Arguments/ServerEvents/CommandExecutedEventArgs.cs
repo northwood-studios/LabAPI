@@ -1,13 +1,14 @@
 using CommandSystem;
 using LabApi.Features.Enums;
 using System;
+using LabApi.Events.Arguments.Interfaces;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.CommandExecuted"/> event.
 /// </summary>
-public class CommandExecutedEventArgs : EventArgs
+public class CommandExecutedEventArgs : EventArgs, ICommandSenderEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CommandExecutedEventArgs"/> class.
