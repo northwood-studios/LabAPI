@@ -2,6 +2,7 @@
 using LabApi.Features.Wrappers;
 using System;
 using CustomPlayerEffects;
+using InventorySystem.Items.Usables.Scp330;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
@@ -17,12 +18,14 @@ public class PlayerInteractedScp330EventArgs : EventArgs, IPlayerEvent
     /// <param name="uses">The amount of uses that target player did.</param>
     /// <param name="playSound">Whenever pickup sound should have been.</param>
     /// <param name="allowPunishment">Whenever the <see cref="SeveredHands"/> effect was applied.</param>
-    public PlayerInteractedScp330EventArgs(ReferenceHub player, int uses, bool playSound, bool allowPunishment)
+    /// <param name="type">Type of the candy which was given to the player.</param>
+    public PlayerInteractedScp330EventArgs(ReferenceHub player, int uses, bool playSound, bool allowPunishment, CandyKindID type)
     {
         Player = Player.Get(player);
         Uses = uses;
         PlaySound = playSound;
         AllowPunishment = allowPunishment;
+        CandyType = type;
     }
 
     /// <summary>
@@ -44,4 +47,9 @@ public class PlayerInteractedScp330EventArgs : EventArgs, IPlayerEvent
     /// Gets the bool value whether the <see cref="SeveredHands"/> effect was applied.
     /// </summary>
     public bool AllowPunishment { get; }
+
+    /// <summary>
+    /// Gets or the type of the candy that has been given to the player. 
+    /// </summary>
+    public CandyKindID CandyType { get; }
 }

@@ -68,7 +68,7 @@ public class Pickup
         Dictionary.Add(itemPickupBase, this);
 
         if (itemPickupBase.Info.Serial != 0)
-            SerialCache.Add(itemPickupBase.Info.Serial, this);
+            SerialCache[itemPickupBase.Info.Serial] = this;
     }
 
     /// <summary>
