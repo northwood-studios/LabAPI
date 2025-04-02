@@ -26,6 +26,26 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     {
         Logger.Info($"{nameof(OnPlayerActivatedGenerator)} triggered by {ev.Player.UserId}");
     }
+    
+    public override void OnPlayerUnlockingGenerator(PlayerUnlockingGeneratorEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerUnlockingGenerator)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerUnlockedGenerator(PlayerUnlockedGeneratorEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerUnlockedGenerator)} triggered by {ev.Player.UserId}");
+    }
+    
+    public override void OnPlayerUnlockingWarheadButton(PlayerUnlockingWarheadButtonEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerUnlockingWarheadButton)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerUnlockedWarheadButton(PlayerUnlockedWarheadButtonEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerUnlockedWarheadButton)} triggered by {ev.Player.UserId}");
+    }
 
     //public override void OnPlayerAimingWeapon(PlayerAimingWeaponEventArgs ev)
     //{
@@ -1306,27 +1326,8 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     {
         Logger.Info($"{nameof(OnWarheadDetonated)} triggered by {ev.Player.UserId}");
     }
-
-    public override void OnPlayerUnlockingGenerator(PlayerUnlockingGeneratorEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerUnlockingGenerator)} triggered by {ev.Player.UserId}");
-    }
-
-    public override void OnPlayerUnlockedGenerator(PlayerUnlockedGeneratorEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerUnlockedGenerator)} triggered by {ev.Player.UserId}");
-    }
-
-    public override void OnPlayerUnlockingWarheadButton(PlayerUnlockingWarheadButtonEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerUnlockingWarheadButton)} triggered by {ev.Player.UserId}");
-    }
-
-    public override void OnPlayerUnlockedWarheadButton(PlayerUnlockedWarheadButtonEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerUnlockedWarheadButton)} triggered by {ev.Player.UserId}");
-    }
-
+    
+    
     #region Excluded Events
 
     // The following events spam the console and are therefore excluded from this example:
