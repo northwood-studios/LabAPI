@@ -47,7 +47,7 @@ public interface IPermissionsProvider
     /// <summary>
     /// Reloads the permissions.
     /// </summary>
-    internal void ReloadPermissions()
+    public void ReloadPermissions()
     {
     }
 }
