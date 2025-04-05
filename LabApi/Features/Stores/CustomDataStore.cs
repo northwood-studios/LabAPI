@@ -11,7 +11,7 @@ namespace LabApi.Features.Stores;
 /// </summary>
 public abstract class CustomDataStore
 {
-    private static readonly Dictionary<Type, Dictionary<Player, CustomDataStore>> StoreInstances = new ();
+    private static readonly Dictionary<Type, Dictionary<Player, CustomDataStore>> StoreInstances = [];
 
     /// <summary>
     /// Gets the <see cref="Player"/> that this instance is associated with.
@@ -44,7 +44,7 @@ public abstract class CustomDataStore
 
         if (!StoreInstances.TryGetValue(type, out Dictionary<Player, CustomDataStore>? playerStores))
         {
-            playerStores = new Dictionary<Player, CustomDataStore>();
+            playerStores = [];
             StoreInstances[type] = playerStores;
         }
 
@@ -55,6 +55,25 @@ public abstract class CustomDataStore
         playerStores[player] = store;
 
         return (TStore)store;
+    }
+
+    /// <summary>
+    /// Checks the <see cref="CustomDataStore"/> if contains a specified <see cref="Player"/>.
+    /// </summary>
+    /// <param name="player">The <see cref="Player"/> to check inside the <see cref="CustomDataStore"/>.</param>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
+    /// <returns>Whether the <paramref name="player"/> has a <typeparamref name="TStore"/></returns>
+    public static bool IsContains<TStore>(Player player) where TStore : CustomDataStore
+    {
+        Type type = typeof(TStore);
+
+        if (!CustomDataStoreManager.IsRegistered<TStore>())
+            return false;
+
+        if (!StoreInstances.ContainsKey(type))
+            return false;
+
+        return StoreInstances[type].ContainsKey(player);
     }
 
     /// <summary>
