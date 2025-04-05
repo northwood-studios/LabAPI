@@ -49,7 +49,7 @@ public class PlayerInteractedScp330EventArgs : EventArgs, IPlayerEvent
     public bool AllowPunishment { get; }
 
     /// <summary>
-    /// Gets or the type of the candy that has been given to the player. 
+    /// Gets the type of the candy that has been given to the player. 
     /// </summary>
     public CandyKindID CandyType { get; }
 }
