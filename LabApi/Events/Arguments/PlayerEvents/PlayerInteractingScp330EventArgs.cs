@@ -35,9 +35,9 @@ public class PlayerInteractingScp330EventArgs : EventArgs, IPlayerEvent, ICancel
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the amount of uses that target player did.
+    /// Gets or sets the amount of uses that target player has used.
     /// </summary>
-    public int Uses { get; }
+    public int Uses { get; set; }
 
     /// <summary>
     /// Gets whether the sound should be played of pickup up candy.
