@@ -906,7 +906,7 @@ public class Player
         if (UserIdCache.TryGetValue(userId!, out player) && player.IsOnline)
             return true;
 
-        player = List.FirstOrDefault(x => x.UserId == userId);
+        player = Dictionary.Values.FirstOrDefault(x => x.UserId == userId);
         if (player == null)
             return false;
 
@@ -933,7 +933,7 @@ public class Player
     /// <returns>Whether the player was successfully retrieved.</returns>
     public static bool TryGet(int playerId, [NotNullWhen(true)] out Player? player)
     {
-        player = List.FirstOrDefault(n => n.PlayerId == playerId);
+        player = Dictionary.Values.FirstOrDefault(n => n.PlayerId == playerId);
         return player != null;
     }
 
