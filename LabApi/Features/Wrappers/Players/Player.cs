@@ -52,7 +52,7 @@ public class Player
     /// <summary>
     /// A reference to all <see cref="Player"/> instances currently in the game.
     /// </summary>
-    public static IReadOnlyCollection<Player> List => Dictionary.Values.Where(x => !x.IsHost).ToList();
+    public static IReadOnlyCollection<Player> List => Dictionary.Values.Where(x => !x.IsHost && x.IsReady).ToList();
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
