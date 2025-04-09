@@ -37,4 +37,9 @@ public class PlayerHurtEventArgs : EventArgs, IPlayerEvent
     /// Gets the damage handler.
     /// </summary>
     public DamageHandlerBase DamageHandler { get; }
+
+    /// <summary>
+    /// Gets the damage dealt if <see cref="DamageHandler"/> is <see cref="StandardDamageHandler"/>.
+    /// </summary>
+    public float Damage => DamageHandler is StandardDamageHandler sdh ? sdh.DealtHealthDamage : 0.0f;
 }
