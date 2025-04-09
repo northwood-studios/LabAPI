@@ -1180,7 +1180,7 @@ public class Player
     /// </summary>
     public void ClearItems()
     {
-        foreach (Item item in Items)
+        foreach (Item item in Items.ToArray())
             RemoveItem(item);
     }
 
