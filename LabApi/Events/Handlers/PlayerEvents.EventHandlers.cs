@@ -748,5 +748,9 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerLeftHazardEventArgs>? LeftHazard;
 
+    /// <summary>
+    /// Gets called when a player has validated the visibility of a target player.
+    /// </summary>
+    public static event LabEventHandler<PlayerValidatedVisibilityEventArgs>? ValidatedVisibility;
     #endregion
 }

@@ -852,6 +852,16 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnScp079LockedDownRoom)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnScp079Recontaining(Scp079RecontainingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp079Recontaining)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp079Recontained(Scp079RecontainedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp079Recontained)} triggered by {ev.Player.UserId}");
+    }
+
     public override void OnScp079UnlockingDoor(Scp079UnlockingDoorEventArgs ev)
     {
         Logger.Info($"{nameof(OnScp079UnlockingDoor)} triggered by {ev.Player.UserId}");
@@ -1237,6 +1247,16 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnServerMapGenerated)} triggered");
     }
 
+    public override void OnServerPickupCreated(PickupCreatedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerPickupCreated)} triggered");
+    }
+
+    public override void OnServerPickupDestroyed(PickupDestroyedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerPickupDestroyed)} triggered");
+    }
+
     public override void OnServerSendingAdminChat(SendingAdminChatEventArgs ev)
     {
         Logger.Info($"{nameof(OnServerSendingAdminChat)} triggered by {ev.Sender.LogName}");
@@ -1265,6 +1285,16 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnServerCassieAnnounced(CassieAnnouncedEventArgs ev)
     {
         Logger.Info($"{nameof(OnServerCassieAnnounced)} triggered");
+    }
+
+    public override void OnServerCassieQueuingScpTermination(CassieQueuingScpTerminationEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerCassieQueuingScpTermination)} triggered");
+    }
+    
+    public override void OnServerCassieQueuedScpTermination(CassieQueuedScpTerminationEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerCassieQueuedScpTermination)} triggered");
     }
 
     public override void OnServerProjectileExploding(ProjectileExplodingEventArgs ev)
@@ -1332,6 +1362,11 @@ internal class MyCustomEventsHandler : CustomEventsHandler
 
     // The following events spam the console and are therefore excluded from this example:
 
+    //public override void OnPlayerValidatedVisibility(PlayerValidatedVisibilityEventArgs ev)
+    //{
+    //    Logger.Info($"{nameof(OnPlayerValidatedVisibility)} triggered by {ev.Player.UserId}");
+    //}
+    //
     // public override void OnPlayerUsingRadio(PlayerUsingRadioEventArgs ev)
     // {
     //     Logger.Info($"{nameof(OnPlayerUsingRadio)} triggered by {ev.Player.UserId}");

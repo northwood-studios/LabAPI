@@ -5,6 +5,9 @@ using InventorySystem.Items.Pickups;
 using InventorySystem.Items.ThrowableProjectiles;
 using Mirror;
 using System;
+using InventorySystem.Items.ThrowableProjectiles;
+using LabApi.Events.Handlers;
+using LabApi.Events.Arguments.ServerEvents;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
@@ -343,7 +346,9 @@ public class Pickup
         try
         {
             if (!Dictionary.ContainsKey(pickup))
-                _ = CreateItemWrapper(pickup);
+                Pickup wrapper = CreateItemWrapper(pickup);
+          
+            ServerEvents.OnPickupCreated(new PickupCreatedEventArgs(wrapper));
         }
         catch(Exception e)
         {
@@ -359,6 +364,7 @@ public class Pickup
     {
         try
         {
+            ServerEvents.OnPickupDestroyed(new PickupDestroyedEventArgs(item));
             if (Dictionary.TryGetValue(pickup, out Pickup item))
                 item.OnRemove();
         }

@@ -167,9 +167,14 @@ public class Generator : Structure
     /// <summary>
     /// Runs the interaction of specified <see cref="Player"/> on specified <see cref="GeneratorColliderId"/> collider.
     /// </summary>
-    /// <param name="player"></param>
-    /// <param name="collider"></param>
+    /// <param name="player">The player to trigger the interaction.</param>
+    /// <param name="collider">The <see cref="GeneratorColliderId"/> triggered.</param>
     public void ServerInteract(Player player, GeneratorColliderId collider) => Base.ServerInteract(player.ReferenceHub, (byte)collider);
+
+    /// <summary>
+    /// Plays the denied sound cue on the client.
+    /// </summary>
+    public void PlayerDeniedBeep() => Base.RpcDenied();
 
     /// <summary>
     /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="Scp079Generator"/> was not <see langword="null"/>.
