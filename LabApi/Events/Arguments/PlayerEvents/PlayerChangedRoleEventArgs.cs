@@ -18,7 +18,7 @@ public class PlayerChangedRoleEventArgs : EventArgs, IPlayerEvent
     /// <param name="newRole">The new role object of the player.</param>
     /// <param name="changeReason">The reason of role changed.</param>
     /// <param name="spawnFlags">The spawn flags used for this role change.</param>
-    public PlayerChangedRoleEventArgs(ReferenceHub player, PlayerRoleBase oldRole, RoleTypeId newRole, RoleChangeReason changeReason, RoleSpawnFlags spawnFlags)
+    public PlayerChangedRoleEventArgs(ReferenceHub player, RoleTypeId oldRole, PlayerRoleBase newRole, RoleChangeReason changeReason, RoleSpawnFlags spawnFlags)
     {
         Player = Player.Get(player);
         OldRole = oldRole;
@@ -35,12 +35,12 @@ public class PlayerChangedRoleEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the old role type.
     /// </summary>
-    public PlayerRoleBase OldRole { get; }
+    public RoleTypeId OldRole { get; }
 
     /// <summary>
     /// Gets the new role object of the player.
     /// </summary>
-    public RoleTypeId NewRole { get; }
+    public PlayerRoleBase NewRole { get; }
 
     /// <summary>
     /// Gets the reason of role changed.
