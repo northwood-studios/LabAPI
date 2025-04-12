@@ -343,9 +343,10 @@ public class Pickup
         try
         {
             if (!Dictionary.ContainsKey(pickup))
+            {
                 Pickup wrapper = CreateItemWrapper(pickup);
-          
-            ServerEvents.OnPickupCreated(new PickupCreatedEventArgs(wrapper));
+                ServerEvents.OnPickupCreated(new PickupCreatedEventArgs(wrapper));
+            }
         }
         catch(Exception e)
         {
@@ -361,9 +362,10 @@ public class Pickup
     {
         try
         {
-            ServerEvents.OnPickupDestroyed(new PickupDestroyedEventArgs(item));
             if (Dictionary.TryGetValue(pickup, out Pickup item))
                 item.OnRemove();
+            
+            ServerEvents.OnPickupDestroyed(new PickupDestroyedEventArgs(item));
         }
         catch(Exception e)
         {

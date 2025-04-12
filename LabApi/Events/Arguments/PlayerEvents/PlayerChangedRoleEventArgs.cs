@@ -35,12 +35,12 @@ public class PlayerChangedRoleEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the old role type.
     /// </summary>
-    public RoleTypeId OldRole { get; }
+    public PlayerRoleBase OldRole { get; }
 
     /// <summary>
     /// Gets the new role object of the player.
     /// </summary>
-    public PlayerRoleBase NewRole { get; }
+    public RoleTypeId NewRole { get; }
 
     /// <summary>
     /// Gets the reason of role changed.

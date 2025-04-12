@@ -1,4 +1,5 @@
-﻿using InventorySystem.Items.Armor;
+﻿using System;
+using InventorySystem.Items.Armor;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -49,10 +50,11 @@ public class BodyArmorItem : Item
     /// <summary>
     /// Gets or sets whether excess items are removed when armor is dropped.
     /// </summary>
+    [Obsolete("No longer usable", true)]
     public bool RemoveExcessOnDrop
     {
-        get => !Base.DontRemoveExcessOnDrop;
-        set => Base.DontRemoveExcessOnDrop = !value;
+        get => false;
+        set => value = false;
     }
 
     /// <summary>

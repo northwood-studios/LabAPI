@@ -136,9 +136,8 @@ public class Scp330Item : UsableItem
         if (dropped == null)
             return false;
 
-        Scp330Pickup scp330 = (Scp330Pickup)dropped.Base;
-        scp330.NetworkExposedCandy = kind;
-        scp330.PreviousOwner = new Footprinting.Footprint(Base.Owner);
+        Scp330Pickup scp330 = (Scp330Pickup)dropped;
+        scp330.ExposedCandy = kind;
 
         RemoveCandies([kind]);
         return true;

@@ -225,7 +225,8 @@ public class Generator : Structure
     /// <summary>
     /// Plays the denied sound cue on the client.
     /// </summary>
-    public void PlayerDeniedBeep() => Base.RpcDenied();
+    /// <param name="flags">The permissions used to attempt opening the generator. Used to animate the generator panel.</param>
+    public void PlayerDeniedBeep(DoorPermissionFlags flags) => Base.RpcDenied(flags);
 
     /// <summary>
     /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="Scp079Generator"/> was not <see langword="null"/>.

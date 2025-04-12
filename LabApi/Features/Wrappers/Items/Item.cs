@@ -5,8 +5,6 @@ using InventorySystem.Items.Armor;
 using InventorySystem.Items.Coin;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Usables;
-using LabApi.Features.Console;
-using LabApi.Features.Wrappers.Items.Usable;
 using NorthwoodLib.Pools;
 using System;
 using System.Collections.Generic;
