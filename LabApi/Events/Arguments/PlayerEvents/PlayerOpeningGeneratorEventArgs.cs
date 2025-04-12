@@ -32,6 +32,11 @@ public class PlayerOpeningGeneratorEventArgs : EventArgs, IPlayerEvent, IGenerat
     /// </summary>
     public Generator Generator { get; }
 
+    /// <summary>
+    /// Gets or sets whether to play the denied permissions sound.
+    /// </summary>
+    public bool PlayDeniedAnimation { get; set; }
+
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }
