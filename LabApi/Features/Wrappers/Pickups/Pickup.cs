@@ -270,7 +270,7 @@ public class Pickup
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
     /// <returns>The requested item <see cref="Pickup"/>.</returns>
     [return: NotNullIfNotNull(nameof(itemPickupBase))]
-    public static Pickup? Get(ItemPickupBase itemPickupBase)
+    public static Pickup? Get(ItemPickupBase? itemPickupBase)
     {
         if (itemPickupBase == null)
             return null;

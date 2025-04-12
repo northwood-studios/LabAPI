@@ -52,7 +52,32 @@ public class Player
     /// <summary>
     /// A reference to all <see cref="Player"/> instances currently in the game.
     /// </summary>
+    /// <remarks>
+    /// This list includes the host player, NPCs and unauthenticated players.
+    /// <para>
+    /// Unauthenticated players you must be especially careful with as interacting with them incorrectly will cause them to softlock while joining the game.
+    /// Use <see cref="ReadyList"/> to get connected players that you can send network messages to.
+    /// </para>
+    /// </remarks>
     public static IReadOnlyCollection<Player> List => Dictionary.Values;
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are authenticated or dummy players.
+    /// </summary>
+    public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are Npcs.
+    /// </summary>
+    /// <remarks>
+    /// The host player is not counted as an Npc.
+    /// </remarks>
+    public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instance that are real players but are not authenticated yet.
+    /// </summary>
+    public static IEnumerable<Player> UnauthenticatedList => List.Where(x => x.IsPlayer && !x.IsReady);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
@@ -60,9 +85,9 @@ public class Player
     public static Player? Host => Server.Host;
 
     /// <summary>
-    /// Gets the amount of online players.
+    /// Gets the amount of ready players or dummies.
     /// </summary>
-    public static int Count => ReferenceHub.AllHubs.Count(x => !x.isLocalPlayer && x.Mode == ClientInstanceMode.ReadyClient && !string.IsNullOrEmpty(x.authManager.UserId));
+    public static int Count => ReadyList.Count();
 
     /// <summary>
     /// Gets the amount of non-verified players
@@ -121,12 +146,20 @@ public class Player
     /// <summary>
     /// Gets whether this <see cref="Player"/> instance is not controlled by a real human being.
     /// </summary>
+    /// <remarks>
+    /// This list includes dummy players.
+    /// </remarks>
     public bool IsNpc => !IsHost && ReferenceHub.connectionToClient.GetType() != typeof(NetworkConnectionToClient);
 
     /// <summary>
     /// Gets whether the player is a real player and not the host or an Npc.
     /// </summary>
     public bool IsPlayer => Connection.GetType() == typeof(NetworkConnectionToClient);
+
+    /// <summary>
+    /// Gets whether the player is a dummy instance.
+    /// </summary>
+    public bool IsDummy => ReferenceHub.authManager.InstanceMode == ClientInstanceMode.Dummy;
 
     /// <summary>
     /// Gets the Player's User ID.
@@ -1057,6 +1090,14 @@ public class Player
     public Item? AddItem(ItemType item, ItemAddReason reason = ItemAddReason.AdminCommand) => Item.Get(Inventory.ServerAddItem(item, reason));
 
     /// <summary>
+    /// Adds an item by picking it up.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Pickup"/> to pickup.</param>
+    /// <returns>The <see cref="Item"/> added or null if it could not be added.</returns>
+    public Item? AddItem(Pickup pickup)
+        => Item.Get(Inventory.ServerAddItem(pickup.Type, ItemAddReason.PickedUp, pickup.Serial, pickup.Base));
+
+    /// <summary>
     /// Removes a specific <see cref="Item"/> from the player's inventory.
     /// </summary>
     /// <param name="item">The item to remove.</param>
@@ -1248,20 +1289,33 @@ public class Player
     public void Disconnect(string? reason = null) => ServerConsole.Disconnect(GameObject, reason ?? string.Empty);
 
     /// <summary>
-    /// Sends the player a hint text.
+    /// Sends the player a text hint.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="duration">The duration of which the text will be visible.</param>
-    public void SendHint(string text, float duration = 3f) => ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(text)], null, duration));
+    public void SendHint(string text, float duration = 3f) => ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], null, duration));
 
     /// <summary>
-    /// Sends the player a hint text with effects.
+    /// Sends the player a text hint with effects.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="effects">The effects of text.</param>
     /// <param name="duration">The duration of which the text will be visible.</param>
     public void SendHint(string text, HintEffect[] effects, float duration = 3f) =>
-        ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(text)], effects, duration));
+        ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], effects, duration));
+
+    /// <summary>
+    /// Sends the player a text hint with parameters.
+    /// </summary>
+    /// <param name="text">The text which will be displayed.</param>
+    /// <param name="parameters">The parameters to interpolate into the text.</param>
+    /// <param name="duration">The duration of which the text will be visible.</param>
+    /// <remarks>
+    /// Parameters are interpolated into the string on the client.
+    /// E.g. <c>"Test param1: {0} param2: {1}"</c>
+    /// </remarks>
+    public void SendHint(string text, HintParameter[] parameters, float duration = 3f) =>
+        ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, null, duration));
 
     /// <summary>
     /// Sends the player a hit marker.

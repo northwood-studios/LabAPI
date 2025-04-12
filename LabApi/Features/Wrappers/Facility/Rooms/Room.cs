@@ -1,4 +1,5 @@
 using Generators;
+using Interactables.Interobjects.DoorUtils;
 using MapGeneration;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -78,7 +79,13 @@ public class Room
     /// <summary>
     /// Gets the doors that are a part of this room. TODO: Cache in base game code?
     /// </summary>
-    public IEnumerable<Door> Doors => Door.List.Where(d => d.Rooms.Contains(Base));
+    public IEnumerable<Door> Doors
+    {
+        get
+        {
+            return DoorVariant.DoorsByRoom.TryGetValue(Base, out HashSet<DoorVariant> doors) ? doors.Where(x => x != null).Select(x => Door.Get(x!)) : [];
+        }
+    }
 
     /// <summary>
     /// Gets the first light controller for this room.<br></br>

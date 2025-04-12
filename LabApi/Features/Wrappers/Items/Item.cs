@@ -235,7 +235,13 @@ public class Item
     /// <summary>
     /// Drops this item from player's inventory
     /// </summary>
-    public void DropItem() => Base.ServerDropItem(true);
+    public Pickup DropItem() => Pickup.Get(Base.ServerDropItem(true));
+
+    /// <summary>
+    /// Moves the item to the specified players inventory.
+    /// </summary>
+    /// <param name="player">The player to move this item to.</param>
+    public void MoveTo(Player player) => player.AddItem(DropItem());
 
     /// <summary>
     /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ItemBase"/> was not null.
