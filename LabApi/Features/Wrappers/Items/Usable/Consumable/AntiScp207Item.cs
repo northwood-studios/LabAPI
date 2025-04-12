@@ -26,8 +26,10 @@ public class AntiScp207Item : ConsumableItem
     internal AntiScp207Item(AntiScp207 antiScp207)
         : base(antiScp207)
     {
-        Dictionary.Add(antiScp207, this);
         Base = antiScp207;
+
+        if (CanCache)
+            Dictionary.Add(antiScp207, this);
     }
 
     /// <summary>

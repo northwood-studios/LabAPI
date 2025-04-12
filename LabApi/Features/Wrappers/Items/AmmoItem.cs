@@ -28,8 +28,10 @@ public class AmmoItem : Item
     internal AmmoItem(BaseAmmoItem baseAmmoItem)
         : base(baseAmmoItem)
     {
-        Dictionary.Add(baseAmmoItem, this);
         Base = baseAmmoItem;
+
+        if (CanCache)
+            Dictionary.Add(baseAmmoItem, this);
     }
 
     /// <summary>

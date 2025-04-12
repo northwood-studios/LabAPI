@@ -26,8 +26,10 @@ public class ConsumableItem : UsableItem
     internal ConsumableItem(Consumable consumable)
         : base(consumable)
     {
-        Dictionary.Add(consumable, this);
         Base = consumable;
+
+        if (CanCache)
+            Dictionary.Add(consumable, this);
     }
 
     /// <summary>

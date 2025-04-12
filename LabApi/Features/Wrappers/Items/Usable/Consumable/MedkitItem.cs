@@ -26,8 +26,10 @@ public class MedkitItem : ConsumableItem
     internal MedkitItem(Medkit medkit)
         : base(medkit)
     {
-        Dictionary.Add(medkit, this);
         Base = medkit;
+
+        if (CanCache)
+            Dictionary.Add(medkit, this);
     }
 
     /// <summary>

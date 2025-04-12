@@ -5,13 +5,12 @@ using InventorySystem.Items.Armor;
 using InventorySystem.Items.Coin;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Usables;
-using LabApi.Features.Wrappers.Items.Usable;
 using NorthwoodLib.Pools;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
 
@@ -22,6 +21,52 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Item
 {
+    /// <summary>
+    /// Initializes the <see cref="Item"/> class by subscribing to <see cref="ItemBase"/> events and registers derived wrappers.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        Dictionary.Clear();
+
+        ItemBase.OnItemAdded += AddItem;
+        ItemBase.OnItemRemoved += RemoveItem;
+
+        Register<ItemBase>(x => new Item(x));
+
+        Register<Consumable>(x => new ConsumableItem(x));
+        Register<Scp500>(x => new Scp500Item(x));
+        Register<InventorySystem.Items.Usables.Scp1853Item>(x => new Scp1853Item(x));
+        Register<Painkillers>(x => new PainkillersItem(x));
+        Register<Adrenaline>(x => new AdrenalineItem(x));
+        Register<Medkit>(x => new MedkitItem(x));
+        Register<Scp207>(x => new Scp207Item(x));
+        Register<AntiScp207>(x => new AntiScp207Item(x));
+
+        Register<InventorySystem.Items.Usables.UsableItem>(x => new UsableItem(x));
+        Register<InventorySystem.Items.Usables.Scp1576.Scp1576Item>(x => new Scp1576Item(x));
+        Register<InventorySystem.Items.Usables.Scp330.Scp330Bag>(x => new Scp330Item(x));
+        Register<InventorySystem.Items.Usables.Scp244.Scp244Item>(x => new Scp244Item(x));
+        Register<Scp268>(x => new Scp268Item(x));
+        Register<InventorySystem.Items.Usables.Scp1344.Scp1344Item>(x => new Scp1344Item(x));
+
+        Register<Firearm>(x => new FirearmItem(x));
+        Register<ParticleDisruptor>(x => new ParticleDisruptorItem(x));
+        Register<InventorySystem.Items.Jailbird.JailbirdItem>(x => new JailbirdItem(x));
+        Register<Coin>(x => new CoinItem(x));
+
+        Register<InventorySystem.Items.ToggleableLights.ToggleableLightItemBase>(x => new LightItem(x));
+        Register<InventorySystem.Items.ToggleableLights.Flashlight.FlashlightItem>(x => new FlashlightItem(x));
+        Register<InventorySystem.Items.ToggleableLights.Lantern.LanternItem>(x => new LanternItem(x));
+
+        Register<InventorySystem.Items.Radio.RadioItem>(x => new RadioItem(x));
+        Register<InventorySystem.Items.Firearms.Ammo.AmmoItem>(x => new AmmoItem(x));
+        Register<BodyArmor>(x => new BodyArmorItem(x));
+        Register<InventorySystem.Items.ThrowableProjectiles.ThrowableItem>(x => new ThrowableItem(x));
+        Register<InventorySystem.Items.Keycards.KeycardItem>(x => new KeycardItem(x));
+        Register<InventorySystem.Items.MicroHID.MicroHIDItem>(x => new MicroHIDItem(x));
+    }
+
     /// <summary>
     /// Contains all the handlers for constructing wrappers for the associated base game types.
     /// </summary>
@@ -46,6 +91,27 @@ public class Item
     /// The <see cref="Base"/> of the item.
     /// </summary>
     public ItemBase Base { get; }
+
+    /// <summary>
+    /// Gets the item's <see cref="UnityEngine.GameObject"/>.
+    /// </summary>
+    public GameObject GameObject => Base.gameObject;
+
+    /// <summary>
+    /// Gets whether the item was destroyed.
+    /// </summary>
+    /// <remarks>
+    /// Happens when an item is either dropped, removed or used up.
+    /// </remarks>
+    public bool IsDestroyed => Base == null || GameObject == null;
+
+    /// <summary>
+    /// Gets whether or not this instance is used as a prefab.
+    /// </summary>
+    /// <remarks>
+    /// Changes made to the prefab instance will be reflected across all subsequent new instances.
+    /// </remarks>
+    public bool IsPrefab { get; }
 
     /// <summary>
     /// Gets the item's <see cref="ItemType"/>.
@@ -90,9 +156,44 @@ public class Item
     }
 
     /// <summary>
+    /// Gets the item's reason for being added to the inventory.
+    /// </summary>
+    public ItemAddReason AddReason => Base.ServerAddReason;
+
+    /// <summary>
+    /// Gets whether the item is being held.
+    /// </summary>
+    public bool IsEquipped => Base.IsEquipped;
+
+    /// <summary>
+    /// Gets whether the item can be equipped.
+    /// </summary>
+    /// <remarks>
+    /// Only applies to player interactions, forcefully equipping an item is always possible.
+    /// </remarks>
+    public bool CanEquip => Base.AllowEquip;
+
+    /// <summary>
+    /// Gets whether the item can be holstered.
+    /// </summary>
+    /// <remarks>
+    /// An item is holstered when either changing to another item or deflecting the item.
+    /// Only applies to player interactions, forcefully holstering an item is always possible.
+    /// </remarks>
+    public bool CanHolster => Base.AllowHolster;
+
+    /// <summary>
+    /// Gets whether the item can be dropped.
+    /// </summary>
+    /// <remarks>
+    /// Only applies to player interactions, forcefully dropping an item is always possible.
+    /// </remarks>
+    public bool CanDrop => Base.AllowDropping;
+
+    /// <summary>
     /// Gets the item's current owner.
     /// </summary>
-    public Player? CurrentOwner => Base.Owner == null ? null : Player.Get(Base.Owner);
+    public Player? CurrentOwner => Player.Get(Base.Owner);
 
     /// <summary>
     /// Gets the item's serial.
@@ -105,13 +206,24 @@ public class Item
     public float Weight => Base.Weight;
 
     /// <summary>
+    /// Gets whether the item wrapper is allowed to be cached.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && !IsPrefab && Serial != 0;
+
+    /// <summary>
     /// A private constructor to prevent external instantiation.
     /// </summary>
     /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
     protected Item(ItemBase itemBase)
     {
-        Dictionary.Add(itemBase, this);
         Base = itemBase;
+        IsPrefab = InventoryItemLoader.TryGetItem(itemBase.ItemTypeId, out ItemBase prefab) && prefab == itemBase;
+
+        if (CanCache)
+        {
+            Dictionary.Add(itemBase, this);
+            SerialsCache[itemBase.ItemSerial] = this;
+        }
     }
 
     /// <summary>
@@ -125,52 +237,6 @@ public class Item
     /// Drops this item from player's inventory
     /// </summary>
     public void DropItem() => Base.ServerDropItem(true);
-
-    /// <summary>
-    /// Initializes the <see cref="Item"/> class to subscribe to <see cref="InventoryExtensions"/> events and handle the item caching.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        Dictionary.Clear();
-
-        InventoryExtensions.OnItemAdded += (_, item, _) => AddItem(item);
-        InventoryExtensions.OnItemRemoved += (_, item, _) => RemoveItem(item);
-
-        Register<ItemBase>(x => new Item(x));
-
-        Register<Consumable>(x => new ConsumableItem(x));
-        Register<Scp500>(x => new Scp500Item(x));
-        Register<InventorySystem.Items.Usables.Scp1853Item>(x => new Scp1853Item(x));
-        Register<Painkillers>(x => new PainkillersItem(x));
-        Register<Adrenaline>(x => new AdrenalineItem(x));
-        Register<Medkit>(x => new MedkitItem(x));
-        Register<Scp207>(x => new Scp207Item(x));
-        Register<AntiScp207>(x => new AntiScp207Item(x));
-
-        Register<InventorySystem.Items.Usables.UsableItem>(x => new UsableItem(x));
-        Register<InventorySystem.Items.Usables.Scp1576.Scp1576Item>(x => new Scp1576Item(x));
-        Register<InventorySystem.Items.Usables.Scp330.Scp330Bag>(x => new Scp330Item(x));
-        Register<InventorySystem.Items.Usables.Scp244.Scp244Item>(x => new Scp244Item(x));
-        Register<Scp268>(x => new Scp268Item(x));
-        Register<InventorySystem.Items.Usables.Scp1344.Scp1344Item>(x => new Scp1344Item(x));
-
-        Register<Firearm>(x => new FirearmItem(x));
-        Register<ParticleDisruptor>(x => new ParticleDisruptorItem(x));
-        Register<InventorySystem.Items.Jailbird.JailbirdItem>(x => new JailbirdItem(x));
-        Register<Coin>(x => new CoinItem(x));
-
-        Register<InventorySystem.Items.ToggleableLights.ToggleableLightItemBase>(x => new LightItem(x));
-        Register<InventorySystem.Items.ToggleableLights.Flashlight.FlashlightItem>(x => new FlashlightItem(x));
-        Register<InventorySystem.Items.ToggleableLights.Lantern.LanternItem>(x => new LanternItem(x));
-
-        Register<InventorySystem.Items.Radio.RadioItem>(x => new RadioItem(x));
-        Register<InventorySystem.Items.Firearms.Ammo.AmmoItem>(x => new AmmoItem(x));
-        Register<BodyArmor>(x => new BodyArmorItem(x));
-        Register<InventorySystem.Items.ThrowableProjectiles.ThrowableItem>(x => new ThrowableItem(x));
-        Register<InventorySystem.Items.Keycards.KeycardItem>(x => new KeycardItem(x));
-        Register<InventorySystem.Items.MicroHID.MicroHIDItem>(x => new MicroHIDItem(x));
-    }
 
     /// <summary>
     /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ItemBase"/> was not null.
@@ -265,8 +331,15 @@ public class Item
     /// <param name="item">The created <see cref="ItemBase"/> instance.</param>
     private static void AddItem(ItemBase item)
     {
-        if (!Dictionary.ContainsKey(item))
-            _ = CreateItemWrapper(item);
+        try
+        {
+            if (!Dictionary.ContainsKey(item))
+                _ = CreateItemWrapper(item);
+        }
+        catch(Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle item creation with error: {e}");
+        }
     }
 
     /// <summary>
@@ -275,11 +348,18 @@ public class Item
     /// <param name="itemBase">The to be destroyed <see cref="ItemBase"/> instance.</param>
     private static void RemoveItem(ItemBase itemBase)
     {
-        SerialsCache.Remove(itemBase.ItemSerial);
-        if (Dictionary.TryGetValue(itemBase, out Item item))
+        try
         {
-            Dictionary.Remove(itemBase);
-            item.OnRemove();
+            SerialsCache.Remove(itemBase.ItemSerial);
+            if (Dictionary.TryGetValue(itemBase, out Item item))
+            {
+                Dictionary.Remove(itemBase);
+                item.OnRemove();
+            }
+        }
+        catch(Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle item destruction with error: {e}");
         }
     }
 

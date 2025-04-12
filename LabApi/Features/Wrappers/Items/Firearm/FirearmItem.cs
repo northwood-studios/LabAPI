@@ -26,8 +26,10 @@ public class FirearmItem : Item
     internal FirearmItem(Firearm firearm)
         : base(firearm)
     {
-        Dictionary.Add(firearm, this);
         Base = firearm;
+
+        if (CanCache)
+            Dictionary.Add(firearm, this);
     }
 
     /// <summary>

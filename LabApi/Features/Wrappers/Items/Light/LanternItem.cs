@@ -26,8 +26,10 @@ public class LanternItem : LightItem
     internal LanternItem(BaseLanternItem baseLanternItem)
         : base(baseLanternItem)
     {
-        Dictionary.Add(baseLanternItem, this);
         Base = baseLanternItem;
+
+        if (CanCache)
+            Dictionary.Add(baseLanternItem, this);
     }
 
     /// <summary>

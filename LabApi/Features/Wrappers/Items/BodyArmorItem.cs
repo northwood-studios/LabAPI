@@ -26,8 +26,10 @@ public class BodyArmorItem : Item
     internal BodyArmorItem(BodyArmor bodyArmor)
         : base(bodyArmor)
     {
-        Dictionary.Add(bodyArmor, this);
         Base = bodyArmor;
+
+        if (CanCache)
+            Dictionary.Add(bodyArmor, this);
     }
 
     /// <summary>
@@ -43,6 +45,35 @@ public class BodyArmorItem : Item
     /// The base <see cref="BodyArmor"/> object.
     /// </summary>
     public new BodyArmor Base { get; }
+
+    /// <summary>
+    /// Gets or sets whether excess items are removed when armor is dropped.
+    /// </summary>
+    public bool RemoveExcessOnDrop
+    {
+        get => !Base.DontRemoveExcessOnDrop;
+        set => Base.DontRemoveExcessOnDrop = !value;
+    }
+
+    /// <summary>
+    /// Gets whether the movement speed multiplier is being applied to the wearer.
+    /// </summary>
+    public bool IsMovementModifierActive => Base.MovementModifierActive;
+
+    /// <summary>
+    /// Gets the movement speed multiplier after being processed by <see cref="CivilianDownsideMultiplier"/>. 
+    /// </summary>
+    public float ActualMovementSpeedMultiplier => Base.MovementSpeedMultiplier;
+
+    /// <summary>
+    /// Gets whether the stamina usage multiplier is being applied to the wearer.
+    /// </summary>
+    public bool IsStaminaModifierActive => Base.StaminaModifierActive;
+
+    /// <summary>
+    /// Gets the stamina usage multiplier after being processed by <see cref="CivilianDownsideMultiplier"/>.
+    /// </summary>
+    public float ActualStaminaUsageMultiplier => Base.StaminaUsageMultiplier;
 
     /// <summary>
     /// Gets the body armor item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BodyArmor"/> was not null.
