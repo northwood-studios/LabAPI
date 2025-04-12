@@ -323,7 +323,12 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerSearchingPickupEventArgs>? SearchingPickup;
 
     /// <summary>
-    /// Gets called when the player has searched a pickup.
+    /// Gets called when the player has interacted with an invisible interactable toy.
+    /// </summary>
+    public static event LabEventHandler<PlayerInteractedToyEventArgs>? InteractedToy;
+
+    /// <summary>
+    /// Gets called when the player has joined.
     /// </summary>
     public static event LabEventHandler<PlayerSearchedPickupEventArgs>? SearchedPickup;
 
@@ -551,7 +556,22 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerFlippedCoinEventArgs>? FlippedCoin;
 
     /// <summary>
-    /// Gets called when a player is close enough to a Tesla-Gate for it to idle.
+    /// Gets called when the player is searching an interactable toy.
+    /// </summary>
+    public static event LabEventHandler<PlayerSearchingToyEventArgs>? SearchingToy;
+
+    /// <summary>
+    /// Gets called when the player has searched an interactable toy.
+    /// </summary>
+    public static event LabEventHandler<PlayerSearchedToyEventArgs>? SearchedToy;
+
+    /// <summary>
+    /// Gets called when the player aborts their interactable toy search.
+    /// </summary>
+    public static event LabEventHandler<PlayerSearchToyAbortedEventArgs>? SearchToyAborted;
+
+    /// <summary>
+    /// Gets called when the player is sending a voice message.
     /// </summary>
     public static event LabEventHandler<PlayerIdlingTeslaEventArgs>? IdlingTesla;
 

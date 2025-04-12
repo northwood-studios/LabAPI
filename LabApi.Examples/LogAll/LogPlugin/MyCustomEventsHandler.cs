@@ -332,6 +332,11 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerInteractedShootingTarget)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnPlayerInteractedToy(PlayerInteractedToyEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerInteractedToy)} triggered by {ev.Player.UserId}");
+    }
+
     public override void OnPlayerJoined(PlayerJoinedEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerJoined)} triggered by {ev.Player.UserId}");
@@ -535,6 +540,21 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnPlayerSearchedPickup(PlayerSearchedPickupEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerSearchedPickup)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerSearchingToy(PlayerSearchingToyEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSearchingToy)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerSearchedToy(PlayerSearchedToyEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSearchedToy)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerSearchToyAborted(PlayerSearchToyAbortedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSearchToyAborted)} triggered by {ev.Player.UserId}");
     }
 
     //public override void OnPlayerSendingVoiceMessage(PlayerSendingVoiceMessageEventArgs ev)
