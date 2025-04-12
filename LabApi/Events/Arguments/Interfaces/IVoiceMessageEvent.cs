@@ -10,5 +10,5 @@ public interface IVoiceMessageEvent
     /// <summary>
     /// The voice message that is involved in the event.
     /// </summary>
-    public VoiceMessage Message { get; }
+    public ref VoiceMessage Message { get; }
 }
