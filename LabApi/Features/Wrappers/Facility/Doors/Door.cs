@@ -193,9 +193,9 @@ public class Door
     public void Lock(DoorLockReason reason, bool enabled) => Base.ServerChangeLock(reason, enabled);
 
     /// <summary>
-    /// Gets or sets the required <see cref="KeycardPermissions"/>.
+    /// Gets or sets the required <see cref="DoorPermissionFlags"/>.
     /// </summary>
-    public KeycardPermissions Permissions
+    public DoorPermissionFlags Permissions
     {
         get => Base.RequiredPermissions.RequiredPermissions;
         set => Base.RequiredPermissions.RequiredPermissions = value;

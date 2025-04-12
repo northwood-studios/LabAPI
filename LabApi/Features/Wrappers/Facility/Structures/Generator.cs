@@ -98,7 +98,7 @@ public class Generator : Structure
     /// <summary>
     /// Gets or sets the required keycard permissions to unlock the generator.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Base.RequiredPermissions;
         set => Base.RequiredPermissions = value;

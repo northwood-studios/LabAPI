@@ -64,9 +64,9 @@ public class PedestalLocker : Locker
     public bool CanInteract => Chamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the <see cref="Player"/> to open/close the pedestal.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the <see cref="Player"/> to open/close the pedestal.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Chamber.RequiredPermissions;
         set => Chamber.RequiredPermissions = value;
@@ -131,5 +131,6 @@ public class PedestalLocker : Locker
     /// <summary>
     /// Plays the Access Denied sound for the pedestal.
     /// </summary>
-    public void PlayDeniedSound() => Chamber.PlayDeniedSound();
+    /// <param name="permissionUsed">The permissions used to attempt opening the door. Used to animate the door panel.</param>
+    public void PlayDeniedSound(DoorPermissionFlags permissionUsed) => Chamber.PlayDeniedSound(permissionUsed);
 }

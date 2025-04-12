@@ -1,6 +1,7 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using BaseExperimentalWeaponLocler = MapGeneration.Distributors.ExperimentalWeaponLocker;
 
 namespace LabApi.Features.Wrappers;
@@ -65,9 +66,9 @@ public class ExperimentalWeaponLocker : Locker
     public bool CanInteract => Chamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the <see cref="Player"/> to open/close the experimental weapon locker.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the <see cref="Player"/> to open/close the experimental weapon locker.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Chamber.RequiredPermissions;
         set => Chamber.RequiredPermissions = value;
@@ -132,5 +133,6 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// Plays the Access Denied sound for the experimental weapon locker.
     /// </summary>
-    public void PlayDeniedSound() => Chamber.PlayDeniedSound();
+    /// <param name="permissionUsed">The permissions used to attempt opening the door. Used to animate the door panel.</param>
+    public void PlayDeniedSound(DoorPermissionFlags permissionUsed) => Chamber.PlayDeniedSound(permissionUsed);
 }

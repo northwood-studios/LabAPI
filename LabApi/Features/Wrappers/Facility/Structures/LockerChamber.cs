@@ -82,9 +82,9 @@ public class LockerChamber
     public bool IsEmpty => Base.Content.All(x => x == null);
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the <see cref="Player"/> to open/close the chamber.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the <see cref="Player"/> to open/close the chamber.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Base.RequiredPermissions;
         set => Base.RequiredPermissions = value;
@@ -221,7 +221,8 @@ public class LockerChamber
     /// <summary>
     /// Plays the Access Denied sound for this chamber.
     /// </summary>
-    public void PlayDeniedSound() => Locker.Base.RpcPlayDenied(Id);
+    /// <param name="permissionUsed">The permissions used to attempt opening the door. Used to animate the door panel.</param>
+    public void PlayDeniedSound(DoorPermissionFlags permissionUsed) => Locker.Base.RpcPlayDenied(Id, permissionUsed);
 
     /// <summary>
     /// Gets the locker chamber wrapper from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseLockerChamber"/> was not null.
