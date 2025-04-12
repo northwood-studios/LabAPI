@@ -25,12 +25,12 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="baseExperimentalWeaponLocler">The base <see cref="baseExperimentalWeaponLocler"/> object.</param>
-    internal ExperimentalWeaponLocker(BaseExperimentalWeaponLocker baseExperimentalWeaponLocler)
-        : base(baseExperimentalWeaponLocler)
+    /// <param name="baseExperimentalWeaponLocker">The base <see cref="BaseExperimentalWeaponLocker"/> object.</param>
+    internal ExperimentalWeaponLocker(BaseExperimentalWeaponLocker baseExperimentalWeaponLocker)
+        : base(baseExperimentalWeaponLocker)
     {
-        Base = baseExperimentalWeaponLocler;
-        Dictionary.Add(baseExperimentalWeaponLocler, this);
+        Base = baseExperimentalWeaponLocker;
+        Dictionary.Add(baseExperimentalWeaponLocker, this);
     }
 
     /// <summary>

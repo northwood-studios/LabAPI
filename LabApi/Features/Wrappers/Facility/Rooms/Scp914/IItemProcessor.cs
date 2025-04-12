@@ -16,7 +16,7 @@ public interface IItemProcessor
     /// <param name="item">The <see cref="Item"/> to upgraded.</param>
     /// <returns>The upgraded <see cref="Item"/> or null if it was destroyed.</returns>
     /// <remarks>
-    /// Use <see cref="Player.RemoveItem(Item)"/> to remove items and <see cref="Player.AddItem(ItemType)"/> to add items.
+    /// Use <see cref="Player.RemoveItem(Item)"/> to remove items and <see cref="Player.AddItem(ItemType, InventorySystem.Items.ItemAddReason)"/> to add items.
     /// If adding extra Items over the limit of the inventory consider dropping them as pickups at the output.
     /// </remarks>
     public Item? UpgradeItem(Scp914KnobSetting setting, Player player, Item item);
@@ -29,7 +29,7 @@ public interface IItemProcessor
     /// <param name="newPosition">The position to teleport the upgraded pickups to.</param>
     /// <returns>The upgraded <see cref="Pickup"/> or null if it was destroyed.</returns>
     /// <remarks>
-    /// Use <see cref="Pickup.Destroy()"/> to remove pickups and <see cref="Pickup.Create()"/> to add new ones.
+    /// Use <see cref="Pickup.Destroy()"/> to remove pickups and <see cref="Pickup.Create(ItemType, Vector3)"/> to add pickups.
     /// You can create more than one pickup during a single upgrade similar to items.
     /// </remarks>
     public Pickup? UpgradePickup(Scp914KnobSetting setting, Pickup pickup, Vector3 newPosition);

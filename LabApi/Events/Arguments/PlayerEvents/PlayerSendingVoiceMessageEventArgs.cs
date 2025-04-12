@@ -7,7 +7,7 @@ using VoiceChat.Networking;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="PlayerEvents.SendingVoiceMessage"/> event.
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.SendingVoiceMessage"/> event.
 /// </summary>
 public class PlayerSendingVoiceMessageEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, IVoiceMessageEvent
 {

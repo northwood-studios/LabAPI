@@ -23,7 +23,7 @@ public class LightItem : Item
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="toggleableLightItemBase">The base <see cref="toggleableLightItemBase"/> object.</param>
+    /// <param name="toggleableLightItemBase">The base <see cref="ToggleableLightItemBase"/> object.</param>
     internal LightItem(ToggleableLightItemBase toggleableLightItemBase)
         : base(toggleableLightItemBase)
     {

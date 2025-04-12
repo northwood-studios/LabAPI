@@ -13,8 +13,6 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// </summary>
 public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
 {
-    private readonly Dictionary<ReferenceHub, RoleTypeId> _roles;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="WaveRespawningEventArgs"/> class.
     /// </summary>
