@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items;
+﻿using InventorySystem.Items.Armor;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
@@ -8,17 +8,17 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.PickedUpArmor"/> event.
 /// </summary>
-public class PlayerPickedUpArmorEventArgs : EventArgs, IPlayerEvent, IItemEvent
+public class PlayerPickedUpArmorEventArgs : EventArgs, IPlayerEvent, IBodyArmorItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickedUpArmorEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who picked up armor.</param>
-    /// <param name="item">The armor that was picked up.</param>
-    public PlayerPickedUpArmorEventArgs(ReferenceHub player, ItemBase? item)
+    /// <param name="armor">The armor that was picked up.</param>
+    public PlayerPickedUpArmorEventArgs(ReferenceHub player, BodyArmor? armor)
     {
         Player = Player.Get(player);
-        Item = Item.Get(item);
+        BodyArmorItem = BodyArmorItem.Get(armor);
     }
 
     /// <summary>
@@ -29,5 +29,9 @@ public class PlayerPickedUpArmorEventArgs : EventArgs, IPlayerEvent, IItemEvent
     /// <summary>
     /// Gets the armor that was picked up.
     /// </summary>
-    public Item? Item { get; }
+    public BodyArmorItem? BodyArmorItem { get; }
+
+    /// <inheritdoc cref="BodyArmorItem"/>
+    [Obsolete($"Use {nameof(BodyArmorItem)} instead")]
+    public Item? Item => BodyArmorItem;
 }

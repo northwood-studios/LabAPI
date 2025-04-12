@@ -1,12 +1,13 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp173Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp173Events.RemovingObserver"/> event.
 /// </summary>
-public class Scp173RemovingObserverEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, ITargetEvent
+public class Scp173RemovingObserverEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp173RemovingObserverEventArgs"/> class.

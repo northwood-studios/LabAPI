@@ -1,6 +1,5 @@
 ﻿using Generators;
 using InventorySystem.Items.MicroHID;
-using LabApi.Features.Wrappers.Facility.Structures;
 using MapGeneration.Distributors;
 using Mirror;
 using System;
@@ -38,7 +37,7 @@ public class Structure
         });
         Register<PedestalScpLocker>(x => new PedestalLocker(x));
         Register<MapGeneration.Distributors.ExperimentalWeaponLocker>(x => new ExperimentalWeaponLocker(x));
-        Register<MicroHIDPedestal>(x => new MicroPadestal(x));
+        Register<MicroHIDPedestal>(x => new MicroPedestal(x));
     }
 
     /// <summary>

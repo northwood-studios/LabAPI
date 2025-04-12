@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items;
+﻿using InventorySystem.Items.Firearms;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
@@ -8,17 +8,17 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReloadedWeapon"/> event.
 /// </summary>
-public class PlayerReloadedWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent
+public class PlayerReloadedWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReloadedWeaponEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who reloaded the weapon.</param>
     /// <param name="weapon">The weapon that was reloaded.</param>
-    public PlayerReloadedWeaponEventArgs(ReferenceHub player, ItemBase weapon)
+    public PlayerReloadedWeaponEventArgs(ReferenceHub player, Firearm weapon)
     {
         Player = Player.Get(player);
-        Weapon = Item.Get(weapon);
+        FirearmItem = FirearmItem.Get(weapon);
     }
 
     /// <summary>
@@ -29,5 +29,9 @@ public class PlayerReloadedWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEve
     /// <summary>
     /// Gets the weapon that was reloaded.
     /// </summary>
-    public Item Weapon { get; }
+    public FirearmItem FirearmItem { get; }
+
+    /// <inheritdoc cref="FirearmItem"/>
+    [Obsolete($"Use {nameof(FirearmItem)} instead")]
+    public Item Weapon => FirearmItem;
 }

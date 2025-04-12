@@ -19,7 +19,7 @@ public class ProjectileExplodedEventArgs : EventArgs, IPlayerEvent, ITimedGrenad
     /// <param name="position">The position of explosion.</param>
     public ProjectileExplodedEventArgs(TimeGrenade projectile, ReferenceHub player, Vector3 position)
     {
-        Projectile = TimedGrenadeProjectile.Get(projectile);
+        TimedGrenade = TimedGrenadeProjectile.Get(projectile);
         Player = Player.Get(player);
         Position = position;
     }
@@ -27,7 +27,7 @@ public class ProjectileExplodedEventArgs : EventArgs, IPlayerEvent, ITimedGrenad
     /// <summary>
     /// Gets projectile which caused this explosion.
     /// </summary>
-    public TimedGrenadeProjectile Projectile { get; }
+    public TimedGrenadeProjectile TimedGrenade { get; }
 
     /// <summary>
     /// Gets who threw this grenade.
@@ -39,4 +39,7 @@ public class ProjectileExplodedEventArgs : EventArgs, IPlayerEvent, ITimedGrenad
     /// </summary>
     public Vector3 Position { get; }
 
+    /// <inheritdoc cref="TimedGrenade"/>
+    [Obsolete($"Use {nameof(TimedGrenade)} instead")]
+    public TimedGrenadeProjectile Projectile => TimedGrenade;
 }

@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
 using PlayerRoles;
 using System;
 
@@ -7,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ChangedRole"/> event.
 /// </summary>
-public class PlayerChangedRoleEventArgs : EventArgs
+public class PlayerChangedRoleEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangedRoleEventArgs"/> class.

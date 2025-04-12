@@ -172,12 +172,18 @@ public class Generator : Structure
     public void ServerInteract(Player player, GeneratorColliderId collider) => Base.ServerInteract(player.ReferenceHub, (byte)collider);
 
     /// <summary>
-    /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="Scp079Generator"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="scp079Generator">The <see cref="Scp079Generator"/> of the generator.</param>
-    /// <returns>The requested generator.</returns>
-    public static Generator Get(Scp079Generator scp079Generator) =>
-        Dictionary.TryGetValue(scp079Generator, out Generator generator) ? generator : new Generator(scp079Generator);
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(scp079Generator))]
+    public static Generator? Get(Scp079Generator? scp079Generator)
+    {
+        if (scp079Generator == null)
+            return null;
+
+        return Dictionary.TryGetValue(scp079Generator, out Generator generator) ? generator : (Generator)CreateStructureWrapper(scp079Generator);
+    }
 
     /// <summary>
     /// Gets the generator wrapper from the <see cref="GeneratorsByRoom"/> or returns <see langword="null"/> if specified room does not have any.

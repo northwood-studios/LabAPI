@@ -74,7 +74,8 @@ public class TimedGrenadeProjectile : Projectile
     {
         Base = projectilePickup;
 
-        Dictionary.Add(projectilePickup, this);
+        if (CanCache)
+            Dictionary.Add(projectilePickup, this);
     }
 
     /// <summary>

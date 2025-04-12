@@ -1,12 +1,13 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.WarheadEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.WarheadEvents.Stopping"/> event.
 /// </summary>
-public class WarheadStoppingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class WarheadStoppingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WarheadStoppingEventArgs"/> class.

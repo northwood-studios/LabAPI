@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Cuffed"/> event.
 /// </summary>
-public class PlayerCuffedEventArgs : EventArgs, IPlayerEvent
+public class PlayerCuffedEventArgs : EventArgs, IPlayerEvent, ITargetEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerCuffedEventArgs"/> class.

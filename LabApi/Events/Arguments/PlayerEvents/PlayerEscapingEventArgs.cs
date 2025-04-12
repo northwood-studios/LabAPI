@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Escaping"/> event.
 /// </summary>
-public class PlayerEscapingEventArgs : EventArgs, ICancellableEvent
+public class PlayerEscapingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEscapingEventArgs"/> class.

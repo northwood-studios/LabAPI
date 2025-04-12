@@ -1154,8 +1154,8 @@ public class Player
     /// <param name="item">The type of ammo.</param>
     /// <param name="amount">The amount to drop.</param>
     /// <param name="checkMinimals">Will prevent dropping small amounts of ammo.</param>
-    /// <returns>The list of dropped ammo.</returns>
-    public List<AmmoPickup> DropAmmo(ItemType item, ushort amount, bool checkMinimals = true) => Inventory.ServerDropAmmo(item, amount, checkMinimals);
+    /// <returns>The dropped ammo.</returns>
+    public IEnumerable<AmmoPickup> DropAmmo(ItemType item, ushort amount, bool checkMinimals = true) => Inventory.ServerDropAmmo(item, amount, checkMinimals).Select(x => AmmoPickup.Get(x));
 
     /// <summary>
     /// Drops all ammo from the player's inventory.

@@ -15,7 +15,7 @@ public class PlayerEffectUpdatedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player whose effect has been updated.</param>
     /// <param name="effect">The effect that is being updated.</param>
-    /// <param name="intensity">Intesity of the effect.</param>
+    /// <param name="intensity">Intensity of the effect.</param>
     /// <param name="duration">Duration of the effect in seconds.</param>
     public PlayerEffectUpdatedEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
     {
@@ -36,7 +36,7 @@ public class PlayerEffectUpdatedEventArgs : EventArgs, IPlayerEvent
     public StatusEffectBase Effect { get; }
 
     /// <summary>
-    /// Gets the new intesity of the effect.
+    /// Gets the new intensity of the effect.
     /// </summary>
     public byte Intensity { get; }
 

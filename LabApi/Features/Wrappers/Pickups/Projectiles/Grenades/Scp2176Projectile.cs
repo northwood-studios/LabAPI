@@ -27,7 +27,8 @@ public class Scp2176Projectile : TimedGrenadeProjectile
     {
         Base = projectilePickup;
 
-        Dictionary.Add(projectilePickup, this);
+        if (CanCache)
+            Dictionary.Add(projectilePickup, this);
     }
 
     /// <summary>

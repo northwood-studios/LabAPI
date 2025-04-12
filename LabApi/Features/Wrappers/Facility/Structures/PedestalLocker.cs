@@ -1,7 +1,10 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using InventorySystem.Items.MicroHID;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+
 namespace LabApi.Features.Wrappers;
 
 /// <summary>
@@ -132,4 +135,18 @@ public class PedestalLocker : Locker
     /// Plays the Access Denied sound for the pedestal.
     /// </summary>
     public void PlayDeniedSound() => Chamber.PlayDeniedSound();
+
+    /// <summary>
+    /// Gets the pedestal wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="PedestalScpLocker"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="basePedestal">The <see cref="Base"/> of the pedestal locker.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(basePedestal))]
+    public static PedestalLocker? Get(PedestalScpLocker? basePedestal)
+    {
+        if (basePedestal == null)
+            return null;
+
+        return Dictionary.TryGetValue(basePedestal, out PedestalLocker found) ? found : (PedestalLocker)CreateStructureWrapper(basePedestal);
+    }
 }
