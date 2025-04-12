@@ -430,7 +430,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IEnumerable<Item> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
+    public IEnumerable<Item?> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
 
     /// <summary>
     /// Gets the player's Reserve Ammo.
@@ -1224,7 +1224,7 @@ public class Player
     /// <param name="efficacy">Value between 0 and 1. Defines what % of damage will be absorbed.</param>
     /// <param name="sustain">Pauses decay for specified amount of seconds.</param>
     /// <param name="persistant">If true, it won't be automatically removed when reaches 0.</param>
-    /// <returns>Returns process in case it needs to be removed. Use <see cref="ServerKillProcess(AhpProcess)"/> to kill it.</returns>
+    /// <returns>Process in case it needs to be removed. Use <see cref="ServerKillProcess(AhpProcess)"/> to kill it.</returns>
     public AhpProcess CreateAhpProcess(float amount, float limit, float decay, float efficacy, float sustain, bool persistant) => ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
 
     /// <summary>
@@ -1341,7 +1341,7 @@ public class Player
     /// <returns>Whether the <see cref="StatusEffectBase"/> was successfully found.</returns>
     public bool TryGetEffect(string effectName, [NotNullWhen(true)] out StatusEffectBase? effect)
         => ReferenceHub.playerEffectsController.TryGetEffect(effectName, out effect) && effect != null;
-    
+
     /// <summary>
     /// Gets a specific <see cref="StatusEffectBase">status effect</see>.
     /// </summary>
@@ -1468,7 +1468,7 @@ public class Player
     {
         if (referenceHub.authManager.UserId != null)
             UserIdCache.Remove(referenceHub.authManager.UserId);
-        
+
         if (TryGet(referenceHub.gameObject, out Player? player))
             CustomDataStoreManager.RemovePlayer(player);
 

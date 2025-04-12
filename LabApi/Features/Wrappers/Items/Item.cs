@@ -5,6 +5,8 @@ using InventorySystem.Items.Armor;
 using InventorySystem.Items.Coin;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Usables;
+using LabApi.Features.Console;
+using LabApi.Features.Wrappers.Items.Usable;
 using NorthwoodLib.Pools;
 using System;
 using System.Collections.Generic;
@@ -124,7 +126,6 @@ public class Item
     /// Category is not saved and is discarded when the item is dropped.
     /// </para>
     /// </summary>
-    // TODO: Maybe do something with it? Not sure if anyone is gonna use these 3 properties anyways but you never know.
     public ItemCategory Category
     {
         get => Base.Category;
@@ -322,7 +323,16 @@ public class Item
     /// <returns>The newly created wrapper.</returns>
     protected static Item CreateItemWrapper(ItemBase item)
     {
-        return typeWrappers[item.GetType()].Invoke(item);
+        Type targetType = item.GetType();
+        if (!typeWrappers.TryGetValue(targetType, out Func<ItemBase, Item> ctorFunc))
+        {
+#if DEBUG
+            Logger.Warn($"Unable to find LabApi wrapper for {nameof(Item)} {targetType.Name}, backup up to base constructor!");
+#endif
+            return new Item(item);
+        }
+
+        return ctorFunc.Invoke(item);
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Generators;
+using Hazards;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using LabApi.Features.Enums;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
+using Logger = LabApi.Features.Console.Logger;
 
 namespace LabApi.Features.Wrappers;
 
@@ -104,7 +106,7 @@ public class Door
             if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorName doorName))
                 DoorName = doorName;
             else
-                throw new NotImplementedException($"Missing DoorName enum value for door name tag {nametag.GetName}");
+                Logger.Warn($"Missing DoorName enum value for door name tag {nametag.GetName}");
         }
     }
 
@@ -294,13 +296,16 @@ public class Door
     /// </summary>
     /// <param name="doorVariant">The base object to create the wrapper from.</param>
     /// <returns>The newly created wrapper.</returns>
-    /// <exception cref="InvalidOperationException">Happens if the base game object type is missing an equivalent wrapper type.</exception>
     protected static Door CreateDoorWrapper(DoorVariant doorVariant)
     {
-        if (!typeWrappers.TryGetValue(doorVariant.GetType(), out Func<DoorVariant, Door> handler))
-            throw new InvalidOperationException($"Failed to create door wrapper. Missing constructor handler for type {doorVariant.GetType()}");
+        Type targetType = doorVariant.GetType();
+        if (!typeWrappers.TryGetValue(targetType, out Func<DoorVariant, Door> ctorFunc))
+        {
+            Logger.Warn($"Unable to find {nameof(Door)} wrapper for {targetType.Name}, backup up to base constructor!");
+            return new Door(doorVariant);
+        }
 
-        return handler.Invoke(doorVariant);
+        return ctorFunc.Invoke(doorVariant);
     }
 
     /// <summary>

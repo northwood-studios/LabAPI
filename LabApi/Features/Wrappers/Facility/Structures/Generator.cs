@@ -3,6 +3,8 @@ using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using static MapGeneration.Distributors.Scp079Generator;
+using Generators;
+using MapGeneration;
 
 namespace LabApi.Features.Wrappers;
 
@@ -36,37 +38,62 @@ public class Generator : Structure
         Dictionary.Add(generator, this);
         Base = generator;
 
-        if (generator.ParentRoom == null)
-            return;
-
-        Room room = Room.Get(generator.ParentRoom);
-        if (!GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
-        {
-            list = new List<Generator>();
-            GeneratorsByRoom.Add(room, list);
-        }
-
-        list.Add(this);
+        TryRegisterByRoom();
     }
+
+    /// <summary>
+    /// Initializes the generators by room caching for map generation.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void InitializeCaching()
+    {
+        SeedSynchronizer.OnGenerationFinished += SeedSynchronizer_OnGenerationFinished;
+    }
+
+    private static void SeedSynchronizer_OnGenerationFinished()
+    {
+        foreach (Generator generator in List)
+            generator.TryRegisterByRoom();
+    }
+
     /// <summary>
     /// An internal method remove itself from the cache when the base object is destroyed.
     /// </summary>
     internal override void OnRemove()
     {
         base.OnRemove();
+
         if (Base.ParentRoom == null)
         {
             Dictionary.Remove(Base);
             return;
         }
 
-        Room room = Room.Get(Base.ParentRoom);
-        if (GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
+        Room? room = Room.Get(Base.ParentRoom);
+
+        if (room == null) // Room is null after round restart, try find it by iterating over the existing dictionary
+        {
+            Room? potentialRoom = null;
+            foreach (var kvp in GeneratorsByRoom)
+            {
+                if (kvp.Value.Contains(this))
+                {
+                    potentialRoom = kvp.Key;
+                    break;
+                }
+            }
+
+            room = potentialRoom;
+        }
+
+        if (room != null && GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
         {
             list.Remove(this);
 
             if (list.Count == 0)
+            {
                 GeneratorsByRoom.Remove(room);
+            }
         }
 
         Dictionary.Remove(Base);
@@ -170,6 +197,30 @@ public class Generator : Structure
     /// <param name="player">The player to trigger the interaction.</param>
     /// <param name="collider">The <see cref="GeneratorColliderId"/> triggered.</param>
     public void ServerInteract(Player player, GeneratorColliderId collider) => Base.ServerInteract(player.ReferenceHub, (byte)collider);
+
+    private void TryRegisterByRoom()
+    {
+        foreach (var kvp in GeneratorsByRoom)
+        {
+            if (kvp.Value.Contains(this))
+                return;
+        }
+
+        if (Base.ParentRoom == null)
+            return;
+        Room? room = Room.Get(Base.ParentRoom);
+
+        if (room == null)
+            return;
+
+        if (!GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
+        {
+            list = new List<Generator>();
+            GeneratorsByRoom.Add(room, list);
+        }
+
+        list.Add(this);
+    }
 
     /// <summary>
     /// Plays the denied sound cue on the client.

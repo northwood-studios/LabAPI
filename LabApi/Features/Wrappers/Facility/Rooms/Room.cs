@@ -19,7 +19,7 @@ public class Room
     internal static void Initialize()
     {
         RoomIdentifier.OnAdded += AddRoom;
-        RoomIdentifier.OnRemoved += (roomIdentifier) => Dictionary.Remove(roomIdentifier);
+        RoomIdentifier.OnRemoved += RemoveRoom;
     }
 
     /// <summary>
@@ -122,8 +122,16 @@ public class Room
     /// </summary>
     /// <param name="roomIdentifier">The identifier of the room.</param>
     /// <returns>The requested room.</returns>
-    public static Room Get(RoomIdentifier roomIdentifier) =>
-        Dictionary.TryGetValue(roomIdentifier, out Room room) ? room : new Room(roomIdentifier);
+    public static Room? Get(RoomIdentifier roomIdentifier)
+    {
+        if (roomIdentifier == null)
+            return null;
+
+        if (!Dictionary.TryGetValue(roomIdentifier, out Room room))
+            return null;
+
+        return room;
+    }
 
     /// <summary>
     /// Gets the room by its <see cref="RoomName"/>.

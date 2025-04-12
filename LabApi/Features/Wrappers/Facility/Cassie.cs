@@ -40,7 +40,6 @@ public static class Cassie
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="rawNumber">Raw numbers.</param>
-    /// <param name="speed">The speed of message.</param>
     /// <returns>Duration of the specific message in seconds.</returns>
     public static float CalculateDuration(string message, bool rawNumber = false, float speed = 1f) => singleton.CalculateDuration(message, rawNumber, speed);
 
@@ -52,7 +51,6 @@ public static class Cassie
     ///	<param name="isNoisy">Whether the background noises play.</param>
     ///	<param name="isSubtitles">Show subtitles.</param>
     ///	<param name="customSubtitles">Custom subtitles to appear instead of the actual message.</param>
-    //TODO: Perhaps add the custom subtitles functionality to RA & base game commands?
     public static void Message(string message, bool isHeld = false, bool isNoisy = true, bool isSubtitles = false, string customSubtitles = "") => RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles, customSubtitles);
 
     /// <summary>

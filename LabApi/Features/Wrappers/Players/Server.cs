@@ -374,13 +374,11 @@ public static class Server
     /// <summary>
     /// Restarts the server and reconnects all players.
     /// </summary>
-    // TODO: validate parameters after round wrapper has been implemented
     public static void Restart() => Round.Restart(false, true, ServerStatic.NextRoundAction.Restart);
 
     /// <summary>
     /// Restarts the server and reconnects all players to target server port.
     /// </summary>
-    // TODO: validate parameters after round wrapper has been implemented
     public static void Restart(ushort redirectPort)
     {
         NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.1f, redirectPort, true, false));

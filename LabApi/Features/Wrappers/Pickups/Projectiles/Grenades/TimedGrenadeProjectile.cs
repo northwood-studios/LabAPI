@@ -42,7 +42,7 @@ public class TimedGrenadeProjectile : Projectile
     /// <param name="type">Type of the grenade.</param>
     /// <param name="owner">The player owner of the grenade.</param>
     /// <param name="timeOverride">Time override until detonation.</param>
-    /// <returns></returns>
+    /// <returns>An active projectile.</returns>
     public static TimedGrenadeProjectile? SpawnActive(Vector3 pos, ItemType type, Player? owner = null, double timeOverride = -1d)
     {
         if (!InventoryItemLoader.TryGetItem(type, out InventorySystem.Items.ThrowableProjectiles.ThrowableItem throwable))

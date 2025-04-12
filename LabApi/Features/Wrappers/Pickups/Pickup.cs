@@ -83,9 +83,6 @@ public class Pickup
     /// </summary>
     public NetworkIdentity NetworkIdentity => Base.netIdentity;
 
-    /// <summary>
-    /// Gets the pickup's <see cref="InventorySystem.Items.Pickups.PickupStandardPhysics"/>.
-    /// </summary>
     /// <remarks>
     /// Will be null if the <see cref="PickupPhysicsModule"/> is not a <see cref="InventorySystem.Items.Pickups.PickupStandardPhysics"/> e.g. when SCP018 it is in its "Activated" state and uses an alternate physics module.
     /// Use <see cref="PhysicsModule"/> instead for those cases.
@@ -338,7 +335,7 @@ public class Pickup
     }
 
     /// <summary>
-    /// A private method to handle the creation of new hazards in the server.
+    /// A private method to handle the creation of new pickups in the server.
     /// </summary>
     /// <param name="pickup">The created <see cref="ItemPickupBase"/> instance.</param>
     private static void AddPickup(ItemPickupBase pickup)
@@ -357,7 +354,7 @@ public class Pickup
     }
 
     /// <summary>
-    /// A private method to handle the removal of hazards from the server.
+    /// A private method to handle the removal of pickups from the server.
     /// </summary>
     /// <param name="pickup">The to be destroyed <see cref="ItemPickupBase"/> instance.</param>
     private static void RemovePickup(ItemPickupBase pickup)
