@@ -3,6 +3,7 @@ using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Security;
 using BaseExperimentalWeaponLocker = MapGeneration.Distributors.ExperimentalWeaponLocker;
 
 namespace LabApi.Features.Wrappers;
@@ -13,7 +14,7 @@ namespace LabApi.Features.Wrappers;
 public class ExperimentalWeaponLocker : Locker
 {
     /// <summary>
-    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocker"/>.
+    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocler"/>.
     /// </summary>
     public new static Dictionary<BaseExperimentalWeaponLocker, ExperimentalWeaponLocker> Dictionary { get; } = [];
 
@@ -67,9 +68,9 @@ public class ExperimentalWeaponLocker : Locker
     public bool CanInteract => Chamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the <see cref="Player"/> to open/close the experimental weapon locker.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the <see cref="Player"/> to open/close the experimental weapon locker.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Chamber.RequiredPermissions;
         set => Chamber.RequiredPermissions = value;
@@ -134,7 +135,8 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// Plays the Access Denied sound for the experimental weapon locker.
     /// </summary>
-    public void PlayDeniedSound() => Chamber.PlayDeniedSound();
+    /// <param name="permissionUsed">The permissions used to attempt opening the door. Used to animate the door panel.</param>
+    public void PlayDeniedSound(DoorPermissionFlags permissionUsed) => Chamber.PlayDeniedSound(permissionUsed);
 
     /// <summary>
     /// Gets the experimental weapon locker wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="BaseExperimentalWeaponLocker"/> was not <see langword="null"/>.

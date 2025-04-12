@@ -71,6 +71,7 @@ public class Door
         { "NUKE_ARMORY", DoorName.HczNukeArmory },
         { "106_PRIMARY", DoorName.Hcz106Primiary },
         { "106_SECONDARY", DoorName.Hcz106Secondary },
+        { "HCZ_127_LAB", DoorName.Hcz127Lab },
         { "CHECKPOINT_EZ_HCZ_A", DoorName.HczCheckpoint },
         { "INTERCOM", DoorName.EzIntercom },
         { "GATE_A", DoorName.EzGateA },
@@ -194,9 +195,9 @@ public class Door
     public void Lock(DoorLockReason reason, bool enabled) => Base.ServerChangeLock(reason, enabled);
 
     /// <summary>
-    /// Gets or sets the required <see cref="KeycardPermissions"/>.
+    /// Gets or sets the required <see cref="DoorPermissionFlags"/>.
     /// </summary>
-    public KeycardPermissions Permissions
+    public DoorPermissionFlags Permissions
     {
         get => Base.RequiredPermissions.RequiredPermissions;
         set => Base.RequiredPermissions.RequiredPermissions = value;
