@@ -13,10 +13,10 @@ public class PlayerChangedRoleEventArgs : EventArgs
     /// Initializes a new instance of the <see cref="PlayerChangedRoleEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player whose role changed.</param>
-    /// <param name="oldRole">The old role object of the player.</param>
-    /// <param name="newRole">The new role type.</param>
+    /// <param name="oldRole">The old role type.</param>
+    /// <param name="newRole">The new role object of the player.</param>
     /// <param name="changeReason">The reason of role changed.</param>
-    public PlayerChangedRoleEventArgs(ReferenceHub player, PlayerRoleBase oldRole, RoleTypeId newRole, RoleChangeReason changeReason)
+    public PlayerChangedRoleEventArgs(ReferenceHub player, RoleTypeId oldRole, PlayerRoleBase newRole, RoleChangeReason changeReason)
     {
         Player = Player.Get(player);
         OldRole = oldRole;
@@ -30,14 +30,14 @@ public class PlayerChangedRoleEventArgs : EventArgs
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the old role object of the player.
+    /// Gets the old role type.
     /// </summary>
-    public PlayerRoleBase OldRole { get; }
+    public RoleTypeId OldRole { get; }
 
     /// <summary>
-    /// Gets the new role type.
+    /// Gets the new role object of the player.
     /// </summary>
-    public RoleTypeId NewRole { get; }
+    public PlayerRoleBase NewRole { get; }
 
     /// <summary>
     /// Gets the reason of role changed.
