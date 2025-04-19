@@ -39,9 +39,6 @@ public abstract class CustomDataStore
     {
         Type type = typeof(TStore);
 
-        if (!CustomDataStoreManager.IsRegistered<TStore>())
-            CustomDataStoreManager.RegisterStore<TStore>();
-
         if (!StoreInstances.TryGetValue(type, out Dictionary<Player, CustomDataStore>? playerStores))
         {
             playerStores = new Dictionary<Player, CustomDataStore>();
@@ -50,6 +47,9 @@ public abstract class CustomDataStore
 
         if (playerStores.TryGetValue(player, out CustomDataStore? store))
             return (TStore)store;
+
+        if (!CustomDataStoreManager.IsRegistered<TStore>())
+            CustomDataStoreManager.RegisterStore<TStore>();
 
         store = (TStore)Activator.CreateInstance(type, player);
         playerStores[player] = store;
