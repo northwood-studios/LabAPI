@@ -204,7 +204,7 @@ public class Scp914 : Room
     {
         player ??= Server.Host;
 
-        Scp914Controller.Singleton.ServerInteract(player.ReferenceHub, (byte)interactCode);
+        Scp914Controller.Singleton.ServerInteract(player!.ReferenceHub, (byte)interactCode);
     }
 
     /// <summary>

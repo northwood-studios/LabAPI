@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Interactables.Interobjects.DoorUtils;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using BaseKeycardItem = InventorySystem.Items.Keycards.KeycardItem;
 
@@ -43,6 +44,18 @@ public class KeycardItem : Item
     /// The base <see cref="BaseKeycardItem"/> object.
     /// </summary>
     public new BaseKeycardItem Base { get; }
+
+    /// <summary>
+    /// Gets or sets the keycard item's <see cref="KeycardPermissions"/>.
+    /// <para>
+    /// Permissions are not saved and are discarded when the item is dropped.
+    /// </para>
+    /// </summary>
+    public KeycardPermissions Permissions
+    {
+        get => Base.Permissions;
+        set => Base.Permissions = value;
+    }
 
     /// <summary>
     /// Gets the keycard item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseKeycardItem"/> was not null.

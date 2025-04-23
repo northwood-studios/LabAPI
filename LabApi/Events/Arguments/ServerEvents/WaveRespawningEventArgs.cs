@@ -13,8 +13,6 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// </summary>
 public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
 {
-    private readonly Dictionary<ReferenceHub, RoleTypeId> _roles;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="WaveRespawningEventArgs"/> class.
     /// </summary>
@@ -36,7 +34,7 @@ public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Team wave is respawning.
     /// </summary>
-    public RespawnWave Wave { get; }
+    public RespawnWave? Wave { get; }
 
     /// <summary>
     /// Gets all players that are about to respawn.

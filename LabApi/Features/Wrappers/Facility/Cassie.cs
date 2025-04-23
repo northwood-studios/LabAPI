@@ -40,7 +40,6 @@ public static class Cassie
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="rawNumber">Raw numbers.</param>
-    /// <param name="speed">The speed of message.</param>
     /// <returns>Duration of the specific message in seconds.</returns>
     public static float CalculateDuration(string message, bool rawNumber = false) => singleton.CalculateDuration(message, rawNumber);
 

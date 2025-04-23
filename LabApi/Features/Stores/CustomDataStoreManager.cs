@@ -73,13 +73,13 @@ public static class CustomDataStoreManager
     public static void AddPlayer(Player player)
     {
         foreach (Type? storeType in RegisteredStores)
-            GetOrAddMethods[storeType].Invoke(null, new object[] { player });
+            GetOrAddMethods[storeType].Invoke(null, [player]);
     }
 
     public static void RemovePlayer(Player player)
     {
         foreach (Type? storeType in RegisteredStores)
-            DestroyMethods[storeType].Invoke(null, new object[] { player });
+            DestroyMethods[storeType].Invoke(null, [player]);
     }
 
     internal static bool IsRegistered(Type type) => RegisteredStores.Contains(type);

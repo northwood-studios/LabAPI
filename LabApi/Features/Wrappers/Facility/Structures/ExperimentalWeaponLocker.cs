@@ -23,7 +23,7 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="baseExperimentalWeaponLocler">The base <see cref="baseExperimentalWeaponLocler"/> object.</param>
+    /// <param name="baseExperimentalWeaponLocler">The base <see cref="BaseExperimentalWeaponLocler"/> object.</param>
     internal ExperimentalWeaponLocker(BaseExperimentalWeaponLocler baseExperimentalWeaponLocler)
         : base(baseExperimentalWeaponLocler)
     {

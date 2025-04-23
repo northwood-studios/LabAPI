@@ -262,9 +262,9 @@ public static class Warhead
     {
         BaseOutsidePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
 
-        StartScenarios = BaseController.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
-        ResumeScenarios = BaseController.ResumeScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Resume)).ToArray();
-        DeadmanSwitchScenario = new DetonationScenario(BaseController.DeadmanSwitchScenario, 0, WarheadScenarioType.DeadmanSwitch);
+        StartScenarios = BaseController!.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
+        ResumeScenarios = BaseController!.ResumeScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Resume)).ToArray();
+        DeadmanSwitchScenario = new DetonationScenario(BaseController!.DeadmanSwitchScenario, 0, WarheadScenarioType.DeadmanSwitch);
     }
 
     /// <summary>

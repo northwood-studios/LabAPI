@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Interactables.Interobjects.DoorUtils;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using BaseJailbirdItem = InventorySystem.Items.Jailbird.JailbirdItem;
 
@@ -43,6 +44,15 @@ public class JailbirdItem : Item
     /// The base <see cref="BaseJailbirdItem"/> object.
     /// </summary>
     public new BaseJailbirdItem Base { get; }
+
+
+    /// <summary>
+    /// Gets the jailbird item's Total Charges
+    /// </summary>
+    public int TotalCharges
+    {
+        get => Base.TotalChargesPerformed;
+    }
 
     /// <summary>
     /// Gets the jailbird item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseJailbirdItem"/> was not null.

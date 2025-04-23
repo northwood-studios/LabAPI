@@ -21,5 +21,5 @@ public class WaveTeamSelectedEventArgs : EventArgs
     /// <summary>
     /// Gets the spawnable wave. See <see cref="SpawnableWaveBase"/> and its subclasses for more info. 
     /// </summary>
-    public RespawnWave Wave { get; }
+    public RespawnWave? Wave { get; }
 }

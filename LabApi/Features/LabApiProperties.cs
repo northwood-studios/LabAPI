@@ -4,7 +4,7 @@ namespace LabApi.Features;
 
 /// <summary>
 /// Contains LabAPI properties which can be accessed by plugins.
-
+///
 /// <para>Those properties are a mix of constants and static fields such as <see cref="CompiledVersion"/>.</para>
 /// </summary>
 public static class LabApiProperties

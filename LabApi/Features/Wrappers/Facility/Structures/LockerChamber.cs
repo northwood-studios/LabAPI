@@ -185,7 +185,9 @@ public class LockerChamber
     /// <returns>The created <see cref="Pickup"/>.</returns>
     public Pickup AddItem(ItemType type)
     {
-        Pickup pickup = Pickup.Create(type, Base.Spawnpoint.position, Base.Spawnpoint.rotation);
+        Pickup? pickup = Pickup.Create(type, Base.Spawnpoint.position, Base.Spawnpoint.rotation);
+        if (pickup == null)
+            throw new ArgumentNullException(nameof(pickup));
         pickup.Transform.SetParent(Base.Spawnpoint);
         Base.Content.Add(pickup.Base);
         (pickup.Base as IPickupDistributorTrigger)?.OnDistributed();

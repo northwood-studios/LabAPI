@@ -430,7 +430,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IEnumerable<Item> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
+    public IEnumerable<Item?> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
 
     /// <summary>
     /// Gets the player's Reserve Ammo.
@@ -764,7 +764,7 @@ public class Player
         // We clear the list to avoid any previous data.
         list.Clear();
         // And then we add all the players to the list.
-        list.AddRange(referenceHubs.Select(Get));
+        list.AddRange(referenceHubs.Select(Get)!);
         // We finally return the list.
         return list;
     }
@@ -1090,8 +1090,8 @@ public class Player
         int count = 0;
         for (int i = 0; i < Items.Count(); i++)
         {
-            ItemBase? itemBase = Items.ElementAt(i).Base;
-            if (itemBase.ItemTypeId != item)
+            ItemBase? itemBase = Items.ElementAt(i)?.Base;
+            if (itemBase == null || itemBase.ItemTypeId != item)
                 continue;
 
             RemoveItem(itemBase);
@@ -1128,8 +1128,11 @@ public class Player
     public List<Pickup> DropAllItems()
     {
         List<Pickup> items = ListPool<Pickup>.Shared.Rent();
-        foreach (Item item in Items)
-            items.Add(DropItem(item));
+        foreach (Item? item in Items)
+        {
+            if (item != null)
+                items.Add(DropItem(item));
+        }
 
         return items;
     }
@@ -1180,8 +1183,11 @@ public class Player
     /// </summary>
     public void ClearItems()
     {
-        foreach (Item item in Items)
-            RemoveItem(item);
+        foreach (Item? item in Items)
+        {
+            if (item != null)
+                RemoveItem(item);
+        }
     }
 
     /// <summary>

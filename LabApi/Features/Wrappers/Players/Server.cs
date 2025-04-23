@@ -166,12 +166,12 @@ public static class Server
     }
 
     /// <summary>
-    /// Gets the <see cref="ItemCategory">Category</see> <see cref="ILimit{ItemCategory, sbyte}">limits</see>.
+    /// Gets the <see cref="ItemCategory">Category</see> <see cref="CategoryLimitsSynchronizer">limits</see>.
     /// </summary>
     public static ILimit<ItemCategory, sbyte> CategoryLimits { get; } = new CategoryLimitsSynchronizer();
 
     /// <summary>
-    /// Gets the <see cref="ItemType">Ammo</see> <see cref="ILimit{ItemType, ushort}">limits</see>.
+    /// Gets the <see cref="ItemType">Ammo</see> <see cref="AmmoLimitsSynchronizer">limits</see>.
     /// </summary>
     public static ILimit<ItemType, ushort> AmmoLimits { get; } = new AmmoLimitsSynchronizer();
 

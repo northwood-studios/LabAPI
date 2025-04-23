@@ -13,6 +13,7 @@ namespace LabApi.Events.Arguments.PlayerEvents
         /// Initializes a new instance of <see cref=" PlayerTogglingNoclipEventArgs"/> clas.
         /// </summary>
         /// <param name="player">The player who is attempting to toggle noclip.</param>
+        /// <param name="newState">New state that will be applied to the noclip flag.</param>
         public PlayerTogglingNoclipEventArgs(ReferenceHub player, bool newState)
         {
             IsAllowed = true;

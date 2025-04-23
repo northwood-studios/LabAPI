@@ -24,7 +24,7 @@ public class WaveRespawnedEventArgs : EventArgs
     /// <summary>
     /// Team wave is respawning.
     /// </summary>
-    public RespawnWave Wave { get; }
+    public RespawnWave? Wave { get; }
 
     /// <summary>
     /// The players that were respawned.<br/>

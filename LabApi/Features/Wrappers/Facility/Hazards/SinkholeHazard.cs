@@ -65,7 +65,7 @@ public class SinkholeHazard : Hazard
         if (BasePrefab == null)
             BasePrefab = GetPrefab<SinkholeEnvironmentalHazard>();
 
-        SinkholeHazard hazard = (SinkholeHazard)Hazard.Spawn(BasePrefab, position, rotation, scale);
+        SinkholeHazard hazard = (SinkholeHazard)Hazard.Spawn(BasePrefab!, position, rotation, scale);
         hazard.IsActive = true;
         return hazard;
     }
