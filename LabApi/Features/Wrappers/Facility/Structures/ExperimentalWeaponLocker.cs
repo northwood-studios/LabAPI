@@ -1,7 +1,7 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using System.Collections.Generic;
 using System.Linq;
-using BaseExperimentalWeaponLocler = MapGeneration.Distributors.ExperimentalWeaponLocker;
+using BaseExperimentalWeaponLocker = MapGeneration.Distributors.ExperimentalWeaponLocker;
 
 namespace LabApi.Features.Wrappers;
 
@@ -11,9 +11,9 @@ namespace LabApi.Features.Wrappers;
 public class ExperimentalWeaponLocker : Locker
 {
     /// <summary>
-    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocler"/>.
+    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocker"/>.
     /// </summary>
-    public new static Dictionary<BaseExperimentalWeaponLocler, ExperimentalWeaponLocker> Dictionary { get; } = [];
+    public new static Dictionary<BaseExperimentalWeaponLocker, ExperimentalWeaponLocker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="ExperimentalWeaponLocker"/> instances.
@@ -23,12 +23,12 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="baseExperimentalWeaponLocler">The base <see cref="BaseExperimentalWeaponLocler"/> object.</param>
-    internal ExperimentalWeaponLocker(BaseExperimentalWeaponLocler baseExperimentalWeaponLocler)
-        : base(baseExperimentalWeaponLocler)
+    /// <param name="baseExperimentalWeaponLocker">The base <see cref="BaseExperimentalWeaponLocker"/> object.</param>
+    internal ExperimentalWeaponLocker(BaseExperimentalWeaponLocker baseExperimentalWeaponLocker)
+        : base(baseExperimentalWeaponLocker)
     {
-        Base = baseExperimentalWeaponLocler;
-        Dictionary.Add(baseExperimentalWeaponLocler, this);
+        Base = baseExperimentalWeaponLocker;
+        Dictionary.Add(baseExperimentalWeaponLocker, this);
     }
 
     /// <summary>
@@ -41,9 +41,9 @@ public class ExperimentalWeaponLocker : Locker
     }
 
     /// <summary>
-    /// The base <see cref="BaseExperimentalWeaponLocler"/> object.
+    /// The base <see cref="BaseExperimentalWeaponLocker"/> object.
     /// </summary>
-    public new BaseExperimentalWeaponLocler Base { get; }
+    public new BaseExperimentalWeaponLocker Base { get; }
 
     /// <summary>
     /// The experimental weapon's chamber.

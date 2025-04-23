@@ -430,7 +430,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IEnumerable<Item?> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
+    public IEnumerable<Item> Items => Inventory.UserInventory.Items.Values.Select(Item.Get)!;
 
     /// <summary>
     /// Gets the player's Reserve Ammo.

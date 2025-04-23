@@ -187,7 +187,7 @@ public class LockerChamber
     {
         Pickup? pickup = Pickup.Create(type, Base.Spawnpoint.position, Base.Spawnpoint.rotation);
         if (pickup == null)
-            throw new ArgumentNullException(nameof(pickup));
+            throw new InvalidOperationException($"Could not add item to locker as pickup created was null");
         pickup.Transform.SetParent(Base.Spawnpoint);
         Base.Content.Add(pickup.Base);
         (pickup.Base as IPickupDistributorTrigger)?.OnDistributed();
