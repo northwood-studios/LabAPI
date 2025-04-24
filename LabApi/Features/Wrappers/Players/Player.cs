@@ -183,6 +183,11 @@ public class Player
     public PlayerRoleBase RoleBase => ReferenceHub.roleManager.CurrentRole;
 
     /// <summary>
+    /// Get's the player's current role unique identifier.
+    /// </summary>
+    public int LifeId => RoleBase.UniqueLifeIdentifier;
+
+    /// <summary>
     /// Gets the Player's Nickname.
     /// </summary>
     public string Nickname => ReferenceHub.nicknameSync.MyNick;
