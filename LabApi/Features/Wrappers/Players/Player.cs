@@ -55,11 +55,6 @@ public class Player
     public static IReadOnlyCollection<Player> List => Dictionary.Values.Where(x => !x.IsHost && x.IsReady).ToList();
 
     /// <summary>
-    /// A reference to all <see cref="Player"/> instances that are authenticated or dummy players.
-    /// </summary>
-    public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
-
-    /// <summary>
     /// A reference to all <see cref="Player"/> instances that are Npcs.
     /// </summary>
     /// <remarks>
