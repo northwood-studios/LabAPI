@@ -10,7 +10,6 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// </summary>
 public class Scp079GainedExperienceEventArgs : EventArgs, IPlayerEvent
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079GainedExperienceEventArgs"/> class.
     /// </summary>

@@ -1,12 +1,12 @@
 ﻿using Generators;
 using InventorySystem.Items.MicroHID;
-using LabApi.Features.Wrappers.Facility.Structures;
 using MapGeneration.Distributors;
 using Mirror;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using Logger = LabApi.Features.Console.Logger;
 
 namespace LabApi.Features.Wrappers;
 
@@ -38,7 +38,7 @@ public class Structure
         });
         Register<PedestalScpLocker>(x => new PedestalLocker(x));
         Register<MapGeneration.Distributors.ExperimentalWeaponLocker>(x => new ExperimentalWeaponLocker(x));
-        Register<MicroHIDPedestal>(x => new MicroPadestal(x));
+        Register<MicroHIDPedestal>(x => new MicroPedestal(x));
     }
 
     /// <summary>
@@ -188,12 +188,21 @@ public class Structure
     /// <returns>The newly created wrapper.</returns>
     protected static Structure CreateStructureWrapper(SpawnableStructure structure)
     {
-        if (!typeWrappers.TryGetValue(structure.GetType(), out Func<SpawnableStructure, Structure> handler))
-            Console.Logger.Error($"Failed to create structure wrapper. Missing constructor handler for type {structure.GetType()}");
+        Type targetType = structure.GetType();
+        if (!typeWrappers.TryGetValue(targetType, out Func<SpawnableStructure, Structure> handler))
+        {
+#if DEBUG
+            Logger.Warn($"Unable to find {nameof(Structure)} wrapper for {targetType.Name}, backup up to base constructor!");
+#endif
+            return new Structure(structure);
+        }
 
         Structure? wrapper = handler?.Invoke(structure);
         if (wrapper == null)
-            Console.Logger.Error($"Failed to create structure wrapper. A handler returned null for type {structure.GetType()}");
+        {
+            Logger.Error($"Failed to create structure wrapper. A handler returned null for type {structure.GetType()}");
+            return null;
+        }
 
         return wrapper!;
     }

@@ -36,7 +36,7 @@ namespace CommandsPlugin2.Commands
                     return false;
                 }
 
-                Player player = Player.Get(id);
+                Player? player = Player.Get(id);
 
                 if (player == null)
                 {

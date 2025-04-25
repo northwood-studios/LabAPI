@@ -5,13 +5,12 @@ using InventorySystem.Items.Armor;
 using InventorySystem.Items.Coin;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Usables;
-using LabApi.Features.Wrappers.Items.Usable;
 using NorthwoodLib.Pools;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
 
@@ -23,119 +22,15 @@ namespace LabApi.Features.Wrappers;
 public class Item
 {
     /// <summary>
-    /// Contains all the handlers for constructing wrappers for the associated base game types.
-    /// </summary>
-    private static readonly Dictionary<Type, Func<ItemBase, Item>> typeWrappers = [];
-
-    /// <summary>
-    /// Contains all the cached items, accessible through their <see cref="Base"/>.
-    /// </summary>
-    public static Dictionary<ItemBase, Item> Dictionary { get; } = [];
-
-    /// <summary>
-    /// Contains all cached items with their <see cref="Item.Serial"/> as a key.
-    /// </summary>
-    private static Dictionary<ushort, Item> SerialsCache { get; } = [];
-
-    /// <summary>
-    /// A reference to all instances of <see cref="Item"/>.
-    /// </summary>
-    public static IReadOnlyCollection<Item> List => Dictionary.Values;
-
-    /// <summary>
-    /// The <see cref="Base"/> of the item.
-    /// </summary>
-    public ItemBase Base { get; }
-
-    /// <summary>
-    /// Gets the item's <see cref="ItemType"/>.
-    /// </summary>
-    public ItemType Type => Base.ItemTypeId;
-
-    /// <summary>
-    /// Gets or sets the item's <see cref="ItemCategory"/>.
-    /// <para>
-    /// Category is not saved and is discarded when the item is dropped.
-    /// </para>
-    /// </summary>
-    // TODO: Maybe do something with it? Not sure if anyone is gonna use these 3 properties anyways but you never know.
-    public ItemCategory Category
-    {
-        get => Base.Category;
-        set => Base.Category = value;
-    }
-
-    /// <summary>
-    /// Gets or sets the item's <see cref="ItemTierFlags"/>.
-    /// <para>
-    /// Flags are not saved and are discarded when the item is dropped.
-    /// </para>
-    /// </summary>
-    public ItemTierFlags TierFlags
-    {
-        get => Base.TierFlags;
-        set => Base.TierFlags = value;
-    }
-
-    /// <summary>
-    /// Gets or sets the item's <see cref="ItemThrowSettings"/>.
-    /// <para>
-    /// Settings are not saved and are discarded when the item is dropped.
-    /// </para>
-    /// </summary>
-    public ItemThrowSettings ThrowSettings
-    {
-        get => Base.ThrowSettings;
-        set => Base.ThrowSettings = value;
-    }
-
-    /// <summary>
-    /// Gets the item's current owner.
-    /// </summary>
-    public Player? CurrentOwner => Base.Owner == null ? null : Player.Get(Base.Owner);
-
-    /// <summary>
-    /// Gets the item's serial.
-    /// </summary>
-    public ushort Serial => Base.ItemSerial;
-
-    /// <summary>
-    /// Gets the item's weight.
-    /// </summary>
-    public float Weight => Base.Weight;
-
-    /// <summary>
-    /// A private constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
-    protected Item(ItemBase itemBase)
-    {
-        Dictionary.Add(itemBase, this);
-        Base = itemBase;
-    }
-
-    /// <summary>
-    /// An internal virtual method to signal to derived implementations to uncache when the base object is destroyed.
-    /// </summary>
-    internal virtual void OnRemove()
-    {
-    }
-
-    /// <summary>
-    /// Drops this item from player's inventory
-    /// </summary>
-    public void DropItem() => Base.ServerDropItem(true);
-
-    /// <summary>
-    /// Initializes the <see cref="Item"/> class to subscribe to <see cref="InventoryExtensions"/> events and handle the item caching.
+    /// Initializes the <see cref="Item"/> class by subscribing to <see cref="ItemBase"/> events and registers derived wrappers.
     /// </summary>
     [InitializeWrapper]
     internal static void Initialize()
     {
         Dictionary.Clear();
 
-        InventoryExtensions.OnItemAdded += (_, item, _) => AddItem(item);
-        InventoryExtensions.OnItemRemoved += (_, item, _) => RemoveItem(item);
+        ItemBase.OnItemAdded += AddItem;
+        ItemBase.OnItemRemoved += RemoveItem;
 
         Register<ItemBase>(x => new Item(x));
 
@@ -171,6 +66,182 @@ public class Item
         Register<InventorySystem.Items.Keycards.KeycardItem>(x => new KeycardItem(x));
         Register<InventorySystem.Items.MicroHID.MicroHIDItem>(x => new MicroHIDItem(x));
     }
+
+    /// <summary>
+    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// </summary>
+    private static readonly Dictionary<Type, Func<ItemBase, Item>> typeWrappers = [];
+
+    /// <summary>
+    /// Contains all the cached items, accessible through their <see cref="Base"/>.
+    /// </summary>
+    public static Dictionary<ItemBase, Item> Dictionary { get; } = [];
+
+    /// <summary>
+    /// Contains all cached items with their <see cref="Item.Serial"/> as a key.
+    /// </summary>
+    private static Dictionary<ushort, Item> SerialsCache { get; } = [];
+
+    /// <summary>
+    /// A reference to all instances of <see cref="Item"/>.
+    /// </summary>
+    public static IReadOnlyCollection<Item> List => Dictionary.Values;
+
+    /// <summary>
+    /// The <see cref="Base"/> of the item.
+    /// </summary>
+    public ItemBase Base { get; }
+
+    /// <summary>
+    /// Gets the item's <see cref="UnityEngine.GameObject"/>.
+    /// </summary>
+    public GameObject GameObject => Base.gameObject;
+
+    /// <summary>
+    /// Gets whether the item was destroyed.
+    /// </summary>
+    /// <remarks>
+    /// Happens when an item is either dropped, removed or used up.
+    /// </remarks>
+    public bool IsDestroyed => Base == null || GameObject == null;
+
+    /// <summary>
+    /// Gets whether or not this instance is used as a prefab.
+    /// </summary>
+    /// <remarks>
+    /// Changes made to the prefab instance will be reflected across all subsequent new instances.
+    /// </remarks>
+    public bool IsPrefab { get; }
+
+    /// <summary>
+    /// Gets the item's <see cref="ItemType"/>.
+    /// </summary>
+    public ItemType Type => Base.ItemTypeId;
+
+    /// <summary>
+    /// Gets or sets the item's <see cref="ItemCategory"/>.
+    /// <para>
+    /// Category is not saved and is discarded when the item is dropped.
+    /// </para>
+    /// </summary>
+    public ItemCategory Category
+    {
+        get => Base.Category;
+        set => Base.Category = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the item's <see cref="ItemTierFlags"/>.
+    /// <para>
+    /// Flags are not saved and are discarded when the item is dropped.
+    /// </para>
+    /// </summary>
+    public ItemTierFlags TierFlags
+    {
+        get => Base.TierFlags;
+        set => Base.TierFlags = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the item's <see cref="ItemThrowSettings"/>.
+    /// <para>
+    /// Settings are not saved and are discarded when the item is dropped.
+    /// </para>
+    /// </summary>
+    public ItemThrowSettings ThrowSettings
+    {
+        get => Base.ThrowSettings;
+        set => Base.ThrowSettings = value;
+    }
+
+    /// <summary>
+    /// Gets the item's reason for being added to the inventory.
+    /// </summary>
+    public ItemAddReason AddReason => Base.ServerAddReason;
+
+    /// <summary>
+    /// Gets whether the item is being held.
+    /// </summary>
+    public bool IsEquipped => Base.IsEquipped;
+
+    /// <summary>
+    /// Gets whether the item can be equipped.
+    /// </summary>
+    /// <remarks>
+    /// Only applies to player interactions, forcefully equipping an item is always possible.
+    /// </remarks>
+    public bool CanEquip => Base.AllowEquip;
+
+    /// <summary>
+    /// Gets whether the item can be holstered.
+    /// </summary>
+    /// <remarks>
+    /// An item is holstered when either changing to another item or deflecting the item.
+    /// Only applies to player interactions, forcefully holstering an item is always possible.
+    /// </remarks>
+    public bool CanHolster => Base.AllowHolster;
+
+    /// <summary>
+    /// Gets whether the item can be dropped.
+    /// </summary>
+    /// <remarks>
+    /// Only applies to player interactions, forcefully dropping an item is always possible.
+    /// </remarks>
+    public bool CanDrop => Base.AllowDropping;
+
+    /// <summary>
+    /// Gets the item's current owner.
+    /// </summary>
+    public Player? CurrentOwner => Player.Get(Base.Owner);
+
+    /// <summary>
+    /// Gets the item's serial.
+    /// </summary>
+    public ushort Serial => Base.ItemSerial;
+
+    /// <summary>
+    /// Gets the item's weight.
+    /// </summary>
+    public float Weight => Base.Weight;
+
+    /// <summary>
+    /// Gets whether the item wrapper is allowed to be cached.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && !IsPrefab && Serial != 0;
+
+    /// <summary>
+    /// A private constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
+    protected Item(ItemBase itemBase)
+    {
+        Base = itemBase;
+        IsPrefab = InventoryItemLoader.TryGetItem(itemBase.ItemTypeId, out ItemBase prefab) && prefab == itemBase;
+
+        if (CanCache)
+        {
+            Dictionary.Add(itemBase, this);
+            SerialsCache[itemBase.ItemSerial] = this;
+        }
+    }
+
+    /// <summary>
+    /// An internal virtual method to signal to derived implementations to uncache when the base object is destroyed.
+    /// </summary>
+    internal virtual void OnRemove()
+    {
+    }
+
+    /// <summary>
+    /// Drops this item from player's inventory
+    /// </summary>
+    public Pickup DropItem() => Pickup.Get(Base.ServerDropItem(true));
+
+    /// <summary>
+    /// Moves the item to the specified players inventory.
+    /// </summary>
+    /// <param name="player">The player to move this item to.</param>
+    public void MoveTo(Player player) => player.AddItem(DropItem());
 
     /// <summary>
     /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ItemBase"/> was not null.
@@ -256,7 +327,16 @@ public class Item
     /// <returns>The newly created wrapper.</returns>
     protected static Item CreateItemWrapper(ItemBase item)
     {
-        return typeWrappers[item.GetType()].Invoke(item);
+        Type targetType = item.GetType();
+        if (!typeWrappers.TryGetValue(targetType, out Func<ItemBase, Item> ctorFunc))
+        {
+#if DEBUG
+            Logger.Warn($"Unable to find LabApi wrapper for {nameof(Item)} {targetType.Name}, backup up to base constructor!");
+#endif
+            return new Item(item);
+        }
+
+        return ctorFunc.Invoke(item);
     }
 
     /// <summary>
@@ -265,8 +345,15 @@ public class Item
     /// <param name="item">The created <see cref="ItemBase"/> instance.</param>
     private static void AddItem(ItemBase item)
     {
-        if (!Dictionary.ContainsKey(item))
-            _ = CreateItemWrapper(item);
+        try
+        {
+            if (!Dictionary.ContainsKey(item))
+                _ = CreateItemWrapper(item);
+        }
+        catch(Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle item creation with error: {e}");
+        }
     }
 
     /// <summary>
@@ -275,11 +362,18 @@ public class Item
     /// <param name="itemBase">The to be destroyed <see cref="ItemBase"/> instance.</param>
     private static void RemoveItem(ItemBase itemBase)
     {
-        SerialsCache.Remove(itemBase.ItemSerial);
-        if (Dictionary.TryGetValue(itemBase, out Item item))
+        try
         {
-            Dictionary.Remove(itemBase);
-            item.OnRemove();
+            SerialsCache.Remove(itemBase.ItemSerial);
+            if (Dictionary.TryGetValue(itemBase, out Item item))
+            {
+                Dictionary.Remove(itemBase);
+                item.OnRemove();
+            }
+        }
+        catch(Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle item destruction with error: {e}");
         }
     }
 

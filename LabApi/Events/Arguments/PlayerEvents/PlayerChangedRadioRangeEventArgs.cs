@@ -1,14 +1,15 @@
-﻿using InventorySystem.Items;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
 using static InventorySystem.Items.Radio.RadioMessages;
+using BaseRadioItem = InventorySystem.Items.Radio.RadioItem;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ChangedRadioRange"/> event.
 /// </summary>
-public class PlayerChangedRadioRangeEventArgs : EventArgs
+public class PlayerChangedRadioRangeEventArgs : EventArgs, IRadioItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangedRadioRangeEventArgs"/> class.
@@ -16,25 +17,29 @@ public class PlayerChangedRadioRangeEventArgs : EventArgs
     /// <param name="player">The player who changed radio range.</param>
     /// <param name="radio">The radio item.</param>
     /// <param name="range">The new range level.</param>
-    public PlayerChangedRadioRangeEventArgs(ReferenceHub player, ItemBase radio, RadioRangeLevel range)
+    public PlayerChangedRadioRangeEventArgs(ReferenceHub player, BaseRadioItem radio, RadioRangeLevel range)
     {
         Player = Player.Get(player);
-        Radio = Item.Get(radio);
+        RadioItem = RadioItem.Get(radio);
         Range = range;
     }
 
     /// <summary>
-    /// Gets tets the player who changed radio range.
+    /// Gets the player who changed radio range.
     /// </summary>
     public Player Player { get; }
 
     /// <summary>
     /// Gets the radio item.
     /// </summary>
-    public Item Radio { get; }
+    public RadioItem RadioItem { get; }
 
     /// <summary>
     /// Gets the new range level.
     /// </summary>
     public RadioRangeLevel Range { get; }
+
+    /// <inheritdoc cref="RadioItem"/>
+    [Obsolete($"Use {nameof(RadioItem)} instead")]
+    public Item Radio => RadioItem;
 }

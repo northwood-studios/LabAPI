@@ -10,7 +10,7 @@ namespace LabApi.Events.Arguments.Scp914Events;
 /// <summary>
 /// Represents the event arguments for when a pickup is being processed by SCP-914.
 /// </summary>
-public class Scp914ProcessingPickupEventArgs : EventArgs, ICancellableEvent, IScp914Event, IPickupEvent
+public class Scp914ProcessingPickupEventArgs : EventArgs, IScp914Event, IPickupEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp914ProcessingPickupEventArgs"/> class.

@@ -34,6 +34,7 @@
         Hcz106Primiary,// 106_PRIMARY
         Hcz106Secondary,// 106_SECONDARY
         HczCheckpoint,// CHECKPOINT_EZ_HCZ_A
+        Hcz127Lab, // HCZ_127_LAB 
         EzIntercom,// INTERCOM
         EzGateA,// GATE_A
         EzGateB,// GATE_B

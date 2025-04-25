@@ -78,6 +78,16 @@ public static partial class ServerEvents
     public static event LabEventHandler<CommandExecutedEventArgs>? CommandExecuted;
 
     /// <summary>
+    /// Gets called when the server is queuing a C.A.S.S.I.E SCP termination announcement.
+    /// </summary>
+    public static event LabEventHandler<CassieQueuingScpTerminationEventArgs>? CassieQueuingScpTermination;
+
+    /// <summary>
+    /// Gets called when the server has queued a C.A.S.S.I.E SCP termination announcement.
+    /// </summary>
+    public static event LabEventHandler<CassieQueuedScpTerminationEventArgs>? CassieQueuedScpTermination;
+
+    /// <summary>
     /// Gets called when the server is respawning a wave.
     /// </summary>
     public static event LabEventHandler<WaveRespawningEventArgs>? WaveRespawning;
@@ -121,7 +131,17 @@ public static partial class ServerEvents
     /// Gets called when the server generated map.
     /// </summary>
     public static event LabEventHandler<MapGeneratedEventArgs>? MapGenerated;
+
+    /// <summary>
+    /// Gets called when the server has created a new pickup.
+    /// </summary>
+    public static event LabEventHandler<PickupCreatedEventArgs>? PickupCreated;
     
+    /// <summary>
+    /// Gets called when the server has destroyed a pickup.
+    /// </summary>
+    public static event LabEventHandler<PickupDestroyedEventArgs>? PickupDestroyed;
+
     /// <summary>
     /// Gets called when the server is sending an Admin Chat message.
     /// </summary>

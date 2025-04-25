@@ -1,5 +1,6 @@
 ﻿using Generators;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
@@ -47,7 +48,7 @@ public class LightsController
     /// <summary>
     /// The room this controller is assigned to.
     /// </summary>
-    public Room Room => Room.Get(Base.Room);
+    public Room? Room => Room.Get(Base.Room);
 
     /// <summary>
     /// Gets or sets whether the lights are enabled in this room.
@@ -78,6 +79,12 @@ public class LightsController
     /// </summary>
     /// <param name="roomLightController">The original light controller.</param>
     /// <returns>The requested light controller wrapper.</returns>
-    public static LightsController Get(RoomLightController roomLightController) =>
-        Dictionary.TryGetValue(roomLightController, out LightsController lightController) ? lightController : new LightsController(roomLightController);
+    [return: NotNullIfNotNull(nameof(roomLightController))]
+    public static LightsController? Get(RoomLightController roomLightController)
+    {
+        if (roomLightController == null)
+            return null;
+
+        return Dictionary.TryGetValue(roomLightController, out LightsController lightController) ? lightController : new LightsController(roomLightController);
+    }
 }

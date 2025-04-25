@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.Scp096Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp096Events.ChangingState"/> event.
 /// </summary>
-public class Scp096ChangingStateEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp096ChangingStateEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096ChangingStateEventArgs"/> class.

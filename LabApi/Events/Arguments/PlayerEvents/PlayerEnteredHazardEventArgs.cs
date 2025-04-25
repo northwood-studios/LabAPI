@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.EnteredHazard"/> event.
 /// </summary>
-public class PlayerEnteredHazardEventArgs : EventArgs, IPlayerEvent
+public class PlayerEnteredHazardEventArgs : EventArgs, IPlayerEvent, IHazardEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEnteringPocketDimensionEventArgs"/> class.

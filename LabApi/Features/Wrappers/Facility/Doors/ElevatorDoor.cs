@@ -52,7 +52,7 @@ public class ElevatorDoor : Door
     public Elevator? Elevator => Elevator.GetByGroup(Base.Group).FirstOrDefault();
 
     /// <summary>
-    /// Gets the <see cref="ElevatorManager.ElevatorGroup"/> this door belongs to.
+    /// Gets the <see cref="ElevatorGroup"/> this door belongs to.
     /// </summary>
     public ElevatorGroup Group => Base.Group;
 

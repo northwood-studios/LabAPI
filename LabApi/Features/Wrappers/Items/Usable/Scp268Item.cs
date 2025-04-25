@@ -26,8 +26,10 @@ public class Scp268Item : UsableItem
     internal Scp268Item(Scp268 scp268)
         : base(scp268)
     {
-        Dictionary.Add(scp268, this);
         Base = scp268;
+
+        if (CanCache)
+            Dictionary.Add(scp268, this);
     }
 
     /// <summary>
@@ -43,6 +45,18 @@ public class Scp268Item : UsableItem
     /// The base <see cref="Scp268"/> object.
     /// </summary>
     public new Scp268 Base { get; }
+
+    /// <summary>
+    /// Gets or set whether or not the user is wearing Scp268.
+    /// </summary>
+    /// <remarks>
+    /// Setting does not apply the items effects and only effects the third person model.
+    /// </remarks>
+    public bool IsWorn
+    {
+        get => Base.IsWorn;
+        set => Base.IsWorn = value;
+    }
 
     /// <summary>
     /// Gets the SCP-268 item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Scp268"/> was not null.

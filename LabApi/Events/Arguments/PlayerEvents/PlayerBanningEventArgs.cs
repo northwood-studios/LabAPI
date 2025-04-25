@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Banning"/> event.
 /// </summary>
-public class PlayerBanningEventArgs : EventArgs, ICancellableEvent
+public class PlayerBanningEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerBanningEventArgs"/> class.

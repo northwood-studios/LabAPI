@@ -53,9 +53,9 @@ public class WallCabinet : Locker
     public bool CanInteract => MainChamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by a the <see cref="Player"/> to open/close the wall cabinet.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by a the <see cref="Player"/> to open/close the wall cabinet.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => MainChamber.RequiredPermissions;
         set => MainChamber.RequiredPermissions = value;

@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractingGenerator"/> event.
 /// </summary>
-public class PlayerInteractingGeneratorEventArgs : EventArgs, ICancellableEvent
+public class PlayerInteractingGeneratorEventArgs : EventArgs, IPlayerEvent, IGeneratorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingGeneratorEventArgs"/> class.

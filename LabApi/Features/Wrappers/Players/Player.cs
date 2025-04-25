@@ -50,9 +50,27 @@ public class Player
     private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
-    /// A reference to all <see cref="Player"/> instances currently in the game.
+    /// A reference to all <see cref="Player"/> instances that are authenticated or dummy players.
     /// </summary>
     public static IReadOnlyCollection<Player> List => Dictionary.Values.Where(x => !x.IsHost && x.IsReady).ToList();
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are authenticated or dummy players.
+    /// </summary>
+    public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are Npcs.
+    /// </summary>
+    /// <remarks>
+    /// The host player is not counted as an Npc.
+    /// </remarks>
+    public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instance that are real players but are not authenticated yet.
+    /// </summary>
+    public static IEnumerable<Player> UnauthenticatedList => List.Where(x => x.IsPlayer && !x.IsReady);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
@@ -60,9 +78,9 @@ public class Player
     public static Player? Host => Server.Host;
 
     /// <summary>
-    /// Gets the amount of online players.
+    /// Gets the amount of players that are authenticated or dummy players.
     /// </summary>
-    public static int Count => ReferenceHub.AllHubs.Count(x => !x.isLocalPlayer && x.Mode == ClientInstanceMode.ReadyClient && !string.IsNullOrEmpty(x.authManager.UserId));
+    public static int Count => List.Count();
 
     /// <summary>
     /// Gets the amount of non-verified players
@@ -906,7 +924,7 @@ public class Player
         if (UserIdCache.TryGetValue(userId!, out player) && player.IsOnline)
             return true;
 
-        player = Dictionary.Values.FirstOrDefault(x => x.UserId == userId);
+        player = List.FirstOrDefault(x => x.UserId == userId);
         if (player == null)
             return false;
 
@@ -933,7 +951,7 @@ public class Player
     /// <returns>Whether the player was successfully retrieved.</returns>
     public static bool TryGet(int playerId, [NotNullWhen(true)] out Player? player)
     {
-        player = Dictionary.Values.FirstOrDefault(n => n.PlayerId == playerId);
+        player = List.FirstOrDefault(n => n.PlayerId == playerId);
         return player != null;
     }
 

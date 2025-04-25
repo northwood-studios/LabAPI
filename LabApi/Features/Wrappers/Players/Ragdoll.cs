@@ -169,7 +169,9 @@ public class Ragdoll
         RagdollManager.OnRagdollRemoved -= RagdollRemoved;
 
         Destroy();
+        Dictionary.Remove(Base);
         Base = RagdollManager.ServerCreateRagdoll(data.RoleType, data.StartPosition, data.StartRotation, data.Handler, data.Nickname, data.Scale, data.Serial);
+        Dictionary.TryAdd(Base, this);
 
         RagdollManager.OnRagdollSpawned += RagdollSpawned;
         RagdollManager.OnRagdollRemoved += RagdollRemoved;

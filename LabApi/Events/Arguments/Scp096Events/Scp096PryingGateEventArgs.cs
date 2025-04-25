@@ -2,12 +2,13 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp096Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp096Events.PryingGate"/> event.
 /// </summary>
-public class Scp096PryingGateEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp096PryingGateEventArgs : EventArgs, IPlayerEvent, IGateEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096PryingGateEventArgs"/> class.
@@ -17,7 +18,7 @@ public class Scp096PryingGateEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     public Scp096PryingGateEventArgs(ReferenceHub player, PryableDoor gate)
     {
         Player = Player.Get(player);
-        Gate = gate;
+        Gate = Gate.Get(gate);
         IsAllowed = true;
     }
 
@@ -29,7 +30,7 @@ public class Scp096PryingGateEventArgs : EventArgs, ICancellableEvent, IPlayerEv
     /// <summary>
     /// The affected pryable door instance.
     /// </summary>
-    public PryableDoor Gate { get; }
+    public Gate Gate { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

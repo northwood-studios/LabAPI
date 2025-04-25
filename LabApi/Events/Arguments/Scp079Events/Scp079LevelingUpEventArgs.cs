@@ -1,12 +1,13 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp079Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.LevelingUp"/> event.
 /// </summary>
-public class Scp079LevelingUpEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp079LevelingUpEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079LevelingUpEventArgs"/> class.

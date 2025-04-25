@@ -60,6 +60,7 @@ public abstract class MiniRespawnWave : RespawnWave
         set => Base.SpecialRole = value;
     }
 
+    /// <inheritdoc/>
     public override void InitiateRespawn()
     {
         Unlock();

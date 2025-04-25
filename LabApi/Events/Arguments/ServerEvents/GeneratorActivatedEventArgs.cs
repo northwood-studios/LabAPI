@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
 using MapGeneration.Distributors;
 using System;
 
@@ -7,7 +8,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.GeneratorActivated"/> event.
 /// </summary>
-public class GeneratorActivatedEventArgs : EventArgs
+public class GeneratorActivatedEventArgs : EventArgs, IGeneratorEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="GeneratorActivatedEventArgs"/> class.
