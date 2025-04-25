@@ -23,7 +23,7 @@ namespace CommandsPlugin2.Commands
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            Player player = Player.Get(sender);
+            Player? player = Player.Get(sender);
 
             if (player == null)
             {
@@ -43,7 +43,7 @@ namespace CommandsPlugin2.Commands
                 return false;
             }
 
-            Player toHit = null;
+            Player? toHit = null;
             float closestMagnitude = float.MaxValue;
             foreach (Player plr in Player.List)
             {

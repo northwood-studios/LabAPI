@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractedDoor"/> event.
 /// </summary>
-public class PlayerInteractedElevatorEventArgs : EventArgs, IPlayerEvent
+public class PlayerInteractedElevatorEventArgs : EventArgs, IPlayerEvent, IElevatorEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedElevatorEventArgs"/> class.

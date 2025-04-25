@@ -26,8 +26,10 @@ public class ParticleDisruptorItem : FirearmItem
     internal ParticleDisruptorItem(ParticleDisruptor particleDisruptor)
         : base(particleDisruptor)
     {
-        Dictionary.Add(particleDisruptor, this);
         Base = particleDisruptor;
+
+        if (CanCache)
+            Dictionary.Add(particleDisruptor, this);
     }
 
     /// <summary>

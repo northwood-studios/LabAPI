@@ -26,8 +26,10 @@ public class Scp207Item : ConsumableItem
     internal Scp207Item(Scp207 scp207)
         : base(scp207)
     {
-        Dictionary.Add(scp207, this);
         Base = scp207;
+
+        if (CanCache)
+            Dictionary.Add(scp207, this);
     }
 
     /// <summary>

@@ -8,9 +8,8 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.GainingExperience"/> event.
 /// </summary>
-public class Scp079GainingExperienceEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp079GainingExperienceEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079GainingExperienceEventArgs"/> class.
     /// </summary>

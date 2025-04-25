@@ -14,14 +14,19 @@ namespace LabApi.Features.Wrappers;
 public static class Round
 {
     /// <summary>
-    /// Gets or sets whether the round has started or not.
+    /// Gets whether the round has started or not.
     /// </summary>
     public static bool IsRoundStarted => RoundSummary.RoundInProgress();
 
     /// <summary>
+    /// Gets whether the round is started and not ended.
+    /// </summary>
+    public static bool IsRoundInProgress => IsRoundStarted && !IsRoundEnded;
+
+    /// <summary>
     /// Gets a value indicating whether the round is ended or not.
     /// </summary>
-    public static bool IsRoundEnded => !IsRoundStarted && Duration.Seconds > 1;
+    public static bool IsRoundEnded => RoundSummary.singleton.IsRoundEnded;
 
     /// <summary>
     /// Gets whether the round can end if there is only 1 team alive remaining.<br/>

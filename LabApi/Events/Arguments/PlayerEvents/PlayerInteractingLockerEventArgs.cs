@@ -1,7 +1,6 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
-using System.Linq;
 using BaseLocker = MapGeneration.Distributors.Locker;
 using BaseLockerChamber = MapGeneration.Distributors.LockerChamber;
 
@@ -10,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractingLocker"/> event.
 /// </summary>
-public class PlayerInteractingLockerEventArgs : EventArgs, ICancellableEvent
+public class PlayerInteractingLockerEventArgs : EventArgs, IPlayerEvent, ILockerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingLockerEventArgs"/> class.
@@ -23,7 +22,7 @@ public class PlayerInteractingLockerEventArgs : EventArgs, ICancellableEvent
     {
         IsAllowed = true;
         Player = Player.Get(player);
-        Locker = (Locker)Structure.Get(locker);
+        Locker = Locker.Get(locker);
         Chamber = LockerChamber.Get(chamber);
         CanOpen = canOpen;
     }

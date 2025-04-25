@@ -1,6 +1,7 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp079Events;
 
 /// <summary>
@@ -8,7 +9,6 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// </summary>
 public class Scp079LeveledUpEventArgs : EventArgs, IPlayerEvent
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079LeveledUpEventArgs"/> class.
     /// </summary>

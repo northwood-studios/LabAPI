@@ -14,11 +14,11 @@ public class PlayerSendingVoiceMessageEventArgs : EventArgs, ICancellableEvent, 
     /// Initializes a new instance of the <see cref="PlayerSendingVoiceMessageEventArgs"/> class.
     /// </summary>
     /// <param name="message">The <see cref="VoiceMessage" /> being sent.</param>
-    public PlayerSendingVoiceMessageEventArgs(VoiceMessage message)
+    public PlayerSendingVoiceMessageEventArgs(ref VoiceMessage message)
     {
         IsAllowed = true;
         Player = Player.Get(message.Speaker);
-        Message = message;
+        _message = message;
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ public class PlayerSendingVoiceMessageEventArgs : EventArgs, ICancellableEvent, 
     /// <summary>
     /// Gets the <see cref="VoiceMessage" /> being sent.
     /// </summary>
-    public VoiceMessage Message { get; }
+    public ref VoiceMessage Message => ref _message;
 
     /// <summary>
     /// Gets or sets a value indicating whether the voice message is allowed to be sent.
@@ -39,4 +39,6 @@ public class PlayerSendingVoiceMessageEventArgs : EventArgs, ICancellableEvent, 
     /// <see cref="VoiceChat.VoiceChatChannel.None" /> this will be ignored.
     /// </remarks>
     public bool IsAllowed { get; set; }
+
+    private VoiceMessage _message;
 }

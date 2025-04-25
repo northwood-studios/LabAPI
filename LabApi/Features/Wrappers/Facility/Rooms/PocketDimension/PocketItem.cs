@@ -42,7 +42,7 @@ public class PocketItem
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="pickup">The item pickup in the pocket dimension.</param>
-    /// <param name="pocketItem">The item in the pocket dimension.</param>
+    /// <param name="pocketItem">The base <see cref="Scp106PocketItemManager.PocketItem"/> object.</param>
     internal PocketItem(ItemPickupBase pickup, Scp106PocketItemManager.PocketItem pocketItem)
     {
         Dictionary.Add(pickup, this);

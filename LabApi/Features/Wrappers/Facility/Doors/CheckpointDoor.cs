@@ -1,4 +1,5 @@
-﻿using Interactables.Interobjects.DoorUtils;
+﻿using Interactables.Interobjects;
+using Interactables.Interobjects.DoorUtils;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -48,6 +49,11 @@ public class CheckpointDoor : Door
     /// The base <see cref="BaseCheckpointDoor"/> object.
     /// </summary>
     public new BaseCheckpointDoor Base { get; }
+
+    /// <summary>
+    /// The base <see cref="CheckpointSequenceController"/> object.
+    /// </summary>
+    public CheckpointSequenceController SequenceController => Base.SequenceCtrl;
 
     /// <summary>
     /// All <see cref="Door"/> instances operated by this checkpoint.
@@ -103,61 +109,48 @@ public class CheckpointDoor : Door
     }
 
     /// <summary>
-    /// Gets or sets the current <see cref="BaseCheckpointDoor.CheckpointSequenceStage"/> of the checkpoint door.
+    /// Gets or sets the current <see cref="BaseCheckpointDoor.SequenceState"/> of the checkpoint door.
     /// </summary>
-    public BaseCheckpointDoor.CheckpointSequenceStage SequenceState
+    public BaseCheckpointDoor.SequenceState SequenceState
     {
-        get => Base.CurrentSequence;
-        set => Base.CurrentSequence = value;
+        get => Base.CurSequence;
+        set => Base.CurSequence = value;
     }
 
     /// <summary>
-    /// Gets or sets the time in seconds to open the doors after the <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Granted"/>.
+    /// Gets or sets the time in seconds to wait before sounding the warning buzzer after <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.SequenceState.OpenLoop"/>.
     /// </summary>
     /// <remarks>
-    /// Does not affect the speed of the animations of the door it only influences the timing of when when to move on to the next stage.
-    /// <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Open"/> after the delay.
+    /// <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.SequenceState.ClosingWarning"/> after the duration.
     /// </remarks>
-    public float OpeningDuration
+    public float OpenDuration
     {
-        get => Base.OpeningTime;
-        set => Base.OpeningTime = value;
+        get => SequenceController.OpenLoopTime;
+        set => SequenceController.OpenLoopTime = value;
     }
 
     /// <summary>
-    /// Gets or sets the time in seconds to wait before sounding the warning buzzer after <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Open"/>.
+    /// Gets or sets the time in seconds to play the warning sound after the <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.SequenceState.ClosingWarning"/>.
     /// </summary>
     /// <remarks>
-    /// <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Closing"/> after the duration.
-    /// </remarks>
-    public float WaitDuration
-    {
-        get => Base.WaitTime;
-        set => Base.WaitTime = value;
-    }
-
-    /// <summary>
-    /// Gets or sets the time in seconds to play the warning sound after the <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Closing"/>.
-    /// </summary>
-    /// <remarks>
-    /// The doors close immediately after the warning time ends and <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.CheckpointSequenceStage.Idle"/>.
+    /// The doors close immediately after the warning time ends and <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.SequenceState.Idle"/>.
     /// </remarks>
     public float WarningDuration
     {
-        get => Base.WarningTime;
-        set => Base.WarningTime = value;
+        get => SequenceController.WarningTime;
+        set => SequenceController.WarningTime = value;
     }
 
     /// <summary>
     /// Gets or sets the current sequence time in seconds.
     /// </summary>
     /// <remarks>
-    /// Represents the value of the internal timer used to switch <see cref="SequenceState"/> depending on <see cref="OpeningDuration"/>, <see cref="WaitDuration"/> and <see cref="WarningDuration"/>. 
+    /// Represents the value of the internal timer used to switch <see cref="SequenceState"/> depending on <see cref="OpenDuration"/> and <see cref="WarningDuration"/>. 
     /// </remarks>
     public float SequenceTime
     {
-        get => Base.MainTimer;
-        set => Base.MainTimer = value;
+        get => SequenceController.RemainingTime;
+        set => SequenceController.RemainingTime = value;
     }
 
     /// <summary>
@@ -181,11 +174,6 @@ public class CheckpointDoor : Door
     /// <returns>True if the doors took damage, otherwise false.</returns>
     public bool TryBreak(DoorDamageType type = DoorDamageType.ServerCommand)
         => TryDamage(float.MaxValue, type);
-
-    /// <summary>
-    /// Plays a sound and sets the panel state to error. Error state can not be undone.
-    /// </summary>
-    public void PlayErrorAnimation() => Base.RpcPlayBeepSound(2);
 
     /// <summary>
     /// Gets the <see cref="CheckpointDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.

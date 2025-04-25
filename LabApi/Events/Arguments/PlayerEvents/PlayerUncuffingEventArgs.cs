@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Uncuffing"/> event.
 /// </summary>
-public class PlayerUncuffingEventArgs : EventArgs, ICancellableEvent
+public class PlayerUncuffingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUncuffingEventArgs"/> class.

@@ -27,7 +27,9 @@ public class PlayerActivatingGeneratorEventArgs : EventArgs, IPlayerEvent, IGene
     /// </summary>
     public Player Player { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the generator activating.
+    /// </summary>
     public Generator Generator { get; }
 
     /// <inheritdoc />

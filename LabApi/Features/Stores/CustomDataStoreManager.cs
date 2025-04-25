@@ -70,13 +70,13 @@ public static class CustomDataStoreManager
         DestroyMethods.Remove(type);
     }
 
-    public static void AddPlayer(Player player)
+    internal static void AddPlayer(Player player)
     {
         foreach (Type? storeType in RegisteredStores)
             GetOrAddMethods[storeType].Invoke(null, [player]);
     }
 
-    public static void RemovePlayer(Player player)
+    internal  static void RemovePlayer(Player player)
     {
         foreach (Type? storeType in RegisteredStores)
             DestroyMethods[storeType].Invoke(null, [player]);

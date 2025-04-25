@@ -15,7 +15,7 @@ public class PlayerEffectUpdatingEventArgs : EventArgs, ICancellableEvent
     /// </summary>
     /// <param name="player">The player whose effect is being updated.</param>
     /// <param name="effect">The effect that is being updated.</param>
-    /// <param name="intensity">Intesity of the effect.</param>
+    /// <param name="intensity">Intensity of the effect.</param>
     /// <param name="duration">Duration of the effect in seconds.</param>
     public PlayerEffectUpdatingEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
     {
@@ -37,7 +37,7 @@ public class PlayerEffectUpdatingEventArgs : EventArgs, ICancellableEvent
     public StatusEffectBase Effect { get; }
 
     /// <summary>
-    /// Gets or sets the new intesity of the effect.
+    /// Gets or sets the new intensity of the effect.
     /// </summary>
     public byte Intensity { get; set; }
 

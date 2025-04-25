@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Items.Pickups;
+using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
 
@@ -7,7 +8,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.ItemSpawned"/> event.
 /// </summary>
-public class ItemSpawnedEventArgs : EventArgs
+public class ItemSpawnedEventArgs : EventArgs, IPickupEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ItemSpawnedEventArgs"/> class.

@@ -26,8 +26,10 @@ public class JailbirdItem : Item
     internal JailbirdItem(BaseJailbirdItem baseJailbirdItem)
         : base(baseJailbirdItem)
     {
-        Dictionary.Add(baseJailbirdItem, this);
         Base = baseJailbirdItem;
+
+        if (CanCache)
+            Dictionary.Add(baseJailbirdItem, this);
     }
 
     /// <summary>
@@ -52,6 +54,16 @@ public class JailbirdItem : Item
     {
         get => Base.TotalChargesPerformed;
     }
+
+    /// <summary>
+    /// Gets the number of charges performed.
+    /// </summary>
+    public int TotalChargesPerformed => Base.TotalChargesPerformed;
+
+    /// <summary>
+    /// Gets whether the <see cref="Item.CurrentOwner"/> is currently charging with the jailbird.
+    /// </summary>
+    public bool IsCharging => Base.MovementOverrideActive;
 
     /// <summary>
     /// Gets the jailbird item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseJailbirdItem"/> was not null.

@@ -97,7 +97,7 @@ public class TantrumHazard : DecayableHazard
     /// <param name="hazard">The <see cref="Base"/> of the hazard.</param>
     /// <returns>The requested hazard or <see langword="null"/></returns>
     [return: NotNullIfNotNull(nameof(hazard))]
-    public static DecayableHazard? Get(TantrumEnvironmentalHazard? hazard)
+    public static TantrumHazard? Get(TantrumEnvironmentalHazard? hazard)
     {
         if (hazard == null)
             return null;

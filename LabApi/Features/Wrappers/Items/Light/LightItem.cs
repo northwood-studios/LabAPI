@@ -1,6 +1,7 @@
 ﻿using InventorySystem.Items.ToggleableLights;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Utils.Networking;
 
 namespace LabApi.Features.Wrappers;
 
@@ -26,8 +27,10 @@ public class LightItem : Item
     internal LightItem(ToggleableLightItemBase toggleableLightItemBase)
         : base(toggleableLightItemBase)
     {
-        Dictionary.Add(toggleableLightItemBase, this);
         Base = toggleableLightItemBase;
+
+        if (CanCache)
+            Dictionary.Add(toggleableLightItemBase, this);
     }
 
     /// <summary>
@@ -43,6 +46,19 @@ public class LightItem : Item
     /// The base <see cref="ToggleableLightItemBase"/> object.
     /// </summary>
     public new ToggleableLightItemBase Base { get; }
+
+    /// <summary>
+    /// Gets or sets whether the item is emitting light.
+    /// </summary>
+    public bool IsEmitting
+    {
+        get => Base.IsEmittingLight;
+        set
+        {
+            new FlashlightNetworkHandler.FlashlightMessage(Serial, value).SendToAuthenticated();
+            Base.IsEmittingLight = value;
+        }
+    }
 
     /// <summary>
     /// Gets the light item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ToggleableLightItemBase"/> was not null.

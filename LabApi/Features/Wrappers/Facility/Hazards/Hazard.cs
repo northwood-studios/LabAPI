@@ -8,6 +8,7 @@ using UnityEngine;
 using Mirror;
 using System.Diagnostics.CodeAnalysis;
 using PlayerRoles.PlayableScps.Scp939;
+using Logger = LabApi.Features.Console.Logger;
 
 namespace LabApi.Features.Wrappers;
 
@@ -222,9 +223,18 @@ public class Hazard
     /// </summary>
     /// <param name="hazard">The base object.</param>
     /// <returns>The newly created wrapper.</returns>
-    protected static Hazard CreateItemWrapper(EnvironmentalHazard hazard)
+    protected static Hazard? CreateItemWrapper(EnvironmentalHazard hazard)
     {
-        return typeWrappers[hazard.GetType()].Invoke(hazard);
+        Type targetType = hazard.GetType();
+        if (!typeWrappers.TryGetValue(targetType, out Func<EnvironmentalHazard, Hazard> ctorFunc))
+        {
+#if DEBUG
+            Logger.Warn($"Unable to find {nameof(Hazard)} wrapper for {targetType.Name}, backup up to base constructor!");
+#endif
+            return new Hazard(hazard);
+        }
+
+        return ctorFunc.Invoke(hazard);
     }
 
     /// <summary>

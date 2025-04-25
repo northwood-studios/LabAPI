@@ -1,14 +1,14 @@
-﻿using InventorySystem.Items.Radio;
-using LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
-using RadioItem = InventorySystem.Items.Radio.RadioItem;
+using BaseRadioItem = InventorySystem.Items.Radio.RadioItem;
+
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.TogglingRadio"/> event.
 /// </summary>
-public class PlayerTogglingRadioEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
+public class PlayerTogglingRadioEventArgs : EventArgs, IPlayerEvent, IRadioItemEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerTogglingRadioEventArgs"/> class.
@@ -16,11 +16,11 @@ public class PlayerTogglingRadioEventArgs : EventArgs, IPlayerEvent, ICancellabl
     /// <param name="player">The player who is toggling a radio.</param>
     /// <param name="radio">The radio item.</param>
     /// <param name="newState">New state of the radio being turned off or on.</param>
-    public PlayerTogglingRadioEventArgs(ReferenceHub player, RadioItem radio, bool newState)
+    public PlayerTogglingRadioEventArgs(ReferenceHub player, BaseRadioItem radio, bool newState)
     {
         IsAllowed = true;
         Player = Player.Get(player);
-        Radio = radio;
+        RadioItem = RadioItem.Get(radio);
         NewState = newState;
     }
 
@@ -32,7 +32,7 @@ public class PlayerTogglingRadioEventArgs : EventArgs, IPlayerEvent, ICancellabl
     /// <summary>
     /// Gets the radio item.
     /// </summary>
-    public RadioItem Radio { get; }
+    public RadioItem RadioItem { get; }
 
     /// <summary>
     /// Gets the new state of the radio being turned off or on.
@@ -41,4 +41,8 @@ public class PlayerTogglingRadioEventArgs : EventArgs, IPlayerEvent, ICancellabl
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+
+    /// <inheritdoc cref="RadioItem"/>
+    [Obsolete($"Use {nameof(RadioItem)} instead")]
+    public BaseRadioItem Radio => RadioItem.Base;
 }

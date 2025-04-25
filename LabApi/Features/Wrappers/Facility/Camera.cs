@@ -91,7 +91,14 @@ public class Camera
     /// </summary>
     /// <param name="camera">The <see cref="Scp079Camera"/> to get the camera from.</param>
     /// <returns>The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or <see langword="null"/> if it doesn't exist.</returns>
-    public static Camera? Get(Scp079Camera camera) => TryGet(camera, out Camera? cam) ? cam : null;
+    [return: NotNullIfNotNull(nameof(camera))]
+    public static Camera? Get(Scp079Camera? camera)
+    {
+        if (camera == null)
+            return null;
+
+        return TryGet(camera, out Camera? cam) ? cam : new Camera(camera);
+    }
 
     /// <summary>
     /// Tries to get the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
