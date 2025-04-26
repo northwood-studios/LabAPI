@@ -75,9 +75,17 @@ public class Player
     public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
 
     /// <summary>
-    /// A reference to all <see cref="Player"/> instance that are real players but are not authenticated yet.
+    /// A reference to all <see cref="Player"/> instances that are real players but are not authenticated yet.
     /// </summary>
     public static IEnumerable<Player> UnauthenticatedList => List.Where(x => x.IsPlayer && !x.IsReady);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are real players and that have authenticated.
+    /// </summary>
+    /// <remarks>
+    /// This is the set of all players that it is safe to send network messages too.
+    /// </remarks>
+    public static IEnumerable<Player> AuthenticatedList => List.Where(x => x.IsPlayer && x.IsReady);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
