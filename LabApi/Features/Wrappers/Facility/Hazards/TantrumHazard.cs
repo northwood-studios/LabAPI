@@ -77,7 +77,7 @@ public class TantrumHazard : DecayableHazard
         if (BasePrefab == null)
             BasePrefab = Hazard.GetPrefab<TantrumEnvironmentalHazard>();
 
-        TantrumHazard hazard = (TantrumHazard)Hazard.Spawn(BasePrefab, position, rotation, scale);
+        TantrumHazard hazard = (TantrumHazard)Hazard.Spawn(BasePrefab!, position, rotation, scale);
         hazard.SyncedPosition = position;
         return hazard;
     }

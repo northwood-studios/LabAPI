@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security;
+
 using BaseExperimentalWeaponLocker = MapGeneration.Distributors.ExperimentalWeaponLocker;
 
 namespace LabApi.Features.Wrappers;
@@ -14,7 +15,7 @@ namespace LabApi.Features.Wrappers;
 public class ExperimentalWeaponLocker : Locker
 {
     /// <summary>
-    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocler"/>.
+    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocker"/>.
     /// </summary>
     public new static Dictionary<BaseExperimentalWeaponLocker, ExperimentalWeaponLocker> Dictionary { get; } = [];
 

@@ -46,6 +46,7 @@ public class JailbirdItem : Item
     /// </summary>
     public new BaseJailbirdItem Base { get; }
 
+
     /// <summary>
     /// Gets the number of charges performed.
     /// </summary>

@@ -119,7 +119,7 @@ public class AmnesticCloudHazard : DecayableHazard
         if (BasePrefab == null)
             BasePrefab = GetPrefab<Scp939AmnesticCloudInstance>();
 
-        AmnesticCloudHazard hazard = (AmnesticCloudHazard)Hazard.Spawn(BasePrefab, position, rotation, scale);
+        AmnesticCloudHazard hazard = (AmnesticCloudHazard)Hazard.Spawn(BasePrefab!, position, rotation, scale);
         hazard.Base.State = CloudState.Created;
         hazard.LiveDuration = duration;
         hazard.VisualSize = size;

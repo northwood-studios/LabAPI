@@ -34,7 +34,7 @@ public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Team wave is respawning.
     /// </summary>
-    public RespawnWave Wave { get; }
+    public RespawnWave? Wave { get; }
 
     /// <summary>
     /// Gets all players that are about to respawn.

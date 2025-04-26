@@ -198,7 +198,7 @@ public class Room
         }
 
         room = Get(baseRoom);
-        return true;
+        return room != null;
     }
 
     /// <summary>

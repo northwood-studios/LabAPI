@@ -331,7 +331,7 @@ public class Item
         if (!typeWrappers.TryGetValue(targetType, out Func<ItemBase, Item> ctorFunc))
         {
 #if DEBUG
-            Logger.Warn($"Unable to find LabApi wrapper for {nameof(Item)} {targetType.Name}, backup up to base constructor!");
+            Console.Logger.Warn($"Unable to find LabApi wrapper for {nameof(Item)} {targetType.Name}, backup up to base constructor!");
 #endif
             return new Item(item);
         }
