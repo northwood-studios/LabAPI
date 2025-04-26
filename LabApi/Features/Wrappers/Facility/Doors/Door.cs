@@ -143,7 +143,7 @@ public class Door
     /// <summary>
     /// Gets the rooms which have this door.
     /// </summary>
-    public RoomIdentifier[] Rooms => Base.Rooms;
+    public IEnumerable<Room> Rooms => Base.Rooms.Select(Room.Get)!;
 
     /// <summary>
     /// Gets the zone in which this door is.
