@@ -256,7 +256,7 @@ public static class Warhead
     /// </summary>
     private static void OnWaitingForPlayers()
     {
-        BaseOutsidePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
+        BaseOutsidePanel = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>();
 
         StartScenarios = BaseController!.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
         ResumeScenarios = BaseController!.ResumeScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Resume)).ToArray();

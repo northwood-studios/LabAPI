@@ -48,14 +48,6 @@ public class JailbirdItem : Item
 
 
     /// <summary>
-    /// Gets the jailbird item's Total Charges
-    /// </summary>
-    public int TotalCharges
-    {
-        get => Base.TotalChargesPerformed;
-    }
-
-    /// <summary>
     /// Gets the number of charges performed.
     /// </summary>
     public int TotalChargesPerformed => Base.TotalChargesPerformed;

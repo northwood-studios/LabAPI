@@ -48,18 +48,6 @@ public class KeycardItem : Item
     public new BaseKeycardItem Base { get; }
 
     /// <summary>
-    /// Gets or sets the keycard item's <see cref="KeycardPermissions"/>.
-    /// <para>
-    /// Permissions are not saved and are discarded when the item is dropped.
-    /// </para>
-    /// </summary>
-    public KeycardPermissions Permissions
-    {
-        get => Base.Permissions;
-        set => Base.Permissions = value;
-    }
-
-    /// <summary>
     /// Gets the keycard item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseKeycardItem"/> was not null.
     /// </summary>
     /// <param name="baseKeycardItem">The <see cref="Base"/> of the item.</param>
