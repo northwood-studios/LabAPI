@@ -74,7 +74,7 @@ public class Room
     /// <summary>
     /// Gets the room's neighbors.
     /// </summary>
-    public HashSet<RoomIdentifier> ConnectedRooms => Base.ConnectedRooms;
+    public IEnumerable<Room> ConnectedRooms => Base.ConnectedRooms.Select(Get)!;
 
     /// <summary>
     /// Gets the doors that are a part of this room. TODO: Cache in base game code?
