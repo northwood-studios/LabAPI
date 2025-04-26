@@ -259,6 +259,32 @@ public class Door
     /// <param name="reason">The reason flag to add or remove.</param>
     /// <param name="enabled">Whether to apply this door lock flag or release it.</param>
     public void ChangeLock(DoorLockReason reason, bool enabled) => Base.ServerChangeLock(reason, enabled);
+
+    /// <summary>
+    /// Locks the door.
+    /// </summary>
+    /// <param name="reason">The reason flag to add for the lock.</param>
+    /// <remarks>
+    /// A door is locked when it has any <see cref="DoorLockReason"/> flag.
+    /// </remarks>
+    public void Lock(DoorLockReason reason = DoorLockReason.AdminCommand) => Base.ServerChangeLock(reason, true);
+
+    /// <summary>
+    /// Unlocks the door.
+    /// </summary>
+    /// <param name="reason">The reason flag to remove for the lock.</param>
+    /// <remarks>
+    /// A door is unlocked when it has zero <see cref="DoorLockReason"/> flags.
+    /// </remarks>
+    public void Unlock(DoorLockReason reason = DoorLockReason.AdminCommand) => Base.ServerChangeLock(reason, false);
+
+    /// <summary>
+    /// Whether the door has the specified <see cref="DoorLockReason"/>.
+    /// </summary>
+    /// <param name="reason">The <see cref="DoorLockReason"/> to test.</param>
+    /// <returns><see langword="true"/> if locked with the specified lock reason.</returns>
+    public bool HasLock(DoorLockReason reason) => (Base.ActiveLocks | (ushort)reason) > 0;
+
     /// <summary>
     /// Gets the door wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>
