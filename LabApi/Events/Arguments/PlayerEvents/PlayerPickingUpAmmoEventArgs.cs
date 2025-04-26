@@ -1,14 +1,14 @@
-﻿using InventorySystem.Items.Pickups;
-using LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using BaseAmmoPickup = InventorySystem.Items.Firearms.Ammo.AmmoPickup;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.PickingUpAmmo"/> event.
 /// </summary>
-public class PlayerPickingUpAmmoEventArgs : EventArgs, ICancellableEvent
+public class PlayerPickingUpAmmoEventArgs : EventArgs, IPlayerEvent, IAmmoPickupEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickingUpAmmoEventArgs"/> class.
@@ -17,13 +17,13 @@ public class PlayerPickingUpAmmoEventArgs : EventArgs, ICancellableEvent
     /// <param name="ammoType">Type of the ammo.</param>
     /// <param name="ammoAmount">Amount of ammo that is being picked up.</param>
     /// <param name="pickup">Ammo pickup.</param>
-    public PlayerPickingUpAmmoEventArgs(ReferenceHub player, ItemType ammoType, ushort ammoAmount, ItemPickupBase pickup)
+    public PlayerPickingUpAmmoEventArgs(ReferenceHub player, ItemType ammoType, ushort ammoAmount, BaseAmmoPickup pickup)
     {
         IsAllowed = true;
         Player = Player.Get(player);
         AmmoType = ammoType;
         AmmoAmount = ammoAmount;
-        Pickup = Pickup.Get(pickup);
+        AmmoPickup = AmmoPickup.Get(pickup);
     }
 
     /// <summary>
@@ -44,8 +44,12 @@ public class PlayerPickingUpAmmoEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Gets the ammo pickup.
     /// </summary>
-    public Pickup Pickup { get; }
+    public AmmoPickup AmmoPickup { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+
+    /// <inheritdoc cref="AmmoPickup"/>
+    [Obsolete($"Use {nameof(AmmoPickup)} instead")]
+    public Pickup Pickup => AmmoPickup;
 }

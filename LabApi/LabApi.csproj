@@ -11,6 +11,8 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Nullable>enable</Nullable>
 		<Platforms>AnyCPU</Platforms>
+		
+		<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,7 +22,7 @@
 	<PropertyGroup>
 		<TextTemplateTransformSkipUpToDate>false</TextTemplateTransformSkipUpToDate>
 	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp" HintPath="$(SL_REFERENCES)\Assembly-CSharp.dll" />
 		<Reference Include="Assembly-CSharp-firstpass" HintPath="$(SL_REFERENCES)\Assembly-CSharp-firstpass.dll" />
@@ -32,6 +34,9 @@
 		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.PhysicsModule.dll" />
 		<Reference Include="UnityEngine.AudioModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.AudioModule.dll" />
 		<Reference Include="mscorlib" HintPath="$(UNITY_REFERENCES)\mscorlib.dll" />
+		<Reference Include="System" HintPath="$(UNITY_REFERENCES)\System.dll" />
+		<Reference Include="System.Core" HintPath="$(UNITY_REFERENCES)\System.Core.dll" />
+		<Reference Include="netstandard" HintPath="$(UNITY_REFERENCES)\netstandard.dll" />
 	</ItemGroup>
 
 	<ItemGroup>

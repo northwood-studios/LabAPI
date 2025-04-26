@@ -10,6 +10,6 @@ public interface IHazardEvent
     /// <summary>
     /// Hazard that is involved in the event.
     /// </summary>
-    public Hazard Hazard { get; }
+    public Hazard? Hazard { get; }
 }
 

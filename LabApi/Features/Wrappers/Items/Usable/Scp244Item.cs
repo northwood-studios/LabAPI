@@ -26,8 +26,10 @@ public class Scp244Item : UsableItem
     internal Scp244Item(BaseScp244Item baseScp244Item)
         : base(baseScp244Item)
     {
-        Dictionary.Add(baseScp244Item, this);
         Base = baseScp244Item;
+
+        if (CanCache)
+            Dictionary.Add(baseScp244Item, this);
     }
 
     /// <summary>

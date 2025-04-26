@@ -1,12 +1,13 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp173Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp173Events.AddingObserver"/> event.
 /// </summary>
-public class Scp173AddingObserverEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, ITargetEvent
+public class Scp173AddingObserverEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp173AddingObserverEventArgs"/> class.

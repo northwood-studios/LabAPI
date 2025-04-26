@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.GeneratorActivating"/> event.
 /// </summary>
-public class GeneratorActivatingEventArgs : EventArgs, ICancellableEvent
+public class GeneratorActivatingEventArgs : EventArgs, IGeneratorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="GeneratorActivatingEventArgs"/> class.

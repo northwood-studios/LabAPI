@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.BlackingOutRoom"/> event.
 /// </summary>
-public class Scp079BlackingOutRoomEventsArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp079BlackingOutRoomEventsArgs : EventArgs, IPlayerEvent, IRoomEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079BlackingOutRoomEventsArgs"/> class.

@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractedLocker"/> event.
 /// </summary>
-public class PlayerInteractedLockerEventArgs : EventArgs, IPlayerEvent
+public class PlayerInteractedLockerEventArgs : EventArgs, IPlayerEvent, ILockerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedLockerEventArgs"/> class.
@@ -21,7 +21,7 @@ public class PlayerInteractedLockerEventArgs : EventArgs, IPlayerEvent
     public PlayerInteractedLockerEventArgs(ReferenceHub player, BaseLocker locker, BaseLockerChamber chamber, bool canOpen)
     {
         Player = Player.Get(player);
-        Locker = (Locker)Structure.Get(locker);
+        Locker = Locker.Get(locker);
         Chamber = LockerChamber.Get(chamber);
         CanOpen = canOpen;
     }

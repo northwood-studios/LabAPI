@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.ChangedCamera"/> event.
 /// </summary>
-public class Scp079ChangedCameraEventArgs : EventArgs, IPlayerEvent
+public class Scp079ChangedCameraEventArgs : EventArgs, IPlayerEvent, ICameraEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079ChangedCameraEventArgs"/> class.
@@ -18,7 +18,7 @@ public class Scp079ChangedCameraEventArgs : EventArgs, IPlayerEvent
     public Scp079ChangedCameraEventArgs(ReferenceHub player, Scp079Camera camera)
     {
         Player = Player.Get(player);
-        Camera = camera;
+        Camera = Camera.Get(camera);
     }
 
     /// <summary>
@@ -29,5 +29,5 @@ public class Scp079ChangedCameraEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// The affected camera instance.
     /// </summary>
-    public Scp079Camera Camera { get; }
+    public Camera Camera { get; set; }
 }

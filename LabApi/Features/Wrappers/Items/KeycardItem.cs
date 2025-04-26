@@ -26,8 +26,10 @@ public class KeycardItem : Item
     internal KeycardItem(BaseKeycardItem baseKeycardItem)
         : base(baseKeycardItem)
     {
-        Dictionary.Add(baseKeycardItem, this);
         Base = baseKeycardItem;
+
+        if (CanCache)
+            Dictionary.Add(baseKeycardItem, this);
     }
 
     /// <summary>

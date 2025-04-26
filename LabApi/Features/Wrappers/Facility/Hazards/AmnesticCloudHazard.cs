@@ -6,6 +6,9 @@ using static PlayerRoles.PlayableScps.Scp939.Scp939AmnesticCloudInstance;
 
 namespace LabApi.Features.Wrappers;
 
+/// <summary>
+/// A class representing the <see cref="Scp939AmnesticCloudInstance"/>.
+/// </summary>
 public class AmnesticCloudHazard : DecayableHazard
 {
     /// <summary>

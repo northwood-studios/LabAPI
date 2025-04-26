@@ -1,4 +1,6 @@
 ﻿using InventorySystem.Items.Coin;
+using Mirror;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,6 +9,9 @@ namespace LabApi.Features.Wrappers;
 /// <summary>
 /// The wrapper representing <see cref="Coin"/>.
 /// </summary>
+/// <remarks>
+/// The most important wrapper in the Api.
+/// </remarks>
 public class CoinItem : Item
 {
     /// <summary>
@@ -26,8 +31,10 @@ public class CoinItem : Item
     internal CoinItem(Coin coin)
         : base(coin)
     {
-        Dictionary.Add(coin, this);
         Base = coin;
+
+        if (CanCache)
+            Dictionary.Add(coin, this);
     }
 
     /// <summary>
@@ -43,6 +50,18 @@ public class CoinItem : Item
     /// The base <see cref="Coin"/> object.
     /// </summary>
     public new Coin Base { get; }
+
+    /// <summary>
+    /// Gets the outcome of the last flip.
+    /// Null if the coin has not been flipped otherwise true = Heads, false = Tails.
+    /// </summary>
+    public bool? LastFlipResult => Coin.FlipTimes.TryGetValue(Serial, out double time) ? (time > 0.0f) : null;
+
+    /// <summary>
+    /// Gets the <see cref="NetworkTime.time"/> of the last flip.
+    /// Null if the coin has not been flipped.
+    /// </summary>
+    public double? LastFlipTime => Coin.FlipTimes.TryGetValue(Serial, out double time) ? Math.Abs(time) : null;
 
     /// <summary>
     /// Gets the coin item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Coin"/> was not null.

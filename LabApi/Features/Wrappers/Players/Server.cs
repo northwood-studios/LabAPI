@@ -166,12 +166,12 @@ public static class Server
     }
 
     /// <summary>
-    /// Gets the <see cref="ItemCategory">Category</see> <see cref="ILimit{ItemCategory, sbyte}">limits</see>.
+    /// Gets the <see cref="ItemCategory">Category</see> <see cref="ILimit{ItemCategory, SByte}">limits</see>.
     /// </summary>
     public static ILimit<ItemCategory, sbyte> CategoryLimits { get; } = new CategoryLimitsSynchronizer();
 
     /// <summary>
-    /// Gets the <see cref="ItemType">Ammo</see> <see cref="ILimit{ItemType, ushort}">limits</see>.
+    /// Gets the <see cref="ItemType">Ammo</see> <see cref="ILimit{ItemType, UInt16}">limits</see>.
     /// </summary>
     public static ILimit<ItemType, ushort> AmmoLimits { get; } = new AmmoLimitsSynchronizer();
 
@@ -246,7 +246,7 @@ public static class Server
     /// <param name="bannedPlayerNickname">The nickname of the banned player.</param>
     /// <returns>Whether or not the ban was successful.</returns>
     public static bool BanUserId(string userId, string reason, long duration, string bannedPlayerNickname = "UnknownName") =>
-        BanUserId(userId, Host!, reason, duration, bannedPlayerNickname);
+        BanUserId(userId, Host, reason, duration, bannedPlayerNickname);
 
     /// <summary>
     /// Bans a player from the server.
@@ -257,7 +257,7 @@ public static class Server
     /// <param name="duration">The duration of the ban.</param>
     /// <param name="bannedPlayerNickname">The nickname of the banned player.</param>
     /// <returns>Whether the ban was successful.</returns>
-    public static bool BanUserId(string userId, Player issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
+    public static bool BanUserId(string userId, Player? issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
     {
         if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(reason) || issuer == null)
             return false;
@@ -282,7 +282,7 @@ public static class Server
     /// <param name="bannedPlayerNickname">The nickname of the banned player.</param>
     /// <returns>Whether the ban was successful.</returns>
     public static bool BanIpAddress(string ipAddress, string reason, long duration, string bannedPlayerNickname = "UnknownName") =>
-        BanIpAddress(ipAddress, Host!, reason, duration, bannedPlayerNickname);
+        BanIpAddress(ipAddress, Host, reason, duration, bannedPlayerNickname);
 
     /// <summary>
     /// Bans a player from the server.
@@ -293,7 +293,7 @@ public static class Server
     /// <param name="duration">The duration of the ban.</param>
     /// <param name="bannedPlayerNickname">The nickname of the banned player.</param>
     /// <returns>Whether the ban was successful.</returns>
-    public static bool BanIpAddress(string ipAddress, Player issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
+    public static bool BanIpAddress(string ipAddress, Player? issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
     {
         if (string.IsNullOrEmpty(ipAddress) || string.IsNullOrEmpty(reason) || issuer == null)
             return false;
@@ -374,13 +374,11 @@ public static class Server
     /// <summary>
     /// Restarts the server and reconnects all players.
     /// </summary>
-    // TODO: validate parameters after round wrapper has been implemented
     public static void Restart() => Round.Restart(false, true, ServerStatic.NextRoundAction.Restart);
 
     /// <summary>
     /// Restarts the server and reconnects all players to target server port.
     /// </summary>
-    // TODO: validate parameters after round wrapper has been implemented
     public static void Restart(ushort redirectPort)
     {
         NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.1f, redirectPort, true, false));
@@ -474,17 +472,17 @@ public static class Server
     /// <summary>
     /// Interface for getting and setting key value limits.
     /// </summary>
-    /// <typeparam name="Key">The Key type.</typeparam>
-    /// <typeparam name="Value">The Value type.</typeparam>
+    /// <typeparam name="TKey">The Key type.</typeparam>
+    /// <typeparam name="TValue">The Value type.</typeparam>
     // TODO: we might want to move this outside the class into its own file or just remove it entirely and expose the implementing classes instead
-    public interface ILimit<Key, Value>
+    public interface ILimit<in TKey, TValue>
     {
         /// <summary>
         /// Key value getter and setter.
         /// </summary>
         /// <param name="index">The key used to identify the limit.</param>
         /// <returns>The limit value for the corresponding key.</returns>
-        Value this[Key index]
+        TValue this[TKey index]
         {
             get;
             set;

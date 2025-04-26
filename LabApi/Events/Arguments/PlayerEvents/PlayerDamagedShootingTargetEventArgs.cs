@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DamagedShootingTarget"/> event.
 /// </summary>
-public class PlayerDamagedShootingTargetEventArgs : EventArgs, IPlayerEvent
+public class PlayerDamagedShootingTargetEventArgs : EventArgs, IPlayerEvent, IShootingTargetEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDamagedShootingTargetEventArgs"/> class.
@@ -20,7 +20,7 @@ public class PlayerDamagedShootingTargetEventArgs : EventArgs, IPlayerEvent
     public PlayerDamagedShootingTargetEventArgs(ReferenceHub player, ShootingTarget target, DamageHandlerBase damageHandler)
     {
         Player = Player.Get(player);
-        Target = target;
+        ShootingTarget = target;
         DamageHandler = damageHandler;
     }
 
@@ -32,10 +32,14 @@ public class PlayerDamagedShootingTargetEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the shooting target.
     /// </summary>
-    public ShootingTarget Target { get; }
+    public ShootingTarget ShootingTarget { get; }
 
     /// <summary>
     /// Gets the damage handler.
     /// </summary>
     public DamageHandlerBase DamageHandler { get; }
+
+    /// <inheritdoc cref="ShootingTarget"/>
+    [Obsolete($"Use {nameof(ShootingTarget)} instead")]
+    public ShootingTarget Target => ShootingTarget;
 }

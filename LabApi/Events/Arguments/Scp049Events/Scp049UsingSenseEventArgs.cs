@@ -1,12 +1,13 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp049Events.UsingSense"/> event.
 /// </summary>
-public class Scp049UsingSenseEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, ITargetEvent
+public class Scp049UsingSenseEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp049UsingSenseEventArgs"/> class.

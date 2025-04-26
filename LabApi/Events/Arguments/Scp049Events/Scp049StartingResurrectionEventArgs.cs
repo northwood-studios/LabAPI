@@ -2,6 +2,7 @@ using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using PlayerRoles.Ragdolls;
 using System;
+
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
