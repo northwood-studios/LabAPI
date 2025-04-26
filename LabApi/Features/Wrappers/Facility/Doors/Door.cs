@@ -243,6 +243,16 @@ public class Door
     public void PlayPermissionDeniedAnimation() => Base.PermissionsDenied(null, 0);
 
     /// <summary>
+    /// Opens the door.
+    /// </summary>
+    public void Open() => IsOpened = true;
+
+    /// <summary>
+    /// Closes the door.
+    /// </summary>
+    public void Close() => IsOpened = false;
+
+    /// <summary>
     /// Locks the door.
     /// </summary>
     /// <param name="reason">The reason.</param>
