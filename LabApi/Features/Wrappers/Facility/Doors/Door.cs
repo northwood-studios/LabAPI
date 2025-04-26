@@ -243,6 +243,20 @@ public class Door
     public void PlayPermissionDeniedAnimation() => Base.PermissionsDenied(null, 0);
 
     /// <summary>
+    /// Locks the door.
+    /// </summary>
+    /// <param name="reason">The reason.</param>
+    /// <param name="enabled">Whether the door lock reason is new.</param>
+    [Obsolete($"Use {nameof(ChangeLock)} instead")]
+    public void Lock(DoorLockReason reason, bool enabled) => Base.ServerChangeLock(reason, enabled);
+
+    /// <summary>
+    /// Changes the door's lock flags.
+    /// </summary>
+    /// <param name="reason">The reason flag to add or remove.</param>
+    /// <param name="enabled">Whether to apply this door lock flag or release it.</param>
+    public void ChangeLock(DoorLockReason reason, bool enabled) => Base.ServerChangeLock(reason, enabled);
+    /// <summary>
     /// Gets the door wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>
     /// <param name="doorVariant">The <see cref="DoorVariant"/> of the door.</param>
