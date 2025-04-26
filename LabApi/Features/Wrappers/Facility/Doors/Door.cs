@@ -188,13 +188,6 @@ public class Door
     public DoorLockReason LockReason => (DoorLockReason)Base.ActiveLocks;
 
     /// <summary>
-    /// Locks the door.
-    /// </summary>
-    /// <param name="reason">The reason.</param>
-    /// <param name="enabled">Whether the door lock reason is new.</param>
-    public void Lock(DoorLockReason reason, bool enabled) => Base.ServerChangeLock(reason, enabled);
-
-    /// <summary>
     /// Gets or sets the required <see cref="DoorPermissionFlags"/>.
     /// </summary>
     public DoorPermissionFlags Permissions
