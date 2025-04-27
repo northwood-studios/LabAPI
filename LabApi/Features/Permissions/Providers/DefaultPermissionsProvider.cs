@@ -167,7 +167,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
             permissionsGroup.SpecialPermissionsSuperset.Clear();
             foreach (string permission in permissionsGroup.Permissions)
             {
-                if (permission == "*")
+                if (permission == ".*")
                 {
                     permissionsGroup.IsRoot = true;
                     // We don't have to continue.
