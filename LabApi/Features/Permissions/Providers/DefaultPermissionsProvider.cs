@@ -171,7 +171,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
                 {
                     permissionsGroup.IsRoot = true;
                     // We don't have to continue.
-                    return;
+                    break;
                 }
             
                 if (!permission.Contains("."))
