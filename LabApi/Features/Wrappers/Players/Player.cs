@@ -31,6 +31,7 @@ using Utils.NonAllocLINQ;
 using VoiceChat;
 using VoiceChat.Playbacks;
 using static PlayerStatsSystem.AhpStat;
+using InventorySystem.Items.Armor;
 
 namespace LabApi.Features.Wrappers;
 
@@ -128,6 +129,7 @@ public class Player
     {
         Dictionary.Add(referenceHub, this);
         ReferenceHub = referenceHub;
+        Transform = referenceHub.transform;
         CustomDataStoreManager.AddPlayer(this);
     }
 
@@ -140,6 +142,16 @@ public class Player
     /// Gets the player's <see cref="GameObject"/>.
     /// </summary>
     public GameObject GameObject => ReferenceHub.gameObject;
+
+    /// <summary>
+    /// Gets the player's <see cref="UnityEngine.Transform"/>.
+    /// </summary>
+    public Transform Transform { get; }
+
+    /// <summary>
+    /// Gets whether the player was destroyed.
+    /// </summary>
+    public bool IsDestroyed => ReferenceHub == null || GameObject == null;
 
     /// <summary>
     /// Gets whether the player is the host or server.
@@ -452,6 +464,11 @@ public class Player
                 Inventory.ServerSelectItem(value.Serial);
         }
     }
+
+    /// <summary>
+    /// Gets the current <see cref="BodyArmorItem"/> being used.
+    /// </summary>
+    public BodyArmorItem? CurrentArmor => BodyArmorUtils.TryGetBodyArmor(Inventory, out BodyArmor baseArmor) ? BodyArmorItem.Get(baseArmor) : null;
 
     /// <summary>
     /// Gets the player's currently active <see cref="StatusEffectBase">status effects</see>.
@@ -1196,6 +1213,24 @@ public class Player
     /// <param name="item">The type of ammo.</param>
     /// <returns>The amount of ammo which the player has.</returns>
     public ushort GetAmmo(ItemType item) => ReferenceHub.inventory.GetCurAmmo(item);
+
+    /// <summary>
+    /// Attempts to get the first <see cref="Item"/> specified by its <see cref="ItemType"/> from the inventory.
+    /// </summary>
+    /// <param name="type">The <see cref="ItemType"/> to search for.</param>
+    /// <param name="item">The found <see cref="Item"/> instance.</param>
+    /// <returns><see langword="true"/> if found, otherwise <see langword="false"/>.</returns>
+    public bool TryGetItem(ItemType type, [NotNullWhen(true)] out Item? item)
+    {
+        if(Inventory.TryGetInventoryItem(type, out ItemBase itemBase))
+        {
+            item = Item.Get(itemBase);
+            return true;
+        }
+
+        item = null;
+        return false;
+    }
 
     /// <summary>
     /// Drops ammo of the specified type from the player's inventory.
