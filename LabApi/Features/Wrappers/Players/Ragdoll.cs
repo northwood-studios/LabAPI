@@ -1,4 +1,5 @@
 using Generators;
+using InventorySystem.Items.Pickups;
 using Mirror;
 using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp049;
@@ -32,6 +33,8 @@ public class Ragdoll
     private Ragdoll(BasicRagdoll ragdoll)
     {
         Base = ragdoll;
+        GameObject = ragdoll.gameObject;
+        Transform = ragdoll.transform;
         Dictionary.TryAdd(ragdoll, this);
     }
 
@@ -39,6 +42,21 @@ public class Ragdoll
     /// Gets the <see cref="BasicRagdoll"/> of the ragdoll.
     /// </summary>
     public BasicRagdoll Base { get; private set; }
+
+    /// <summary>
+    /// Gets the ragdoll's <see cref="UnityEngine.GameObject"/>.
+    /// </summary>
+    public GameObject GameObject { get; }
+
+    /// <summary>
+    /// Gets the pickup's <see cref="UnityEngine.Transform"/>.
+    /// </summary>
+    public Transform Transform { get; }
+
+    /// <summary>
+    /// Gets whether the ragdoll was destroyed.
+    /// </summary>
+    public bool IsDestroyed => Base == null || GameObject == null;
 
     /// <summary>
     /// Gets or sets the role info of the ragdoll.
