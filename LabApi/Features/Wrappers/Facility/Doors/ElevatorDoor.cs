@@ -1,7 +1,6 @@
 ﻿using Interactables.Interobjects;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using BaseElevatorDoor = Interactables.Interobjects.ElevatorDoor;
 
 namespace LabApi.Features.Wrappers;
@@ -49,7 +48,7 @@ public class ElevatorDoor : Door
     /// <summary>
     /// Gets the <see cref="Wrappers.Elevator"/> this door belongs to.
     /// </summary>
-    public Elevator? Elevator => Elevator.GetByGroup(Base.Group).FirstOrDefault();
+    public Elevator Elevator => Elevator.Get(Base.Chamber);
 
     /// <summary>
     /// Gets the <see cref="ElevatorGroup"/> this door belongs to.
