@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Generators;
+using BaseElevatorDoor = Interactables.Interobjects.ElevatorDoor;
+
 
 namespace LabApi.Features.Wrappers;
 
@@ -13,6 +15,18 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Elevator
 {
+    /// <summary>
+    /// Initializes the <see cref="Elevator"/> class to subscribe to <see cref="ElevatorChamber"/> events.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        Dictionary.Clear();
+
+        ElevatorChamber.OnElevatorSpawned += (chamber) => _ = new Elevator(chamber);
+        ElevatorChamber.OnElevatorRemoved += (chamber) => Dictionary.Remove(chamber);
+    }
+
     /// <summary>
     /// Contains all the cached <see cref="ElevatorChamber">generators</see> in the game, accessible through their <see cref="Scp079Generator"/>.
     /// </summary>
@@ -29,8 +43,10 @@ public class Elevator
     /// <param name="elevator">The <see cref="ElevatorChamber"/> of the elevator.</param>
     private Elevator(ElevatorChamber elevator)
     {
-        Dictionary.Add(elevator, this);
         Base = elevator;
+        GameObject = Base.gameObject;
+        Transform = Base.transform;
+        Dictionary.Add(elevator, this);
     }
 
     /// <summary>
@@ -39,16 +55,34 @@ public class Elevator
     public ElevatorChamber Base { get; }
 
     /// <summary>
-    /// Initializes the <see cref="Elevator"/> class to subscribe to <see cref="ElevatorChamber"/> events.
+    /// The <see cref="UnityEngine.GameObject"/>.
     /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        Dictionary.Clear();
+    public GameObject GameObject { get; }
 
-        ElevatorChamber.OnElevatorSpawned += (chamber) => _ = new Elevator(chamber);
-        ElevatorChamber.OnElevatorRemoved += (chamber) => Dictionary.Remove(chamber);
-    }
+    /// <summary>
+    /// The <see cref="UnityEngine.Transform"/>.
+    /// </summary>
+    public Transform Transform { get; }
+
+    /// <summary>
+    /// The world space position of the elevator.
+    /// </summary>
+    public Vector3 Position => Transform.position;
+
+    /// <summary>
+    /// The world space rotation of the elevator.
+    /// </summary>
+    public Quaternion Rotation => Transform.rotation;
+
+    /// <summary>
+    /// Gets all the doors associated with this elevator.
+    /// </summary>
+    public IEnumerable<ElevatorDoor> Doors => BaseElevatorDoor.GetDoorsForGroup(Group).Select(ElevatorDoor.Get)!;
+
+    /// <summary>
+    /// Gets all the rooms associated with this elevator.
+    /// </summary>
+    public IEnumerable<Room> Rooms => Doors.SelectMany(x => x.Rooms);
 
     /// <summary>
     /// Gets the current destination / location of the elevator.
@@ -166,6 +200,13 @@ public class Elevator
     /// Unlocks all elevator doors assigned to this chamber.
     /// </summary>
     public void UnlockAllDoors() => Base.ServerLockAllDoors(DoorLockReason.AdminCommand, false);
+
+    /// <summary>
+    /// Checks to see if the position in considered inside the elevators bounds.
+    /// </summary>
+    /// <param name="position">The world space position to check.</param>
+    /// <returns><see langword="true"/> if the position is contained in the elevators world space bounds.</returns>
+    public bool IsInside(Vector3 position) => Base.WorldspaceBounds.Contains(position);
 
     /// <summary>
     /// Gets the elevator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
