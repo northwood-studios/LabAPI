@@ -283,7 +283,7 @@ public class Door
     /// </summary>
     /// <param name="reason">The <see cref="DoorLockReason"/> to test.</param>
     /// <returns><see langword="true"/> if locked with the specified lock reason.</returns>
-    public bool HasLock(DoorLockReason reason) => (Base.ActiveLocks | (ushort)reason) > 0;
+    public bool HasLock(DoorLockReason reason) => (Base.ActiveLocks & (ushort)reason) > 0;
 
     /// <summary>
     /// Gets the door wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
