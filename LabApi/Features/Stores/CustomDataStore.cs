@@ -48,9 +48,6 @@ public abstract class CustomDataStore
         if (playerStores.TryGetValue(player, out CustomDataStore? store))
             return (TStore)store;
 
-        if (!CustomDataStoreManager.IsRegistered<TStore>())
-            CustomDataStoreManager.RegisterStore<TStore>();
-
         store = (TStore)Activator.CreateInstance(type, player);
         playerStores[player] = store;
 

@@ -10,7 +10,6 @@ namespace LabApi.Features.Stores;
 /// </summary>
 public static class CustomDataStoreManager
 {
-    private static readonly HashSet<Type> RegisteredStores = new();
     private static readonly Dictionary<Type, StoreHandler> Handlers = new();
 
     /// <summary>
@@ -22,7 +21,7 @@ public static class CustomDataStoreManager
         where T : CustomDataStore
     {
         Type type = typeof(T);
-        if (RegisteredStores.Contains(type))
+        if (Handlers.ContainsKey(type))
             return false;
 
         StoreHandler handler = new()
@@ -33,7 +32,6 @@ public static class CustomDataStoreManager
         };
 
         Handlers.Add(type, handler);
-        RegisteredStores.Add(type);
 
         return true;
     }
@@ -49,7 +47,6 @@ public static class CustomDataStoreManager
         if (Handlers.TryGetValue(type, out StoreHandler? handler))
             handler.DestroyAll();
 
-        RegisteredStores.Remove(type);
         Handlers.Remove(type);
     }
 
@@ -64,8 +61,4 @@ public static class CustomDataStoreManager
         foreach (StoreHandler? handler in Handlers.Values)
             handler.RemovePlayer(player);
     }
-
-    internal static bool IsRegistered(Type type) => RegisteredStores.Contains(type);
-
-    internal static bool IsRegistered<T>() => IsRegistered(typeof(T));
 }
