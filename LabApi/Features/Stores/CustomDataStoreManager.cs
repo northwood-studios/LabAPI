@@ -10,10 +10,8 @@ namespace LabApi.Features.Stores;
 /// </summary>
 public static class CustomDataStoreManager
 {
-    private static readonly List<Type> RegisteredStores = new ();
-    private static readonly Dictionary<Type, MethodInfo> GetOrAddMethods = new ();
-    private static readonly Dictionary<Type, MethodInfo> DestroyMethods = new ();
-    private static readonly Dictionary<Type, MethodInfo> DestroyAllMethods = new ();
+    private static readonly HashSet<Type> RegisteredStores = new();
+    private static readonly Dictionary<Type, StoreHandler> Handlers = new();
 
     /// <summary>
     /// Registers a custom data store.
@@ -24,29 +22,17 @@ public static class CustomDataStoreManager
         where T : CustomDataStore
     {
         Type type = typeof(T);
-        if (RegisteredStores.Contains(type)) return false;
-
-        MethodInfo? getOrAddMethod = typeof(CustomDataStore).GetMethod(nameof(CustomDataStore.GetOrAdd), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-        if (getOrAddMethod == null)
+        if (RegisteredStores.Contains(type))
             return false;
 
-        getOrAddMethod = getOrAddMethod.MakeGenericMethod(type);
-        GetOrAddMethods.Add(type, getOrAddMethod);
+        StoreHandler handler = new()
+        {
+            AddPlayer = player => CustomDataStore.GetOrAdd<T>(player),
+            RemovePlayer = CustomDataStore.Destroy<T>,
+            DestroyAll = CustomDataStore.DestroyAll<T>
+        };
 
-        MethodInfo? destroyMethod = typeof(CustomDataStore).GetMethod(nameof(CustomDataStore.Destroy), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-        if (destroyMethod == null)
-            return false;
-
-        destroyMethod = destroyMethod.MakeGenericMethod(type);
-        DestroyMethods.Add(type, destroyMethod);
-
-        MethodInfo? destroyAllMethod = typeof(CustomDataStore).GetMethod(nameof(CustomDataStore.DestroyAll), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-        if (destroyAllMethod == null)
-            return false;
-
-        destroyAllMethod = destroyAllMethod.MakeGenericMethod(type);
-        DestroyAllMethods.Add(type, destroyAllMethod);
-
+        Handlers.Add(type, handler);
         RegisteredStores.Add(type);
 
         return true;
@@ -60,26 +46,23 @@ public static class CustomDataStoreManager
         where T : CustomDataStore
     {
         Type type = typeof(T);
-        
-        if (DestroyAllMethods.TryGetValue(type, out MethodInfo? method))
-            method.Invoke(null, null);
+        if (Handlers.TryGetValue(type, out StoreHandler? handler))
+            handler.DestroyAll();
 
-        DestroyAllMethods.Remove(type);
         RegisteredStores.Remove(type);
-        GetOrAddMethods.Remove(type);
-        DestroyMethods.Remove(type);
+        Handlers.Remove(type);
     }
 
     internal static void AddPlayer(Player player)
     {
-        foreach (Type? storeType in RegisteredStores)
-            GetOrAddMethods[storeType].Invoke(null, new object[] { player });
+        foreach (StoreHandler? handler in Handlers.Values)
+            handler.AddPlayer(player);
     }
 
-    internal  static void RemovePlayer(Player player)
+    internal static void RemovePlayer(Player player)
     {
-        foreach (Type? storeType in RegisteredStores)
-            DestroyMethods[storeType].Invoke(null, new object[] { player });
+        foreach (StoreHandler? handler in Handlers.Values)
+            handler.RemovePlayer(player);
     }
 
     internal static bool IsRegistered(Type type) => RegisteredStores.Contains(type);
