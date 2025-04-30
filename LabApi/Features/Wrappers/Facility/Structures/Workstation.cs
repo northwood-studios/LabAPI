@@ -1,7 +1,9 @@
 ﻿using InventorySystem.Items.Firearms.Attachments;
+using InventorySystem.Items.MicroHID;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LabApi.Features.Wrappers;
 
@@ -81,4 +83,18 @@ public class Workstation : Structure
     /// <param name="player">The <see cref="Player"/> that interacted.</param>
     public void Interact(Player player)
         => BaseController.ServerInteract(player.ReferenceHub, BaseController.ActivateCollider.ColliderId);
+
+    /// <summary>
+    /// Gets the workstation wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="SpawnableStructure"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="spawnableStructure">The <see cref="Structure.Base"/> of the workstation.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(spawnableStructure))]
+    public static new Workstation? Get(SpawnableStructure? spawnableStructure)
+    {
+        if (spawnableStructure == null)
+            return null;
+
+        return Dictionary.TryGetValue(spawnableStructure, out Workstation found) ? found : (Workstation)CreateStructureWrapper(spawnableStructure);
+    }
 }

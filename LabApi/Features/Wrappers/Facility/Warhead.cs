@@ -66,16 +66,12 @@ public static class Warhead
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="AlphaWarheadOutsitePanel"/> has had a keycard unlock the button.
+    /// Gets or sets a value indicating whether the surface panel has had a keycard unlock the button.
     /// </summary>
     public static bool IsAuthorized
     {
-        get => BaseOutsidePanel?.keycardEntered ?? false;
-        set
-        {
-            if (BaseOutsidePanel != null)
-                BaseOutsidePanel.NetworkkeycardEntered = value;
-        }
+        get => AlphaWarheadActivationPanel.IsUnlocked;
+        set => AlphaWarheadActivationPanel.IsUnlocked = value;
     }
 
     /// <summary>

@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.Scp914Events;
 /// <summary>
 /// Represents the event arguments for when SCP-914 is being activated.
 /// </summary>
-public class Scp914ActivatingEventArgs : EventArgs, ICancellableEvent, IScp914Event, IPlayerEvent
+public class Scp914ActivatingEventArgs : EventArgs, IScp914Event, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp914ActivatingEventArgs"/> class.

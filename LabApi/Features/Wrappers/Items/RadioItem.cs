@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using InventorySystem.Items.Radio;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using VoiceChat.Playbacks;
 using BaseRadioItem = InventorySystem.Items.Radio.RadioItem;
 
 namespace LabApi.Features.Wrappers;
@@ -26,8 +28,10 @@ public class RadioItem : Item
     internal RadioItem(BaseRadioItem baseRadioItem)
         : base(baseRadioItem)
     {
-        Dictionary.Add(baseRadioItem, this);
         Base = baseRadioItem;
+
+        if (CanCache)
+            Dictionary.Add(baseRadioItem, this);
     }
 
     /// <summary>
@@ -43,6 +47,30 @@ public class RadioItem : Item
     /// The base <see cref="BaseRadioItem"/> object.
     /// </summary>
     public new BaseRadioItem Base { get; }
+
+    /// <summary>
+    /// Gets whether the radio is enabled and had battery.
+    /// </summary>
+    public bool IsUsable => Base.IsUsable;
+
+    /// <summary>
+    /// Gets whether the <see cref="Item.CurrentOwner"/> is talking into the radio.
+    /// </summary>
+    public bool IsTransmitting => PersonalRadioPlayback.IsTransmitting(Base.Owner);
+
+    /// <summary>
+    /// Gets or sets the battery percentage from 0 to 100.
+    /// </summary>
+    public byte BatteryPercent
+    {
+        get => Base.BatteryPercent;
+        set => Base.BatteryPercent = value;
+    }
+
+    /// <summary>
+    /// Gets the current <see cref="RadioMessages.RadioRangeLevel"/> range level of the radio.
+    /// </summary>
+    public RadioMessages.RadioRangeLevel RangeLevel => Base.RangeLevel;
 
     /// <summary>
     /// Gets the radio item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseRadioItem"/> was not null.

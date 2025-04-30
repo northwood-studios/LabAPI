@@ -1,6 +1,8 @@
-﻿using MapGeneration.Distributors;
+﻿using InventorySystem.Items.MicroHID;
+using MapGeneration.Distributors;
 using NorthwoodLib.Pools;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 using BaseLocker = MapGeneration.Distributors.Locker;
@@ -189,6 +191,20 @@ public class Locker : Structure
     {
         foreach (LockerChamber chamber in Chambers)
             chamber.IsOpen = false;
+    }
+
+    /// <summary>
+    /// Gets the locker wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="BaseLocker"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="baseLocker">The <see cref="Base"/> of the locker.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(baseLocker))]
+    public static Locker? Get(BaseLocker? baseLocker)
+    {
+        if (baseLocker == null)
+            return null;
+
+        return Dictionary.TryGetValue(baseLocker, out Locker found) ? found : (Locker)CreateStructureWrapper(baseLocker);
     }
 }
 

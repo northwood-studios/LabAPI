@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
 using System;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
@@ -6,7 +7,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.LeftPocketDimension"/> event.
 /// </summary>
-public class PlayerLeftPocketDimensionEventArgs : EventArgs
+public class PlayerLeftPocketDimensionEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerLeftPocketDimensionEventArgs"/> class.

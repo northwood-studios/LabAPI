@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.Scp939Events;
 /// <summary>
 /// Represents the event arguments for when SCP-939 is attacking a player.
 /// </summary>
-public class Scp939AttackingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp939AttackingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp939AttackingEventArgs"/> class.

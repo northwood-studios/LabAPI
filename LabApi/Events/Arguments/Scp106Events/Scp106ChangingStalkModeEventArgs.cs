@@ -7,7 +7,7 @@ namespace LabApi.Events.Arguments.Scp106Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp106Events.ChangingStalkMode"/> event.
 /// </summary>
-public class Scp106ChangingStalkModeEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp106ChangingStalkModeEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp106ChangingStalkModeEventArgs"/> class.

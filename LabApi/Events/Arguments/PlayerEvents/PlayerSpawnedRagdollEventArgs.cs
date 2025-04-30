@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using System;
@@ -8,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.SpawnedRagdoll"/> event.
 /// </summary>
-public class PlayerSpawnedRagdollEventArgs : EventArgs
+public class PlayerSpawnedRagdollEventArgs : EventArgs, IPlayerEvent, IRagdollEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSpawnedRagdollEventArgs"/> class.

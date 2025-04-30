@@ -26,8 +26,10 @@ public class AdrenalineItem : ConsumableItem
     internal AdrenalineItem(Adrenaline adrenaline)
         : base(adrenaline)
     {
-        Dictionary.Add(adrenaline, this);
         Base = adrenaline;
+
+        if (CanCache)
+            Dictionary.Add(adrenaline, this);
     }
 
     /// <summary>

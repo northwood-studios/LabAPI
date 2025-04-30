@@ -1,12 +1,13 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.WarheadEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.WarheadEvents.Detonating"/> event.
 /// </summary>
-public class WarheadDetonatingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class WarheadDetonatingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WarheadDetonatingEventArgs"/> class.

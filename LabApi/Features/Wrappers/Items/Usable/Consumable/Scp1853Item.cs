@@ -26,8 +26,10 @@ public class Scp1853Item : ConsumableItem
     internal Scp1853Item(BaseScp1853Item baseScp1853Item)
         : base(baseScp1853Item)
     {
-        Dictionary.Add(baseScp1853Item, this);
         Base = baseScp1853Item;
+
+        if (CanCache)
+            Dictionary.Add(baseScp1853Item, this);
     }
 
     /// <summary>

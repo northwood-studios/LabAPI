@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using CustomPlayerEffects;
+using InventorySystem.Items.Usables.Scp1344;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using BaseScp1344Item = InventorySystem.Items.Usables.Scp1344.Scp1344Item;
 
-namespace LabApi.Features.Wrappers.Items.Usable;
+namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper representing <see cref="BaseScp1344Item"/>.
@@ -25,13 +27,47 @@ public class Scp1344Item : UsableItem
     public new BaseScp1344Item Base { get; }
 
     /// <summary>
+    /// Gets whether the player is wearing scp1344.
+    /// </summary>
+    public bool IsWorn => Base.IsWorn;
+
+    /// <summary>
+    /// Gets or sets the current status of the item.
+    /// </summary>
+    /// <remarks>
+    /// In some cases certain statuses wont sync with the client, so the corresponding animation wont play.
+    /// </remarks>
+    public Scp1344Status Status
+    {
+        get => Base.Status;
+        set => Base.Status = value;
+    }
+
+    /// <summary>
+    /// The <see cref="Scp1344"/> effect of the <see cref="Item.CurrentOwner"/>.
+    /// </summary>
+    public Scp1344 Scp1344Effect => Base.Scp1344Effect;
+
+    /// <summary>
+    /// The <see cref="Blindness"/> effect of the <see cref="Item.CurrentOwner"/>.
+    /// </summary>
+    public Blindness BlindnessEffect => Base.BlindnessEffect;
+
+    /// <summary>
+    /// The <see cref="SeveredEyes"/> effect of the <see cref="Item.CurrentOwner"/>.
+    /// </summary>
+    public SeveredEyes SeveredEyesEffect => Base.SeveredEyesEffect;
+
+    /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseItem">The base <see cref="BaseScp1344Item"/> object.</param>
     internal Scp1344Item(BaseScp1344Item baseItem) : base(baseItem)
     {
-        Dictionary.Add(baseItem, this);
         Base = baseItem;
+
+        if (CanCache)
+            Dictionary.Add(baseItem, this);
     }
 
     /// <summary>

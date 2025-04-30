@@ -88,6 +88,16 @@ public static partial class Scp079Events
     public static event LabEventHandler<Scp079LockedDownRoomEventArgs>? LockedDownRoom;
 
     /// <summary>
+    /// Gets called when SCP-079 is being recontained.
+    /// </summary>
+    public static event LabEventHandler<Scp079RecontainingEventArgs>? Recontaining;
+
+    /// <summary>
+    /// Gets called when SCP-079 has been recontained.
+    /// </summary>
+    public static event LabEventHandler<Scp079RecontainedEventArgs>? Recontained;
+
+    /// <summary>
     /// Gets called when SCP-079 is unlocking a door.
     /// </summary>
     public static event LabEventHandler<Scp079UnlockingDoorEventArgs>? UnlockingDoor;

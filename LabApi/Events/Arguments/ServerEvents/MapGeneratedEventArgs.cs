@@ -3,7 +3,7 @@
 namespace LabApi.Events.Arguments.ServerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="ServerEvents.MapGenerated"/> event.
+/// Represents the arguments for the <see cref="Handlers.ServerEvents.MapGenerated"/> event.
 /// </summary>
 public class MapGeneratedEventArgs : EventArgs
 {

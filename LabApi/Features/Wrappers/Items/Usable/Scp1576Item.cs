@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using BaseScp1576Item = InventorySystem.Items.Usables.Scp1576.Scp1576Item;
 
 namespace LabApi.Features.Wrappers;
@@ -20,14 +21,27 @@ public class Scp1576Item : UsableItem
     public new static IReadOnlyCollection<Scp1576Item> List => Dictionary.Values;
 
     /// <summary>
+    /// The set of players who are able to transmit their voice to spectators using Scp1576.
+    /// </summary>
+    public static IEnumerable<Player> TransmitterList => BaseScp1576Item.ValidatedTransmitters.Select(x => Player.Get(x));
+
+    /// <summary>
+    /// The set of players who are able to receive hear spectators talking through Scp1576.
+    /// Includes people in the audible range of a player using Scp1567.
+    /// </summary>
+    public static IEnumerable<Player> ReceiverList => BaseScp1576Item.ValidatedReceivers.Select(x => Player.Get(x));
+
+    /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseScp1576Item">The base <see cref="BaseScp1576Item"/> object.</param>
     internal Scp1576Item(BaseScp1576Item baseScp1576Item)
         : base(baseScp1576Item)
     {
-        Dictionary.Add(baseScp1576Item, this);
         Base = baseScp1576Item;
+
+        if (CanCache)
+            Dictionary.Add(baseScp1576Item, this);
     }
 
     /// <summary>

@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.UnlockingDoor"/> event.
 /// </summary>
-public class Scp079UnlockingDoorEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp079UnlockingDoorEventArgs : EventArgs, IPlayerEvent, IDoorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079UnlockingDoorEventArgs"/> class.

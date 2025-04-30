@@ -3,6 +3,7 @@ using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 
 namespace LabApi.Events.Arguments.Scp106Events;
+
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp106Events.TeleportedPlayer"/> event.
 /// </summary>

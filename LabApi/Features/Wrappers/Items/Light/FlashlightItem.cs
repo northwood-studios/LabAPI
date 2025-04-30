@@ -26,8 +26,10 @@ public class FlashlightItem : LightItem
     internal FlashlightItem(BaseFlashlightItem baseFlashlightItem)
         : base(baseFlashlightItem)
     {
-        Dictionary.Add(baseFlashlightItem, this);
         Base = baseFlashlightItem;
+
+        if (CanCache)
+            Dictionary.Add(baseFlashlightItem, this);
     }
 
     /// <summary>

@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.LockedDoor"/> event.
 /// </summary>
-public class Scp079LockedDoorEventArgs : EventArgs, IPlayerEvent
+public class Scp079LockedDoorEventArgs : EventArgs, IPlayerEvent, IDoorEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079LockedDoorEventArgs"/> class.

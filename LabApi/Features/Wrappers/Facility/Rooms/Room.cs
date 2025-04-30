@@ -1,4 +1,5 @@
 using Generators;
+using Interactables.Interobjects.DoorUtils;
 using MapGeneration;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -19,7 +20,7 @@ public class Room
     internal static void Initialize()
     {
         RoomIdentifier.OnAdded += AddRoom;
-        RoomIdentifier.OnRemoved += (roomIdentifier) => Dictionary.Remove(roomIdentifier);
+        RoomIdentifier.OnRemoved += RemoveRoom;
     }
 
     /// <summary>
@@ -78,7 +79,13 @@ public class Room
     /// <summary>
     /// Gets the doors that are a part of this room. TODO: Cache in base game code?
     /// </summary>
-    public IEnumerable<Door> Doors => Door.List.Where(d => d.Rooms.Contains(Base));
+    public IEnumerable<Door> Doors
+    {
+        get
+        {
+            return DoorVariant.DoorsByRoom.TryGetValue(Base, out HashSet<DoorVariant> doors) ? doors.Where(x => x != null).Select(x => Door.Get(x!)) : [];
+        }
+    }
 
     /// <summary>
     /// Gets the first light controller for this room.<br></br>
@@ -122,8 +129,16 @@ public class Room
     /// </summary>
     /// <param name="roomIdentifier">The identifier of the room.</param>
     /// <returns>The requested room.</returns>
-    public static Room Get(RoomIdentifier roomIdentifier) =>
-        Dictionary.TryGetValue(roomIdentifier, out Room room) ? room : new Room(roomIdentifier);
+    public static Room? Get(RoomIdentifier roomIdentifier)
+    {
+        if (roomIdentifier == null)
+            return null;
+
+        if (!Dictionary.TryGetValue(roomIdentifier, out Room room))
+            return null;
+
+        return room;
+    }
 
     /// <summary>
     /// Gets the room by its <see cref="RoomName"/>.

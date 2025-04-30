@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.Scp173Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp173Events.PlayingSound"/> event.
 /// </summary>
-public class Scp173PlayingSoundEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp173PlayingSoundEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// The sound id that is going to be played.

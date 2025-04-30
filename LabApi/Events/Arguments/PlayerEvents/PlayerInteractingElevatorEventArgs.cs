@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractingElevator"/> event.
 /// </summary>
-public class PlayerInteractingElevatorEventArgs : EventArgs, ICancellableEvent
+public class PlayerInteractingElevatorEventArgs : EventArgs, IPlayerEvent, IElevatorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingElevatorEventArgs"/> class.

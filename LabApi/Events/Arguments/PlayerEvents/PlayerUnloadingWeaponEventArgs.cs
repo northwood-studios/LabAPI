@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items;
+﻿using InventorySystem.Items.Firearms;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
@@ -8,18 +8,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.UnloadingWeapon"/> event.
 /// </summary>
-public class PlayerUnloadingWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent, ICancellableEvent
+public class PlayerUnloadingWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmItemEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUnloadingWeaponEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player who is unloading a weapon.</param>
     /// <param name="weapon">The weapon that is being unloaded.</param>
-    public PlayerUnloadingWeaponEventArgs(ReferenceHub player, ItemBase weapon)
+    public PlayerUnloadingWeaponEventArgs(ReferenceHub player, Firearm weapon)
     {
         IsAllowed = true;
         Player = Player.Get(player);
-        Weapon = Item.Get(weapon);
+        FirearmItem = FirearmItem.Get(weapon);
     }
 
     /// <summary>
@@ -30,8 +30,12 @@ public class PlayerUnloadingWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEv
     /// <summary>
     /// Gets or sets the weapon that is being unloaded.
     /// </summary>
-    public Item Weapon { get; }
+    public FirearmItem FirearmItem { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+
+    /// <inheritdoc cref="FirearmItem"/>
+    [Obsolete($"Use {nameof(FirearmItem)} instead")]
+    public Item Weapon => FirearmItem;
 }

@@ -26,8 +26,10 @@ public class Scp500Item : ConsumableItem
     internal Scp500Item(Scp500 scp500)
         : base(scp500)
     {
-        Dictionary.Add(scp500, this);
         Base = scp500;
+
+        if (CanCache)
+            Dictionary.Add(scp500, this);
     }
 
     /// <summary>

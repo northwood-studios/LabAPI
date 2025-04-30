@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.Scp914Events;
 /// <summary>
 /// Represents the event arguments for when a player is being processed by SCP-914.
 /// </summary>
-public class Scp914ProcessingPlayerEventArgs : EventArgs, ICancellableEvent, IScp914Event, IPlayerEvent
+public class Scp914ProcessingPlayerEventArgs : EventArgs, IScp914Event, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp914ProcessingPlayerEventArgs"/> class.

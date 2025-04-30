@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.ProjectileExploding"/> event.
 /// </summary>
-public class ProjectileExplodingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class ProjectileExplodingEventArgs : EventArgs, IPlayerEvent, ITimedGrenadeEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectileExplodingEventArgs"/> class.
@@ -19,7 +19,7 @@ public class ProjectileExplodingEventArgs : EventArgs, ICancellableEvent, IPlaye
     /// <param name="position">The position of explosion.</param>
     public ProjectileExplodingEventArgs(TimeGrenade grenade, ReferenceHub player, Vector3 position)
     {
-        Grenade = TimedGrenadeProjectile.Get(grenade);
+        TimedGrenade = TimedGrenadeProjectile.Get(grenade);
         Player = Player.Get(player);
         Position = position;
 
@@ -29,7 +29,7 @@ public class ProjectileExplodingEventArgs : EventArgs, ICancellableEvent, IPlaye
     /// <summary>
     /// Gets grenade which caused this explosion.
     /// </summary>
-    public TimedGrenadeProjectile Grenade { get; }
+    public TimedGrenadeProjectile TimedGrenade { get; }
 
     /// <summary>
     /// Gets who threw this grenade.
@@ -43,4 +43,8 @@ public class ProjectileExplodingEventArgs : EventArgs, ICancellableEvent, IPlaye
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+
+    /// <inheritdoc cref="TimedGrenade"/>
+    [Obsolete($"Use {nameof(TimedGrenade)} instead")]
+    public TimedGrenadeProjectile Grenade => TimedGrenade;
 }

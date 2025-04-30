@@ -29,7 +29,8 @@ public class Scp018Projectile : TimedGrenadeProjectile
     {
         Base = projectilePickup;
 
-        Dictionary.Add(projectilePickup, this);
+        if (CanCache)
+            Dictionary.Add(projectilePickup, this);
     }
 
     /// <summary>

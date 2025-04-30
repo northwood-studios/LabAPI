@@ -1,13 +1,16 @@
-﻿using InventorySystem.Items;
+﻿using Generators;
 using InventorySystem;
+using InventorySystem.Items;
 using InventorySystem.Items.Pickups;
-using System.Collections.Generic;
-using UnityEngine;
+using InventorySystem.Items.ThrowableProjectiles;
 using Mirror;
-using System.Diagnostics.CodeAnalysis;
-using Generators;
 using System;
 using InventorySystem.Items.ThrowableProjectiles;
+using LabApi.Events.Handlers;
+using LabApi.Events.Arguments.ServerEvents;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
 
@@ -18,6 +21,34 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Pickup
 {
+    /// <summary>
+    /// Initializes the <see cref="Pickup"/> class.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        ItemPickupBase.OnPickupAdded += AddPickup;
+        ItemPickupBase.OnPickupDestroyed += RemovePickup;
+
+        Register<FlashbangGrenade>(n => new FlashbangProjectile(n));
+        Register<ExplosionGrenade>(n => new ExplosiveGrenadeProjectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.Scp018Projectile n) => new Scp018Projectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile n) => new Scp2176Projectile(n));
+
+        Register<InventorySystem.Items.Firearms.Ammo.AmmoPickup>(x => new AmmoPickup(x));
+        Register<InventorySystem.Items.Armor.BodyArmorPickup>(x => new BodyArmorPickup(x));
+        Register<InventorySystem.Items.Firearms.FirearmPickup>(x => new FirearmPickup(x));
+        Register<InventorySystem.Items.Jailbird.JailbirdPickup>(x => new JailbirdPickup(x));
+        Register<InventorySystem.Items.Keycards.KeycardPickup>(x => new KeycardPickup(x));
+        Register<InventorySystem.Items.MicroHID.MicroHIDPickup>(x => new MicroHIDPickup(x));
+        Register<InventorySystem.Items.Radio.RadioPickup>(x => new RadioPickup(x));
+        Register<InventorySystem.Items.Usables.Scp1576.Scp1576Pickup>(x => new Scp1576Pickup(x));
+        Register<InventorySystem.Items.Usables.Scp244.Scp244DeployablePickup>(x => new Scp244Pickup(x));
+        Register<InventorySystem.Items.Usables.Scp330.Scp330Pickup>(x => new Scp330Pickup(x));
+        Register<InventorySystem.Items.ThrowableProjectiles.TimedGrenadePickup>(x => new TimedGrenadePickup(x));
+        Register<CollisionDetectionPickup>(x => new Pickup(x));
+    }
+
     /// <summary>
     /// Contains all the handlers for constructing wrappers for the associated base game types.
     /// </summary>
@@ -43,38 +74,61 @@ public class Pickup
     public static IReadOnlyCollection<Pickup> List => Dictionary.Values;
 
     /// <summary>
-    /// Initializes the <see cref="Pickup"/> class.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        ItemPickupBase.OnPickupAdded += AddPickup;
-        ItemPickupBase.OnBeforePickupDestroyed += RemovePickup;
-
-        Register<FlashbangGrenade>(n => new FlashbangProjectile(n));
-        Register<ExplosionGrenade>(n => new ExplosiveGrenadeProjectile(n));
-        Register((InventorySystem.Items.ThrowableProjectiles.Scp018Projectile n) => new Scp018Projectile(n));
-        Register((InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile n) => new Scp2176Projectile(n));
-    }
-
-    /// <summary>
-    /// A protected constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
-    protected Pickup(ItemPickupBase itemPickupBase)
-    {
-        Base = itemPickupBase;
-
-        Dictionary.Add(itemPickupBase, this);
-
-        if (itemPickupBase.Info.Serial != 0)
-            SerialCache[itemPickupBase.Info.Serial] = this;
-    }
-
-    /// <summary>
     /// The <see cref="ItemPickupBase"/> of the pickup.
     /// </summary>
     public ItemPickupBase Base { get; }
+
+    /// <summary>
+    /// The <see cref="Mirror.NetworkIdentity"/> of the pickup.
+    /// </summary>
+    public NetworkIdentity NetworkIdentity => Base.netIdentity;
+
+    /// <remarks>
+    /// Will be null if the <see cref="PickupPhysicsModule"/> is not a <see cref="InventorySystem.Items.Pickups.PickupStandardPhysics"/> e.g. when SCP018 it is in its "Activated" state and uses an alternate physics module.
+    /// Use <see cref="PhysicsModule"/> instead for those cases.
+    /// </remarks>
+    public PickupStandardPhysics? PickupStandardPhysics => Base.PhysicsModule as PickupStandardPhysics;
+
+    /// <summary>
+    /// Gets the pickup's <see cref="PickupPhysicsModule"/>.
+    /// </summary>
+    public PickupPhysicsModule PhysicsModule => Base.PhysicsModule;
+
+    /// <summary>
+    /// Gets the pickup's <see cref="UnityEngine.Rigidbody"/>.
+    /// </summary>
+    /// <remarks>
+    /// Null if <see cref="PickupStandardPhysics"/> is null.
+    /// </remarks>
+    public Rigidbody? Rigidbody => PickupStandardPhysics?.Rb;
+
+    /// <summary>
+    /// Gets the pickup's <see cref="UnityEngine.Transform"/>.
+    /// </summary>
+    public Transform Transform { get; }
+
+    /// <summary>
+    /// Gets the pickup's <see cref="UnityEngine.GameObject"/>.
+    /// </summary>
+    public GameObject GameObject { get; }
+
+    /// <summary>
+    /// Gets whether the pickup was destroyed.
+    /// </summary>
+    public bool IsDestroyed => Base == null || GameObject == null;
+
+    /// <summary>
+    /// Gets whether or not this instance is used as a prefab.
+    /// </summary>
+    /// <remarks>
+    /// Changes made to the prefab instance will be reflected across all subsequent new instances.
+    /// </remarks>
+    public bool IsPrefab { get; }
+
+    /// <summary>
+    /// Gets whether the pickup is spawned on the client.
+    /// </summary>
+    public bool IsSpawned => NetworkIdentity.netId != 0;
 
     /// <summary>
     /// Gets the pickup's <see cref="ItemType"/>.
@@ -128,43 +182,6 @@ public class Pickup
     }
 
     /// <summary>
-    /// Gets the <see cref="Wrappers.Room"/> at the pickup's current position.
-    /// </summary>
-    public Room? Room => Room.GetRoomAtPosition(Position);
-
-    /// <summary>
-    /// Gets the pickup's <see cref="InventorySystem.Items.Pickups.PickupStandardPhysics"/>.
-    /// </summary>
-    /// <remarks>
-    /// Will be null if the <see cref="PickupPhysicsModule"/> is not a <see cref="InventorySystem.Items.Pickups.PickupStandardPhysics"/> e.g. when SCP018 it is in its "Activated" state and uses an alternate physics module.
-    /// Use <see cref="PhysicsModule"/> instead for those cases.
-    /// </remarks>
-    public PickupStandardPhysics? PickupStandardPhysics => Base.PhysicsModule as PickupStandardPhysics;
-
-    /// <summary>
-    /// Gets the pickup's <see cref="PickupPhysicsModule"/>.
-    /// </summary>
-    public PickupPhysicsModule PhysicsModule => Base.PhysicsModule;
-
-    /// <summary>
-    /// Gets the pickup's <see cref="UnityEngine.Rigidbody"/>.
-    /// </summary>
-    /// <remarks>
-    /// Null if <see cref="PickupStandardPhysics"/> is null.
-    /// </remarks>
-    public Rigidbody? Rigidbody => PickupStandardPhysics?.Rb;
-
-    /// <summary>
-    /// Gets the pickup's <see cref="UnityEngine.Transform"/>.
-    /// </summary>
-    public Transform Transform => Base.transform;
-
-    /// <summary>
-    /// Gets the pickup's <see cref="UnityEngine.GameObject"/>.
-    /// </summary>
-    public GameObject GameObject => Base.gameObject;
-
-    /// <summary>
     /// Gets or sets the pickup's position.
     /// </summary>
     public Vector3 Position
@@ -183,11 +200,6 @@ public class Pickup
     }
 
     /// <summary>
-    /// Gets whether the pickup was destroyed.
-    /// </summary>
-    public bool IsDestroyed => GameObject == null;
-
-    /// <summary>
     /// Gets the pickup's <see cref="ItemCategory"/>.
     /// </summary>
     public ItemCategory Category => InventoryItemLoader.AvailableItems.TryGetValue(Type, out var itemBase) ? itemBase.Category : ItemCategory.None;
@@ -198,20 +210,42 @@ public class Pickup
     public ItemTierFlags Tier => InventoryItemLoader.AvailableItems.TryGetValue(Type, out var itemBase) ? itemBase.TierFlags : ItemTierFlags.Common;
 
     /// <summary>
-    /// Gets the pickup wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
+    /// Gets the <see cref="Wrappers.Room"/> at the pickup's current position.
+    /// </summary>
+    public Room? Room => Room.GetRoomAtPosition(Position);
+
+    /// <summary>
+    /// Gets whether the item wrapper is allowed to be cached.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && !IsPrefab;
+
+    /// <summary>
+    /// A protected constructor to prevent external instantiation.
     /// </summary>
     /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
-    /// <returns>The requested item <see cref="Pickup"/>.</returns>
-    [return: NotNullIfNotNull(nameof(itemPickupBase))]
-    public static Pickup? Get(ItemPickupBase itemPickupBase)
+    protected Pickup(ItemPickupBase itemPickupBase)
     {
-        if (itemPickupBase == null)
-            return null;
+        Base = itemPickupBase;
+        GameObject = itemPickupBase.gameObject;
+        Transform = itemPickupBase.transform;
+        IsPrefab = InventoryItemLoader.TryGetItem(itemPickupBase.ItemId.TypeId, out ItemBase prefab) && prefab.PickupDropModel == itemPickupBase;
 
-        if (Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
-            return pickup;
+        if (CanCache)
+        {
+            Dictionary.Add(itemPickupBase, this);
 
-        return CreateItemWrapper(itemPickupBase);
+            if (itemPickupBase.Info.Serial != 0)
+                SerialCache[itemPickupBase.Info.Serial] = this;
+        }
+    }
+
+    /// <summary>
+    /// An internal virtual method to signal to derived implementations to uncache when the base object is destroyed.
+    /// </summary>
+    internal virtual void OnRemove()
+    {
+        Dictionary.Remove(Base);
+        SerialCache.Remove(Serial);
     }
 
     /// <summary>
@@ -231,12 +265,20 @@ public class Pickup
     }
 
     /// <summary>
-    /// An internal virtual method to signal to derived implementations to uncache when the base object is destroyed.
+    /// Gets the pickup wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
     /// </summary>
-    internal virtual void OnRemove()
+    /// <param name="itemPickupBase">The <see cref="ItemPickupBase"/> of the pickup.</param>
+    /// <returns>The requested item <see cref="Pickup"/>.</returns>
+    [return: NotNullIfNotNull(nameof(itemPickupBase))]
+    public static Pickup? Get(ItemPickupBase? itemPickupBase)
     {
-        Dictionary.Remove(Base);
-        SerialCache.Remove(Serial);
+        if (itemPickupBase == null)
+            return null;
+
+        if (Dictionary.TryGetValue(itemPickupBase, out Pickup pickup))
+            return pickup;
+
+        return CreateItemWrapper(itemPickupBase);
     }
 
     /// <summary>
@@ -247,7 +289,7 @@ public class Pickup
     public static Pickup? Get(ushort itemSerial) => SerialCache.GetValueOrDefault(itemSerial);
 
     /// <summary>
-    /// Trys to get the pickup wrapper from the <see cref="SerialCache"/>.
+    /// Tries to get the pickup wrapper from the <see cref="SerialCache"/>.
     /// </summary>
     /// <param name="itemSerial">The serial of the pickup.</param>
     /// <param name="pickup">The requested item <see cref="Pickup"/> or null if it doesn't exist.</param>
@@ -293,23 +335,42 @@ public class Pickup
     }
 
     /// <summary>
-    /// A private method to handle the creation of new hazards in the server.
+    /// A private method to handle the creation of new pickups in the server.
     /// </summary>
     /// <param name="pickup">The created <see cref="ItemPickupBase"/> instance.</param>
     private static void AddPickup(ItemPickupBase pickup)
     {
-        if (!Dictionary.ContainsKey(pickup))
-            _ = CreateItemWrapper(pickup);
+        try
+        {
+            if (!Dictionary.ContainsKey(pickup))
+            {
+                Pickup wrapper = CreateItemWrapper(pickup);
+                ServerEvents.OnPickupCreated(new PickupCreatedEventArgs(wrapper));
+            }
+        }
+        catch(Exception e)
+        {
+            Console.Logger.Error($"Failed to handle pickup creation with error: {e}");
+        }
     }
 
     /// <summary>
-    /// A private method to handle the removal of hazards from the server.
+    /// A private method to handle the removal of pickups from the server.
     /// </summary>
     /// <param name="pickup">The to be destroyed <see cref="ItemPickupBase"/> instance.</param>
     private static void RemovePickup(ItemPickupBase pickup)
     {
-        if (Dictionary.TryGetValue(pickup, out Pickup item))
-            item.OnRemove();
+        try
+        {
+            if (Dictionary.TryGetValue(pickup, out Pickup item))
+                item.OnRemove();
+            
+            ServerEvents.OnPickupDestroyed(new PickupDestroyedEventArgs(item));
+        }
+        catch(Exception e)
+        {
+            Console.Logger.Error($"Failed to handle pickup destruction with error: {e}");
+        }
     }
 
     /// <summary>
@@ -323,17 +384,16 @@ public class Pickup
     }
 
     /// <summary>
-    /// Creates a new wrapper from the base envronental hazard object.
+    /// Creates a new wrapper from the base pickup object.
     /// </summary>
-    /// <param name="hazard">The base object.</param>
+    /// <param name="pickupBase">The base object.</param>
     /// <returns>The newly created wrapper.</returns>
-    protected static Pickup CreateItemWrapper(ItemPickupBase hazard)
+    protected static Pickup CreateItemWrapper(ItemPickupBase pickupBase)
     {
-        if (typeWrappers.TryGetValue(hazard.GetType(), out Func<ItemPickupBase, Pickup> ctorFunc))
-        {
-            return ctorFunc(hazard);
-        }
+        if (typeWrappers.TryGetValue(pickupBase.GetType(), out Func<ItemPickupBase, Pickup> ctorFunc))
+            return ctorFunc(pickupBase);
 
-        return new Pickup(hazard); // Default for unimplemented wrappers for specific items
+        Console.Logger.Warn($"Failed to find pickup wrapper for type {pickupBase.GetType()}");
+        return new Pickup(pickupBase);
     }
 }

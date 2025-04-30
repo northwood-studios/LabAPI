@@ -17,13 +17,15 @@ public class PlayerChangingRoleEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// <param name="oldRole">The old role object of the player.</param>
     /// <param name="newRole">The new role type.</param>
     /// <param name="changeReason">The reason of role changing.</param>
-    public PlayerChangingRoleEventArgs(ReferenceHub player, PlayerRoleBase oldRole, RoleTypeId newRole, RoleChangeReason changeReason)
+    /// <param name="spawnFlags">The spawn flags for this role change.</param>
+    public PlayerChangingRoleEventArgs(ReferenceHub player, PlayerRoleBase oldRole, RoleTypeId newRole, RoleChangeReason changeReason, RoleSpawnFlags spawnFlags)
     {
         IsAllowed = true;
         Player = Player.Get(player);
         OldRole = oldRole;
         NewRole = newRole;
         ChangeReason = changeReason;
+        SpawnFlags = spawnFlags;
     }
 
     /// <summary>
@@ -45,6 +47,11 @@ public class PlayerChangingRoleEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// Gets the reason of role change.
     /// </summary>
     public RoleChangeReason ChangeReason { get; set; }
+
+    /// <summary>
+    /// Gets or sets the spawn flags for this role change.
+    /// </summary>
+    public RoleSpawnFlags SpawnFlags { get; set; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
