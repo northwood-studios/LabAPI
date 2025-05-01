@@ -174,7 +174,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
                     break;
                 }
             
-                if (!permission.Contains("."))
+                if (!permission.Contains(".*"))
                     continue;
 
                 int index = permission.LastIndexOf(".", StringComparison.Ordinal);
