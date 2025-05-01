@@ -53,6 +53,20 @@ public abstract class CustomDataStore
 
         return (TStore)store;
     }
+    
+    /// <summary>
+    /// Gets all instances of the <see cref="CustomDataStore"/> for the specified type.
+    /// </summary>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
+    /// <returns>An <see cref="IEnumerable{TStore}"/> of all instances of the <see cref="CustomDataStore"/>.</returns>
+    public static IEnumerable<(Player Player, TStore Store)> GetAll<TStore>()
+        where TStore : CustomDataStore
+    {
+        if (!StoreInstances.TryGetValue(typeof(TStore), out Dictionary<Player, CustomDataStore>? playerStores))
+            return Enumerable.Empty<(Player, TStore)>();
+
+        return playerStores.Select(entry => (entry.Key, (TStore)entry.Value));
+    }
 
     /// <summary>
     /// Called when a new instance of the <see cref="CustomDataStore"/> is created.
@@ -124,10 +138,9 @@ public abstract class CustomDataStore<TStore> : CustomDataStore
     {
     }
 
-    /// <summary>
-    /// Gets the <see cref="CustomDataStore"/> for the specified <see cref="Player"/>.
-    /// </summary>
-    /// <param name="player">The <see cref="Player"/> to get the <see cref="CustomDataStore"/> for.</param>
-    /// <returns>The <see cref="CustomDataStore"/> for the specified <see cref="Player"/>.</returns>
+    /// <inheritdoc cref="CustomDataStore.GetOrAdd{TStore}"/>
     public static TStore Get(Player player) => GetOrAdd<TStore>(player);
+    
+    /// <inheritdoc cref="CustomDataStore.GetAll{TStore}"/>
+    public static IEnumerable<(Player Player, TStore Store)> GetAll() => CustomDataStore.GetAll<TStore>();
 }
