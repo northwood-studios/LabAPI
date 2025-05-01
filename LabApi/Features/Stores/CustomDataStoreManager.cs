@@ -15,20 +15,20 @@ public static class CustomDataStoreManager
     /// <summary>
     /// Registers a custom data store.
     /// </summary>
-    /// <typeparam name="T">The type of the custom data store.</typeparam>
+    /// <typeparam name="TStore">The type of the custom data store.</typeparam>
     /// <returns>Whether the store was successfully registered.</returns>
-    public static bool RegisterStore<T>()
-        where T : CustomDataStore
+    public static bool RegisterStore<TStore>()
+        where TStore : CustomDataStore
     {
-        Type type = typeof(T);
+        Type type = typeof(TStore);
         if (Handlers.ContainsKey(type))
             return false;
 
         StoreHandler handler = new()
         {
-            AddPlayer = player => CustomDataStore.GetOrAdd<T>(player),
-            RemovePlayer = CustomDataStore.Destroy<T>,
-            DestroyAll = CustomDataStore.DestroyAll<T>
+            AddPlayer = player => CustomDataStore.GetOrAdd<TStore>(player),
+            RemovePlayer = CustomDataStore.Destroy<TStore>,
+            DestroyAll = CustomDataStore.DestroyAll<TStore>
         };
 
         Handlers.Add(type, handler);
@@ -39,11 +39,11 @@ public static class CustomDataStoreManager
     /// <summary>
     /// Unregisters a custom data store.
     /// </summary>
-    /// <typeparam name="T">The type of the custom data store.</typeparam>
-    public static void UnregisterStore<T>()
-        where T : CustomDataStore
+    /// <typeparam name="TStore">The type of the custom data store.</typeparam>
+    public static void UnregisterStore<TStore>()
+        where TStore : CustomDataStore
     {
-        Type type = typeof(T);
+        Type type = typeof(TStore);
         if (Handlers.TryGetValue(type, out StoreHandler? handler))
             handler.DestroyAll();
 
