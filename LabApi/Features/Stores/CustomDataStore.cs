@@ -25,7 +25,6 @@ public abstract class CustomDataStore
     protected CustomDataStore(Player owner)
     {
         Owner = owner;
-        InternalOnInstanceCreated();
     }
 
     /// <summary>
@@ -50,6 +49,7 @@ public abstract class CustomDataStore
 
         store = (TStore)Activator.CreateInstance(type, player);
         playerStores[player] = store;
+        store.InternalOnInstanceCreated();
 
         return (TStore)store;
     }
@@ -99,7 +99,7 @@ public abstract class CustomDataStore
     /// <summary>
     /// Destroys this instance of the <see cref="CustomDataStore"/>.
     /// </summary>
-    internal void Destroy()
+    private void Destroy()
     {
         OnInstanceDestroyed();
         StoreInstances[this.GetType()].Remove(Owner);
