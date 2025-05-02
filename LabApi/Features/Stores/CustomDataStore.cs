@@ -58,6 +58,23 @@ public abstract class CustomDataStore
     }
 
     /// <summary>
+    /// Checks if the <see cref="CustomDataStore"/> for the specified <see cref="Player"/> exists.
+    /// </summary>
+    /// <param name="player"> The <see cref="Player"/> to check the <see cref="CustomDataStore"/> for.</param>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/></typeparam>
+    /// <returns>True if the <see cref="CustomDataStore"/> exists for the specified <see cref="Player"/>, false if not.</returns>
+    public static bool Exists<TStore>(Player player)
+        where TStore : CustomDataStore
+    {
+        Type type = typeof(TStore);
+
+        if (!StoreInstances.TryGetValue(type, out Dictionary<Player, CustomDataStore>? playerStores))
+            return false;
+
+        return playerStores.ContainsKey(player);
+    }
+
+    /// <summary>
     /// Called when a new instance of the <see cref="CustomDataStore"/> is created.
     /// </summary>
     protected virtual void OnInstanceCreated() { }
@@ -133,4 +150,12 @@ public abstract class CustomDataStore<TStore> : CustomDataStore
     /// <param name="player">The <see cref="Player"/> to get the <see cref="CustomDataStore"/> for.</param>
     /// <returns>The <see cref="CustomDataStore"/> for the specified <see cref="Player"/>.</returns>
     public static TStore Get(Player player) => GetOrAdd<TStore>(player);
+
+    /// <summary>
+    /// Checks if the <see cref="CustomDataStore"/> for the specified <see cref="Player"/> exists.
+    /// </summary>
+    /// <param name="player"> The <see cref="Player"/> to check the <see cref="CustomDataStore"/> for.</param>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/></typeparam>
+    /// <returns>True if the <see cref="CustomDataStore"/> exists for the specified <see cref="Player"/>, false if not.</returns>
+    public static bool Exists(Player player) => Exists<TStore>(player);
 }
