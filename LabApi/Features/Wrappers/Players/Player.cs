@@ -1503,6 +1503,17 @@ public class Player
     {
         return CustomDataStore.GetOrAdd<TStore>(this);
     }
+    
+    /// <summary>
+    /// Checks if the <see cref="CustomDataStore"/> exists on the player.
+    /// </summary>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/></typeparam>
+    /// <returns>True if the <see cref="CustomDataStore"/> exists on the player, false if not.</returns>
+    public bool HasDataStore<TStore>()
+        where TStore : CustomDataStore
+    {
+        return CustomDataStore.Exists<TStore>(this);
+    }
 
     /// <summary>
     /// Handles the creation of a player in the server.
