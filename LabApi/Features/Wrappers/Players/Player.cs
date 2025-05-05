@@ -8,6 +8,7 @@ using InventorySystem;
 using InventorySystem.Disarming;
 using InventorySystem.Items;
 using InventorySystem.Items.Pickups;
+using LabApi.Features.Enums;
 using LabApi.Features.Stores;
 using MapGeneration;
 using Mirror;
@@ -66,10 +67,10 @@ public class Player
     public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
 
     /// <summary>
-    /// A reference to all <see cref="Player"/> instances that are Npcs.
+    /// A reference to all <see cref="Player"/> instances that are NPCs.
     /// </summary>
     /// <remarks>
-    /// The host player is not counted as an Npc.
+    /// The host player is not counted as an NPC.
     /// </remarks>
     public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
 
@@ -77,6 +78,16 @@ public class Player
     /// A reference to all <see cref="Player"/> instance that are real players but are not authenticated yet.
     /// </summary>
     public static IEnumerable<Player> UnauthenticatedList => List.Where(x => x.IsPlayer && !x.IsReady);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are dummy NPCs.
+    /// </summary>
+    public static IEnumerable<Player> DummyList => List.Where(x => x.IsDummy);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instance that are NPCs but are not dummies.
+    /// </summary>
+    public static IEnumerable<Player> RegularNpcList => List.Where(x => x.IsNpc && !x.IsDummy);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
@@ -757,6 +768,36 @@ public class Player
     /// <param name="rejectionReason">Out parameter containing rejection reason.</param>
     /// <returns>Whether is the info parameter valid.</returns>
     public static bool ValidateCustomInfo(string text, out string rejectionReason) => NicknameSync.ValidateCustomInfo(text, out rejectionReason);
+
+    /// <summary>
+    /// Gets a all players matching the criteria specified by the <see cref="PlayerSearchFlags"/>.
+    /// </summary>
+    /// <param name="flags">The <see cref="PlayerSearchFlags"/> of the players to include.</param>
+    /// <returns>The set of players that match the criteria.</returns>
+    /// <remarks>
+    /// By default this returns the same set of players as <see cref="ReadyList"/>.
+    /// </remarks>
+    public static IEnumerable<Player> GetAll(PlayerSearchFlags flags = PlayerSearchFlags.AuthenticatedAndDummy)
+    {
+        bool authenticated = (flags & PlayerSearchFlags.AuthenticatedPlayers) > 0;
+        bool unauthenticated = (flags & PlayerSearchFlags.UnthenticatedPlayers) > 0;
+        bool dummyNpcs = (flags & PlayerSearchFlags.DummyNpcs) > 0;
+        bool regularNpcs = (flags & PlayerSearchFlags.RegularNpcs) > 0;
+        bool host = (flags & PlayerSearchFlags.Host) > 0;
+
+        bool includePlayers = authenticated || unauthenticated;
+        bool allPlayers = authenticated && unauthenticated;
+        bool includeNpcs = dummyNpcs || regularNpcs;
+        bool allNpcs = dummyNpcs && regularNpcs;
+
+        foreach (Player player in List)
+        {
+            if ((includePlayers && player.IsPlayer && (allPlayers || player.IsReady == authenticated)) ||
+                (includeNpcs && player.IsNpc) && (allNpcs || player.IsDummy == dummyNpcs) ||
+                (host && player.IsHost))
+                yield return player;
+        }
+    }
 
     #region Player Getters
 
