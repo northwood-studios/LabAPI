@@ -45,10 +45,11 @@ public class CameraToy : AdminToy
     /// </summary>
     public new Scp079CameraToy Base { get; }
 
-    /// <summary>
-    /// The camera instance associated with this toy.
-    /// </summary>
-    public Camera Camera => Camera.Get(Base.Camera);
+    // Todo: reimplement when publicized
+    // /// <summary>
+    // /// The camera instance associated with this toy.
+    // /// </summary>
+    // public Camera Camera => Camera.Get(Base.Camera);
 
     /// <summary>
     /// Gets or sets the label of the camera displayed to SCP-079 on HUD.
