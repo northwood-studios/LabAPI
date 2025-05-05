@@ -269,6 +269,7 @@ public static partial class PluginLoader
 
             // We finally log that the plugin has been enabled
             Logger.Info($"{LoggerPrefix} Successfully enabled {plugin}");
+            CustomNetworkManager.Modded = true;
         }
         catch (Exception e)
         {
