@@ -21,7 +21,7 @@ public class PlayerDamagingShootingTargetEventArgs : EventArgs, IPlayerEvent, IS
     {
         IsAllowed = true;
         Player = Player.Get(player);
-        ShootingTarget = target;
+        ShootingTarget = ShootingTargetToy.Get(target);
         DamageHandler = damageHandler;
     }
 
@@ -33,7 +33,7 @@ public class PlayerDamagingShootingTargetEventArgs : EventArgs, IPlayerEvent, IS
     /// <summary>
     /// Gets the shooting target.
     /// </summary>
-    public ShootingTarget ShootingTarget { get; }
+    public ShootingTargetToy ShootingTarget { get; }
 
     /// <summary>
     /// Gets the damage handler.
@@ -45,5 +45,5 @@ public class PlayerDamagingShootingTargetEventArgs : EventArgs, IPlayerEvent, IS
 
     /// <inheritdoc cref="ShootingTarget"/>
     [Obsolete($"Use {nameof(ShootingTarget)} instead")]
-    public ShootingTarget Target => ShootingTarget;
+    public ShootingTarget Target => ShootingTarget.Base;
 }

@@ -18,7 +18,7 @@ public class PlayerInteractedShootingTargetEventArgs : EventArgs, IPlayerEvent, 
     public PlayerInteractedShootingTargetEventArgs(ReferenceHub player, ShootingTarget target)
     {
         Player = Player.Get(player);
-        ShootingTarget = target;
+        ShootingTarget = ShootingTargetToy.Get(target);
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class PlayerInteractedShootingTargetEventArgs : EventArgs, IPlayerEvent, 
     /// <summary>
     /// Gets the shooting target.
     /// </summary>
-    public ShootingTarget ShootingTarget { get; }
+    public ShootingTargetToy ShootingTarget { get; }
 
     /// <inheritdoc cref="ShootingTarget"/>
     [Obsolete($"Use {nameof(ShootingTarget)} instead")]
-    public ShootingTarget Target => ShootingTarget;
+    public ShootingTarget Target => ShootingTarget.Base;
 }

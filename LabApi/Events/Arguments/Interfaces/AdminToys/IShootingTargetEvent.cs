@@ -1,4 +1,6 @@
-﻿namespace LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Features.Wrappers;
+
+namespace LabApi.Events.Arguments.Interfaces;
 
 /// <summary>
 /// Represents an event that involves a shooting target.
@@ -6,11 +8,10 @@
 public interface IShootingTargetEvent : IAdminToyEvent
 {
     /// <inheritdoc />
-    AdminToys.AdminToyBase? IAdminToyEvent.AdminToy => ShootingTarget;
+    AdminToy? IAdminToyEvent.AdminToy => ShootingTarget;
 
     /// <summary>
     /// The shooting target that is involved in the event.
     /// </summary>
-    // TODO: use wrapper instead.
-    AdminToys.ShootingTarget? ShootingTarget { get; }
+    public ShootingTargetToy? ShootingTarget { get; }
 }

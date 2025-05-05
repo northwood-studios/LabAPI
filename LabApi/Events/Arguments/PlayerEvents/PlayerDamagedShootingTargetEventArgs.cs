@@ -20,7 +20,7 @@ public class PlayerDamagedShootingTargetEventArgs : EventArgs, IPlayerEvent, ISh
     public PlayerDamagedShootingTargetEventArgs(ReferenceHub player, ShootingTarget target, DamageHandlerBase damageHandler)
     {
         Player = Player.Get(player);
-        ShootingTarget = target;
+        ShootingTarget = ShootingTargetToy.Get(target);
         DamageHandler = damageHandler;
     }
 
@@ -32,7 +32,7 @@ public class PlayerDamagedShootingTargetEventArgs : EventArgs, IPlayerEvent, ISh
     /// <summary>
     /// Gets the shooting target.
     /// </summary>
-    public ShootingTarget ShootingTarget { get; }
+    public ShootingTargetToy ShootingTarget { get; }
 
     /// <summary>
     /// Gets the damage handler.
@@ -41,5 +41,5 @@ public class PlayerDamagedShootingTargetEventArgs : EventArgs, IPlayerEvent, ISh
 
     /// <inheritdoc cref="ShootingTarget"/>
     [Obsolete($"Use {nameof(ShootingTarget)} instead")]
-    public ShootingTarget Target => ShootingTarget;
+    public ShootingTarget Target => ShootingTarget.Base;
 }

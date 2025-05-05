@@ -26,6 +26,7 @@ public class AdminToy
         Register<AdminToys.LightSourceToy>(x => new LightSourceToy(x));
         Register<ShootingTarget>(x => new ShootingTargetToy(x));
         Register<AdminToys.SpeakerToy>(x => new SpeakerToy(x));
+        Register<InvisibleInteractableToy>(x => new InteractableToy(x));
     }
 
     /// <summary>

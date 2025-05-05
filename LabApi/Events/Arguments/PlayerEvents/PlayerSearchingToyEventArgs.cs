@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.SearchingToy"/>
 /// </summary>
-public class PlayerSearchingToyEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
+public class PlayerSearchingToyEventArgs : EventArgs, IPlayerEvent, IInteractableEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSearchingToyEventArgs"/> class.
@@ -19,7 +19,7 @@ public class PlayerSearchingToyEventArgs : EventArgs, IPlayerEvent, ICancellable
     {
         IsAllowed = true;
         Player = Player.Get(player);
-        Toy = toy;
+        Interactable = InteractableToy.Get(toy);
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class PlayerSearchingToyEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// <summary>
     /// Gets the toy the player is searching.
     /// </summary>
-    public InvisibleInteractableToy Toy { get; }
+    public InteractableToy Interactable { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
