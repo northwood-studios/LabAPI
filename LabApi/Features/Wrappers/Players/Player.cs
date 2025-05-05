@@ -7,8 +7,8 @@ using Hints;
 using InventorySystem;
 using InventorySystem.Disarming;
 using InventorySystem.Items;
-using InventorySystem.Items.Firearms.Ammo;
 using InventorySystem.Items.Pickups;
+using LabApi.Features.Stores;
 using MapGeneration;
 using Mirror;
 using Mirror.LiteNetLib4Mirror;
@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using LabApi.Features.Stores;
 using UnityEngine;
 using Utils.Networking;
 using Utils.NonAllocLINQ;
@@ -136,11 +135,12 @@ public class Player
     /// <summary>
     /// Gets whether the player is the host or server.
     /// </summary>
-    public bool IsHost => ReferenceHub.connectionToClient is LocalConnectionToClient;
+    public bool IsHost => ReferenceHub.isLocalPlayer;
 
     /// <summary>
     /// Gets whether the player is the dedicated server.
     /// </summary>
+    [Obsolete($"Use {nameof(IsHost)} instead")]
     public bool IsServer => ReferenceHub.isLocalPlayer;
 
     /// <summary>
@@ -174,7 +174,7 @@ public class Player
     /// <summary>
     /// Gets the player's <see cref="NetworkConnection"/>.
     /// </summary>
-    public NetworkConnection Connection => IsServer ? ReferenceHub.networkIdentity.connectionToServer : ReferenceHub.networkIdentity.connectionToClient;
+    public NetworkConnection Connection => IsHost ? ReferenceHub.networkIdentity.connectionToServer : ReferenceHub.networkIdentity.connectionToClient;
 
     /// <summary>
     /// Gets the player's <see cref="RecyclablePlayerId"/> value.
@@ -232,7 +232,7 @@ public class Player
     /// <summary>
     /// Gets the log name needed for command senders.
     /// </summary>
-    public string LogName => IsServer ? "SERVER CONSOLE" : $"{Nickname} ({UserId})";
+    public string LogName => IsHost ? "SERVER CONSOLE" : $"{Nickname} ({UserId})";
 
     /// <summary>
     /// Gets or sets the player's custom info.<br/>
