@@ -177,6 +177,12 @@ public class Ragdoll
         RagdollManager.OnRagdollRemoved += RagdollRemoved;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Ragdoll: Nickname={Nickname}, Role={Role}, DamageHandler={DamageHandler}, Position={Position}, Rotation={Rotation}, Scale={Scale}, IsConsumed={IsConsumed}]";
+    }
+
     /// <summary>
     /// Spawns a new ragdoll based on a specified player and damage handler.
     /// </summary>

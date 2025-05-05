@@ -243,6 +243,12 @@ public class Item
     /// <param name="player">The player to move this item to.</param>
     public void MoveTo(Player player) => player.AddItem(DropItem());
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[{GetType().Name}: Type={Type}, IsDestroyed={IsDestroyed}, IsEquipped={IsEquipped}, Serial={Serial}]";
+    }
+
     /// <summary>
     /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ItemBase"/> was not null.
     /// </summary>

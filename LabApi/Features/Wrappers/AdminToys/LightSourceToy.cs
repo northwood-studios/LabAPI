@@ -126,6 +126,12 @@ public class LightSourceToy : AdminToy
         set => Base.NetworkInnerSpotAngle = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[LightSourceToy: Type={Type}, Shape={Shape}, Intensity={Intensity}, Range={Range}, Color={Color}, ShadowType={ShadowType}, ShadowStrength={ShadowStrength}]";
+    }
+
     /// <summary>
     /// Creates a new light source toy.
     /// </summary>

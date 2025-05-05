@@ -76,6 +76,12 @@ public class PrimitiveObjectToy : AdminToy
         set => Base.NetworkPrimitiveFlags = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[PrimitiveObjectToy: Type={Type}, Color={Color}, Flags={Flags}]";
+    }
+
     /// <summary>
     /// Creates a new primitive object toy.
     /// </summary>

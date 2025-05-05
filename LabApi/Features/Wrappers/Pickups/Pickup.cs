@@ -264,6 +264,12 @@ public class Pickup
         Base.DestroySelf();
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[{GetType().Name}: Type={Type}, IsSpawned={IsSpawned}, IsDestroyed={IsDestroyed}, Position={Position}, Rotation={Rotation}, Room={Room}, IsLocked={IsLocked}, IsInUse={IsInUse}, Serial={Serial}]";
+    }
+
     /// <summary>
     /// Gets the pickup wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
     /// </summary>

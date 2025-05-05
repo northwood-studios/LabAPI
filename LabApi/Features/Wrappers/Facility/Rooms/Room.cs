@@ -132,6 +132,17 @@ public class Room
     public IEnumerable<Player> Players => Player.List.Where(p => p.Room == this);
 
     /// <summary>
+    /// Gets a collection of cameras in the room.
+    /// </summary>
+    public IEnumerable<Camera> Cameras => Camera.List.Where(x => x.Room == this);
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[{GetType().Name}: Name={Name}, Shape={Shape}, Zone={Zone}]";
+    }
+  
+    /// <summary>
     /// Gets whether the room wrapper is allowed to be cached.
     /// </summary>
     protected bool CanCache => !IsDestroyed;

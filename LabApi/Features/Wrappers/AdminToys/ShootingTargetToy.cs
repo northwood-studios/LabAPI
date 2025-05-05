@@ -54,6 +54,12 @@ public class ShootingTargetToy : AdminToy
         set => Base.Network_syncMode = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[ShootingTargetToy: IsGlobal={IsGlobal}]";
+    }
+
     /// <summary>
     /// Creates a new shooting target toy.
     /// </summary>

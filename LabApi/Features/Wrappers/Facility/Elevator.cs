@@ -120,6 +120,11 @@ public class Elevator
         set => Base.DynamicAdminLock = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Elevator: Group={Group}, IsReady={IsReady}, GoingUp={GoingUp}, CurrentSequence={CurrentSequence}]";
+    }
 
     /// <summary>
     /// Locks every door of every elevator on map.

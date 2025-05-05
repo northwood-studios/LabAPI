@@ -130,7 +130,7 @@ public class Structure
     /// <summary>
     /// Gets whether the structure was destroyed.
     /// </summary>
-    public bool IsDestroyed => GameObject == null;
+    public bool IsDestroyed => Base == null || GameObject == null;
 
     /// <summary>
     /// Gets the <see cref="Room"/> based on the structures <see cref="Position"/>.
@@ -153,6 +153,12 @@ public class Structure
     public void Destroy()
     {
         NetworkServer.Destroy(GameObject);
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[{GetType().Name}: Position={Position}, RotationY={RotationY}, IsDestroyed={IsDestroyed}]";
     }
 
     /// <summary>

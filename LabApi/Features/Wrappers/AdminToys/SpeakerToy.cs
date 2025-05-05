@@ -201,6 +201,12 @@ public class SpeakerToy : AdminToy
     /// <inheritdoc cref="AudioTransmitter.Stop"/>
     public void Stop() => Transmitter.Stop();
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[SpeakerToy: ControllerId={ControllerId}, IsSpatial={IsSpatial}, Volume={Volume}, MinDistance={MinDistance}, MaxDistance={MaxDistance}, IsPlaying={IsPlaying}]";
+    }
+
     /// <summary>
     /// Plays the PCM samples on the current controller.
     /// </summary>

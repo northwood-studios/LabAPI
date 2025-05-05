@@ -1504,6 +1504,12 @@ public class Player
         return CustomDataStore.GetOrAdd<TStore>(this);
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Player: DisplayName={DisplayName}, PlayerId={PlayerId}, NetworkId={NetworkId}, UserId={UserId}, IpAddress={IpAddress}, Role={Role}, IsServer={IsServer}, IsReady={IsReady}]";
+    }
+
     /// <summary>
     /// Handles the creation of a player in the server.
     /// </summary>
