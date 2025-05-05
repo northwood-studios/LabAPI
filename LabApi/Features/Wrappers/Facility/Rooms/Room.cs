@@ -39,8 +39,10 @@ public class Room
     /// <param name="roomIdentifier">The identifier of the room.</param>
     internal Room(RoomIdentifier roomIdentifier)
     {
-        Dictionary.Add(roomIdentifier, this);
         Base = roomIdentifier;
+
+        if (CanCache)
+            Dictionary.Add(roomIdentifier, this);
     }
 
     /// <summary>
@@ -55,6 +57,11 @@ public class Room
     /// The base object.
     /// </summary>
     public RoomIdentifier Base { get; }
+
+    /// <summary>
+    /// Gets whether the base room instance was destroyed.
+    /// </summary>
+    public bool IsDestroyed => Base == null || GameObject == null;
 
     /// <summary>
     /// The room's shape.
@@ -125,19 +132,25 @@ public class Room
     public IEnumerable<Player> Players => Player.List.Where(p => p.Room == this);
 
     /// <summary>
+    /// Gets whether the room wrapper is allowed to be cached.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed;
+
+    /// <summary>
     /// Gets the room wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
     /// </summary>
     /// <param name="roomIdentifier">The identifier of the room.</param>
     /// <returns>The requested room.</returns>
-    public static Room? Get(RoomIdentifier roomIdentifier)
+    [return: NotNullIfNotNull(nameof(roomIdentifier))]
+    public static Room? Get(RoomIdentifier? roomIdentifier)
     {
         if (roomIdentifier == null)
             return null;
 
-        if (!Dictionary.TryGetValue(roomIdentifier, out Room room))
-            return null;
+        if (Dictionary.TryGetValue(roomIdentifier, out Room room))
+            return room;
 
-        return room;
+        return CreateRoomWrapper(roomIdentifier);
     }
 
     /// <summary>
@@ -209,13 +222,35 @@ public class Room
     public static Room? GetRoomAtPosition(Vector3 position) => TryGetRoomAtPosition(position, out Room? room) ? room : null;
 
     /// <summary>
+    /// Creates a new wrapper from the base room object.
+    /// </summary>
+    /// <param name="roomIdentifier">The base <see cref="RoomIdentifier"/> object.</param>
+    /// <returns>The newly created wrapper.</returns>
+    protected static Room CreateRoomWrapper(RoomIdentifier roomIdentifier)
+    {
+        if (roomIdentifier.Name == RoomName.Pocket)
+            return new PocketDimension(roomIdentifier);
+        else if (roomIdentifier.Name == RoomName.Lcz914)
+            return new Scp914(roomIdentifier);
+        else
+            return new Room(roomIdentifier);
+    }
+
+    /// <summary>
     /// Handles the creation of a room in the server.
     /// </summary>
     /// <param name="roomIdentifier">The <see cref="RoomIdentifier"/> of the room.</param>
-    // TODO: use factory instead.
     private static void AddRoom(RoomIdentifier roomIdentifier)
     {
-        _ = roomIdentifier.Name == RoomName.Pocket ? new PocketDimension(roomIdentifier) : new Room(roomIdentifier);
+        try
+        {
+            if (!Dictionary.ContainsKey(roomIdentifier))
+                _ = CreateRoomWrapper(roomIdentifier);
+        }
+        catch (System.Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle room creation with error: {e}");
+        }
     }
 
     /// <summary>
@@ -224,7 +259,14 @@ public class Room
     /// <param name="roomIdentifier">The <see cref="RoomIdentifier"/> of the room.</param>
     private static void RemoveRoom(RoomIdentifier roomIdentifier)
     {
-        if (Dictionary.TryGetValue(roomIdentifier, out Room room))
-            room.OnRemoved();
+        try
+        {
+            if (Dictionary.TryGetValue(roomIdentifier, out Room room))
+                room.OnRemoved();
+        }
+        catch (System.Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle item destruction with error: {e}");
+        }
     }
 }

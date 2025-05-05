@@ -1,6 +1,5 @@
 ﻿using InventorySystem;
 using InventorySystem.Items;
-using InventorySystem.Items.Pickups;
 using LabApi.Features.Interfaces;
 using MapGeneration;
 using Scp914;
@@ -37,7 +36,8 @@ public class Scp914 : Room
     internal Scp914(RoomIdentifier roomIdentifier)
         : base(roomIdentifier)
     {
-        Instance = this;
+        if (CanCache)
+            Instance = this;
     }
 
     /// <summary>

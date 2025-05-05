@@ -27,6 +27,7 @@ public class AdminToy
         Register<ShootingTarget>(x => new ShootingTargetToy(x));
         Register<AdminToys.SpeakerToy>(x => new SpeakerToy(x));
         Register<InvisibleInteractableToy>(x => new InteractableToy(x));
+        Register<Scp079CameraToy>(x => new CameraToy(x));
     }
 
     /// <summary>
