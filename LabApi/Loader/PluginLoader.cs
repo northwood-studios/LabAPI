@@ -255,6 +255,9 @@ public static partial class PluginLoader
     {
         try
         {
+            // We mark the server as modded.
+            CustomNetworkManager.Modded = true;
+            
             // We register all the plugin commands
             plugin.RegisterCommands();
 
@@ -269,7 +272,6 @@ public static partial class PluginLoader
 
             // We finally log that the plugin has been enabled
             Logger.Info($"{LoggerPrefix} Successfully enabled {plugin}");
-            CustomNetworkManager.Modded = true;
         }
         catch (Exception e)
         {
