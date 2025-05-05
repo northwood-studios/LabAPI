@@ -171,6 +171,17 @@ public class AdminToy
     }
 
     /// <summary>
+    /// Time interval in seconds for sending updated values to the client.
+    /// 0 means update every frame while 0.5 means update every 500ms.
+    /// Lower values increase network usage but mean the client receives the most up to date state from the server.
+    /// </summary>
+    public float SyncInterval
+    {
+        get => Base.syncInterval;
+        set => Base.syncInterval = value;
+    }
+
+    /// <summary>
     /// Spawns the toy on the client.
     /// </summary>
     /// <remarks>
@@ -253,11 +264,11 @@ public class AdminToy
     protected static AdminToy CreateAdminToyWrapper(AdminToyBase adminToyBase)
     {
         if (!typeWrappers.TryGetValue(adminToyBase.GetType(), out Func<AdminToyBase, AdminToy?> handler))
-            Console.Logger.Error($"Failed to create derived admin toy wrapper. Missing constructor handler for type {adminToyBase.GetType()}");
+            Console.Logger.InternalWarn($"Failed to create derived admin toy wrapper. Missing constructor handler for type {adminToyBase.GetType()}");
 
         AdminToy? wrapper = handler.Invoke(adminToyBase);
         if (wrapper == null)
-            Console.Logger.Error($"Failed to create derived admin toy wrapper. A handler returned null for type {adminToyBase.GetType()}");
+            Console.Logger.InternalWarn($"Failed to create derived admin toy wrapper. A handler returned null for type {adminToyBase.GetType()}");
 
         return wrapper ?? new AdminToy(adminToyBase);
     }
@@ -268,8 +279,15 @@ public class AdminToy
     /// <param name="adminToyBase">The created <see cref="AdminToyBase"/> instance.</param>
     private static void AddAdminToy(AdminToyBase adminToyBase)
     {
-        if (!Dictionary.ContainsKey(adminToyBase))
-            _ = CreateAdminToyWrapper(adminToyBase);
+        try
+        {
+            if (!Dictionary.ContainsKey(adminToyBase))
+                _ = CreateAdminToyWrapper(adminToyBase);
+        }
+        catch(Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle admin toy creation with error: {e}");
+        }
     }
 
     /// <summary>
@@ -278,10 +296,18 @@ public class AdminToy
     /// <param name="adminToyBase">The to be destroyed <see cref="AdminToyBase"/> instance.</param>
     private static void RemoveAdminToy(AdminToyBase adminToyBase)
     {
-        if (Dictionary.TryGetValue(adminToyBase, out AdminToy adminToy))
+        try
         {
-            Dictionary.Remove(adminToyBase);
-            adminToy.OnRemove();
+
+            if (Dictionary.TryGetValue(adminToyBase, out AdminToy adminToy))
+            {
+                Dictionary.Remove(adminToyBase);
+                adminToy.OnRemove();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle admin toy destruction with error: {e}");
         }
     }
 
