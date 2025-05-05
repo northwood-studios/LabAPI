@@ -28,6 +28,11 @@ public class PlayerReceivingVoiceMessageEventArgs : EventArgs, ICancellableEvent
     public Player Player { get; }
 
     /// <summary>
+    /// Gets the player that is sending the voice message.
+    /// </summary>
+    public Player Sender => Player.Get(Message.Speaker);
+
+    /// <summary>
     /// Gets the <see cref="VoiceMessage" /> being received.
     /// </summary>
     public ref VoiceMessage Message => ref _message;
