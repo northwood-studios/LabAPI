@@ -114,10 +114,10 @@ public class ShootingTargetToy : AdminToy
     }
 
     /// <summary>
-    /// Gets the shooting target toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ShootingTarget"/> was not null.
+    /// Gets the shooting target toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ShootingTarget"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="shootingTarget">The <see cref="Base"/> of the shooting target toy.</param>
-    /// <returns>The requested shooting target toy or null.</returns>
+    /// <returns>The requested shooting target toy or <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(shootingTarget))]
     public static ShootingTargetToy? Get(ShootingTarget? shootingTarget)
     {
@@ -132,7 +132,7 @@ public class ShootingTargetToy : AdminToy
     /// </summary>
     /// <param name="shootingTarget">The <see cref="Base"/> of the shooting target toy.</param>
     /// <param name="shootingTargetToy">The requested shooting target toy.</param>
-    /// <returns>True if the shooting target exists, otherwise false.</returns>
+    /// <returns><see langword="True"/> if the shooting target exists, otherwise <see langword="false"/>.</returns>
     public static bool TryGet(ShootingTarget? shootingTarget, [NotNullWhen(true)] out ShootingTargetToy? shootingTargetToy)
     {
         shootingTargetToy = Get(shootingTarget);

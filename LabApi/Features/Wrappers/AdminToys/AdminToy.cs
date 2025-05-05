@@ -28,6 +28,7 @@ public class AdminToy
         Register<AdminToys.SpeakerToy>(x => new SpeakerToy(x));
         Register<InvisibleInteractableToy>(x => new InteractableToy(x));
         Register<Scp079CameraToy>(x => new CameraToy(x));
+        Register<AdminToys.CapybaraToy>(x => new CapybaraToy(x));
     }
 
     /// <summary>
@@ -54,7 +55,7 @@ public class AdminToy
         Dictionary.Add(adminToyBase, this);
         Base = adminToyBase;
     }
-    
+
     /// <summary>
     /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
@@ -233,10 +234,10 @@ public class AdminToy
     }
 
     /// <summary>
-    /// Gets the admin toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="AdminToyBase"/> was not null.
+    /// Gets the admin toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="AdminToyBase"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="adminToyBase">The <see cref="Base"/> of the admin toy.</param>
-    /// <returns>The requested admin toy or null.</returns>
+    /// <returns>The requested admin toy or <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(adminToyBase))]
     public static AdminToy? Get(AdminToyBase? adminToyBase)
     {
@@ -251,7 +252,7 @@ public class AdminToy
     /// </summary>
     /// <param name="adminToyBase">The <see cref="Base"/> of the admin toy.</param>
     /// <param name="adminToy">The requested admin toy.</param>
-    /// <returns>True if the admin toy exists, otherwise false.</returns>
+    /// <returns>True if the admin toy exists, otherwise <see langword="false"/>.</returns>
     public static bool TryGet(AdminToyBase? adminToyBase, [NotNullWhen(true)] out AdminToy? adminToy)
     {
         adminToy = Get(adminToyBase);
@@ -266,11 +267,17 @@ public class AdminToy
     protected static AdminToy CreateAdminToyWrapper(AdminToyBase adminToyBase)
     {
         if (!typeWrappers.TryGetValue(adminToyBase.GetType(), out Func<AdminToyBase, AdminToy?> handler))
-            Console.Logger.InternalWarn($"Failed to create derived admin toy wrapper. Missing constructor handler for type {adminToyBase.GetType()}");
+        {
+            Console.Logger.InternalWarn($"Backing up to the default AdminToy constructor. Missing constructor handler for type {adminToyBase.GetType()}");
+            return new AdminToy(adminToyBase);
+        }
 
         AdminToy? wrapper = handler.Invoke(adminToyBase);
         if (wrapper == null)
-            Console.Logger.InternalWarn($"Failed to create derived admin toy wrapper. A handler returned null for type {adminToyBase.GetType()}");
+        {
+            Console.Logger.InternalWarn($"Backing up to the default AdminToy constructor. A handler returned null for type {adminToyBase.GetType()}");
+            return new AdminToy(adminToyBase);
+        }
 
         return wrapper ?? new AdminToy(adminToyBase);
     }

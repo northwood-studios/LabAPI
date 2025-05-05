@@ -186,7 +186,7 @@ public class SpeakerToy : AdminToy
     public AudioTransmitter Transmitter => GetTransmitter(ControllerId);
 
     /// <inheritdoc cref="AudioTransmitter.Play(float[], bool, bool)"/>
-    public void Play(float[] samples, bool queue = true, bool loop = false) 
+    public void Play(float[] samples, bool queue = true, bool loop = false)
         => Transmitter.Play(samples, queue, loop);
 
     /// <inheritdoc cref="AudioTransmitter.Pause"/>
@@ -220,7 +220,7 @@ public class SpeakerToy : AdminToy
     /// Whether to loop this clip. 
     /// Loop ends if another clip is played either immediately if not queued or at the end of the loop if next clip was queued.
     /// </param>
-    public static void Play(byte controllerId, float[] samples, bool queue = true, bool loop = false) 
+    public static void Play(byte controllerId, float[] samples, bool queue = true, bool loop = false)
         => GetTransmitter(controllerId).Play(samples, queue, loop);
 
     /// <inheritdoc cref="AudioTransmitter.Pause"/>
@@ -293,10 +293,10 @@ public class SpeakerToy : AdminToy
     }
 
     /// <summary>
-    /// Gets the speaker toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseSpeakerToy"/> was not null.
+    /// Gets the speaker toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseSpeakerToy"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="baseSpeakerToy">The <see cref="Base"/> of the speaker toy.</param>
-    /// <returns>The requested speaker toy or null.</returns>
+    /// <returns>The requested speaker toy or <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(baseSpeakerToy))]
     public static SpeakerToy? Get(BaseSpeakerToy? baseSpeakerToy)
     {
@@ -311,7 +311,7 @@ public class SpeakerToy : AdminToy
     /// </summary>
     /// <param name="baseSpeakerToy">The <see cref="Base"/> of the speaker toy.</param>
     /// <param name="speakerToy">The requested speaker toy.</param>
-    /// <returns>True if the speaker exists, otherwise false.</returns>
+    /// <returns><see langword="True"/> if the speaker exists, otherwise <see langword="false"/>.</returns>
     public static bool TryGet(BaseSpeakerToy? baseSpeakerToy, [NotNullWhen(true)] out SpeakerToy? speakerToy)
     {
         speakerToy = Get(baseSpeakerToy);
