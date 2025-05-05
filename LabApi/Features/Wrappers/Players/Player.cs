@@ -118,6 +118,7 @@ public class Player
     internal Player(ReferenceHub referenceHub)
     {
         Dictionary.Add(referenceHub, this);
+
         ReferenceHub = referenceHub;
         CustomDataStoreManager.AddPlayer(this);
     }
@@ -1292,15 +1293,16 @@ public class Player
     /// Sends the player a text hint.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
-    public void SendHint(string text, float duration = 3f) => ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], null, duration));
+    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
+    public void SendHint(string text, float duration = 3f) =>
+        SendHint(text, [new StringHintParameter(string.Empty)], null, duration);
 
     /// <summary>
     /// Sends the player a text hint with effects.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="effects">The effects of text.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
+    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
     public void SendHint(string text, HintEffect[] effects, float duration = 3f) =>
         ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], effects, duration));
 
@@ -1310,12 +1312,13 @@ public class Player
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="parameters">The parameters to interpolate into the text.</param>
     /// <param name="duration">The duration of which the text will be visible.</param>
+    /// <param name="effects">The effects used for hint animations. See <see cref="HintEffect"/>.</param>
     /// <remarks>
     /// Parameters are interpolated into the string on the client.
     /// E.g. <c>"Test param1: {0} param2: {1}"</c>
     /// </remarks>
-    public void SendHint(string text, HintParameter[] parameters, float duration = 3f) =>
-        ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, null, duration));
+    public void SendHint(string text, HintParameter[] parameters, HintEffect[]? effects = null, float duration = 3f) =>
+        ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, effects, duration));
 
     /// <summary>
     /// Sends the player a hit marker.

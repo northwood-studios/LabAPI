@@ -32,6 +32,7 @@ public class CheckpointDoor : Door
         Dictionary.Add(baseCheckpointDoor, this);
         Base = baseCheckpointDoor;
         SubDoors = new Door[baseCheckpointDoor.SubDoors.Length];
+
         for (int i = 0; i < baseCheckpointDoor.SubDoors.Length; i++)
             SubDoors[i] = Get(baseCheckpointDoor.SubDoors[i]);
     }
@@ -78,16 +79,7 @@ public class CheckpointDoor : Door
     public bool IsBroken
     {
         get => Base.IsDestroyed;
-        set
-        {
-            foreach (DoorVariant doorVariant in Base.SubDoors)
-            {
-                if (doorVariant is not IDamageableDoor damageableDoor)
-                    continue;
-
-                damageableDoor.IsDestroyed = value;
-            }
-        }
+        set => Base.IsDestroyed = value;
     }
 
     /// <summary>
@@ -118,45 +110,32 @@ public class CheckpointDoor : Door
     }
 
     /// <summary>
-    /// Gets or sets the time in seconds to wait before sounding the warning buzzer after <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.SequenceState.OpenLoop"/>.
+    /// Gets or sets the time in seconds for which the checkpoint doors are opened when interacted with.
     /// </summary>
-    /// <remarks>
-    /// <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.SequenceState.ClosingWarning"/> after the duration.
-    /// </remarks>
-    public float OpenDuration
+    public float OpenTime
     {
-        get => SequenceController.OpenLoopTime;
-        set => SequenceController.OpenLoopTime = value;
+        get => Base.SequenceCtrl.OpenLoopTime;
+        set => Base.SequenceCtrl.OpenLoopTime = value;
     }
 
     /// <summary>
-    /// Gets or sets the time in seconds to play the warning sound after the <see cref="SequenceState"/> was set to <see cref="BaseCheckpointDoor.SequenceState.ClosingWarning"/>.
+    /// Gets or sets the time in seconds for which the checkpoint alarm is playing the alarm sound.
     /// </summary>
-    /// <remarks>
-    /// The doors close immediately after the warning time ends and <see cref="SequenceState"/> is set to <see cref="BaseCheckpointDoor.SequenceState.Idle"/>.
-    /// </remarks>
-    public float WarningDuration
+    public float WarningTime
     {
-        get => SequenceController.WarningTime;
-        set => SequenceController.WarningTime = value;
-    }
-
-    /// <summary>
-    /// Gets or sets the current sequence time in seconds.
-    /// </summary>
-    /// <remarks>
-    /// Represents the value of the internal timer used to switch <see cref="SequenceState"/> depending on <see cref="OpenDuration"/> and <see cref="WarningDuration"/>. 
-    /// </remarks>
-    public float SequenceTime
-    {
-        get => SequenceController.RemainingTime;
-        set => SequenceController.RemainingTime = value;
+        get => Base.SequenceCtrl.WarningTime;
+        set => Base.SequenceCtrl.WarningTime = value;
     }
 
     /// <summary>
     /// Gets the health as a percentage from 0 to 1.
     /// </summary>
     public float HealthPercent => Base.GetHealthPercent();
+
+    /// <summary>
+    /// Plays the warning alarm sound.
+    /// </summary>
+    public void PlayWarningSound() => Base.RpcPlayWarningSound();
 
     /// <summary>
     /// Damage all the sub doors by specified amount.

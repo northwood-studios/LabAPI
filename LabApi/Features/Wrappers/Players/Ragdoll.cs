@@ -96,7 +96,8 @@ public class Ragdoll
     }
 
     /// <summary>
-    /// Gets or sets the player scale.
+    /// Gets or sets the ragdoll's scale.
+    /// Scale is set relative to the ragdoll's gameobject size.
     /// </summary>
     public Vector3 Scale
     {
@@ -104,7 +105,7 @@ public class Ragdoll
         set
         {
             Base.transform.localScale = value;
-            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, value, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, Vector3.Scale(value, RagdollManager.GetDefaultScale(Role)), Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
         }
     }
 
@@ -197,10 +198,10 @@ public class Ragdoll
     /// <param name="role">Target role type.</param>
     /// <param name="position">Spawn position.</param>
     /// <param name="rotation">Spawn rotation.</param>
-    /// <param name="scale">Spawn scale. Converted to <see cref="Vector3.one"></see> if null.</param>
+    /// <param name="scale">Spawn scale. Converted to base ragdoll scale if <see langword="null"/>.</param>
     /// <param name="handler">Damage handler of the death cause.</param>
     /// <param name="nickname">Nickname that is visible when hovering over.</param>
-    /// <returns>Ragdoll object or null.</returns>
+    /// <returns>Ragdoll object or <see langword="null"/>.</returns>
     public static Ragdoll? SpawnRagdoll(RoleTypeId role, Vector3 position, Quaternion rotation, DamageHandlerBase handler, string nickname, Vector3? scale = null)
     {
         BasicRagdoll ragdoll = RagdollManager.ServerCreateRagdoll(role, position, rotation, handler, nickname, scale);
@@ -228,7 +229,7 @@ public class Ragdoll
     /// <summary>
     /// Event method for <see cref="RagdollManager.OnRagdollRemoved"/>.
     /// </summary>
-    /// <param name="ragdoll">Destoyed ragdoll.</param>
+    /// <param name="ragdoll">Destroyed ragdoll.</param>
     private static void RagdollRemoved(BasicRagdoll ragdoll) => Dictionary.Remove(ragdoll);
 
     /// <summary>
