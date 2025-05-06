@@ -255,6 +255,9 @@ public static partial class PluginLoader
     {
         try
         {
+            // We mark the server as modded.
+            CustomNetworkManager.Modded = true;
+            
             // We register all the plugin commands
             plugin.RegisterCommands();
 

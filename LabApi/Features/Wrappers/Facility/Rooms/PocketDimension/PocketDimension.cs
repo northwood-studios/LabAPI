@@ -71,7 +71,8 @@ public class PocketDimension : Room
     internal PocketDimension(RoomIdentifier room) 
         : base(room) 
     {
-        Instance = this;
+        if (CanCache)
+            Instance = this;
     }
 
     /// <summary>

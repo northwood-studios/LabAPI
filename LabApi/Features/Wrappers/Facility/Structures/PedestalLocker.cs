@@ -134,8 +134,8 @@ public class PedestalLocker : Locker
     /// <summary>
     /// Plays the Access Denied sound for the pedestal.
     /// </summary>
-    /// <param name="permissionUsed">The permissions used to attempt opening the door. Used to animate the door panel.</param>
-    public void PlayDeniedSound(DoorPermissionFlags permissionUsed) => Chamber.PlayDeniedSound(permissionUsed);
+    /// <param name="flags">The <see cref="DoorPermissionFlags"/> that will be shown on the keycard reader.</param>
+    public void PlayDeniedSound(DoorPermissionFlags flags = DoorPermissionFlags.None) => Chamber.PlayDeniedSound(flags);
 
     /// <summary>
     /// Gets the pedestal wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="PedestalScpLocker"/> was not <see langword="null"/>.

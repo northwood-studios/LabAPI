@@ -235,6 +235,12 @@ public class Door
     /// </summary>
     public void PlayPermissionDeniedAnimation() => Base.PermissionsDenied(null, 0);
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[{GetType().Name}: DoorName={DoorName}, NameTag={NameTag}, Zone={Zone}, IsOpened={IsOpened}, IsLocked={IsLocked}, Permissions={Permissions}]";
+    }
+
     /// <summary>
     /// Opens the door.
     /// </summary>

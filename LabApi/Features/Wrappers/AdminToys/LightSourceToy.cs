@@ -126,6 +126,12 @@ public class LightSourceToy : AdminToy
         set => Base.NetworkInnerSpotAngle = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[LightSourceToy: Type={Type}, Shape={Shape}, Intensity={Intensity}, Range={Range}, Color={Color}, ShadowType={ShadowType}, ShadowStrength={ShadowStrength}]";
+    }
+
     /// <summary>
     /// Creates a new light source toy.
     /// </summary>
@@ -176,10 +182,10 @@ public class LightSourceToy : AdminToy
     }
 
     /// <summary>
-    /// Gets the light source toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseLightSourceToy"/> was not null.
+    /// Gets the light source toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseLightSourceToy"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="baseLightSourceToy">The <see cref="Base"/> of the light source toy.</param>
-    /// <returns>The requested light source toy or null.</returns>
+    /// <returns>The requested light source toy or <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(baseLightSourceToy))]
     public static LightSourceToy? Get(BaseLightSourceToy? baseLightSourceToy)
     {
@@ -194,7 +200,7 @@ public class LightSourceToy : AdminToy
     /// </summary>
     /// <param name="baseLightSourceToy">The <see cref="Base"/> of the light source toy.</param>
     /// <param name="lightSourceToy">The requested light source toy.</param>
-    /// <returns>True if the light toy exists, otherwise false.</returns>
+    /// <returns><see langword="True"/> if the light toy exists, otherwise <see langword="false"/>.</returns>
     public static bool TryGet(BaseLightSourceToy? baseLightSourceToy, [NotNullWhen(true)] out LightSourceToy? lightSourceToy)
     {
         lightSourceToy = Get(baseLightSourceToy);

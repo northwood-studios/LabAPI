@@ -51,7 +51,7 @@ public static class Cassie
     ///	<param name="isNoisy">Whether the background noises play.</param>
     ///	<param name="isSubtitles">Show subtitles.</param>
     ///	<param name="customSubtitles">Custom subtitles to appear instead of the actual message.</param>
-    public static void Message(string message, bool isHeld = false, bool isNoisy = true, bool isSubtitles = false, string customSubtitles = "") => RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles, customSubtitles);
+    public static void Message(string message, bool isHeld = false, bool isNoisy = true, bool isSubtitles = true, string customSubtitles = "") => RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles, customSubtitles);
 
     /// <summary>
     /// Plays the custom announcement with chance of 0f to 1f of adding a glitch or jam before each word. Values closer to 1f are higher chances.

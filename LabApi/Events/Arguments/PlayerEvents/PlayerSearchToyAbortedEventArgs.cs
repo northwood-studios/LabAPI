@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.SearchToyAborted"/> event.
 /// </summary>
-public class PlayerSearchToyAbortedEventArgs : EventArgs, IPlayerEvent
+public class PlayerSearchToyAbortedEventArgs : EventArgs, IPlayerEvent, IInteractableEvent
 {
     /// <summary>
     /// Initializes a new instance for the <see cref="PlayerSearchToyAbortedEventArgs"/> class.
@@ -18,7 +18,7 @@ public class PlayerSearchToyAbortedEventArgs : EventArgs, IPlayerEvent
     public PlayerSearchToyAbortedEventArgs(ReferenceHub player, InvisibleInteractableToy toy)
     {
         Player = Player.Get(player);
-        Toy = toy;
+        Interactable = InteractableToy.Get(toy);
     }
 
     /// <summary>
@@ -29,5 +29,5 @@ public class PlayerSearchToyAbortedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the toy that was being searched.
     /// </summary>
-    public InvisibleInteractableToy Toy { get; }
+    public InteractableToy Interactable { get; }
 }

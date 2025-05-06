@@ -86,6 +86,12 @@ public class Camera
         set => Base.IsActive = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Camera: Position={Position}, Rotation={Rotation}, Room={Room}, Zoom={Zoom}, IsBeingUsed={IsBeingUsed}]";
+    }
+
     /// <summary>
     /// Gets the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
     /// </summary>

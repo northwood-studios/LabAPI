@@ -19,7 +19,7 @@ public class PlayerInteractingShootingTargetEventArgs : EventArgs, IPlayerEvent,
     {
         IsAllowed = true;
         Player = Player.Get(player);
-        ShootingTarget = target;
+        ShootingTarget = ShootingTargetToy.Get(target);
     }
 
     /// <summary>
@@ -30,12 +30,12 @@ public class PlayerInteractingShootingTargetEventArgs : EventArgs, IPlayerEvent,
     /// <summary>
     /// Gets the shooting target.
     /// </summary>
-    public ShootingTarget ShootingTarget { get; }
+    public ShootingTargetToy ShootingTarget { get; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
 
     /// <inheritdoc cref="ShootingTarget"/>
     [Obsolete($"Use {nameof(ShootingTarget)} instead")]
-    public ShootingTarget Target => ShootingTarget;
+    public ShootingTarget Target => ShootingTarget.Base;
 }

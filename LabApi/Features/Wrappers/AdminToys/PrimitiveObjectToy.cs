@@ -76,6 +76,12 @@ public class PrimitiveObjectToy : AdminToy
         set => Base.NetworkPrimitiveFlags = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[PrimitiveObjectToy: Type={Type}, Color={Color}, Flags={Flags}]";
+    }
+
     /// <summary>
     /// Creates a new primitive object toy.
     /// </summary>
@@ -126,10 +132,10 @@ public class PrimitiveObjectToy : AdminToy
     }
 
     /// <summary>
-    /// Gets the primitive object toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BasePrimitiveObjectToy"/> was not null.
+    /// Gets the primitive object toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BasePrimitiveObjectToy"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="primitiveObjectToy">The <see cref="Base"/> of the primitive object toy.</param>
-    /// <returns>The requested primitive object toy or null.</returns>
+    /// <returns>The requested primitive object toy or <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(primitiveObjectToy))]
     public static PrimitiveObjectToy? Get(BasePrimitiveObjectToy? primitiveObjectToy)
     {
@@ -144,7 +150,7 @@ public class PrimitiveObjectToy : AdminToy
     /// </summary>
     /// <param name="basePrimitiveObjectToy">The <see cref="Base"/> of the primitive object toy.</param>
     /// <param name="primitiveObjectToy">The requested primitive object toy.</param>
-    /// <returns>True if the primitive object exists, otherwise false.</returns>
+    /// <returns><see langword="True"/> if the primitive object exists, otherwise <see langword="false"/>.</returns>
     public static bool TryGet(BasePrimitiveObjectToy? basePrimitiveObjectToy, [NotNullWhen(true)] out PrimitiveObjectToy? primitiveObjectToy)
     {
         primitiveObjectToy = Get(basePrimitiveObjectToy);

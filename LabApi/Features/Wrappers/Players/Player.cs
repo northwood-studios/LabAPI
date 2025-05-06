@@ -7,8 +7,9 @@ using Hints;
 using InventorySystem;
 using InventorySystem.Disarming;
 using InventorySystem.Items;
-using InventorySystem.Items.Firearms.Ammo;
 using InventorySystem.Items.Pickups;
+using LabApi.Features.Enums;
+using LabApi.Features.Stores;
 using MapGeneration;
 using Mirror;
 using Mirror.LiteNetLib4Mirror;
@@ -24,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using LabApi.Features.Stores;
 using UnityEngine;
 using Utils.Networking;
 using Utils.NonAllocLINQ;
@@ -68,10 +68,10 @@ public class Player
     public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
 
     /// <summary>
-    /// A reference to all <see cref="Player"/> instances that are Npcs.
+    /// A reference to all <see cref="Player"/> instances that are NPCs.
     /// </summary>
     /// <remarks>
-    /// The host player is not counted as an Npc.
+    /// The host player is not counted as an NPC.
     /// </remarks>
     public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
 
@@ -87,6 +87,16 @@ public class Player
     /// This is the set of all players that it is safe to send network messages too.
     /// </remarks>
     public static IEnumerable<Player> AuthenticatedList => List.Where(x => x.IsPlayer && x.IsReady);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are dummy NPCs.
+    /// </summary>
+    public static IEnumerable<Player> DummyList => List.Where(x => x.IsDummy);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instance that are NPCs but are not dummies.
+    /// </summary>
+    public static IEnumerable<Player> RegularNpcList => List.Where(x => x.IsNpc && !x.IsDummy);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
@@ -128,6 +138,7 @@ public class Player
     internal Player(ReferenceHub referenceHub)
     {
         Dictionary.Add(referenceHub, this);
+
         ReferenceHub = referenceHub;
         Transform = referenceHub.transform;
         CustomDataStoreManager.AddPlayer(this);
@@ -156,11 +167,12 @@ public class Player
     /// <summary>
     /// Gets whether the player is the host or server.
     /// </summary>
-    public bool IsHost => ReferenceHub.connectionToClient is LocalConnectionToClient;
+    public bool IsHost => ReferenceHub.isLocalPlayer;
 
     /// <summary>
     /// Gets whether the player is the dedicated server.
     /// </summary>
+    [Obsolete($"Use {nameof(IsHost)} instead")]
     public bool IsServer => ReferenceHub.isLocalPlayer;
 
     /// <summary>
@@ -194,7 +206,7 @@ public class Player
     /// <summary>
     /// Gets the player's <see cref="NetworkConnection"/>.
     /// </summary>
-    public NetworkConnection Connection => IsServer ? ReferenceHub.networkIdentity.connectionToServer : ReferenceHub.networkIdentity.connectionToClient;
+    public NetworkConnection Connection => IsHost ? ReferenceHub.networkIdentity.connectionToServer : ReferenceHub.networkIdentity.connectionToClient;
 
     /// <summary>
     /// Gets the player's <see cref="RecyclablePlayerId"/> value.
@@ -252,7 +264,7 @@ public class Player
     /// <summary>
     /// Gets the log name needed for command senders.
     /// </summary>
-    public string LogName => IsServer ? "SERVER CONSOLE" : $"{Nickname} ({UserId})";
+    public string LogName => IsHost ? "SERVER CONSOLE" : $"{Nickname} ({UserId})";
 
     /// <summary>
     /// Gets or sets the player's custom info.<br/>
@@ -781,6 +793,36 @@ public class Player
     /// <param name="rejectionReason">Out parameter containing rejection reason.</param>
     /// <returns>Whether is the info parameter valid.</returns>
     public static bool ValidateCustomInfo(string text, out string rejectionReason) => NicknameSync.ValidateCustomInfo(text, out rejectionReason);
+
+    /// <summary>
+    /// Gets a all players matching the criteria specified by the <see cref="PlayerSearchFlags"/>.
+    /// </summary>
+    /// <param name="flags">The <see cref="PlayerSearchFlags"/> of the players to include.</param>
+    /// <returns>The set of players that match the criteria.</returns>
+    /// <remarks>
+    /// By default this returns the same set of players as <see cref="ReadyList"/>.
+    /// </remarks>
+    public static IEnumerable<Player> GetAll(PlayerSearchFlags flags = PlayerSearchFlags.AuthenticatedAndDummy)
+    {
+        bool authenticated = (flags & PlayerSearchFlags.AuthenticatedPlayers) > 0;
+        bool unauthenticated = (flags & PlayerSearchFlags.UnthenticatedPlayers) > 0;
+        bool dummyNpcs = (flags & PlayerSearchFlags.DummyNpcs) > 0;
+        bool regularNpcs = (flags & PlayerSearchFlags.RegularNpcs) > 0;
+        bool host = (flags & PlayerSearchFlags.Host) > 0;
+
+        bool includePlayers = authenticated || unauthenticated;
+        bool allPlayers = authenticated && unauthenticated;
+        bool includeNpcs = dummyNpcs || regularNpcs;
+        bool allNpcs = dummyNpcs && regularNpcs;
+
+        foreach (Player player in List)
+        {
+            if ((includePlayers && player.IsPlayer && (allPlayers || player.IsReady == authenticated)) ||
+                (includeNpcs && player.IsNpc) && (allNpcs || player.IsDummy == dummyNpcs) ||
+                (host && player.IsHost))
+                yield return player;
+        }
+    }
 
     #region Player Getters
 
@@ -1335,15 +1377,16 @@ public class Player
     /// Sends the player a text hint.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
-    public void SendHint(string text, float duration = 3f) => ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], null, duration));
+    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
+    public void SendHint(string text, float duration = 3f) =>
+        SendHint(text, [new StringHintParameter(string.Empty)], null, duration);
 
     /// <summary>
     /// Sends the player a text hint with effects.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="effects">The effects of text.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
+    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
     public void SendHint(string text, HintEffect[] effects, float duration = 3f) =>
         ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], effects, duration));
 
@@ -1353,12 +1396,13 @@ public class Player
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="parameters">The parameters to interpolate into the text.</param>
     /// <param name="duration">The duration of which the text will be visible.</param>
+    /// <param name="effects">The effects used for hint animations. See <see cref="HintEffect"/>.</param>
     /// <remarks>
     /// Parameters are interpolated into the string on the client.
     /// E.g. <c>"Test param1: {0} param2: {1}"</c>
     /// </remarks>
-    public void SendHint(string text, HintParameter[] parameters, float duration = 3f) =>
-        ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, null, duration));
+    public void SendHint(string text, HintParameter[] parameters, HintEffect[]? effects = null, float duration = 3f) =>
+        ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, effects, duration));
 
     /// <summary>
     /// Sends the player a hit marker.
@@ -1545,6 +1589,12 @@ public class Player
         where TStore : CustomDataStore
     {
         return CustomDataStore.GetOrAdd<TStore>(this);
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Player: DisplayName={DisplayName}, PlayerId={PlayerId}, NetworkId={NetworkId}, UserId={UserId}, IpAddress={IpAddress}, Role={Role}, IsServer={IsServer}, IsReady={IsReady}]";
     }
 
     /// <summary>

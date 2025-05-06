@@ -96,7 +96,7 @@ public class Hazard
     /// <summary>
     /// Gets whether the hazard is destroyed.
     /// </summary>
-    public bool IsDestroyed => Base.gameObject != null;
+    public bool IsDestroyed => Base == null || Base.gameObject == null;
 
     /// <summary>
     /// Gets the room in which this hazard is in.
@@ -133,6 +133,12 @@ public class Hazard
     /// </summary>
     internal virtual void OnRemove()
     {
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[{GetType().Name}: MaxDistance={MaxDistance}, MaxHeightDistance={MaxHeightDistance}, SourcePosition={SourcePosition}, SourceOffset={SourceOffset}, IsActive={IsActive}, IsDestroyed={IsDestroyed}]";
     }
 
     /// <summary>

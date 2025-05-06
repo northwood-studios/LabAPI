@@ -123,7 +123,7 @@ public class Generator : Structure
     }
 
     /// <summary>
-    /// Gets or sets the required keycard permissions to unlock the generator.
+    /// Gets or sets the required <see cref="DoorPermissionFlags"/> to unlock the generator.
     /// </summary>
     public DoorPermissionFlags RequiredPermissions
     {
