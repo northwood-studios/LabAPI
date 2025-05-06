@@ -307,10 +307,9 @@ public class Pickup
     /// </summary>
     /// <param name="type">The <see cref="ItemType"/>.</param>
     /// <param name="position">The initial position.</param>
-    /// <param name="parent">The initial parent transform or <see langword="null"/>.</param>
-    /// <param name="networkSpawn">Whether to spawn the pickup on the client.</param>
     /// <returns>The instantiated <see cref="Pickup"/></returns>
-    public static Pickup? Create(ItemType type, Vector3 position, Transform? parent = null, bool networkSpawn = true) => Create(type, position, Quaternion.identity, Vector3.one, parent, networkSpawn);
+    /// <remarks>The pickup is only spawned on the server, to spawn the pickup for clients use <see cref="Spawn"/>.</remarks>
+    public static Pickup? Create(ItemType type, Vector3 position) => Create(type, position, Quaternion.identity, Vector3.one);
 
     /// <summary>
     /// Creates a new <see cref="Pickup"/>.
@@ -318,10 +317,9 @@ public class Pickup
     /// <param name="type">The <see cref="ItemType"/>.</param>
     /// <param name="position">The initial position.</param>
     /// <param name="rotation">The initial rotation.</param>
-    /// <param name="parent">The initial parent transform or <see langword="null"/>.</param>
-    /// <param name="networkSpawn">Whether to spawn the pickup on the client.</param>
     /// <returns>The instantiated <see cref="Pickup"/></returns>
-    public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation, Transform? parent = null, bool networkSpawn = true) => Create(type, position, rotation, Vector3.one, parent, networkSpawn);
+    /// <remarks>The pickup is only spawned on the server, to spawn the pickup for clients use <see cref="Spawn"/>.</remarks>
+    public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation) => Create(type, position, rotation, Vector3.one);
 
     /// <summary>
     /// Creates a new <see cref="Pickup"/>.
@@ -330,21 +328,15 @@ public class Pickup
     /// <param name="position">The initial position.</param>
     /// <param name="rotation">The initial rotation.</param>
     /// <param name="scale">The initial scale.</param>
-    /// <param name="parent">The initial parent transform or <see langword="null"/>.</param>
-    /// <param name="networkSpawn">Whether to spawn the pickup on the client.</param>
     /// <returns>The instantiated <see cref="Pickup"/></returns>
-    public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation, Vector3 scale, Transform? parent = null, bool networkSpawn = true)
+    /// <remarks>The pickup is only spawned on the server, to spawn the pickup for clients use <see cref="Spawn"/>.</remarks>
+    public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         if (type == ItemType.None || !InventoryItemLoader.AvailableItems.TryGetValue(type, out ItemBase itemBase))
             return null;
 
         ItemPickupBase newPickupBase = InventoryExtensions.ServerCreatePickup(itemBase, new PickupSyncInfo(type, itemBase.Weight), position, rotation, false);
         newPickupBase.transform.localScale = scale;
-        newPickupBase.transform.SetParent(parent, false);
-
-        if (networkSpawn)
-            NetworkServer.Spawn(newPickupBase.gameObject);
-
         return Get(newPickupBase);
     }
 

@@ -162,7 +162,7 @@ public class Player
     /// <summary>
     /// Gets whether the player was destroyed.
     /// </summary>
-    public bool IsDestroyed => ReferenceHub == null || GameObject == null;
+    public bool IsDestroyed => ReferenceHub == null;
 
     /// <summary>
     /// Gets whether the player is the host or server.

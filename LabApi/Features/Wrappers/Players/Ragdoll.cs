@@ -56,7 +56,7 @@ public class Ragdoll
     /// <summary>
     /// Gets whether the ragdoll was destroyed.
     /// </summary>
-    public bool IsDestroyed => Base == null || GameObject == null;
+    public bool IsDestroyed => Base == null;
 
     /// <summary>
     /// Gets or sets the role info of the ragdoll.
