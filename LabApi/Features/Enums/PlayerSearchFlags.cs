@@ -28,7 +28,7 @@ public enum PlayerSearchFlags
     /// <remarks>
     /// Same filtering used for <see cref="Player.UnauthenticatedList"/>.
     /// </remarks>
-    UnthenticatedPlayers = 2,
+    UnauthenticatedPlayers = 2,
 
     /// <summary>
     /// Includes all dummy NPCs, see <see cref="Player.IsNpc"/> and <see cref="Player.IsDummy"/>.
