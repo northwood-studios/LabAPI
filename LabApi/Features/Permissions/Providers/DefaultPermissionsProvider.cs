@@ -167,14 +167,14 @@ public class DefaultPermissionsProvider : IPermissionsProvider
             permissionsGroup.SpecialPermissionsSuperset.Clear();
             foreach (string permission in permissionsGroup.Permissions)
             {
-                if (permission == "*")
+                if (permission == ".*")
                 {
                     permissionsGroup.IsRoot = true;
                     // We don't have to continue.
-                    return;
+                    break;
                 }
             
-                if (!permission.Contains("."))
+                if (!permission.Contains(".*"))
                     continue;
 
                 int index = permission.LastIndexOf(".", StringComparison.Ordinal);
