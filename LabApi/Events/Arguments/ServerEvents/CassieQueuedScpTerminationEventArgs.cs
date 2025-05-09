@@ -16,11 +16,12 @@ public class CassieQueuedScpTerminationEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The SCP player the C.A.S.S.I.E termination announcement is for.</param>
     /// <param name="announcement">The message C.A.S.S.I.E is supposed to say.</param>
     /// <param name="subtitles">The subtitle part array of the message.</param>
-    public CassieQueuedScpTerminationEventArgs(ReferenceHub player, string announcement, SubtitlePart[] subtitles)
+    public CassieQueuedScpTerminationEventArgs(ReferenceHub player, string announcement, SubtitlePart[] subtitles, DamageHandlerBase damageHandler)
     {
         Player = Player.Get(player);
         Announcement = announcement;
         SubtitleParts = subtitles;
+        DamageHandler = damageHandler;
     }
 
     /// <summary>
@@ -37,4 +38,9 @@ public class CassieQueuedScpTerminationEventArgs : EventArgs, IPlayerEvent
     /// Gets or sets the subtitle parts of the message.
     /// </summary>
     public SubtitlePart[] SubtitleParts { get; }
+
+    /// <summary>
+    /// The Damage Handler responsible for the SCP Termination.
+    /// </summary>
+    public DamageHandlerBase DamageHandler { get; }
 }
