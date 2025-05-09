@@ -16,7 +16,7 @@ public class CassieQueuedScpTerminationEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The SCP player the C.A.S.S.I.E termination announcement is for.</param>
     /// <param name="announcement">The message C.A.S.S.I.E is supposed to say.</param>
     /// <param name="subtitles">The subtitle part array of the message.</param>
-    public CassieQueuedScpTerminationEventArgs(ReferenceHub player, string announcement, SubtitlePart[] subtitles)
+    public CassieQueuedScpTerminationEventArgs(ReferenceHub player, string announcement, SubtitlePart[]? subtitles)
     {
         Player = Player.Get(player);
         Announcement = announcement;
@@ -36,5 +36,5 @@ public class CassieQueuedScpTerminationEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets or sets the subtitle parts of the message.
     /// </summary>
-    public SubtitlePart[] SubtitleParts { get; }
+    public SubtitlePart[]? SubtitleParts { get; }
 }
