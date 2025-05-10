@@ -805,7 +805,7 @@ public class Player
     public static IEnumerable<Player> GetAll(PlayerSearchFlags flags = PlayerSearchFlags.AuthenticatedAndDummy)
     {
         bool authenticated = (flags & PlayerSearchFlags.AuthenticatedPlayers) > 0;
-        bool unauthenticated = (flags & PlayerSearchFlags.UnthenticatedPlayers) > 0;
+        bool unauthenticated = (flags & PlayerSearchFlags.UnauthenticatedPlayers) > 0;
         bool dummyNpcs = (flags & PlayerSearchFlags.DummyNpcs) > 0;
         bool regularNpcs = (flags & PlayerSearchFlags.RegularNpcs) > 0;
         bool host = (flags & PlayerSearchFlags.Host) > 0;
