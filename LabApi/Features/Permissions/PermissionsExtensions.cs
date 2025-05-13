@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CommandSystem;
 using LabApi.Features.Wrappers;
+using RemoteAdmin;
 
 namespace LabApi.Features.Permissions;
 
@@ -20,11 +21,11 @@ public static class PermissionsExtensions
 
     /// <inheritdoc cref="IPermissionsProvider.HasPermissions"/>
     public static bool HasPermissions(this ICommandSender sender, params string[] permissions) =>
-        Player.Get(sender)?.HasPermissions(permissions) ?? false;
+        Player.Get(sender)?.HasPermissions(permissions) ?? sender is not PlayerCommandSender;
 
     /// <inheritdoc cref="IPermissionsProvider.HasAnyPermission"/>
     public static bool HasAnyPermission(this ICommandSender sender, params string[] permissions) =>
-        Player.Get(sender)?.HasAnyPermission(permissions) ?? false;
+        Player.Get(sender)?.HasAnyPermission(permissions) ?? sender is not PlayerCommandSender;
 
     /// <inheritdoc cref="IPermissionsProvider.AddPermissions"/>
     public static void AddPermissions(this ICommandSender sender, params string[] permissions) =>

@@ -485,7 +485,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IEnumerable<Item?> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
+    public IEnumerable<Item> Items => Inventory.UserInventory.Items.Values.Select(Item.Get)!;
 
     /// <summary>
     /// Gets the player's Reserve Ammo.
@@ -1221,7 +1221,7 @@ public class Player
     public List<Pickup> DropAllItems()
     {
         List<Pickup> items = ListPool<Pickup>.Shared.Rent();
-        foreach (Item item in Items)
+        foreach (Item item in Items.ToArray())
             items.Add(DropItem(item));
 
         return items;
@@ -1273,7 +1273,7 @@ public class Player
     /// </summary>
     public void ClearItems()
     {
-        foreach (Item item in Items)
+        foreach (Item item in Items.ToArray())
             RemoveItem(item);
     }
 
