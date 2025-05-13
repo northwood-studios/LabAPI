@@ -22,13 +22,14 @@ public class AdminToy
         AdminToyBase.OnAdded += AddAdminToy;
         AdminToyBase.OnRemoved += RemoveAdminToy;
 
-        Register<AdminToys.PrimitiveObjectToy>(x => new PrimitiveObjectToy(x));
-        Register<AdminToys.LightSourceToy>(x => new LightSourceToy(x));
-        Register<ShootingTarget>(x => new ShootingTargetToy(x));
-        Register<AdminToys.SpeakerToy>(x => new SpeakerToy(x));
-        Register<InvisibleInteractableToy>(x => new InteractableToy(x));
-        Register<Scp079CameraToy>(x => new CameraToy(x));
-        Register<AdminToys.CapybaraToy>(x => new CapybaraToy(x));
+        Register<AdminToys.PrimitiveObjectToy>(static x => new PrimitiveObjectToy(x));
+        Register<AdminToys.LightSourceToy>(static x => new LightSourceToy(x));
+        Register<ShootingTarget>(static x => new ShootingTargetToy(x));
+        Register<AdminToys.SpeakerToy>(static x => new SpeakerToy(x));
+        Register<InvisibleInteractableToy>(static x => new InteractableToy(x));
+        Register<Scp079CameraToy>(static x => new CameraToy(x));
+        Register<AdminToys.CapybaraToy>(static x => new CapybaraToy(x));
+        Register<AdminToys.TextToy>(static x => new TextToy(x));
     }
 
     /// <summary>
@@ -293,7 +294,7 @@ public class AdminToy
             if (!Dictionary.ContainsKey(adminToyBase))
                 _ = CreateAdminToyWrapper(adminToyBase);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.Logger.InternalError($"Failed to handle admin toy creation with error: {e}");
         }
