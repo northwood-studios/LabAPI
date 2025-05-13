@@ -258,6 +258,16 @@ public class Player
     }
 
     /// <summary>
+    /// Gets or sets the player's info area flags.
+    /// Flags determine what info is displayed to other players when they hover their crosshair over.
+    /// </summary>
+    public PlayerInfoArea InfoArea
+    {
+        get => ReferenceHub.nicknameSync.Network_playerInfoToShow;
+        set => ReferenceHub.nicknameSync.Network_playerInfoToShow = value;
+    }
+
+    /// <summary>
     /// Gets or sets the player's current health.
     /// </summary>
     public float Health
