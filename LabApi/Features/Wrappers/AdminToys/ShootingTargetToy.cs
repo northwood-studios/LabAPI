@@ -60,35 +60,17 @@ public class ShootingTargetToy : AdminToy
         return $"[ShootingTargetToy: IsGlobal={IsGlobal}]";
     }
 
-    /// <summary>
-    /// Creates a new shooting target toy.
-    /// </summary>
-    /// <param name="parent">The parent transform.</param>
-    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
-    /// <returns>The created shooting target toy.</returns>
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     // BUG: you can only spawn one of the shooting target types and you dont get to choose which. 
     public static ShootingTargetToy Create(Transform? parent = null, bool networkSpawn = true)
         => Create(Vector3.zero, parent, networkSpawn);
 
-    /// <summary>
-    /// Creates a new shooting target toy.
-    /// </summary>
-    /// <param name="position">The initial local position.</param>
-    /// <param name="parent">The parent transform.</param>
-    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
-    /// <returns>The created shooting target toy.</returns>
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     // BUG: you can only spawn one of the shooting target types and you dont get to choose which.
     public static ShootingTargetToy Create(Vector3 position, Transform? parent = null, bool networkSpawn = true)
         => Create(position, Quaternion.identity, parent, networkSpawn);
 
-    /// <summary>
-    /// Creates a new shooting target toy.
-    /// </summary>
-    /// <param name="position">The initial local position.</param>
-    /// <param name="rotation">The initial local rotation.</param>
-    /// <param name="parent">The parent transform.</param>
-    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
-    /// <returns>The created shooting target toy.</returns>
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     // BUG: you can only spawn one of the shooting target types and you dont get to choose which.
     public static ShootingTargetToy Create(Vector3 position, Quaternion rotation, Transform? parent = null, bool networkSpawn = true)
         => Create(position, rotation, Vector3.one, parent, networkSpawn);

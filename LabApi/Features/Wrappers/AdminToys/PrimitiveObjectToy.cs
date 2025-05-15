@@ -82,33 +82,15 @@ public class PrimitiveObjectToy : AdminToy
         return $"[PrimitiveObjectToy: Type={Type}, Color={Color}, Flags={Flags}]";
     }
 
-    /// <summary>
-    /// Creates a new primitive object toy.
-    /// </summary>
-    /// <param name="parent">The parent transform.</param>
-    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
-    /// <returns>The created primitive object toy.</returns>
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     public static PrimitiveObjectToy Create(Transform? parent = null, bool networkSpawn = true)
         => Create(Vector3.zero, parent, networkSpawn);
 
-    /// <summary>
-    /// Creates a new primitive object toy.
-    /// </summary>
-    /// <param name="position">The initial local position.</param>
-    /// <param name="parent">The parent transform.</param>
-    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
-    /// <returns>The created primitive object toy.</returns>
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     public static PrimitiveObjectToy Create(Vector3 position, Transform? parent = null, bool networkSpawn = true)
         => Create(position, Quaternion.identity, parent, networkSpawn);
 
-    /// <summary>
-    /// Creates a new primitive object toy.
-    /// </summary>
-    /// <param name="position">The initial local position.</param>
-    /// <param name="rotation">The initial local rotation.</param>
-    /// <param name="parent">The parent transform.</param>
-    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
-    /// <returns>The created primitive object toy.</returns>
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     public static PrimitiveObjectToy Create(Vector3 position, Quaternion rotation, Transform? parent = null, bool networkSpawn = true)
         => Create(position, rotation, Vector3.one, parent, networkSpawn);
 

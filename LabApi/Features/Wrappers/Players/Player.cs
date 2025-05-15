@@ -278,6 +278,16 @@ public class Player
     }
 
     /// <summary>
+    /// Gets or sets the player's info area flags.
+    /// Flags determine what info is displayed to other players when they hover their crosshair over.
+    /// </summary>
+    public PlayerInfoArea InfoArea
+    {
+        get => ReferenceHub.nicknameSync.Network_playerInfoToShow;
+        set => ReferenceHub.nicknameSync.Network_playerInfoToShow = value;
+    }
+
+    /// <summary>
     /// Gets or sets the player's current health.
     /// </summary>
     public float Health
@@ -500,7 +510,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IEnumerable<Item?> Items => Inventory.UserInventory.Items.Values.Select(Item.Get);
+    public IEnumerable<Item> Items => Inventory.UserInventory.Items.Values.Select(Item.Get)!;
 
     /// <summary>
     /// Gets the player's Reserve Ammo.
@@ -1236,7 +1246,7 @@ public class Player
     public List<Pickup> DropAllItems()
     {
         List<Pickup> items = ListPool<Pickup>.Shared.Rent();
-        foreach (Item item in Items)
+        foreach (Item item in Items.ToArray())
             items.Add(DropItem(item));
 
         return items;
@@ -1306,7 +1316,7 @@ public class Player
     /// </summary>
     public void ClearItems()
     {
-        foreach (Item item in Items)
+        foreach (Item item in Items.ToArray())
             RemoveItem(item);
     }
 
