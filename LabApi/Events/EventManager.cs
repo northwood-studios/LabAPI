@@ -109,7 +109,19 @@ public static class EventManager
 
         foreach (PropertyInfo property in properties)
         {
-            stringBuilder.AppendLine("\t- " + property.Name + ": " + property.GetValue(args));
+            try
+            {
+                object value = property.GetValue(args);
+                stringBuilder.AppendLine("\t- " + property.Name + ": " + value.ToString());
+            }
+            catch (NotSupportedException)
+            {
+                stringBuilder.AppendLine("\t- " + property.Name + ": <Value get by reflection not supported>");
+            }
+            catch (Exception ex)
+            {
+                stringBuilder.AppendLine("\t- " + property.Name + ": <Exception: " + ex.GetType().Name + ">");
+            }
         }
 
         // As this one has parameters, we can return the method name and the parameters' types.
@@ -127,6 +139,6 @@ public static class EventManager
         if (eventHandler.Target == null) // Static methods
             return $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Method.DeclaringType}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
 
-       return $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
+        return $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
     }
 }
