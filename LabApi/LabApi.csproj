@@ -6,11 +6,27 @@
 		<PlatformTarget>x64</PlatformTarget>
 
 		<LangVersion>12.0</LangVersion>
+		<Version>1.0.2</Version>
+
+		<AssemblyName>LabApi</AssemblyName>
+		<PackageId>Northwood.LabAPI</PackageId>
+		<Authors>Northwood Studios</Authors>
+		<Company>Northwood Studios</Company>
+		<Description>The LabAPI project is SCP: Secret Laboratory's official server-side plugin loader and framework.</Description>
+		<PackageTags>SCPSL, API, Framework, Plugin, SL, Development</PackageTags>
+		<PackageProjectUrl>https://www.nuget.org/packages/Northwood.LabAPI/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/northwood-studios/LabAPI/</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Copyright>© 2025 Northwood Studios</Copyright>
 		
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Nullable>enable</Nullable>
 		<Platforms>AnyCPU</Platforms>
+
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<IncludeSymbols>true</IncludeSymbols>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		
 		<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
 	</PropertyGroup>
@@ -22,7 +38,12 @@
 	<PropertyGroup>
 		<TextTemplateTransformSkipUpToDate>false</TextTemplateTransformSkipUpToDate>
 	</PropertyGroup>
-	
+
+	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="" />
+		<None Include="$(SolutionDir)LICENSE" Pack="true" PackagePath="" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp" HintPath="$(SL_REFERENCES)\Assembly-CSharp.dll" />
 		<Reference Include="Assembly-CSharp-firstpass" HintPath="$(SL_REFERENCES)\Assembly-CSharp-firstpass.dll" />
@@ -42,7 +63,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\LabApi.SourceGenerators\LabApi.SourceGenerators\LabApi.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
-
+	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="$(SL_SOURCE)\Assets\Plugins" Condition=" '$(SL_SOURCE)' != '' " />
 	</Target>	
