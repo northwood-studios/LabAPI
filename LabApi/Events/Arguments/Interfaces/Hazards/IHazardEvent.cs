@@ -12,4 +12,3 @@ public interface IHazardEvent
     /// </summary>
     public Hazard? Hazard { get; }
 }
-

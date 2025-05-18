@@ -227,7 +227,7 @@ public class Scp914 : Room
         if (!InventoryItemLoader.TryGetItem(type, out ItemBase item))
             return null;
 
-        if (ItemProcessorCache.TryGetValue(item, out var processor))
+        if (ItemProcessorCache.TryGetValue(item, out IScp914ItemProcessor? processor))
             return processor;
 
         if (!item.TryGetComponent(out Scp914ItemProcessor baseProcessor))

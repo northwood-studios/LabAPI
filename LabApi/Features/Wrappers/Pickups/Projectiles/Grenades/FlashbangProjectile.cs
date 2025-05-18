@@ -78,4 +78,3 @@ public class FlashbangProjectile : TimedGrenadeProjectile
         return Dictionary.TryGetValue(projectile, out FlashbangProjectile wrapper) ? wrapper : (FlashbangProjectile)CreateItemWrapper(projectile);
     }
 }
-

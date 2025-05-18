@@ -207,4 +207,3 @@ public class Locker : Structure
         return Dictionary.TryGetValue(baseLocker, out Locker found) ? found : (Locker)CreateStructureWrapper(baseLocker);
     }
 }
-

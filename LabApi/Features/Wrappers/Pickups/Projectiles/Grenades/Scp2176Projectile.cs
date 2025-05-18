@@ -75,4 +75,3 @@ public class Scp2176Projectile : TimedGrenadeProjectile
         return Dictionary.TryGetValue(projectile, out Scp2176Projectile wrapper) ? wrapper : (Scp2176Projectile)CreateItemWrapper(projectile);
     }
 }
-

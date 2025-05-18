@@ -74,7 +74,7 @@ public class Generator : Structure
         if (room == null) // Room is null after round restart, try find it by iterating over the existing dictionary
         {
             Room? potentialRoom = null;
-            foreach (var kvp in GeneratorsByRoom)
+            foreach (KeyValuePair<Room, List<Generator>> kvp in GeneratorsByRoom)
             {
                 if (kvp.Value.Contains(this))
                 {
@@ -200,7 +200,7 @@ public class Generator : Structure
 
     private void TryRegisterByRoom()
     {
-        foreach (var kvp in GeneratorsByRoom)
+        foreach (KeyValuePair<Room, List<Generator>> kvp in GeneratorsByRoom)
         {
             if (kvp.Value.Contains(this))
                 return;
