@@ -16,4 +16,3 @@ public class MiniMtfWave : MiniRespawnWave
     /// <inheritdoc/>
     public new NtfMiniWave Base { get; private set; }
 }
-

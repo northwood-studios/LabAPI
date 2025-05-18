@@ -23,4 +23,3 @@ public class PlayerUnlockedWarheadButtonEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     public Player Player { get; }
 }
-

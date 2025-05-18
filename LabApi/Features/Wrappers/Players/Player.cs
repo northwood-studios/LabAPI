@@ -780,7 +780,7 @@ public class Player
     public static bool ValidateCustomInfo(string text, out string rejectionReason) => NicknameSync.ValidateCustomInfo(text, out rejectionReason);
 
     /// <summary>
-    /// Gets a all players matching the criteria specified by the <see cref="PlayerSearchFlags"/>.
+    /// Gets all players matching the criteria specified by the <see cref="PlayerSearchFlags"/>.
     /// </summary>
     /// <param name="flags">The <see cref="PlayerSearchFlags"/> of the players to include.</param>
     /// <returns>The set of players that match the criteria.</returns>

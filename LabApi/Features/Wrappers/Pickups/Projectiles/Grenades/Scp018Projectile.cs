@@ -91,4 +91,3 @@ public class Scp018Projectile : TimedGrenadeProjectile
         return Dictionary.TryGetValue(projectile, out Scp018Projectile wrapper) ? wrapper : (Scp018Projectile)CreateItemWrapper(projectile);
     }
 }
-

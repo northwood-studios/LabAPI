@@ -1,4 +1,5 @@
 ﻿namespace LabApi.Events.Arguments.Interfaces;
+
 /// <summary>
 /// Represents an event that involves a <see cref="UserGroup"/>.
 /// </summary>

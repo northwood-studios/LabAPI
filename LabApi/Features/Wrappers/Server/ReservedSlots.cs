@@ -84,4 +84,3 @@ public static class ReservedSlots
     /// <returns>Whether the player was found and removed from the reserved slots.</returns>
     public static bool Remove(Player player) => Remove(player.UserId);
 }
-

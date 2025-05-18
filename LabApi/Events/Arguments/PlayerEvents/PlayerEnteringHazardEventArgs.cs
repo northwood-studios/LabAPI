@@ -38,4 +38,3 @@ public class PlayerEnteringHazardEventArgs : EventArgs, IPlayerEvent, IHazardEve
     /// </summary>
     public bool IsAllowed { get; set; }
 }
-

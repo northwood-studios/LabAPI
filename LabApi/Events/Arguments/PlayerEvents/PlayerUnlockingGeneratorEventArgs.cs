@@ -33,4 +33,3 @@ public class PlayerUnlockingGeneratorEventArgs : EventArgs, IPlayerEvent, IGener
     /// <inheritdoc/>
     public bool IsAllowed { get; set; }
 }
-
