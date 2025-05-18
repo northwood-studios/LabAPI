@@ -34,7 +34,7 @@ public class Scp330Pickup : Pickup
     }
 
     /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
     internal override void OnRemove()
     {
@@ -65,7 +65,7 @@ public class Scp330Pickup : Pickup
     /// <summary>
     /// Gets the SCP-330 pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseScp330Pickup"/> was not <see langword="null"/>.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <param name="pickup">The <see cref="Base"/> of the pickup.</param>
     /// <returns>The requested pickup or <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(pickup))]
     public static Scp330Pickup? Get(BaseScp330Pickup? pickup)
