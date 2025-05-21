@@ -71,7 +71,7 @@ public class Room
     /// <summary>
     /// The room's name.
     /// </summary>
-    public RoomName Name => Base.Name;
+    public RoomName Type => Base.Name;
 
     /// <summary>
     /// The zone in which this room is located.
