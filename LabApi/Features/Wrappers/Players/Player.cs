@@ -142,7 +142,7 @@ public class Player
     /// <summary>
     /// Gets the player's <see cref="GameObject"/>.
     /// </summary>
-    public GameObject? GameObject => ReferenceHub?.gameObject;
+    public GameObject? GameObject => ReferenceHub ? ReferenceHub.gameObject : null;
 
     /// <summary>
     /// Gets whether the player is the host or server.
