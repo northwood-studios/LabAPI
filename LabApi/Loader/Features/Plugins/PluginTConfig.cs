@@ -12,8 +12,10 @@ public abstract class Plugin<TConfig> : Plugin
 {
     /// <summary>
     /// The configuration of the <see cref="Plugin"/>.
+    /// This will never be null once <see cref="Plugin.Enable()"/> has been called.
+    /// Will revert to default values if loading failed.
     /// </summary>
-    public TConfig? Config { get; set; }
+    public TConfig Config { get; set; } = null!;
 
     /// <summary>
     /// The file name of the configuration file.
@@ -40,13 +42,10 @@ public abstract class Plugin<TConfig> : Plugin
     /// </summary>
     public void SaveConfig()
     {
-        if (Config is null)
-        {
-            Logger.Warn($"Failed to save the configuration file for {Name}, the configuration is null.");
-            return;
-        }
+        if (Config == null!)
+            Logger.Warn($"Saving the configuration file for {Name}, but the configuration is null (has it loaded yet?). Writing default values.");
 
         // We directly use SaveConfig(T, name) to save the configuration.
-        this.SaveConfig(Config, ConfigFileName);
+        this.SaveConfig(Config ?? new TConfig(), ConfigFileName);
     }
 }
