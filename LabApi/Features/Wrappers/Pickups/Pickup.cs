@@ -341,6 +341,40 @@ public class Pickup
     }
 
     /// <summary>
+    /// Creates and spawns a new <see cref="Pickup"/>.
+    /// </summary>
+    /// <param name="type">The <see cref="ItemType"/>.</param>
+    /// <param name="position">The initial position.</param>
+    /// <returns>The instantiated <see cref="Pickup"/></returns>
+    public static Pickup? CreateAndSpawn(ItemType type, Vector3 position) => CreateAndSpawn(type, position, Quaternion.identity, Vector3.one);
+
+    /// <summary>
+    /// Creates and spawns a new <see cref="Pickup"/>.
+    /// </summary>
+    /// <param name="type">The <see cref="ItemType"/>.</param>
+    /// <param name="position">The initial position.</param>
+    /// <param name="rotation">The initial rotation.</param>
+    /// <returns>The instantiated <see cref="Pickup"/></returns>
+    public static Pickup? CreateAndSpawn(ItemType type, Vector3 position, Quaternion rotation) => CreateAndSpawn(type, position, rotation, Vector3.one);
+
+
+    /// <summary>
+    /// Creates and spawns a new <see cref="Pickup"/>.
+    /// </summary>
+    /// <param name="type">The <see cref="ItemType"/>.</param>
+    /// <param name="position">The initial position.</param>
+    /// <param name="rotation">The initial rotation.</param>
+    /// <param name="scale">The initial scale.</param>
+    /// <returns>The instantiated <see cref="Pickup"/></returns>
+    public static Pickup? CreateAndSpawn(ItemType type, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        Pickup? pickup = Create(type, position, rotation, scale);
+
+        pickup?.Spawn();
+        return pickup;
+    }
+
+    /// <summary>
     /// A private method to handle the creation of new pickups in the server.
     /// </summary>
     /// <param name="pickup">The created <see cref="ItemPickupBase"/> instance.</param>

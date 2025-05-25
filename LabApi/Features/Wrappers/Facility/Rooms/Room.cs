@@ -1,6 +1,7 @@
 using Generators;
 using Interactables.Interobjects.DoorUtils;
 using MapGeneration;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -71,7 +72,13 @@ public class Room
     /// <summary>
     /// The room's name.
     /// </summary>
-    public RoomName Name => Base.Name;
+    [Obsolete("Use Type instead.", false)]
+    public RoomName RoomName => Base.Name;
+
+    /// <summary>
+    /// The room's type, which is the same as <see cref="RoomIdentifier.Name"/>.<br/>
+    /// </summary>
+    public RoomName Type => Base.Name;
 
     /// <summary>
     /// The zone in which this room is located.
@@ -139,7 +146,7 @@ public class Room
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[{GetType().Name}: Name={Name}, Shape={Shape}, Zone={Zone}]";
+        return $"[{GetType().Name}: Name={Type}, Shape={Shape}, Zone={Zone}]";
     }
   
     /// <summary>
@@ -170,7 +177,7 @@ public class Room
     /// <param name="roomName">The name of the room.</param>
     /// <returns>The requested room.</returns>
     public static IEnumerable<Room> Get(RoomName roomName) =>
-        List.Where(x => x.Name == roomName);
+        List.Where(x => x.Type == roomName);
 
     /// <summary>
     /// Gets the rooms by their shape.

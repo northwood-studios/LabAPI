@@ -3,7 +3,7 @@
     /// <summary>
     /// Enum type that represents all the door name tags defined in the game.
     /// </summary>
-    public enum DoorName
+    public enum DoorType
     {
         None = 0,
         LczPc,// LCZ_CAFE

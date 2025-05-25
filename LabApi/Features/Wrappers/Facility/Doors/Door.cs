@@ -40,47 +40,47 @@ public class Door
     private static readonly Dictionary<Type, Func<DoorVariant, Door>> typeWrappers = [];
 
     /// <summary>
-    /// Contains all the <see cref="Enums.DoorName"/> values for the associated <see cref="NameTag"/>.
+    /// Contains all the <see cref="Enums.DoorType"/> values for the associated <see cref="NameTag"/>.
     /// </summary>
-    private static readonly Dictionary<string, DoorName> doorNameDictionary = new()
+    private static readonly Dictionary<string, DoorType> doorNameDictionary = new()
     {
-        { "LCZ_CAFE", DoorName.LczPc },
-        { "LCZ_WC", DoorName.LczWc },
-        { "CHECKPOINT_LCZ_A", DoorName.LczCheckpointA },
-        { "CHECKPOINT_LCZ_B", DoorName.LczCheckpointB },
-        { "LCZ_ARMORY", DoorName.LczArmory },
-        { "173_BOTTOM", DoorName.Lcz173Bottom },
-        { "173_GATE", DoorName.Lcz173Gate },
-        { "173_CONNECTOR", DoorName.Lcz173Connector },
-        { "173_ARMORY", DoorName.Lcz173Armory },
-        { "GR18_INNER", DoorName.LczGr18Inner },
-        { "GR18", DoorName.LczGr18Gate },
-        { "914", DoorName.Lcz914Gate },
-        { "330", DoorName.Lcz330 },
-        { "330_CHAMBER", DoorName.Lcz330Chamber },
-        { "079_FIRST", DoorName.Hcz079FirstGate },
-        { "079_SECOND", DoorName.Hcz079SecondGate },
-        { "079_ARMORY", DoorName.Hcz079Armory },
-        { "096", DoorName.Hcz096 },
-        { "939_CRYO", DoorName.Hcz939Cryo },
-        { "HCZ_ARMORY", DoorName.HczArmory },
-        { "049_ARMORY", DoorName.Hcz049Armory },
-        { "HID_CHAMBER", DoorName.HczHidChamber },
-        { "HID_UPPER", DoorName.HczHidUpper },
-        { "HID_LOWER", DoorName.HczHidLower },
-        { "NUKE_ARMORY", DoorName.HczNukeArmory },
-        { "106_PRIMARY", DoorName.Hcz106Primiary },
-        { "106_SECONDARY", DoorName.Hcz106Secondary },
-        { "HCZ_127_LAB", DoorName.Hcz127Lab },
-        { "CHECKPOINT_EZ_HCZ_A", DoorName.HczCheckpoint },
-        { "INTERCOM", DoorName.EzIntercom },
-        { "GATE_A", DoorName.EzGateA },
-        { "GATE_B", DoorName.EzGateB },
-        { "SURFACE_GATE", DoorName.SurfaceGate },
-        { "SURFACE_NUKE", DoorName.SurfaceNuke },
-        { "ESCAPE_PRIMARY", DoorName.SurfaceEscapePrimary },
-        { "ESCAPE_SECONDARY", DoorName.SurfaceEscapeSecondary },
-        { "ESCAPE_FINAL", DoorName.SurfaceEscapeFinal }
+        { "LCZ_CAFE", DoorType.LczPc },
+        { "LCZ_WC", DoorType.LczWc },
+        { "CHECKPOINT_LCZ_A", DoorType.LczCheckpointA },
+        { "CHECKPOINT_LCZ_B", DoorType.LczCheckpointB },
+        { "LCZ_ARMORY", DoorType.LczArmory },
+        { "173_BOTTOM", DoorType.Lcz173Bottom },
+        { "173_GATE", DoorType.Lcz173Gate },
+        { "173_CONNECTOR", DoorType.Lcz173Connector },
+        { "173_ARMORY", DoorType.Lcz173Armory },
+        { "GR18_INNER", DoorType.LczGr18Inner },
+        { "GR18", DoorType.LczGr18Gate },
+        { "914", DoorType.Lcz914Gate },
+        { "330", DoorType.Lcz330 },
+        { "330_CHAMBER", DoorType.Lcz330Chamber },
+        { "079_FIRST", DoorType.Hcz079FirstGate },
+        { "079_SECOND", DoorType.Hcz079SecondGate },
+        { "079_ARMORY", DoorType.Hcz079Armory },
+        { "096", DoorType.Hcz096 },
+        { "939_CRYO", DoorType.Hcz939Cryo },
+        { "HCZ_ARMORY", DoorType.HczArmory },
+        { "049_ARMORY", DoorType.Hcz049Armory },
+        { "HID_CHAMBER", DoorType.HczHidChamber },
+        { "HID_UPPER", DoorType.HczHidUpper },
+        { "HID_LOWER", DoorType.HczHidLower },
+        { "NUKE_ARMORY", DoorType.HczNukeArmory },
+        { "106_PRIMARY", DoorType.Hcz106Primiary },
+        { "106_SECONDARY", DoorType.Hcz106Secondary },
+        { "HCZ_127_LAB", DoorType.Hcz127Lab },
+        { "CHECKPOINT_EZ_HCZ_A", DoorType.HczCheckpoint },
+        { "INTERCOM", DoorType.EzIntercom },
+        { "GATE_A", DoorType.EzGateA },
+        { "GATE_B", DoorType.EzGateB },
+        { "SURFACE_GATE", DoorType.SurfaceGate },
+        { "SURFACE_NUKE", DoorType.SurfaceNuke },
+        { "ESCAPE_PRIMARY", DoorType.SurfaceEscapePrimary },
+        { "ESCAPE_SECONDARY", DoorType.SurfaceEscapeSecondary },
+        { "ESCAPE_FINAL", DoorType.SurfaceEscapeFinal }
     };
 
     /// <summary>
@@ -104,8 +104,8 @@ public class Door
 
         if (doorVariant.TryGetComponent(out DoorNametagExtension nametag) && !string.IsNullOrEmpty(nametag.GetName))
         {
-            if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorName doorName))
-                DoorName = doorName;
+            if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorType doorName))
+                Type = doorName;
             else
                 Logger.Warn($"Missing DoorName enum value for door name tag {nametag.GetName}");
         }
@@ -125,18 +125,27 @@ public class Door
     public DoorVariant Base { get; }
 
     /// <summary>
-    /// Gets the <see cref="Enums.DoorName"/> of the door.
+    /// Gets the <see cref="DoorName"/> of the door.
     /// </summary>
     /// <remarks>
     /// Is the enum version of <see cref="NameTag"/>.
     /// </remarks>
-    public DoorName DoorName { get; } = DoorName.None;
+    [Obsolete("Use Type instead.")]
+    public DoorType DoorName { get; } = DoorType.None;
+
+    /// <summary>
+    /// Gets the type of the door.
+    /// </summary>
+    /// <remarks>
+    /// Is the enum version of <see cref="NameTag"/>.
+    /// </remarks>
+    public DoorType Type { get; } = DoorType.None;
 
     /// <summary>
     /// Gets the name tag of the door.
     /// </summary>
     /// <remarks>
-    /// Is the string version of <see cref="DoorName"/>.
+    /// Is the string version of <see cref="DoorType"/>.
     /// </remarks>
     public string NameTag => Base.DoorName;
 
@@ -245,7 +254,7 @@ public class Door
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[{GetType().Name}: DoorName={DoorName}, NameTag={NameTag}, Zone={Zone}, IsOpened={IsOpened}, IsLocked={IsLocked}, Permissions={Permissions}]";
+        return $"[{GetType().Name}: DoorName or Type={Type}, NameTag={NameTag}, Zone={Zone}, IsOpened={IsOpened}, IsLocked={IsLocked}, Permissions={Permissions}]";
     }
 
     /// <summary>
