@@ -397,24 +397,6 @@ public class Player
         }
     }
 
-    public Vector3? Scale
-    {
-        get => GameObject?.transform.localScale;
-        set
-        {
-            if (GameObject != null && value != GameObject.transform.localScale)
-            {
-                GameObject.transform.localScale = value ?? Vector3.one;
-            }
-
-            foreach (var pl in Player.ReadyList)
-            {
-                NetworkServer.SendSpawnMessage
-            }
-        }
-    }
-
-
     /// <summary>
     /// Gets a value indicating whether the player has remote admin access.
     /// </summary>

@@ -1,6 +1,7 @@
 using Generators;
 using Interactables.Interobjects.DoorUtils;
 using MapGeneration;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -70,6 +71,12 @@ public class Room
 
     /// <summary>
     /// The room's name.
+    /// </summary>
+    [Obsolete("Use Type instead.", false)]
+    public RoomName RoomName => Base.Name;
+
+    /// <summary>
+    /// The room's type, which is the same as <see cref="RoomIdentifier.Name"/>.<br/>
     /// </summary>
     public RoomName Type => Base.Name;
 
