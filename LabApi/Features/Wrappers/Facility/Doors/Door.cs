@@ -105,7 +105,7 @@ public class Door
         if (doorVariant.TryGetComponent(out DoorNametagExtension nametag) && !string.IsNullOrEmpty(nametag.GetName))
         {
             if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorName doorName))
-                DoorName = doorName;
+                Type = doorName;
             else
                 Logger.Warn($"Missing DoorName enum value for door name tag {nametag.GetName}");
         }
@@ -125,12 +125,12 @@ public class Door
     public DoorVariant Base { get; }
 
     /// <summary>
-    /// Gets the <see cref="Enums.DoorName"/> of the door.
+    /// Gets the <see cref="DoorName"/> of the door.
     /// </summary>
     /// <remarks>
     /// Is the enum version of <see cref="NameTag"/>.
     /// </remarks>
-    public DoorName DoorName { get; } = DoorName.None;
+    public DoorName Type { get; } = DoorName.None;
 
     /// <summary>
     /// Gets the name tag of the door.
@@ -245,7 +245,7 @@ public class Door
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[{GetType().Name}: DoorName={DoorName}, NameTag={NameTag}, Zone={Zone}, IsOpened={IsOpened}, IsLocked={IsLocked}, Permissions={Permissions}]";
+        return $"[{GetType().Name}: DoorName={Type}, NameTag={NameTag}, Zone={Zone}, IsOpened={IsOpened}, IsLocked={IsLocked}, Permissions={Permissions}]";
     }
 
     /// <summary>

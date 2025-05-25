@@ -139,7 +139,7 @@ public class Room
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[{GetType().Name}: Name={Name}, Shape={Shape}, Zone={Zone}]";
+        return $"[{GetType().Name}: Name={Type}, Shape={Shape}, Zone={Zone}]";
     }
   
     /// <summary>
@@ -170,7 +170,7 @@ public class Room
     /// <param name="roomName">The name of the room.</param>
     /// <returns>The requested room.</returns>
     public static IEnumerable<Room> Get(RoomName roomName) =>
-        List.Where(x => x.Name == roomName);
+        List.Where(x => x.Type == roomName);
 
     /// <summary>
     /// Gets the rooms by their shape.
