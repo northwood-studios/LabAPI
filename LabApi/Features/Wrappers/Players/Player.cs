@@ -738,6 +738,11 @@ public class Player
     }
 
     /// <summary>
+    /// Gets the player's scale.
+    /// </summary>
+    public Vector3 Scale => ReferenceHub.transform.localScale;
+
+    /// <summary>
     /// Gets or sets the player's look rotation. X is vertical axis while Y is horizontal. Vertical axis is clamped by the base game logic.<br/>
     /// Returns <see cref="Vector2.zero"/> if the player's role is not currently derived from <see cref="IFpcRole"/>.
     /// </summary>
