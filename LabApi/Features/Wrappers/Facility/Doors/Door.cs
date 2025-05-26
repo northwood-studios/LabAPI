@@ -1,5 +1,4 @@
 ﻿using Generators;
-using Hazards;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using LabApi.Features.Enums;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Logger = LabApi.Features.Console.Logger;
 
@@ -66,6 +66,7 @@ public class Door
         { "HCZ_ARMORY", DoorName.HczArmory },
         { "049_ARMORY", DoorName.Hcz049Armory },
         { "HID_CHAMBER", DoorName.HczHidChamber },
+        { "HID_LAB", DoorName.HczHidLab },
         { "HID_UPPER", DoorName.HczHidUpper },
         { "HID_LOWER", DoorName.HczHidLower },
         { "NUKE_ARMORY", DoorName.HczNukeArmory },
@@ -109,6 +110,8 @@ public class Door
             else
                 Logger.Warn($"Missing DoorName enum value for door name tag {nametag.GetName}");
         }
+
+        doorVariant.OnRoomsRegistered += RegisterDoorType;
     }
 
     /// <summary>
@@ -131,6 +134,11 @@ public class Door
     /// Is the enum version of <see cref="NameTag"/>.
     /// </remarks>
     public DoorName DoorName { get; } = DoorName.None;
+
+    /// <summary>
+    /// Gets the <see cref="Enums.DoorType"/> of the door.
+    /// </summary>
+    public DoorType DoorType { get; internal set; } = DoorType.None;
 
     /// <summary>
     /// Gets the name tag of the door.
@@ -241,6 +249,60 @@ public class Door
     /// Plays a sound and flashes permission denied on the panel.
     /// </summary>
     public void PlayPermissionDeniedAnimation() => Base.PermissionsDenied(null, 0);
+
+    private void RegisterDoorType()
+    {
+        RoomName roomName = Rooms[0].Name;
+        string gameObjectName = Regex.Replace(Base.name, @"\s*\(?(Clone|\d+)\)?", "");
+
+        if (DoorName != DoorName.None && Enum.TryParse(DoorName.ToString(), out DoorType doorType))
+        {
+            DoorType = doorType;
+            return;
+        }
+
+        DoorType = gameObjectName switch
+        {
+            "LCZ PortallessBreakableDoor" => roomName switch
+            {
+                RoomName.LczGreenhouse => DoorType.LczGreenhouse,
+                RoomName.LczAirlock => DoorType.LczAirlock,
+                RoomName.HczTestroom => DoorType.HczTestroom,
+                _ => DoorType.LczDoor
+            },
+            "LCZ BreakableDoor" => DoorType.LczDoor,
+            "Prison BreakableDoor" => DoorType.LczPrisonDoor,
+            "914 Door" => DoorType.Lcz914Machine,
+            "Elevator Door" => roomName switch
+            {
+                RoomName.LczCheckpointA => DoorType.LczElevatorA,
+                RoomName.LczCheckpointB => DoorType.LczElevatorB,
+                RoomName.HczCheckpointA => DoorType.HczElevatorA,
+                RoomName.HczCheckpointB => DoorType.HczElevatorB,
+                RoomName.Hcz049 => DoorType.Hcz049Elevator,
+                RoomName.EzGateA => DoorType.EzGateAElevator,
+                RoomName.EzGateB => DoorType.EzGateBElevator,
+                _ => DoorType.ElevatorDoor
+            },
+            "Nuke Elevator Door" => DoorType.HczNukeElevator,
+            "Cargo Elevator Door" => DoorType.HczServersElevator,
+            "HCZ BreakableDoor" => DoorType.HczDoor,
+            "HCZ BulkDoor" => DoorType.HczBulkDoor,
+            "EZ PortallessBreakableDoor" or "EZ BreakableDoor" => DoorType.EzDoor,
+            "EZ Keycard BreakableDoor" => roomName switch
+            {
+                RoomName.HczCheckpointToEntranceZone => DoorType.HczCheckpointArmory,
+                _ => DoorType.EzDoor,
+            },
+            "Unsecured Pryable GateDoor" => roomName switch
+            {
+                RoomName.HczCheckpointToEntranceZone => DoorType.HczCheckpointGate,
+                RoomName.Hcz049 => Base.transform.position.y < -8 ? DoorType.Hcz049Gate : DoorType.HczNew173Gate,
+                _ => DoorType.GateDoor,
+            },
+            _ => DoorType.None
+        };
+    }
 
     /// <inheritdoc />
     public override string ToString()
