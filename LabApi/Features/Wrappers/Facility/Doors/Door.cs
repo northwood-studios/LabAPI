@@ -307,7 +307,7 @@ public class Door
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[{GetType().Name}: DoorName={DoorName}, NameTag={NameTag}, Zone={Zone}, IsOpened={IsOpened}, IsLocked={IsLocked}, Permissions={Permissions}]";
+        return $"[{GetType().Name}: DoorName={DoorName}, DoorType={DoorType}, NameTag={NameTag}, Zone={Zone}, IsOpened={IsOpened}, IsLocked={IsLocked}, Permissions={Permissions}]";
     }
 
     /// <summary>
