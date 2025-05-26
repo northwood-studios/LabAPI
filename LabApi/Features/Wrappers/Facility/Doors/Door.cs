@@ -328,7 +328,7 @@ public class Door
     }
 
     /// <summary>
-    /// Gets the door by it's nametag.
+    /// Gets the door by its nametag.
     /// </summary>
     /// <param name="nametag">The door's nametag</param>
     /// <returns>The requested door. May be null if door with provided nametag does not exist.</returns>
@@ -341,24 +341,32 @@ public class Door
     }
 
     /// <summary>
-    /// Gets the door in specified zone.
+    /// Gets the doors in specified zone.
     /// </summary>
     /// <param name="facilityZone">Target zone.</param>
     public static IEnumerable<Door> Get(FacilityZone facilityZone) =>
         List.Where(x => x.Rooms.First().Zone.Equals(facilityZone));
 
     /// <summary>
-    /// Gets the door in specified room.
+    /// Gets the doors in specified room.
     /// </summary>
     /// <param name="roomId">Target room wrapper.</param>
     public static IEnumerable<Door> Get(Room roomId) => Get(roomId.Base);
 
     /// <summary>
-    /// Gets the door in specified room.
+    /// Gets the doors in specified room.
     /// </summary>
     /// <param name="roomId">Target room identifier.</param>
     public static IEnumerable<Door> Get(RoomIdentifier roomId) =>
         List.Where(x => x.Rooms.First().Equals(roomId));
+
+    /// <summary>
+    /// Gets the doors of the specified <see cref="DoorType"/>.
+    /// </summary>
+    /// <param name="doorType">The door type.</param>
+    /// <returns>The doors that match the specified <see cref="DoorType"/>.</returns>
+    public static IEnumerable<Door> Get(DoorType doorType) =>
+        List.Where(x => x.DoorType.Equals(doorType));
 
     /// <summary>
     /// A protected method to create new door wrappers from the base game object.
