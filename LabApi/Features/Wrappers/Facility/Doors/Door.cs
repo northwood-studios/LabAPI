@@ -297,7 +297,7 @@ public class Door
             "Unsecured Pryable GateDoor" => roomName switch
             {
                 RoomName.HczCheckpointToEntranceZone => DoorType.HczCheckpointGate,
-                RoomName.Hcz049 => Base.transform.position.y < -8 ? DoorType.Hcz049Gate : DoorType.HczNew173Gate,
+                RoomName.Hcz049 => Base.transform.position.y < -8 ? DoorType.Hcz049Gate : DoorType.Hcz173Gate,
                 _ => DoorType.GateDoor,
             },
             _ => DoorType.None

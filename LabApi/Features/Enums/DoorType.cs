@@ -41,7 +41,7 @@ public enum DoorType
     Hcz049Armory,
     Hcz049Elevator,
     Hcz049Gate,
-    HczNew173Gate,
+    Hcz173Gate,
     HczHidChamber,
     HczHidLab,
     HczHidUpper,
