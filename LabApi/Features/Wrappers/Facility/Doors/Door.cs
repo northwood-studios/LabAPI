@@ -253,7 +253,7 @@ public class Door
     private void RegisterDoorType()
     {
         RoomName roomName = Rooms[0].Name;
-        string gameObjectName = Regex.Replace(Base.name, @"\s*\(?(Clone|\d+)\)?", "");
+        string gameObjectName = Regex.Replace(Base.name, @"\s*\(?(Clone|\d+)\)?$", "");
 
         if (DoorName != DoorName.None && Enum.TryParse(DoorName.ToString(), out DoorType doorType))
         {
