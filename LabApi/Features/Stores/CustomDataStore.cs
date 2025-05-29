@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LabApi.Features.Wrappers;
 using NorthwoodLib.Pools;
@@ -72,6 +73,20 @@ public abstract class CustomDataStore
             return (TStore)store;
 
         return null;
+    }
+
+    /// <summary>
+    /// Tries to get the <see cref="CustomDataStore"/> for the specified <see cref="Player"/>.
+    /// </summary>
+    /// <param name="player">The <see cref="Player"/> to get the <see cref="CustomDataStore"/> for.</param>
+    /// <param name="store">The <see cref="CustomDataStore"/> for the specified <see cref="Player"/>.</param>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
+    /// <returns>Whether the <see cref="CustomDataStore"/> was successfully retrieved.</returns>
+    public static bool TryGet<TStore>(Player player, [NotNullWhen(true)] out TStore? store)
+        where TStore : CustomDataStore
+    {
+        store = Get<TStore>(player);
+        return store != null;
     }
 
     /// <summary>
@@ -182,6 +197,9 @@ public abstract class CustomDataStore<TStore> : CustomDataStore
 
     /// <inheritdoc cref="CustomDataStore.Get{TStore}"/>
     public static TStore? Get(Player player) => Get<TStore>(player);
+
+    /// <inheritdoc cref="CustomDataStore.TryGet{TStore}"/>
+    public static bool TryGet(Player player, [NotNullWhen(true)] out TStore? store) => TryGet<TStore>(player, out store);
 
     /// <inheritdoc cref="CustomDataStore.Destroy{TStore}"/>
     public static bool Destroy(Player player) => Destroy<TStore>(player);
