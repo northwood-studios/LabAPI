@@ -11,7 +11,7 @@ namespace LabApi.Features.Stores;
 /// </summary>
 public abstract class CustomDataStore
 {
-    private static readonly Dictionary<Type, Dictionary<Player, CustomDataStore>> StoreInstances = new ();
+    private static readonly Dictionary<Type, Dictionary<Player, CustomDataStore>> StoreInstances = new();
 
     /// <summary>
     /// Gets the <see cref="Player"/> that this instance is associated with.
@@ -53,7 +53,46 @@ public abstract class CustomDataStore
 
         return (TStore)store;
     }
-    
+
+    /// <summary>
+    /// Gets the <see cref="CustomDataStore"/> for the specified <see cref="Player"/> if it exists.
+    /// </summary>
+    /// <param name="player">The <see cref="Player"/> to get the <see cref="CustomDataStore"/> for.</param>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
+    /// <returns>The <see cref="CustomDataStore"/> for the specified <see cref="Player"/> or null if it doesn't exist.</returns>
+    public static TStore? Get<TStore>(Player player)
+        where TStore : CustomDataStore
+    {
+        Type type = typeof(TStore);
+
+        if (!StoreInstances.TryGetValue(type, out Dictionary<Player, CustomDataStore>? playerStores))
+            return null;
+
+        if (playerStores.TryGetValue(player, out CustomDataStore? store))
+            return (TStore)store;
+
+        return null;
+    }
+
+    /// <summary>
+    /// Destroys the <see cref="CustomDataStore"/> for the specified <see cref="Player"/>.
+    /// </summary>
+    /// <param name="player">The <see cref="Player"/> to destroy the <see cref="CustomDataStore"/> for.</param>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
+    /// <returns>Whether the <see cref="CustomDataStore"/> was successfully destroyed.</returns>
+    public static bool Destroy<TStore>(Player player)
+        where TStore : CustomDataStore
+    {
+        if (!StoreInstances.TryGetValue(typeof(TStore), out Dictionary<Player, CustomDataStore>? playerStores))
+            return false;
+
+        if (!playerStores.TryGetValue(player, out CustomDataStore? store))
+            return false;
+
+        store.Destroy();
+        return true;
+    }
+
     /// <summary>
     /// Checks if the <see cref="CustomDataStore"/> for the specified <see cref="Player"/> exists.
     /// </summary>
@@ -70,7 +109,7 @@ public abstract class CustomDataStore
 
         return playerStores.ContainsKey(player);
     }
-    
+
     /// <summary>
     /// Gets all instances of the <see cref="CustomDataStore"/> for the specified type.
     /// </summary>
@@ -94,23 +133,6 @@ public abstract class CustomDataStore
     /// Called when an instance of the <see cref="CustomDataStore"/> is going to be destroyed.
     /// </summary>
     protected virtual void OnInstanceDestroyed() { }
-
-    /// <summary>
-    /// Destroys the <see cref="CustomDataStore"/> for the specified <see cref="Player"/>.
-    /// </summary>
-    /// <param name="player">The <see cref="Player"/> to destroy the <see cref="CustomDataStore"/> for.</param>
-    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
-    internal static void Destroy<TStore>(Player player)
-        where TStore : CustomDataStore
-    {
-        if (!StoreInstances.TryGetValue(typeof(TStore), out Dictionary<Player, CustomDataStore>? playerStores))
-            return;
-
-        if (!playerStores.TryGetValue(player, out CustomDataStore? store))
-            return;
-
-        store.Destroy();
-    }
 
     /// <summary>
     /// Destroys all instances of the <see cref="CustomDataStore"/> for the specified type.
@@ -156,11 +178,17 @@ public abstract class CustomDataStore<TStore> : CustomDataStore
     }
 
     /// <inheritdoc cref="CustomDataStore.GetOrAdd{TStore}"/>
-    public static TStore Get(Player player) => GetOrAdd<TStore>(player);
-    
+    public static TStore GetOrAdd(Player player) => GetOrAdd<TStore>(player);
+
+    /// <inheritdoc cref="CustomDataStore.Get{TStore}"/>
+    public static TStore? Get(Player player) => Get<TStore>(player);
+
+    /// <inheritdoc cref="CustomDataStore.Destroy{TStore}"/>
+    public static bool Destroy(Player player) => Destroy<TStore>(player);
+
     /// <inheritdoc cref="CustomDataStore.GetAll{TStore}"/>
     public static IEnumerable<(Player Player, TStore Store)> GetAll() => CustomDataStore.GetAll<TStore>();
-    
+
     /// <inheritdoc cref="CustomDataStore.Exists{TStore}"/>
     public static bool Exists(Player player) => Exists<TStore>(player);
 }

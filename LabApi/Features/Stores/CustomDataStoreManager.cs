@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using LabApi.Features.Wrappers;
 
 namespace LabApi.Features.Stores;
@@ -17,6 +16,7 @@ public static class CustomDataStoreManager
     /// </summary>
     /// <typeparam name="TStore">The type of the custom data store.</typeparam>
     /// <returns>Whether the store was successfully registered.</returns>
+    /// <remarks>Once registered, the store will be automatically created for all players when they join the server.</remarks>
     public static bool RegisterStore<TStore>()
         where TStore : CustomDataStore
     {
@@ -27,7 +27,7 @@ public static class CustomDataStoreManager
         StoreHandler handler = new()
         {
             AddPlayer = player => CustomDataStore.GetOrAdd<TStore>(player),
-            RemovePlayer = CustomDataStore.Destroy<TStore>,
+            RemovePlayer = player => CustomDataStore.Destroy<TStore>(player),
             DestroyAll = CustomDataStore.DestroyAll<TStore>
         };
 
