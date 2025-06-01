@@ -1,5 +1,4 @@
 ﻿using InventorySystem.Items.Usables.Scp330;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -57,7 +56,11 @@ public class Scp330Item : UsableItem
     /// <summary>
     /// Gets the <see cref="CandyKindID">candies</see> contained in the bag.
     /// </summary>
-    public IReadOnlyList<CandyKindID> Candies => Base.Candies;
+    public IEnumerable<CandyKindID> Candies
+    {
+        get => Base.Candies;
+        set => SetCandies(value);
+    }
 
     /// <summary>
     /// Gets the selected candy index.
@@ -67,6 +70,22 @@ public class Scp330Item : UsableItem
     /// </remarks>
     public int SelectedCandyIndex => Base.SelectedCandyId;
 
+    /// <summary>
+    /// Adds a specific candy to the bag.
+    /// </summary>
+    /// <param name="candy">The candy to add.</param>
+    /// <param name="sync">Whether to sync the changes to the client.</param>
+    public void AddCandy(CandyKindID candy, bool sync = true)
+    {
+        if (Base.Candies.Count >= MaxCandies)
+            return;
+        
+        Base.Candies.Add(candy);
+
+        if (sync)
+            SyncCandies();
+    }
+    
     /// <summary>
     /// Adds the specified candies to the bag up to the <see cref="MaxCandies"/>.
     /// </summary>
@@ -78,8 +97,44 @@ public class Scp330Item : UsableItem
         while (enumerator.MoveNext() && Base.Candies.Count < MaxCandies)
             Base.Candies.Add(enumerator.Current);
 
+        enumerator.Dispose();
         if (sync)
             SyncCandies();
+    }
+
+    /// <summary>
+    /// Removes the specified candy from the bag.
+    /// </summary>
+    /// <remarks>
+    /// If the bag is empty and <paramref name="sync"/> is true the item will destroy itself.
+    /// </remarks>
+    /// <param name="candy">The candy to remove.</param>
+    /// <param name="sync">Whether to sync the changes to the client.</param>
+    public void RemoveCandy(CandyKindID candy, bool sync = true)
+    {
+        Base.Candies.Remove(candy);
+        
+        if (sync)
+            SyncCandies();
+    }
+
+    /// <summary>
+    /// Tries to remove the specified candy from the bag.
+    /// </summary>
+    /// <remarks>
+    /// If the bag is empty and <paramref name="sync"/> is true the item will destroy itself.
+    /// </remarks>
+    /// <param name="candy">The candy to remove.</param>
+    /// <param name="sync">Whether to sync the changes to the client.</param>
+    /// <returns>True if the candy was in the bag and removed successfully.</returns>
+    public bool TryRemoveCandy(CandyKindID candy, bool sync = true)
+    {
+        bool returningBool = Base.Candies.Remove(candy);
+        
+        if (sync)
+            SyncCandies();
+
+        return returningBool;
     }
 
     /// <summary>
@@ -96,8 +151,43 @@ public class Scp330Item : UsableItem
         while (enumerator.MoveNext() && !Base.Candies.IsEmpty())
             Base.Candies.Remove(enumerator.Current);
 
+        enumerator.Dispose();
         if (sync)
             SyncCandies();
+    }
+
+    /// <summary>
+    /// Tries to remove the specified candies from the bag.
+    /// </summary>
+    /// <remarks>
+    /// If the bag is empty and <paramref name="sync"/> is true the item will destroy itself.
+    /// </remarks>
+    /// <param name="candies">The set of candies to remove.</param>
+    /// <param name="removedCandies">The candies that were successfully removed from the item.></param>
+    /// <param name="sync">Whether to sync the changes to the client.</param>
+    /// <returns>True if at least one of the candies was in the bag and removed successfully.</returns>
+    public bool TryRemoveCandies(IEnumerable<CandyKindID> candies, out IEnumerable<CandyKindID> removedCandies, bool sync = true)
+    {
+        List<CandyKindID> removedCandiesList = [];
+        bool returningBool = false;
+        
+        IEnumerator<CandyKindID> enumerator = candies.GetEnumerator();
+        while (enumerator.MoveNext() && !Base.Candies.IsEmpty())
+        {
+            bool successfullyRemoved = Base.Candies.Remove(enumerator.Current);
+            if (!successfullyRemoved)
+                continue;
+            
+            removedCandiesList.Add(enumerator.Current);
+            returningBool = true;
+        }
+        
+        enumerator.Dispose();
+        if (sync)
+            SyncCandies();
+
+        removedCandies = removedCandiesList;
+        return returningBool;
     }
 
     /// <summary>
@@ -139,7 +229,7 @@ public class Scp330Item : UsableItem
         Scp330Pickup scp330 = (Scp330Pickup)dropped;
         scp330.ExposedCandy = kind;
 
-        RemoveCandies([kind]);
+        RemoveCandy(kind);
         return true;
     }
 
