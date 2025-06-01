@@ -54,7 +54,7 @@ public class Scp330Item : UsableItem
     public new BaseScp330Item Base { get; }
 
     /// <summary>
-    /// Gets the <see cref="CandyKindID">candies</see> contained in the bag.
+    /// Gets or sets the <see cref="CandyKindID">candies</see> contained in the bag.
     /// </summary>
     public IEnumerable<CandyKindID> Candies
     {
@@ -166,7 +166,7 @@ public class Scp330Item : UsableItem
     /// <param name="removedCandies">The candies that were successfully removed from the item.></param>
     /// <param name="sync">Whether to sync the changes to the client.</param>
     /// <returns>True if at least one of the candies was in the bag and removed successfully.</returns>
-    public bool TryRemoveCandies(IEnumerable<CandyKindID> candies, out IEnumerable<CandyKindID> removedCandies, bool sync = true)
+    public bool TryRemoveCandies(IEnumerable<CandyKindID> candies, out List<CandyKindID> removedCandies, bool sync = true)
     {
         List<CandyKindID> removedCandiesList = [];
         bool returningBool = false;
