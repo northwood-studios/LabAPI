@@ -755,6 +755,28 @@ public class Player
     }
 
     /// <summary>
+    /// Gets or sets player's scale. Player's role must be <see cref="IFpcRole"/> for it to take effect.<br/>
+    /// Vertical scale is not linear as the model's origin and scaling is done from player's feet.
+    /// </summary>
+    public Vector3 Scale
+    {
+        get
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+                return Vector3.zero;
+
+            return fpcRole.FpcModule.Motor.ScaleController.Scale;
+        }
+        set
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+                return;
+
+            fpcRole.FpcModule.Motor.ScaleController.Scale = value;
+        }
+    }
+
+    /// <summary>
     /// Gets or sets player's remaining stamina (min = 0, max = 1).
     /// </summary>
     public float StaminaRemaining
