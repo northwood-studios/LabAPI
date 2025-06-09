@@ -14,12 +14,14 @@ public class PlayerPlacingBloodEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// Initializes a new instance of the <see cref="PlayerPlacingBloodEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player whose blood it is.</param>
+    /// <param name="attacker">The player that attacked.</param>
     /// <param name="hitPosition">Position at which is blood being placed.</param>
     /// <param name="startRaycast">Position where the blood decal raycast will start for it to be properly attached to surface.</param>
-    public PlayerPlacingBloodEventArgs(ReferenceHub player, Vector3 hitPosition, Vector3 startRaycast)
+    public PlayerPlacingBloodEventArgs(ReferenceHub player, ReferenceHub attacker, Vector3 hitPosition, Vector3 startRaycast)
     {
         IsAllowed = true;
         Player = Player.Get(player);
+        Attacker = Player.Get(attacker);
         HitPosition = hitPosition;
         RaycastStart = startRaycast;
     }
@@ -28,6 +30,11 @@ public class PlayerPlacingBloodEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// Gets the player whose blood it is.
     /// </summary>
     public Player Player { get; }
+
+    /// <summary>
+    /// Gets the player that attacked the <see cref="Player"/>.
+    /// </summary>
+    public Player Attacker { get; }
 
     /// <summary>
     /// Gets the position at which is blood being placed.

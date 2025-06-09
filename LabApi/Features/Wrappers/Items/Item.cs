@@ -65,6 +65,8 @@ public class Item
         Register<BodyArmor>(x => new BodyArmorItem(x));
         Register<InventorySystem.Items.ThrowableProjectiles.ThrowableItem>(x => new ThrowableItem(x));
         Register<InventorySystem.Items.Keycards.KeycardItem>(x => new KeycardItem(x));
+        Register<InventorySystem.Items.Keycards.ChaosKeycardItem>(x => new KeycardItem(x));
+        Register<InventorySystem.Items.Keycards.SingleUseKeycardItem>(x => new KeycardItem(x));
         Register<InventorySystem.Items.MicroHID.MicroHIDItem>(x => new MicroHIDItem(x));
     }
 

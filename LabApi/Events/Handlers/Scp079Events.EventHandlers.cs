@@ -116,4 +116,14 @@ public static partial class Scp079Events
     /// Gets called when SCP-079 has used a tesla.
     /// </summary>
     public static event LabEventHandler<Scp079UsedTeslaEventArgs>? UsedTesla;
+
+    /// <summary>
+    /// Gets called when SCP-079 is using ping ability.
+    /// </summary>
+    public static event LabEventHandler<Scp079PingingEventArgs>? Pinging;
+
+    /// <summary>
+    /// Gets called when SCP-079 used ping ability.
+    /// </summary>
+    public static event LabEventHandler<Scp079PingedEventArgs>? Pinged;
 }
