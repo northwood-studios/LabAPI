@@ -129,12 +129,12 @@ public class Scp330Item : UsableItem
     /// <returns>True if the candy was in the bag and removed successfully.</returns>
     public bool TryRemoveCandy(CandyKindID candy, bool sync = true)
     {
-        bool returningBool = Base.Candies.Remove(candy);
+        bool wasRemoved = Base.Candies.Remove(candy);
         
         if (sync)
             SyncCandies();
 
-        return returningBool;
+        return wasRemoved;
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ public class Scp330Item : UsableItem
     public bool TryRemoveCandies(IEnumerable<CandyKindID> candies, out List<CandyKindID> removedCandies, bool sync = true)
     {
         List<CandyKindID> removedCandiesList = [];
-        bool returningBool = false;
+        bool anyRemoved = false;
         
         IEnumerator<CandyKindID> enumerator = candies.GetEnumerator();
         while (enumerator.MoveNext() && !Base.Candies.IsEmpty())
@@ -179,7 +179,7 @@ public class Scp330Item : UsableItem
                 continue;
             
             removedCandiesList.Add(enumerator.Current);
-            returningBool = true;
+            anyRemoved = true;
         }
         
         enumerator.Dispose();
@@ -187,7 +187,7 @@ public class Scp330Item : UsableItem
             SyncCandies();
 
         removedCandies = removedCandiesList;
-        return returningBool;
+        return anyRemoved;
     }
 
     /// <summary>
