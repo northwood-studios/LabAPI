@@ -678,7 +678,7 @@ public class Player
     public Team Team => RoleBase.Team;
 
     /// <summary>
-    /// Gets the player's current <see cref="Side"/>.
+    /// Gets the player's current <see cref="Faction"/>.
     /// </summary>
     public Faction Faction => Role.GetFaction();
 
