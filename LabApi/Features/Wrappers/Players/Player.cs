@@ -680,13 +680,7 @@ public class Player
     /// <summary>
     /// Gets the player's current <see cref="Side"/>.
     /// </summary>
-    public Side Side => Team switch
-    {
-        Team.SCPs => Side.Scp,
-        Team.ChaosInsurgency or Team.ClassD => Side.Chaos,
-        Team.FoundationForces or Team.Scientists => Side.Foundation,
-        _ => Role == RoleTypeId.Tutorial ? Side.Tutorial : Side.None
-    };
+    public Faction Faction => Role.GetFaction();
 
     /// <summary>
     /// Gets whether the player is currently Alive.
