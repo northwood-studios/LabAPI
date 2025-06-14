@@ -33,9 +33,14 @@ public class Ragdoll
     private Ragdoll(BasicRagdoll ragdoll)
     {
         Base = ragdoll;
-        GameObject = ragdoll.gameObject;
-        Transform = ragdoll.transform;
-        Dictionary.TryAdd(ragdoll, this);
+
+        // fix when #257 is merged.
+        if (ragdoll != null)
+        {
+            GameObject = ragdoll.gameObject;
+            Transform = ragdoll.transform;
+            Dictionary.TryAdd(ragdoll, this);
+        }
     }
 
     /// <summary>
