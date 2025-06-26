@@ -1,0 +1,44 @@
+name: Bug Template
+description: Template for reporting a bug with LabAPI.
+title: "[BUG]: <title>"
+labels: ["bug"]
+body: 
+  - type: checkboxes
+    attributes: 
+      label: Before You Report
+      options:
+        - label: I have [searched](https://github.com/northwood-studios/LabAPI/issues/) for existing reports of this bug, and this bug report is unique.
+          required: 
+  - type: input
+    attributes:
+      label: Version
+      placeholder: "Example: 1.0.2"
+    validations:
+      required: true
+  - type: textarea
+    id: desc
+    attributes:
+      label: Description
+      description: Provide a clear description for the bug. What are the effects of it?
+    validations:
+      required: true
+  - type: textarea
+    id: to-reproduce 
+    attributes:
+      label: To Reproduce
+      description: Include steps to reproduce, and code if applicable and possible.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+  - type: textarea
+    id: logs
+    attributes:
+      label: Additional Information 
+      description: Attach any pictures of the bug, if possible, and the logs when it happened.
+    validations:
+      required: true
+      
