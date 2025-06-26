@@ -15,11 +15,13 @@ public class PlayerUnlockingGeneratorEventArgs : EventArgs, IPlayerEvent, IGener
     /// </summary>
     /// <param name="player">The player who is unlocking the generator.</param>
     /// <param name="generator">The generator that the player is unlocking.</param>
-    public PlayerUnlockingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
+    /// <param name="canOpen">Whether the generator can be opened.</param>
+    public PlayerUnlockingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator, bool canOpen)
     {
         Player = Player.Get(player);
         Generator = Generator.Get(generator);
         IsAllowed = true;
+        CanOpen = canOpen;
     }
 
     /// <summary>
@@ -30,7 +32,14 @@ public class PlayerUnlockingGeneratorEventArgs : EventArgs, IPlayerEvent, IGener
     /// <inheritdoc />
     public Generator Generator { get; }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets whether the player can open the generator.
+    /// </summary>
+    public bool CanOpen { get; set; }
+
+    /// <summary>
+    /// Gets whether this event is allowed. Not allowing this event will not unlock the generator and no denied animation is played.
+    /// </summary>
     public bool IsAllowed { get; set; }
 }
 

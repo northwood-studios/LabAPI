@@ -1,5 +1,4 @@
 ﻿using Generators;
-using Hazards;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using LabApi.Features.Enums;
@@ -143,7 +142,7 @@ public class Door
     /// <summary>
     /// Gets the rooms which have this door.
     /// </summary>
-    public RoomIdentifier[] Rooms => Base.Rooms;
+    public Room[] Rooms => Base.Rooms.Select(Room.Get).ToArray();
 
     /// <summary>
     /// Gets the zone in which this door is.

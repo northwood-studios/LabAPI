@@ -18,6 +18,11 @@ public static partial class ServerEvents
     public static event LabEventHandler? RoundRestarted;
 
     /// <summary>
+    /// Gets called when round end conditions are checked.
+    /// </summary>
+    public static event LabEventHandler<RoundEndingConditionsCheckEventArgs>? RoundEndingConditionsCheck;
+
+    /// <summary>
     /// Gets called when the round is ending.
     /// </summary>
     public static event LabEventHandler<RoundEndingEventArgs>? RoundEnding;
