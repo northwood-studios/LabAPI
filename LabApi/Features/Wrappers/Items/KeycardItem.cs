@@ -51,6 +51,16 @@ public class KeycardItem : Item
     /// </summary>
     public new BaseKeycardItem Base { get; }
 
+    /// <summary>
+    /// Gets the <see cref="DoorPermissionFlags"/> of the keycard.
+    /// </summary>
+    public DoorPermissionFlags Permissions => Base.GetPermissions(null);
+
+    /// <summary>
+    /// Gets the <see cref="KeycardLevels"/> of the keycard which represent the tiers shown on the keycard.
+    /// </summary>
+    public KeycardLevels Levels => new KeycardLevels(Permissions);
+
     #region Custom Keycards
 
     /// <summary>
@@ -140,8 +150,8 @@ public class KeycardItem : Item
             if (detailBase is not ICustomizableDetail customizableDetail)
                 continue;
 
-           customizableDetail.SetArguments(new ArraySegment<object>(args, index, customizableDetail.CustomizablePropertiesAmount));
-           index += customizableDetail.CustomizablePropertiesAmount;
+            customizableDetail.SetArguments(new ArraySegment<object>(args, index, customizableDetail.CustomizablePropertiesAmount));
+            index += customizableDetail.CustomizablePropertiesAmount;
         }
 
         return (KeycardItem?)targetPlayer.AddItem(itemType);
