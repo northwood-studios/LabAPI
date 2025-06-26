@@ -680,7 +680,7 @@ public class Player
     /// <summary>
     /// Gets the player's current <see cref="Faction"/>.
     /// </summary>
-    public Faction Faction => Role.GetFaction();
+    public Faction Faction => Team.GetFaction();
 
     /// <summary>
     /// Gets whether the player is currently Alive.
