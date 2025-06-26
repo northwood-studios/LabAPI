@@ -678,6 +678,11 @@ public class Player
     public Team Team => RoleBase.Team;
 
     /// <summary>
+    /// Gets the player's current <see cref="Faction"/>.
+    /// </summary>
+    public Faction Faction => Team.GetFaction();
+
+    /// <summary>
     /// Gets whether the player is currently Alive.
     /// </summary>
     public bool IsAlive => Team != Team.Dead;
