@@ -21,19 +21,9 @@ namespace LabApi.Features.Wrappers;
 public static class Server
 {
     /// <summary>
-    /// Initializes the <see cref="Server"/> class to subscribe to <see cref="ReferenceHub"/> events.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        ReferenceHub.OnPlayerAdded += AddHost;
-        ReferenceHub.OnPlayerRemoved += RemoveHost;
-    }
-
-    /// <summary>
     /// The <see cref="Server"/> Instance.
     /// </summary>
-    public static Player? Host { get; private set; }
+    public static Player? Host { get; internal set; }
 
     /// <summary>
     /// Gets the IP address of the server.
@@ -448,26 +438,6 @@ public static class Server
     /// </summary>
     /// <param name="player">The player to clear the broadcast's.</param>
     public static void ClearBroadcasts(Player player) => Broadcast.Singleton.TargetClearElements(player.Connection);
-
-    /// <summary>
-    /// Handles the creation of the host in the server.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub to add.</param>
-    private static void AddHost(ReferenceHub referenceHub)
-    {
-        if (referenceHub.isLocalPlayer)
-            Host = new Player(referenceHub);
-    }
-
-    /// <summary>
-    /// Handles the removal of the host from the server.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub to remove.</param>
-    private static void RemoveHost(ReferenceHub referenceHub)
-    {
-        if (referenceHub.isLocalPlayer)
-            Host = null;
-    }
 
     /// <summary>
     /// Interface for getting and setting key value limits.

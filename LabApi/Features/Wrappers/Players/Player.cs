@@ -849,7 +849,7 @@ public class Player
         if (referenceHub == null)
             return null;
 
-        return Dictionary.TryGetValue(referenceHub, out Player player) ? player : new Player(referenceHub);
+        return Dictionary.TryGetValue(referenceHub, out Player player) ? player : CreatePlayerWrapper(referenceHub);
     }
 
     /// <summary>
@@ -1592,13 +1592,37 @@ public class Player
     }
 
     /// <summary>
+    /// Creates a new wrapper for the player using the player's <see cref="global::ReferenceHub"/>.
+    /// </summary>
+    /// <param name="referenceHub">The <see cref="global::ReferenceHub"/> of the player.</param>
+    /// <returns>The created player wrapper.</returns>
+    private static Player CreatePlayerWrapper(ReferenceHub referenceHub)
+    {
+        Player player = new(referenceHub);
+
+        if (referenceHub.isLocalPlayer)
+            Server.Host = player;
+
+        return player;
+    }
+
+    /// <summary>
     /// Handles the creation of a player in the server.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
     private static void AddPlayer(ReferenceHub referenceHub)
     {
-        if (!referenceHub.isLocalPlayer)
-            _ = new Player(referenceHub);
+        try
+        {
+            if (Dictionary.ContainsKey(referenceHub))
+                return;
+
+            CreatePlayerWrapper(referenceHub);
+        }
+        catch(Exception ex)
+        {
+            Console.Logger.InternalError($"Failed to handle player addition with exception: {ex}");
+        }
     }
 
     /// <summary>
@@ -1607,12 +1631,22 @@ public class Player
     /// <param name="referenceHub">The reference hub of the player.</param>
     private static void RemovePlayer(ReferenceHub referenceHub)
     {
-        if (referenceHub.authManager.UserId != null)
-            UserIdCache.Remove(referenceHub.authManager.UserId);
+        try
+        {
+            if (referenceHub.authManager.UserId != null)
+                UserIdCache.Remove(referenceHub.authManager.UserId);
 
-        if (TryGet(referenceHub.gameObject, out Player? player))
-            CustomDataStoreManager.RemovePlayer(player);
+            if (TryGet(referenceHub.gameObject, out Player? player))
+                CustomDataStoreManager.RemovePlayer(player);
 
-        Dictionary.Remove(referenceHub);
+            if (referenceHub.isLocalPlayer)
+                Server.Host = null;
+
+            Dictionary.Remove(referenceHub);
+        }
+        catch(Exception ex)
+        {
+            Console.Logger.InternalError($"Failed to handle player removal with exception: {ex}");
+        }
     }
 }
