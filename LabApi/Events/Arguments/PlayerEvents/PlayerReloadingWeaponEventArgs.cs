@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReloadingWeapon"/> event.
 /// </summary>
-public class PlayerReloadingWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmItemEvent, ICancellableEvent
+public class PlayerReloadingWeaponEventArgs : EventArgs, IFirearmItemEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReloadingWeaponEventArgs"/> class.

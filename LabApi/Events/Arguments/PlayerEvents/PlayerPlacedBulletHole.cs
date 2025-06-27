@@ -1,5 +1,4 @@
 ﻿using Decals;
-using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
 using UnityEngine;
@@ -9,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.PlacedBulletHole"/> event.
 /// </summary>
-public class PlayerPlacedBulletHoleEventArgs : EventArgs, IPlayerEvent
+public class PlayerPlacedBulletHoleEventArgs : EventArgs
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPlacedBulletHoleEventArgs"/> class.

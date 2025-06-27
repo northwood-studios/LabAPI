@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Hurting"/> event.
 /// </summary>
-public class PlayerHurtingEventArgs : EventArgs, IPlayerEvent, IDamageEvent, ICancellableEvent
+public class PlayerHurtingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerHurtingEventArgs"/> class.

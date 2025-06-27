@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.CancellingUsingItem"/> event.
 /// </summary>
-public class PlayerCancellingUsingItemEventArgs : EventArgs, IPlayerEvent, IUsableItemEvent, ICancellableEvent
+public class PlayerCancellingUsingItemEventArgs : EventArgs, IUsableItemEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerCancellingUsingItemEventArgs"/> class.

@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DamagedWindow"/> event.
 /// </summary>
-public class PlayerDamagedWindowEventArgs : EventArgs, IPlayerEvent, IDamageEvent
+public class PlayerDamagedWindowEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDamagedWindowEventArgs"/> class.

@@ -25,7 +25,7 @@ public class CassieAnnouncedEventArgs : EventArgs
     }
 
     /// <summary>
-    /// Gets sentence which C.A.S.S.I.E. said.
+    /// Gets sentece which C.A.S.S.I.E. said.
     /// </summary>
     public string Words { get; }
 

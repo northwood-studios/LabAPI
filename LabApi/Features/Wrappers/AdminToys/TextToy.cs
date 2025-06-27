@@ -65,18 +65,6 @@ public class TextToy : AdminToy
     }
 
     /// <summary>
-    /// Gets or sets whether or not the text should render as apart of the UI.
-    /// </summary>
-    /// <remarks>
-    /// When rendering as apart of the UI, text is not effected by any post processing effects that can blur/distort it and it can render on top of the players view model if placed correctly.
-    /// </remarks>
-    public bool RenderAsUserInterface
-    {
-        get => Base.RenderAsUserInterface;
-        set => Base.RenderAsUserInterface = value;
-    }
-
-    /// <summary>
     /// Gets the arguments used while formatting the <see cref="TextFormat"/>.<br/>
     /// Missing arguments for <see cref="TextFormat"/> are not replaced and any extra arguments are ignored.
     /// </summary>

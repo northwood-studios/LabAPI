@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DeactivatingGenerator"/> event.
 /// </summary>
-public class PlayerDeactivatingGeneratorEventArgs : EventArgs, IPlayerEvent, IGeneratorEvent, ICancellableEvent
+public class PlayerDeactivatingGeneratorEventArgs : EventArgs, IGeneratorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDeactivatingGeneratorEventArgs"/> class.
