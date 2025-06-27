@@ -168,7 +168,7 @@ public class Scp330Item : UsableItem
     /// <returns>True if at least one of the candies was in the bag and removed successfully.</returns>
     public bool TryRemoveCandies(IEnumerable<CandyKindID> candies, out List<CandyKindID> removedCandies, bool sync = true)
     {
-        List<CandyKindID> removedCandiesList = [];
+        removedCandies = [];
         bool anyRemoved = false;
         
         IEnumerator<CandyKindID> enumerator = candies.GetEnumerator();
@@ -178,15 +178,14 @@ public class Scp330Item : UsableItem
             if (!successfullyRemoved)
                 continue;
             
-            removedCandiesList.Add(enumerator.Current);
+            removedCandies.Add(enumerator.Current);
             anyRemoved = true;
         }
         
         enumerator.Dispose();
         if (sync)
             SyncCandies();
-
-        removedCandies = removedCandiesList;
+        
         return anyRemoved;
     }
 
