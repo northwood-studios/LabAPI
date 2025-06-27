@@ -359,7 +359,7 @@ public class Item
             if (!Dictionary.ContainsKey(item))
                 _ = CreateItemWrapper(item);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.Logger.InternalError($"Failed to handle item creation with error: {e}");
         }
@@ -380,7 +380,7 @@ public class Item
                 item.OnRemove();
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.Logger.InternalError($"Failed to handle item destruction with error: {e}");
         }

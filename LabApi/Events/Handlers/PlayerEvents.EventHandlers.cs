@@ -357,6 +357,16 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerThrewProjectileEventArgs>? ThrewProjectile;
 
+    /// <summary>
+    /// Gets called when the player wants to inspect any keycard item.
+    /// </summary>
+    public static event LabEventHandler<PlayerInspectingKeycardEventArgs>? InspectingKeycard;
+
+    /// <summary>
+    /// Gets called when the player inspected keycard item.
+    /// </summary>
+    public static event LabEventHandler<PlayerInspectedKeycardEventArgs>? InspectedKeycard;
+
     #endregion
 
     #region Item Actions and Interactions
