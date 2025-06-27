@@ -1284,7 +1284,8 @@ public class Player
     public List<AmmoPickup> DropAllAmmo()
     {
         List<AmmoPickup> ammo = ListPool<AmmoPickup>.Shared.Rent();
-        foreach (KeyValuePair<ItemType, ushort> pair in Ammo)
+
+        foreach (KeyValuePair<ItemType, ushort> pair in Ammo.ToDictionary(e => e.Key, e => e.Value))
             ammo.AddRange(DropAmmo(pair.Key, pair.Value));
 
         return ammo;
