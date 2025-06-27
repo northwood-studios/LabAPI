@@ -228,6 +228,11 @@ public class Player
     public PlayerRoleBase RoleBase => ReferenceHub.roleManager.CurrentRole;
 
     /// <summary>
+    /// Get's the player's current role unique identifier.
+    /// </summary>
+    public int LifeId => RoleBase.UniqueLifeIdentifier;
+
+    /// <summary>
     /// Gets the Player's Nickname.
     /// </summary>
     public string Nickname => ReferenceHub.nicknameSync.MyNick;
@@ -1284,7 +1289,8 @@ public class Player
     public List<AmmoPickup> DropAllAmmo()
     {
         List<AmmoPickup> ammo = ListPool<AmmoPickup>.Shared.Rent();
-        foreach (KeyValuePair<ItemType, ushort> pair in Ammo)
+
+        foreach (KeyValuePair<ItemType, ushort> pair in Ammo.ToDictionary(e => e.Key, e => e.Value))
             ammo.AddRange(DropAmmo(pair.Key, pair.Value));
 
         return ammo;
