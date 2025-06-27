@@ -1,4 +1,5 @@
 using System.Linq;
+using LabApi.Events.Arguments.ObjectiveEvents;
 using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.Arguments.Scp0492Events;
 using LabApi.Events.Arguments.Scp049Events;
@@ -26,7 +27,7 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     {
         Logger.Info($"{nameof(OnPlayerActivatedGenerator)} triggered by {ev.Player.UserId}");
     }
-    
+
     public override void OnPlayerUnlockingGenerator(PlayerUnlockingGeneratorEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerUnlockingGenerator)} triggered by {ev.Player.UserId}");
@@ -36,7 +37,7 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     {
         Logger.Info($"{nameof(OnPlayerUnlockedGenerator)} triggered by {ev.Player.UserId}");
     }
-    
+
     public override void OnPlayerUnlockingWarheadButton(PlayerUnlockingWarheadButtonEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerUnlockingWarheadButton)} triggered by {ev.Player.UserId}");
@@ -1311,7 +1312,7 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     {
         Logger.Info($"{nameof(OnServerCassieQueuingScpTermination)} triggered");
     }
-    
+
     public override void OnServerCassieQueuedScpTermination(CassieQueuedScpTerminationEventArgs ev)
     {
         Logger.Info($"{nameof(OnServerCassieQueuedScpTermination)} triggered");
@@ -1376,8 +1377,68 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     {
         Logger.Info($"{nameof(OnWarheadDetonated)} triggered by {ev.Player.UserId}");
     }
-    
-    
+
+    public override void OnObjectiveCompleting(ObjectiveCompletingBaseEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveCompleting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveCompleted(ObjectiveCompletedBaseEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveCompleted)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveActivatedGeneratorCompleted(GeneratorActivatedObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveActivatedGeneratorCompleted)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveActivatingGeneratorCompleting(GeneratorActivatingObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveActivatingGeneratorCompleting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveDamagedScpCompleted(ScpDamagedObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveDamagedScpCompleted)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveDamagingScpCompleting(ScpDamagingObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveDamagingScpCompleting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveEscapingCompleting(EscapingObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveEscapingCompleting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveEscapedCompleted(EscapedObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveEscapedCompleted)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveKillingEnemyCompleting(EnemyKillingObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveKillingEnemyCompleting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectiveKilledEnemyCompleted(EnemyKilledObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectiveKilledEnemyCompleted)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectivePickingScpItemCompleting(ScpItemPickingObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectivePickingScpItemCompleting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnObjectivePickedScpItemCompleted(ScpItemPickedObjectiveEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnObjectivePickedScpItemCompleted)} triggered by {ev.Player.UserId}");
+    }
+
+
     #region Excluded Events
 
     // The following events spam the console and are therefore excluded from this example:
