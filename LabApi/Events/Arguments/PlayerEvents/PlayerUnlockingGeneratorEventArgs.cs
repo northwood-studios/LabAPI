@@ -42,4 +42,3 @@ public class PlayerUnlockingGeneratorEventArgs : EventArgs, IPlayerEvent, IGener
     /// </summary>
     public bool IsAllowed { get; set; }
 }
-

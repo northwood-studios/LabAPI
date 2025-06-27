@@ -11,7 +11,7 @@ public interface IUsableItemEvent : IItemEvent
     Item? IItemEvent.Item => UsableItem;
 
     /// <summary>
-    /// The usable that is involved in the event.
+    /// The usable item that is involved in the event.
     /// </summary>
     public UsableItem? UsableItem { get; }
 }

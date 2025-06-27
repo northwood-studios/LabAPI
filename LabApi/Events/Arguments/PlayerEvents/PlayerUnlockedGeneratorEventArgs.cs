@@ -29,4 +29,3 @@ public class PlayerUnlockedGeneratorEventArgs : EventArgs, IPlayerEvent, IGenera
     /// <inheritdoc />
     public Generator Generator { get; }
 }
-

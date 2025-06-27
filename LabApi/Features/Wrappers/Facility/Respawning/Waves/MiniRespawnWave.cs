@@ -77,4 +77,3 @@ public abstract class MiniRespawnWave : RespawnWave
     /// </summary>
     public virtual void Lock() => Base.ResetTokens();
 }
-

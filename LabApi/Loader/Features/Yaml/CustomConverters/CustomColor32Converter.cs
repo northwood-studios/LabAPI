@@ -36,4 +36,3 @@ public class CustomColor32Converter : IYamlTypeConverter
         return type == typeof(Color32);
     }
 }
-

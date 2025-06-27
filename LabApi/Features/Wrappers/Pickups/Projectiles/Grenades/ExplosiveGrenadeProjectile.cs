@@ -86,4 +86,3 @@ public class ExplosiveGrenadeProjectile : TimedGrenadeProjectile
         return Dictionary.TryGetValue(projectile, out ExplosiveGrenadeProjectile wrapper) ? wrapper : (ExplosiveGrenadeProjectile)CreateItemWrapper(projectile);
     }
 }
-
