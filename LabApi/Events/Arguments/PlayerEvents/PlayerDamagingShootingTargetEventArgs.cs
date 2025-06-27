@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DamagingShootingTarget"/> event.
 /// </summary>
-public class PlayerDamagingShootingTargetEventArgs : EventArgs, IPlayerEvent, IShootingTargetEvent, ICancellableEvent
+public class PlayerDamagingShootingTargetEventArgs : EventArgs, IPlayerEvent, IShootingTargetEvent, IDamageEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDamagingShootingTargetEventArgs"/> class.

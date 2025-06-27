@@ -11,7 +11,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.WaveRespawning"/> event.
 /// </summary>
-public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
+public class WaveRespawningEventArgs : EventArgs, IRespawnWaveEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WaveRespawningEventArgs"/> class.

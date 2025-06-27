@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ChangingRadioRange"/> event.
 /// </summary>
-public class PlayerChangingRadioRangeEventArgs : EventArgs, IRadioItemEvent, ICancellableEvent
+public class PlayerChangingRadioRangeEventArgs : EventArgs, IPlayerEvent, IRadioItemEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangingRadioRangeEventArgs"/> class.

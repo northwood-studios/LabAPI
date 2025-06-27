@@ -9,7 +9,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.SpawningRagdoll"/> event.
 /// </summary>
-public class PlayerSpawningRagdollEventArgs : EventArgs, IPlayerEvent, IRagdollEvent, ICancellableEvent
+public class PlayerSpawningRagdollEventArgs : EventArgs, IPlayerEvent, IRagdollEvent, IDamageEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSpawningRagdollEventArgs"/> class.

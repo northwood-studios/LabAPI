@@ -10,7 +10,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Death"/> event.
 /// </summary>
-public class PlayerDeathEventArgs : EventArgs, IPlayerEvent
+public class PlayerDeathEventArgs : EventArgs, IPlayerEvent, IDamageEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDeathEventArgs"/> class.

@@ -27,7 +27,7 @@ public class CassieAnnouncingEventArgs : EventArgs, ICancellableEvent
     }
 
     /// <summary>
-    /// Gets or sets sentece which C.A.S.S.I.E. will say.
+    /// Gets or sets sentence which C.A.S.S.I.E. will say.
     /// </summary>
     public string Words { get; set; }
 

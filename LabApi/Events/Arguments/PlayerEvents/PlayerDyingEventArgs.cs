@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Dying"/> event.
 /// </summary>
-public class PlayerDyingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class PlayerDyingEventArgs : EventArgs, IPlayerEvent, IDamageEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDyingEventArgs"/> class.

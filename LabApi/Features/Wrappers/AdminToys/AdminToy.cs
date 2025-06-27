@@ -130,7 +130,7 @@ public class AdminToy
     /// Gets or sets the parent of the admin toy.
     /// </summary>
     /// <remarks>
-    /// If the parent object contains a <see cref="NetworkIdentity"/> component and has been <see cref="NetworkServer.Spawn(GameObject, GameObject)"/> the parent is synced with the client.
+    /// If the parent object contains a <see cref="NetworkIdentity"/> component or one of the objects higher up in the parents hierarchy has a <see cref="NetworkIdentity"/> component and it has been <see cref="NetworkServer.Spawn(GameObject, GameObject)"/> the parent is synced with the client.
     /// <para>
     /// Can be used even if <see cref="IsStatic"/> is true.
     /// When changing parent the toys relative <see cref="Position"/>, <see cref="Rotation"/> and <see cref="Scale"/> are retained.

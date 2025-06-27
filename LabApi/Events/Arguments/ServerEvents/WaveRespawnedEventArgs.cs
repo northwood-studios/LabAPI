@@ -1,3 +1,4 @@
+using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using Respawning.Waves;
 using System;
@@ -8,7 +9,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ServerEvents.WaveRespawned"/> event.
 /// </summary>
-public class WaveRespawnedEventArgs : EventArgs
+public class WaveRespawnedEventArgs : EventArgs, IRespawnWaveEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WaveRespawnedEventArgs"/> class.

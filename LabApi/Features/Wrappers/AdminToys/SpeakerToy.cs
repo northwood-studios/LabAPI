@@ -1,4 +1,5 @@
 ﻿using LabApi.Features.Audio;
+using LabApi.Features.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -98,6 +99,19 @@ public class SpeakerToy : AdminToy
     {
         get => Base.MaxDistance;
         set => Base.NetworkMaxDistance = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the audio mixer group used as output by the speaker.
+    /// By default this is set to <see cref="SpeakerToyMixerGroup.SfxReverbDucking"/>.
+    /// </summary>
+    /// <remarks>
+    /// Each <see cref="SpeakerToyMixerGroup"/> has a different set of effects or is attenuated differently by the players audio settings.
+    /// </remarks>
+    public SpeakerToyMixerGroup OutputMixer
+    {
+        get => (SpeakerToyMixerGroup)Base.OutputMixerId;
+        set => Base.NetworkOutputMixerId = (byte)value;
     }
 
     /// <summary>
