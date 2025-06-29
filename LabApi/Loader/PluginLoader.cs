@@ -258,11 +258,11 @@ public static partial class PluginLoader
             // We mark the server as modded.
             CustomNetworkManager.Modded = true;
             
-            // We register all the plugin commands
-            plugin.RegisterCommands();
-
             // We load the configurations of the plugin
             plugin.LoadConfigs();
+            
+            // We register all the plugin commands
+            plugin.RegisterCommands();
 
             // We enable the plugin if it is not disabled
             plugin.Enable();

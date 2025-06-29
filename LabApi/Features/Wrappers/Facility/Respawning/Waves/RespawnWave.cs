@@ -76,7 +76,7 @@ public abstract class RespawnWave
             if (Base is not ILimitedWave wave)
                 return;
 
-            wave.InitialRespawnTokens = value;
+            wave.RespawnTokens = value;
             WaveUpdateMessage.ServerSendUpdate(Base, UpdateMessageFlags.Tokens);
         }
     }
