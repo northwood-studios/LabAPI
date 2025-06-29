@@ -162,7 +162,7 @@ public class Player
     /// <summary>
     /// Gets whether the player was destroyed.
     /// </summary>
-    public bool IsDestroyed => ReferenceHub == null;
+    public bool IsDestroyed => !ReferenceHub;
 
     /// <summary>
     /// Gets whether the player is the host or server.
@@ -491,11 +491,6 @@ public class Player
                 Inventory.ServerSelectItem(value.Serial);
         }
     }
-
-    /// <summary>
-    /// Gets the current <see cref="BodyArmorItem"/> being used.
-    /// </summary>
-    public BodyArmorItem? CurrentArmor => BodyArmorUtils.TryGetBodyArmor(Inventory, out BodyArmor baseArmor) ? BodyArmorItem.Get(baseArmor) : null;
 
     /// <summary>
     /// Gets the player's currently active <see cref="StatusEffectBase">status effects</see>.
@@ -1306,7 +1301,7 @@ public class Player
     /// <returns><see langword="true"/> if found, otherwise <see langword="false"/>.</returns>
     public bool TryGetItem(ItemType type, [NotNullWhen(true)] out Item? item)
     {
-        if(Inventory.TryGetInventoryItem(type, out ItemBase itemBase))
+        if (Inventory.TryGetInventoryItem(type, out ItemBase itemBase))
         {
             item = Item.Get(itemBase);
             return true;
@@ -1314,6 +1309,20 @@ public class Player
 
         item = null;
         return false;
+    }
+
+    /// <summary>
+    /// Tries to get the current body armor being worn.
+    /// </summary>
+    /// <param name="bodyArmor">The found body armor or <see langword="null"/> if none is being worn.</param>
+    /// <returns><see langword="true"/> if body armor was found, otherwise <see langword="false"/>.</returns>
+    public bool TryGetBodyArmor([NotNullWhen(true)] out BodyArmorItem? bodyArmor)
+    {
+        bodyArmor = null;
+        if (BodyArmorUtils.TryGetBodyArmor(Inventory, out BodyArmor baseArmor))
+            bodyArmor = BodyArmorItem.Get(baseArmor);
+
+        return bodyArmor != null;
     }
 
     /// <summary>
