@@ -51,13 +51,13 @@
 		<Reference Include="Mirror" HintPath="$(SL_REFERENCES)\Mirror.dll" />
 		<Reference Include="NorthwoodLib" HintPath="$(SL_REFERENCES)\NorthwoodLib.dll" />
 		<Reference Include="Pooling" HintPath="$(SL_REFERENCES)\Pooling.dll" />
-		<Reference Include="UnityEngine.CoreModule" HintPath="$(SL_REFERENCES)\UnityEngine.CoreModule.dll" />
-		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(SL_REFERENCES)\UnityEngine.PhysicsModule.dll" />
-		<Reference Include="UnityEngine.AudioModule" HintPath="$(SL_REFERENCES)\UnityEngine.AudioModule.dll" />
-		<Reference Include="mscorlib" HintPath="$(SL_REFERENCES)\mscorlib.dll" />
-		<Reference Include="System" HintPath="$(SL_REFERENCES)\System.dll" />
-		<Reference Include="System.Core" HintPath="$(SL_REFERENCES)\System.Core.dll" />
-		<Reference Include="netstandard" HintPath="$(SL_REFERENCES)\netstandard.dll" />
+		<Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
+		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.PhysicsModule.dll" />
+		<Reference Include="UnityEngine.AudioModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.AudioModule.dll" />
+		<Reference Include="mscorlib" HintPath="$(UNITY_REFERENCES)\mscorlib.dll" />
+		<Reference Include="System" HintPath="$(UNITY_REFERENCES)\System.dll" />
+		<Reference Include="System.Core" HintPath="$(UNITY_REFERENCES)\System.Core.dll" />
+		<Reference Include="netstandard" HintPath="$(UNITY_REFERENCES)\netstandard.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
