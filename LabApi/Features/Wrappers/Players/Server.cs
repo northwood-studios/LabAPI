@@ -354,12 +354,22 @@ public static class Server
     /// Gets all banned players.
     /// </summary>
     /// <returns>List of all banned players.</returns>
-    public static List<BanDetails> GetAllBannedPlayers()
+    public static List<BanDetails> GetAllBannedPlayersPool()
     {
         List<BanDetails> bans = ListPool<BanDetails>.Shared.Rent();
         bans.AddRange(GetBans(BanType.UserId));
         bans.AddRange(GetBans(BanType.IP));
         return bans;
+    }
+
+    /// <summary>
+    /// Populates the <paramref name="bans"/> with all banned players.
+    /// </summary>
+    /// <param name="bans">List of all banned players.</param>
+    public static void GetAllBannedPlayers(List<BanDetails> bans)
+    {
+        bans.AddRange(GetBans(BanType.UserId));
+        bans.AddRange(GetBans(BanType.IP));
     }
 
     /// <summary>

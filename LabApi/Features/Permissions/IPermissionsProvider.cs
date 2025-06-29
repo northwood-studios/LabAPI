@@ -1,4 +1,5 @@
 using LabApi.Features.Wrappers;
+using System.Collections.Generic;
 
 namespace LabApi.Features.Permissions;
 
@@ -13,6 +14,13 @@ public interface IPermissionsProvider
     /// <param name="player">The player to retrieve the permissions for.</param>
     /// <returns>An array of all the permissions of the given <paramref name="player"/>.</returns>
     public string[] GetPermissions(Player player);
+
+    /// <summary>
+    /// Populates a <paramref name="permissions"/> with all the permissions of the given <paramref name="player"/>.
+    /// </summary>
+    /// <param name="player">The player to retrieve the permissions for.</param>
+    /// <param name="permissions">An list of all the permissions of the given <paramref name="player"/>.</param>
+    public void GetPermissions(Player player, List<string> permissions);
 
     /// <summary>
     /// Whether the given <paramref name="player"/> has all the given <paramref name="permissions"/>.
