@@ -483,11 +483,6 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerReceivedAchievement)} triggered by {ev.Player?.UserId ?? "unknown"}");
     }
 
-    public override void OnPlayerReceivingAchievement(PlayerReceivingAchievementEventArgs ev)
-    {
-        Logger.Info($"{nameof(OnPlayerReceivingAchievement)} triggered by {ev.Player?.UserId ?? "unknown"}");
-    }
-
     public override void OnPlayerRequestedCustomRaInfo(PlayerRequestedCustomRaInfoEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerRequestedCustomRaInfo)} triggered by {ev.Player.UserId}");
