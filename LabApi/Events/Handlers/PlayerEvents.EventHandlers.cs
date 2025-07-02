@@ -123,6 +123,50 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerToggledNoclipEventArgs>? ToggledNoclip;
 
+    /// <summary>
+    /// Gets called when the player is requesting the remote admin player list.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestingRaPlayerListEventArgs>? RequestingRaPlayerList;
+
+    /// <summary>
+    /// Gets called when the player had requested the remote admin player list.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedRaPlayerListEventArgs>? RequestedRaPlayerList;
+
+    /// <summary>
+    /// Gets called when adding a target player to the remote admin player list while processing the request for the player.
+    /// </summary>
+    public static event LabEventHandler<PlayerRaPlayerListAddingPlayerEventArgs>? RaPlayerListAddingPlayer;
+
+    /// <summary>
+    /// Gets called when a target player was added to the remote admin player list while processing the request for the player.
+    /// </summary>
+    public static event LabEventHandler<PlayerRaPlayerListAddedPlayerEventArgs>? RaPlayerListAddedPlayer;
+
+    /// <summary>
+    /// Gets called when a player requested info for an unknown target in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedCustomRaInfoEventArgs>? RequestedCustomRaInfo;
+
+    /// <summary>
+    /// Gets called when a player is requesting info for multiple players in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestingRaPlayersInfoEventArgs>? RequestingRaPlayersInfo;
+
+    /// <summary>
+    /// Gets called when a player had requested info for multiple players in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedRaPlayersInfoEventArgs>? RequestedRaPlayersInfo;
+
+    /// <summary>
+    /// Gets called when a player is requesting info for a target player in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestingRaPlayerInfoEventArgs>? RequestingRaPlayerInfo;
+
+    /// <summary>
+    /// Gets called when a player had requested info for a target player in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedRaPlayerInfoEventArgs>? RequestedRaPlayerInfo;
 
     #endregion
 
@@ -739,6 +783,11 @@ public static partial class PlayerEvents
     /// Gets called when warhead button on surface has been unlocked.
     /// </summary>
     public static event LabEventHandler<PlayerUnlockedWarheadButtonEventArgs>? UnlockedWarheadButton;
+
+    /// <summary>
+    /// Gets called when the player has meet the requirements of an achievement.
+    /// </summary>
+    public static event LabEventHandler<PlayerReceivedAchievementEventArgs>? ReceivedAchievement;
 
     #endregion
 

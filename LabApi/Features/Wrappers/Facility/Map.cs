@@ -3,6 +3,7 @@ using MapGeneration.Distributors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
 
@@ -61,12 +62,39 @@ public static class Map
     /// </summary>
     public static IReadOnlyCollection<Ragdoll> Ragdolls => Ragdoll.List;
 
+    /// <summary>
+    /// Represents the bounds for the default escape zone on surface.
+    /// </summary>
+    /// <remarks>
+    /// By default this is included in the <see cref="EscapeZones"/> list.
+    /// </remarks>
+    public static Bounds DefaultEscapeZone = Escape.DefaultEscapeZone;
+
+    /// <summary>
+    /// A list of all bounds used as escape zones.
+    /// </summary>
+    /// <remarks>
+    /// By default only the <see cref="DefaultEscapeZone"/> is included in the list.
+    /// </remarks>
+    public static List<Bounds> EscapeZones => Escape.EscapeZones;
+
+    /// <summary>
+    /// Adds another bounds to be used as an escape zone to the <see cref="EscapeZones"/> list.
+    /// </summary>
+    /// <param name="escapeZone">The bounds of the new escape zone.</param>
+    public static void AddEscapeZone(Bounds escapeZone) => EscapeZones.Add(escapeZone);
+
+    /// <summary>
+    /// Removes an existing bounds from the <see cref="EscapeZones"/> list.
+    /// </summary>
+    /// <param name="escapeZone">The bounds of the escape zone to remove.</param>
+    public static void RemoveEscapeZone(Bounds escapeZone) => EscapeZones.Remove(escapeZone);
 
     #region Get Random
-    /// <summary>
-    /// Gets a random <see cref="Room"/>.
-    /// </summary>
-    /// <returns>The random room if there were any rooms otherwise null.</returns>
+        /// <summary>
+        /// Gets a random <see cref="Room"/>.
+        /// </summary>
+        /// <returns>The random room if there were any rooms otherwise null.</returns>
     public static Room? GetRandomRoom()
     {
         return Rooms.Count != 0 ? Rooms.ElementAt(UnityEngine.Random.Range(0, Rooms.Count)) : null;

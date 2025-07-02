@@ -1,4 +1,5 @@
-﻿using CommandSystem;
+﻿using Achievements;
+using CommandSystem;
 using CustomPlayerEffects;
 using Generators;
 using InventorySystem.Configs;
@@ -121,6 +122,23 @@ public static class Server
                 return;
 
             ServerConsole.FriendlyFire = value;
+            ServerConfigSynchronizer.Singleton.RefreshMainBools();
+            ServerConfigSynchronizer.OnRefreshed?.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether achievement granting is enabled.
+    /// </summary>
+    public static bool AchievementsEnabled
+    {
+        get => !AchievementManager.AchievementsDisabled;
+        set 
+        {
+            if (AchievementManager.AchievementsDisabled != value)
+                return;
+
+            AchievementManager.AchievementsDisabled = !value;
             ServerConfigSynchronizer.Singleton.RefreshMainBools();
             ServerConfigSynchronizer.OnRefreshed?.Invoke();
         }
