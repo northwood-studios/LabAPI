@@ -305,7 +305,7 @@ public class SpeakerToy : AdminToy
     /// If one does not exists, a new one is created for the id.
     /// </summary>
     /// <param name="controllerId">The <see cref="ControllerId"/> for the transmitter.</param>
-    /// <returns></returns>
+    /// <returns>Cached transmitter.</returns>
     public static AudioTransmitter GetTransmitter(byte controllerId)
     {
         if (!TransmitterByControllerId.TryGetValue(controllerId, out AudioTransmitter transmitter))

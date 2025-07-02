@@ -1,4 +1,5 @@
 ﻿using Achievements;
+﻿using CentralAuth;
 using CommandSystem;
 using CustomPlayerEffects;
 using Generators;
@@ -11,6 +12,8 @@ using RemoteAdmin;
 using RoundRestarting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using static BanHandler;
 
@@ -361,7 +364,7 @@ public static class Server
     /// <summary>
     /// Gets all banned players.
     /// </summary>
-    /// <returns>List of all banned players.</returns>
+    /// <returns>A pooled list of all banned players.</returns>
     public static List<BanDetails> GetAllBannedPlayers()
     {
         List<BanDetails> bans = ListPool<BanDetails>.Shared.Rent();
@@ -374,7 +377,7 @@ public static class Server
     /// Gets all banned players by ban type.
     /// </summary>
     /// <param name="banType">The type of ban.</param>
-    /// <returns>List of specified ban types.</returns>
+    /// <returns>A pooled list of specified ban types.</returns>
     public static List<BanDetails> GetAllBannedPlayers(BanType banType) => GetBans(banType);
 
     #endregion
@@ -444,6 +447,41 @@ public static class Server
             ClearBroadcasts(player);
 
         Broadcast.Singleton.TargetAddElement(player.Connection, message, duration, type);
+    }
+
+    /// <summary>
+    /// Sends the admin chat messages to all players with <see cref="PlayerPermissions.AdminChat"/> permissions.
+    /// </summary>
+    /// <param name="message">The message to send.</param>
+    /// <param name="isSilent">Whether the message should not appear in broadcast.</param>
+    public static void SendAdminChatMessage(string message, bool isSilent = false) => SendAdminChatMessage(Player.ReadyList.Where(static n => n.UserGroup != null && PermissionsHandler.IsPermitted(n.UserGroup.Permissions, PlayerPermissions.AdminChat)), message, isSilent);
+
+    /// <summary>
+    /// Sends admin chat message to all specified players.
+    /// </summary>
+    /// <param name="targetPlayers">The target players.</param>
+    /// <param name="message">The message to send.</param>
+    /// <param name="isSilent">Whether the message should not appear in broadcast.</param>
+    public static void SendAdminChatMessage(IEnumerable<Player> targetPlayers, string message, bool isSilent = false)
+    {
+        StringBuilder sb = StringBuilderPool.Shared.Rent();
+
+        sb.Append(Host.NetworkId);
+        sb.Append('!');
+
+        if (isSilent)
+            sb.Append("@@");
+
+        sb.Append(message);
+
+        string toSend = StringBuilderPool.Shared.ToStringReturn(sb);
+        foreach (Player player in targetPlayers)
+        {
+            if (!player.IsPlayer || !player.IsReady)
+                continue;
+
+            player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(toSend, EncryptedChannelManager.EncryptedChannel.AdminChat);
+        }
     }
 
     /// <summary>

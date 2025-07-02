@@ -68,8 +68,8 @@ public class PocketDimension : Room
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="room">The room identifier for the pocket dimension.</param>
-    internal PocketDimension(RoomIdentifier room) 
-        : base(room) 
+    internal PocketDimension(RoomIdentifier room)
+        : base(room)
     {
         if (CanCache)
             Instance = this;
@@ -96,6 +96,21 @@ public class PocketDimension : Room
     /// <param name="player">The <see cref="Player"/> to check.</param>
     /// <returns>True if inside otherwise false.</returns>
     public static bool IsPlayerInside(Player player) => player.HasEffect<PocketCorroding>();
+
+    /// <summary>
+    /// Gets the position at which the <paramref name="player"/> was caught.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <returns>Returns caught position, also returns <see cref="Vector3.zero"/> if the player is not in <see cref="PocketDimension"/>.</returns>
+    public static Vector3 GetCaughtPosition(Player player)
+    {
+        PocketCorroding? effect = player.GetEffect<PocketCorroding>();
+
+        if (effect != null && effect.Intensity > 0)
+            return effect.CapturePosition.Position;
+
+        return Vector3.zero;
+    }
 
     /// <summary>
     /// Force a player to exit the pocket dimension.
@@ -167,7 +182,7 @@ public class PocketDimension : Room
     /// <param name="zone">The zone to remove exits from.</param>
     public static void RemoveAllExitPosesForZone(FacilityZone zone)
         => Scp106PocketExitFinder.PosesForZoneCache[zone] = [];
-    
+
     /// <summary>
     /// Removes the specified <see cref="Pose">poses</see> from use as exits for the pocket dimension.
     /// </summary>

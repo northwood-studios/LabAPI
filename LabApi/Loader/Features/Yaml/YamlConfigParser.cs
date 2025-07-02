@@ -23,6 +23,7 @@ public static class YamlConfigParser
         .WithTypeConverter(new CustomVectorConverter())
         .WithTypeConverter(new CustomColor32Converter())
         .WithTypeConverter(new CustomColorConverter())
+        .WithTypeConverter(new CustomQuaternionConverter())
         .Build();
 
     /// <summary>
@@ -34,5 +35,6 @@ public static class YamlConfigParser
         .WithTypeConverter(new CustomVectorConverter())
         .WithTypeConverter(new CustomColor32Converter())
         .WithTypeConverter(new CustomColorConverter())
+        .WithTypeConverter(new CustomQuaternionConverter())
         .Build();
 }

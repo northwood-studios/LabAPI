@@ -106,7 +106,7 @@ public class Door
             if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorName doorName))
                 DoorName = doorName;
             else
-                Logger.Warn($"Missing DoorName enum value for door name tag {nametag.GetName}");
+                Logger.InternalWarn($"Missing DoorName enum value for door name tag {nametag.GetName}");
         }
     }
 

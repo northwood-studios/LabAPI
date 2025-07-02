@@ -29,6 +29,7 @@ public class TextToy : AdminToy
     internal TextToy(BaseTextToy baseToy) : base(baseToy)
     {
         Base = baseToy;
+        Dictionary.Add(baseToy, this);
     }
 
     /// <summary>

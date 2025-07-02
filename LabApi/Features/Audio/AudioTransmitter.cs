@@ -22,6 +22,8 @@ namespace LabApi.Features.Audio;
 /// </remarks>
 public class AudioTransmitter
 {
+    private const float GainCorrectionFactor = 1.41421356237f;
+
     private static readonly float[] EmptyData = new float[FrameSize];
 
     private static readonly float[] TempSampleData = new float[FrameSize];
@@ -191,7 +193,6 @@ public class AudioTransmitter
 
     private IEnumerator<float> Transmit()
     {
-        float root2 = MathF.Sqrt(2.0f);
         targetTime = NetworkTime.time;
         while (!AudioClipSamples.IsEmpty())
         {
@@ -226,7 +227,7 @@ public class AudioTransmitter
                         // Client sided bug causes output to be 3db quieter than expected
                         // so we correct for that here
                         for (int i = 0; i < TempSampleData.Length; i++)
-                            TempSampleData[i] *= root2;
+                            TempSampleData[i] *= GainCorrectionFactor;
 
                         int length = opusEncoder.Encode(TempSampleData, TempEncodedData, FrameSize);
                         if (length > 2)

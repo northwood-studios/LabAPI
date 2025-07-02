@@ -35,7 +35,7 @@ public class PluginPermissionsCommand : ICommand
                 continue;
             }
 
-            response = perms.Aggregate(response, (current, perm) => current + $"+ {perm}\n");
+            response = perms.Aggregate(response, static (current, perm) => current + $"+ {perm}\n");
         }
 
         return true;

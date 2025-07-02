@@ -95,7 +95,7 @@ public class TantrumHazard : DecayableHazard
     /// Gets the hazard wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="TantrumEnvironmentalHazard"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="hazard">The <see cref="Base"/> of the hazard.</param>
-    /// <returns>The requested hazard or <see langword="null"/></returns>
+    /// <returns>The requested hazard or <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(hazard))]
     public static TantrumHazard? Get(TantrumEnvironmentalHazard? hazard)
     {
