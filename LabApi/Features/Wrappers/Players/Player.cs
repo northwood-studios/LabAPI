@@ -435,33 +435,13 @@ public class Player
     }
 
     /// <summary>
-    /// Gets a pooled list of players who are currently spectating this player.
+    /// Gets a list of players who are currently spectating this player.
     /// </summary>
-    public List<Player> CurrentSpectatorsPool
+    public IEnumerable<Player> CurrentSpectators
     {
         get
         {
-            List<Player> list = ListPool<Player>.Shared.Rent();
-            foreach (Player player in List)
-            {
-                if (ReferenceHub.IsSpectatedBy(player.ReferenceHub))
-                    list.Add(player);
-            }
-
-            return list;
-        }
-    }
-
-    /// <summary>
-    /// Populates list with players who are currently spectating this player.
-    /// </summary>
-    /// <param name="players">A player list.</param>
-    public void GetCurrentSpectators(List<Player> players)
-    {
-        foreach (Player player in List)
-        {
-            if (ReferenceHub.IsSpectatedBy(player.ReferenceHub))
-                players.Add(player);
+            return List.Where(player => ReferenceHub.IsSpectatedBy(player.ReferenceHub));
         }
     }
 
@@ -861,42 +841,13 @@ public class Player
     }
 
     /// <summary>
-    /// Gets a list of players from a list of reference hubs.
-    /// </summary>
-    /// <param name="referenceHubs">The reference hubs of the players.</param>
-    /// <returns>A list of players.</returns>
-    public static List<Player> GetPool(IEnumerable<ReferenceHub> referenceHubs)
-    {
-        // We rent a list from the pool to avoid unnecessary allocations.
-        // We don't care if the developer forgets to return the list to the pool
-        // as at least it will be more efficient than always allocating a new list.
-        List<Player> list = ListPool<Player>.Shared.Rent();
-        return GetNonAlloc(referenceHubs, list);
-    }
-
-    /// <summary>
     /// Populates the list of players from a list of reference hubs.
     /// </summary>
     /// <param name="referenceHubs">The reference hubs of the players.</param>
-    /// <param name="players">A list of players.</param>
-    public static void Get(IEnumerable<ReferenceHub> referenceHubs, List<Player> players)
+    /// <returns>A list of players.</returns>
+    public static IEnumerable<Player> Get(IEnumerable<ReferenceHub> referenceHubs)
     {
-        players.AddRange(referenceHubs.Select(Get));
-    }
-
-    /// <summary>
-    /// Gets a list of players from a list of reference hubs without allocating a new list.
-    /// </summary>
-    /// <param name="referenceHubs">The reference hubs of the players.</param>
-    /// <param name="list">A reference to the list to add the players to.</param>
-    public static List<Player> GetNonAlloc(IEnumerable<ReferenceHub> referenceHubs, List<Player> list)
-    {
-        // We clear the list to avoid any previous data.
-        list.Clear();
-        // And then we add all the players to the list.
-        list.AddRange(referenceHubs.Select(Get));
-        // We finally return the list.
-        return list;
+        return referenceHubs.Select(Get);
     }
 
     #region Get Player from a GameObject
@@ -1077,24 +1028,9 @@ public class Player
     /// <param name="input">The input to search for.</param>
     /// <param name="players">The output players if found.</param>
     /// <returns>True if the players are found, false otherwise.</returns>
-    public static bool TryGetPlayersByNamePool(string input, out List<Player> players)
+    public static bool TryGetPlayersByName(string input, out IEnumerable<Player> players)
     {
-        players = GetNonAlloc(ReferenceHub.AllHubs.Where(x => x.nicknameSync.Network_myNickSync.StartsWith(input, StringComparison.OrdinalIgnoreCase)),
-            ListPool<Player>.Shared.Rent());
-
-        return players.Count > 0;
-    }
-
-    /// <summary>
-    /// Tries to get players by name by seeing if their name starts with the input.
-    /// </summary>
-    /// <param name="input">The input to search for.</param>
-    /// <param name="players">The output players if found.</param>
-    /// <returns>True if the players are found, false otherwise.</returns>
-    public static bool TryGetPlayersByName(string input, List<Player> players)
-    {
-        Get(ReferenceHub.AllHubs.Where(x => x.nicknameSync.Network_myNickSync.StartsWith(input, StringComparison.OrdinalIgnoreCase)),
-            players);
+        players = Get(ReferenceHub.AllHubs.Where(x => x.nicknameSync.Network_myNickSync.StartsWith(input, StringComparison.OrdinalIgnoreCase)));
 
         return players.Count > 0;
     }
@@ -1276,25 +1212,12 @@ public class Player
     /// <summary>
     /// Drops all items from the player's inventory.
     /// </summary>
-    /// <returns>The pooled list of dropped items. Please return when your done with it.</returns>
-    public List<Pickup> DropAllItemsPool()
+    /// <returns>The list of dropped items.</returns>
+    public IEnumerable<Pickup> DropAllItems()
     {
-        List<Pickup> items = ListPool<Pickup>.Shared.Rent();
-        foreach (Item item in Items.ToArray())
-            items.Add(DropItem(item));
-
-        return items;
+        return Items.ToArray().Select(item => DropItem(item));
     }
 
-    /// <summary>
-    /// Drops all items from the player's inventory.
-    /// </summary>
-    /// <param name="pickups">A list of dropped items.</param>
-    public void DropAllItems(List<Pickup> pickups)
-    {
-        foreach (Item item in Items.ToArray())
-            pickups.Add(DropItem(item));
-    }
 
     /// <summary>
     /// Sets the ammo amount of a specific ammo type.
@@ -1323,23 +1246,9 @@ public class Player
     /// Drops all ammo from the player's inventory.
     /// </summary>
     /// <returns>The list of dropped ammo.</returns>
-    public List<AmmoPickup> DropAllAmmoPool()
+    public List<AmmoPickup> DropAllAmmo()
     {
-        List<AmmoPickup> ammo = ListPool<AmmoPickup>.Shared.Rent();
-        foreach (KeyValuePair<ItemType, ushort> pair in Ammo)
-            ammo.AddRange(DropAmmo(pair.Key, pair.Value));
-
-        return ammo;
-    }
-
-    /// <summary>
-    /// Drops all ammo from the player's inventory.
-    /// </summary>
-    /// <param name="ammoPickups">The list of dropped ammo.</param>
-    public void DropAllAmmo(List<AmmoPickup> ammoPickups)
-    {
-        foreach (KeyValuePair<ItemType, ushort> pair in Ammo)
-            ammoPickups.AddRange(DropAmmo(pair.Key, pair.Value));
+        return Ammo.ToArray().Select(item => DropAmmo(pair.Key, pair.Value));
     }
 
     /// <summary>

@@ -306,47 +306,23 @@ public class Item
     }
 
     /// <summary>
-    /// Gets a pooled list of items having the same <see cref="ItemType"/>.
+    /// Gets a list of items having the same <see cref="ItemType"/>.
     /// </summary>
     /// <param name="type">Target type.</param>
     /// <returns>A List of items.</returns>
-    public static List<Item> GetAllPool(ItemType type)
+    public static IEnumerable<Item> GetAll(ItemType type)
     {
-        List<Item> list = ListPool<Item>.Shared.Rent();
-        list.AddRange(List.Where(n => n.Type == type));
-        return list;
+        return List.Where(n => n.Type == type);
     }
 
     /// <summary>
-    /// Populate the list with items having the same <see cref="ItemType"/>.
-    /// </summary>
-    /// <param name="type">Target type.</param>
-    /// <param name="items">A List of items.</param>
-    public static void GetAll(ItemType type, List<Item> items)
-    {
-        items.AddRange(List.Where(n => n.Type == type));
-    }
-
-    /// <summary>
-    /// Gets a pooled list of items having the same <see cref="ItemCategory"/>.
+    /// Gets a list of items having the same <see cref="ItemCategory"/>.
     /// </summary>
     /// <param name="category">Target category.</param>
     /// <returns>A List of items.</returns>
-    public static List<Item> GetAllPool(ItemCategory category)
+    public static List<Item> GetAll(ItemCategory category)
     {
-        List<Item> list = ListPool<Item>.Shared.Rent();
-        list.AddRange(List.Where(n => n.Category == category));
-        return list;
-    }
-
-    /// <summary>
-    /// Populate the list with items having the same <see cref="ItemCategory"/>.
-    /// </summary>
-    /// <param name="category">Target category.</param>
-    /// <param name="items">A List of items.</param>
-    public static void GetAll(ItemCategory category, List<Item> items)
-    {
-        items.AddRange(List.Where(n => n.Category == category));
+        return List.Where(n => n.Category == category);
     }
 
     /// <summary>
