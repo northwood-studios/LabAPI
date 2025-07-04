@@ -61,11 +61,18 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         }
     }
 
-    /// <inheritdoc cref="IPermissionsProvider.GetPermissions"/>
+    /// <inheritdoc cref="IPermissionsProvider.GetPermissions(Player)"/>
     public string[] GetPermissions(Player player)
     {
         PermissionGroup group = GetPlayerGroup(player);
-        return GetPermissions(group);
+        return GetPermissionsPool(group);
+    }
+
+    /// <inheritdoc cref="IPermissionsProvider.GetPermissions(Player, List{string})"/>
+    public void GetPermissions(Player player, List<string> permissions)
+    {
+        PermissionGroup group = GetPlayerGroup(player);
+        GetPermissions(group, permissions);
     }
 
     /// <inheritdoc cref="IPermissionsProvider.HasPermissions"/>
@@ -102,7 +109,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
 
     private PermissionGroup GetPlayerGroup(Player player) => _permissionsDictionary.GetValueOrDefault(player.PermissionsGroupName ?? "default") ?? PermissionGroup.Default;
 
-    private string[] GetPermissions(PermissionGroup group)
+    private string[] GetPermissionsPool(PermissionGroup group)
     {
         List<string> permissions = ListPool<string>.Shared.Rent();
 
@@ -114,10 +121,25 @@ public class DefaultPermissionsProvider : IPermissionsProvider
             if (!_permissionsDictionary.TryGetValue(inheritedGroup, out PermissionGroup inherited))
                 continue;
 
-            permissions.AddRange(GetPermissions(inherited));
+            permissions.AddRange(GetPermissionsPool(inherited));
         }
 
         return permissions.ToArray();
+    }
+
+
+    private void GetPermissions(PermissionGroup group, List<string> permissions)
+    {
+        permissions.AddRange(group.Permissions);
+        permissions.AddRange(group.SpecialPermissionsSuperset);
+
+        foreach (string inheritedGroup in group.InheritedGroups)
+        {
+            if (!_permissionsDictionary.TryGetValue(inheritedGroup, out PermissionGroup inherited))
+                continue;
+
+            GetPermissions(inherited, permissions);
+        }
     }
 
     private bool HasPermission(PermissionGroup group, string permission)

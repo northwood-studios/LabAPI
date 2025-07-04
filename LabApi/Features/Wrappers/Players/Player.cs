@@ -440,20 +440,13 @@ public class Player
     }
 
     /// <summary>
-    /// Gets a pooled list of players who are currently spectating this player.
+    /// Gets a list of players who are currently spectating this player.
     /// </summary>
-    public List<Player> CurrentSpectators
+    public IEnumerable<Player> CurrentSpectators
     {
         get
         {
-            List<Player> list = ListPool<Player>.Shared.Rent();
-            foreach (Player player in List)
-            {
-                if (ReferenceHub.IsSpectatedBy(player.ReferenceHub))
-                    list.Add(player);
-            }
-
-            return list;
+            return List.Where(player => ReferenceHub.IsSpectatedBy(player.ReferenceHub));
         }
     }
 
@@ -858,32 +851,13 @@ public class Player
     }
 
     /// <summary>
-    /// Gets a list of players from a list of reference hubs.
+    /// Populates the list of players from a list of reference hubs.
     /// </summary>
     /// <param name="referenceHubs">The reference hubs of the players.</param>
     /// <returns>A list of players.</returns>
-    public static List<Player> Get(IEnumerable<ReferenceHub> referenceHubs)
+    public static IEnumerable<Player> Get(IEnumerable<ReferenceHub> referenceHubs)
     {
-        // We rent a list from the pool to avoid unnecessary allocations.
-        // We don't care if the developer forgets to return the list to the pool
-        // as at least it will be more efficient than always allocating a new list.
-        List<Player> list = ListPool<Player>.Shared.Rent();
-        return GetNonAlloc(referenceHubs, list);
-    }
-
-    /// <summary>
-    /// Gets a list of players from a list of reference hubs without allocating a new list.
-    /// </summary>
-    /// <param name="referenceHubs">The reference hubs of the players.</param>
-    /// <param name="list">A reference to the list to add the players to.</param>
-    public static List<Player> GetNonAlloc(IEnumerable<ReferenceHub> referenceHubs, List<Player> list)
-    {
-        // We clear the list to avoid any previous data.
-        list.Clear();
-        // And then we add all the players to the list.
-        list.AddRange(referenceHubs.Select(Get));
-        // We finally return the list.
-        return list;
+        return referenceHubs.Select(Get);
     }
 
     #region Get Player from a GameObject
@@ -1064,10 +1038,9 @@ public class Player
     /// <param name="input">The input to search for.</param>
     /// <param name="players">The output players if found.</param>
     /// <returns>True if the players are found, false otherwise.</returns>
-    public static bool TryGetPlayersByName(string input, out List<Player> players)
+    public static bool TryGetPlayersByName(string input, out IEnumerable<Player> players)
     {
-        players = GetNonAlloc(ReferenceHub.AllHubs.Where(x => x.nicknameSync.Network_myNickSync.StartsWith(input, StringComparison.OrdinalIgnoreCase)),
-            ListPool<Player>.Shared.Rent());
+        players = Get(ReferenceHub.AllHubs.Where(x => x.nicknameSync.Network_myNickSync.StartsWith(input, StringComparison.OrdinalIgnoreCase)));
 
         return players.Count > 0;
     }
@@ -1249,15 +1222,12 @@ public class Player
     /// <summary>
     /// Drops all items from the player's inventory.
     /// </summary>
-    /// <returns>The pooled list of dropped items. Please return when your done with it.</returns>
-    public List<Pickup> DropAllItems()
+    /// <returns>The list of dropped items.</returns>
+    public IEnumerable<Pickup> DropAllItems()
     {
-        List<Pickup> items = ListPool<Pickup>.Shared.Rent();
-        foreach (Item item in Items.ToArray())
-            items.Add(DropItem(item));
-
-        return items;
+        return Items.ToArray().Select(item => DropItem(item));
     }
+
 
     /// <summary>
     /// Sets the ammo amount of a specific ammo type.
@@ -1288,12 +1258,7 @@ public class Player
     /// <returns>The list of dropped ammo.</returns>
     public List<AmmoPickup> DropAllAmmo()
     {
-        List<AmmoPickup> ammo = ListPool<AmmoPickup>.Shared.Rent();
-
-        foreach (KeyValuePair<ItemType, ushort> pair in Ammo.ToDictionary(e => e.Key, e => e.Value))
-            ammo.AddRange(DropAmmo(pair.Key, pair.Value));
-
-        return ammo;
+        return Ammo.ToDictionary(e => e.Key, e => e.Value).Select(item => DropAmmo(pair.Key, pair.Value));
     }
 
     /// <summary>

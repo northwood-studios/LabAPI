@@ -306,27 +306,23 @@ public class Item
     }
 
     /// <summary>
-    /// Gets a pooled list of items having the same <see cref="ItemType"/>.
+    /// Gets a list of items having the same <see cref="ItemType"/>.
     /// </summary>
     /// <param name="type">Target type.</param>
     /// <returns>A List of items.</returns>
-    public static List<Item> GetAll(ItemType type)
+    public static IEnumerable<Item> GetAll(ItemType type)
     {
-        List<Item> list = ListPool<Item>.Shared.Rent();
-        list.AddRange(List.Where(n => n.Type == type));
-        return list;
+        return List.Where(n => n.Type == type);
     }
 
     /// <summary>
-    /// Gets a pooled list of items having the same <see cref="ItemCategory"/>.
+    /// Gets a list of items having the same <see cref="ItemCategory"/>.
     /// </summary>
     /// <param name="category">Target category.</param>
     /// <returns>A List of items.</returns>
     public static List<Item> GetAll(ItemCategory category)
     {
-        List<Item> list = ListPool<Item>.Shared.Rent();
-        list.AddRange(List.Where(n => n.Category == category));
-        return list;
+        return List.Where(n => n.Category == category);
     }
 
     /// <summary>
