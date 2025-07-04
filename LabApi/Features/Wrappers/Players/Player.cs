@@ -228,6 +228,11 @@ public class Player
     public PlayerRoleBase RoleBase => ReferenceHub.roleManager.CurrentRole;
 
     /// <summary>
+    /// Get's the player's current role unique identifier.
+    /// </summary>
+    public int LifeId => RoleBase.UniqueLifeIdentifier;
+
+    /// <summary>
     /// Gets the Player's Nickname.
     /// </summary>
     public string Nickname => ReferenceHub.nicknameSync.MyNick;
@@ -669,6 +674,11 @@ public class Player
     /// Gets the player's current <see cref="Team"/>.
     /// </summary>
     public Team Team => RoleBase.Team;
+
+    /// <summary>
+    /// Gets the player's current <see cref="Faction"/>.
+    /// </summary>
+    public Faction Faction => Team.GetFaction();
 
     /// <summary>
     /// Gets whether the player is currently Alive.
@@ -1248,7 +1258,7 @@ public class Player
     /// <returns>The list of dropped ammo.</returns>
     public List<AmmoPickup> DropAllAmmo()
     {
-        return Ammo.ToArray().Select(item => DropAmmo(pair.Key, pair.Value));
+        return Ammo.ToDictionary(e => e.Key, e => e.Value).Select(item => DropAmmo(pair.Key, pair.Value));
     }
 
     /// <summary>

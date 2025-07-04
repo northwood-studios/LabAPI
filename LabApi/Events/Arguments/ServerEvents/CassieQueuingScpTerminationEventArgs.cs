@@ -1,5 +1,6 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
+using PlayerStatsSystem;
 using Subtitles;
 using System;
 
@@ -16,12 +17,14 @@ public class CassieQueuingScpTerminationEventArgs : EventArgs, IPlayerEvent, ICa
     /// <param name="player">The SCP player the C.A.S.S.I.E termination announcement is for.</param>
     /// <param name="announcement">The message C.A.S.S.I.E is supposed to say.</param>
     /// <param name="subtitles">The subtitle part array of the message.</param>
-    public CassieQueuingScpTerminationEventArgs(ReferenceHub player, string announcement, SubtitlePart[] subtitles)
+    /// <param name="damageHandler">The damage handler that caused the termination of the SCP.</param>
+    public CassieQueuingScpTerminationEventArgs(ReferenceHub player, string announcement, SubtitlePart[] subtitles, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
         Player = Player.Get(player);
         Announcement = announcement;
         SubtitleParts = [.. subtitles];
+        DamageHandler = damageHandler;
     }
 
     /// <summary>
@@ -41,4 +44,9 @@ public class CassieQueuingScpTerminationEventArgs : EventArgs, IPlayerEvent, ICa
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+    
+    /// <summary>
+    /// The Damage Handler responsible for the SCP Termination.
+    /// </summary>
+    public DamageHandlerBase DamageHandler { get; }
 }
