@@ -30,7 +30,9 @@ public class PedestalLocker : Locker
         : base(pedestalScpLocker)
     {
         Base = pedestalScpLocker;
-        Dictionary.Add(pedestalScpLocker, this);
+
+        if (CanCache)
+            Dictionary.Add(pedestalScpLocker, this);
     }
 
     /// <summary>

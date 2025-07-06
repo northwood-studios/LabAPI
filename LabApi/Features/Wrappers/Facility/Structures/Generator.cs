@@ -35,10 +35,13 @@ public class Generator : Structure
     internal Generator(Scp079Generator generator)
         : base(generator)
     {
-        Dictionary.Add(generator, this);
         Base = generator;
 
-        TryRegisterByRoom();
+        if (CanCache)
+        {
+            Dictionary.Add(generator, this);
+            TryRegisterByRoom();
+        }
     }
 
     /// <summary>

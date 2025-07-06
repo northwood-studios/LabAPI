@@ -27,8 +27,10 @@ public class BreakableDoor : Door
     internal BreakableDoor(BaseBreakableDoor baseBreakableDoor)
         : base(baseBreakableDoor)
     {
-        Dictionary.Add(baseBreakableDoor, this);
         Base = baseBreakableDoor;
+
+        if (CanCache)
+            Dictionary.Add(baseBreakableDoor, this);
     }
 
     /// <summary>

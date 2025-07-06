@@ -203,7 +203,7 @@ public class Room
     /// <summary>
     /// Gets whether the room wrapper is allowed to be cached.
     /// </summary>
-    protected bool CanCache => !IsDestroyed;
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
 
     private HashSet<Room>? _connectedRooms;
 

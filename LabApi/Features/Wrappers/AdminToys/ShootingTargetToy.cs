@@ -24,13 +24,15 @@ public class ShootingTargetToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="shootingTarget">The base <see cref="ShootingTarget"/> object.</param>
-    internal ShootingTargetToy(ShootingTarget shootingTarget)
+    internal ShootingTargetToy(ShootingTarget shootingTarget) 
         : base(shootingTarget)
     {
-        Dictionary.Add(shootingTarget, this);
         Base = shootingTarget;
+
+        if (CanCache)
+            Dictionary.Add(shootingTarget, this);
     }
-    
+
     /// <summary>
     /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>

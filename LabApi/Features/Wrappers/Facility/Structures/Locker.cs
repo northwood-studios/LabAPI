@@ -31,9 +31,11 @@ public class Locker : Structure
     internal Locker(BaseLocker baseLocker)
         : base(baseLocker)
     {
-        Dictionary.Add(baseLocker, this);
         Base = baseLocker;
-        Chambers = baseLocker.Chambers.Select(x => LockerChamber.Get(x)).ToArray();
+        Chambers = baseLocker.Chambers.Select(static x => LockerChamber.Get(x)).ToArray();
+
+        if (CanCache)
+            Dictionary.Add(baseLocker, this);
     }
 
     /// <summary>
@@ -118,7 +120,7 @@ public class Locker : Structure
             RemainingUses = remainingUses,
             ProbabilityPoints = probabilityPoints,
             MinPerChamber = minPerChamber,
-            MaxPerChamber= maxPerChamber
+            MaxPerChamber = maxPerChamber
         };
 
         Base.Loot = [.. Base.Loot, loot];

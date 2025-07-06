@@ -100,7 +100,9 @@ public class AmnesticCloudHazard : DecayableHazard
         : base(hazard)
     {
         Base = hazard;
-        Dictionary.Add(hazard, this);
+
+        if (CanCache)
+            Dictionary.Add(hazard, this);
     }
 
     /// <summary>

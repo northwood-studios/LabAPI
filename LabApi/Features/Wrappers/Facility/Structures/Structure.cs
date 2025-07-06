@@ -62,9 +62,11 @@ public class Structure
     /// <param name="spawnableStructure">The base <see cref="SpawnableStructure"/> object.</param>
     internal Structure(SpawnableStructure spawnableStructure)
     {
-        Dictionary.Add(spawnableStructure, this);
         Base = spawnableStructure;
         StructurePositionSync = Base.gameObject.GetComponent<StructurePositionSync>();
+
+        if (CanCache)
+            Dictionary.Add(spawnableStructure, this);
     }
 
     /// <summary>
@@ -74,6 +76,11 @@ public class Structure
     {
         Dictionary.Remove(Base);
     }
+
+    /// <summary>
+    /// Whether to cache the wrapper.
+    /// </summary>
+    protected internal bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
 
     /// <summary>
     /// The base <see cref="SpawnableStructure"/> object.

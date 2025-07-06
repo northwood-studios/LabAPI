@@ -61,7 +61,8 @@ public class TantrumHazard : DecayableHazard
     {
         Base = hazard;
 
-        Dictionary.Add(hazard, this);
+        if (CanCache)
+            Dictionary.Add(hazard, this);
     }
 
     /// <summary>

@@ -24,11 +24,13 @@ public class LightSourceToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseLightSourceToy">The base <see cref="BaseLightSourceToy"/> object.</param>
-    internal LightSourceToy(BaseLightSourceToy baseLightSourceToy)
+    internal LightSourceToy(BaseLightSourceToy baseLightSourceToy) 
         : base(baseLightSourceToy)
     {
-        Dictionary.Add(baseLightSourceToy, this);
         Base = baseLightSourceToy;
+
+        if (CanCache)
+            Dictionary.Add(baseLightSourceToy, this);
     }
 
     /// <summary>

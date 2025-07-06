@@ -29,10 +29,12 @@ public class LockerChamber
     /// <param name="id">The id of the chamber inside the locker.</param>
     internal LockerChamber(BaseLockerChamber baseLockerChamber, Locker locker, byte id)
     {
-        Dictionary.Add(baseLockerChamber, this);
         Base = baseLockerChamber;
         Locker = locker;
         Id = id;
+
+        if (locker.CanCache)
+            Dictionary.Add(baseLockerChamber, this);
     }
 
     /// <summary>

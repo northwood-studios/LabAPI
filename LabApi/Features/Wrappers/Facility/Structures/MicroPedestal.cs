@@ -25,8 +25,10 @@ public class MicroPedestal : Locker
     /// <param name="pedestal">The base <see cref="Base"/> object.</param>
     internal MicroPedestal(MicroHIDPedestal pedestal) : base(pedestal)
     {
-        Dictionary.Add(pedestal, this);
         Base = pedestal;
+
+        if (CanCache)
+            Dictionary.Add(pedestal, this);
     }
 
     /// <summary>
