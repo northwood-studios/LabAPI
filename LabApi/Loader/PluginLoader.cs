@@ -210,7 +210,7 @@ public static partial class PluginLoader
         foreach (Type type in types)
         {
             // We check if the type is derived from Plugin.
-            if (!type.IsSubclassOf(typeof(Plugin)))
+            if (!type.IsSubclassOf(typeof(Plugin)) || type.IsAbstract)
                 continue;
 
             // We create an instance of the type and check if it was successfully created.
