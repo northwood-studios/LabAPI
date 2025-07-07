@@ -468,6 +468,56 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerUpdatedEffect)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnPlayerRaPlayerListAddedPlayer(PlayerRaPlayerListAddedPlayerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRaPlayerListAddedPlayer)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerRaPlayerListAddingPlayer(PlayerRaPlayerListAddingPlayerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRaPlayerListAddingPlayer)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerReceivedAchievement(PlayerReceivedAchievementEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerReceivedAchievement)} triggered by {ev.Player?.UserId ?? "unknown"}");
+    }
+
+    public override void OnPlayerRequestedCustomRaInfo(PlayerRequestedCustomRaInfoEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRequestedCustomRaInfo)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerRequestedRaPlayerInfo(PlayerRequestedRaPlayerInfoEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRequestedRaPlayerInfo)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerRequestedRaPlayerList(PlayerRequestedRaPlayerListEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRequestedRaPlayerList)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerRequestedRaPlayersInfo(PlayerRequestedRaPlayersInfoEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRequestedRaPlayersInfo)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerRequestingRaPlayerInfo(PlayerRequestingRaPlayerInfoEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRequestingRaPlayerInfo)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerRequestingRaPlayerList(PlayerRequestingRaPlayerListEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRequestingRaPlayerList)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerRequestingRaPlayersInfo(PlayerRequestingRaPlayersInfoEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerRequestingRaPlayersInfo)} triggered by {ev.Player.UserId}");
+    }
+
     //public override void OnPlayerReceivingVoiceMessage(PlayerReceivingVoiceMessageEventArgs ev)
     //{
     //    Logger.Info($"{nameof(OnPlayerReceivingVoiceMessage)} triggered by {ev.Player.UserId}");

@@ -25,11 +25,13 @@ public class InteractableToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseInteractableToy">The base <see cref="InvisibleInteractableToy"/> object.</param>
-    internal InteractableToy(InvisibleInteractableToy baseInteractableToy)
-        :base(baseInteractableToy)
+    internal InteractableToy(InvisibleInteractableToy baseInteractableToy) 
+        : base(baseInteractableToy)
     {
-        Dictionary.Add(baseInteractableToy, this);
         Base = baseInteractableToy;
+
+        if (CanCache)
+            Dictionary.Add(baseInteractableToy, this);
     }
 
     /// <summary>

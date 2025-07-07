@@ -1,10 +1,13 @@
 using Generators;
 using Interactables.Interobjects.DoorUtils;
+using LabApi.Features.Extensions;
 using MapGeneration;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace LabApi.Features.Wrappers;
 
@@ -26,7 +29,7 @@ public class Room
     /// <summary>
     /// Contains all the cached rooms in the game, accessible through their <see cref="RoomIdentifier"/>.
     /// </summary>
-    private static Dictionary<RoomIdentifier, Room> Dictionary { get; } = [];
+    public static Dictionary<RoomIdentifier, Room> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="Room"/> instances currently in the game.
@@ -51,6 +54,8 @@ public class Room
     internal virtual void OnRemoved()
     {
         Dictionary.Remove(Base);
+        _adjacentRooms = null;
+        _connectedRooms = null;
     }
 
     /// <summary>
@@ -84,25 +89,78 @@ public class Room
     public IEnumerable<Room> ConnectedRooms => Base.ConnectedRooms.Select(Get)!;
 
     /// <summary>
-    /// Gets the doors that are a part of this room. TODO: Cache in base game code?
+    /// Gets the room's adjacent rooms where the player can traverse to.
+    /// Includes rooms that can be traversed to via elevator.
+    /// </summary>
+    public IReadOnlyCollection<Room> AdjacentRooms
+    {
+        get
+        {
+            if (_adjacentRooms != null)
+                return _adjacentRooms;
+
+            List<Room> rooms = [.. ConnectedRooms.Select(Get)];
+
+            // Check if the room has elevator
+            Elevator? target = null;
+            foreach (Elevator elevator in Elevator.List)
+            {
+                if (elevator.Rooms.Contains(this))
+                    target = elevator;
+            }
+
+            // Add rooms that are on other floors of this elevator
+            if (target != null)
+            {
+                foreach (Room room in target.Rooms)
+                {
+                    if (room == this)
+                        continue;
+
+                    rooms.Add(room);
+                }
+            }
+
+            //Hcz-Ez checkpoints
+            if (Name == RoomName.HczCheckpointToEntranceZone)
+            {
+                FacilityZone targetZone = Zone == FacilityZone.HeavyContainment ? FacilityZone.Entrance : FacilityZone.HeavyContainment;
+
+                Room? match = List
+                    .Where(n => n.Name == RoomName.HczCheckpointToEntranceZone && n.Zone == targetZone)
+                    .MinBy(n => (n.Position - Position).sqrMagnitude);
+
+                if (match != null)
+                    rooms.Add(match);
+            }
+
+            _adjacentRooms = rooms.AsReadOnly();
+            return _adjacentRooms;
+        }
+    }
+
+    /// <summary>
+    /// Gets the doors that are a part of this room.
     /// </summary>
     public IEnumerable<Door> Doors
     {
         get
         {
-            return DoorVariant.DoorsByRoom.TryGetValue(Base, out HashSet<DoorVariant> doors) ? doors.Where(x => x != null).Select(x => Door.Get(x!)) : [];
+            return DoorVariant.DoorsByRoom.TryGetValue(Base, out HashSet<DoorVariant> doors) ? doors.Where(static x => x != null).Select(static x => Door.Get(x!)) : [];
         }
     }
 
     /// <summary>
-    /// Gets the first light controller for this room.<br></br>
-    /// <note>Please see <see cref="AllLightControllers"/> if you wish to modify all lights in this room.</note>
+    /// Gets the first light controller for this room.<br/>
+    /// <note>
+    /// Use <see cref="AllLightControllers"/> if you wish to modify all lights in this room.
+    /// </note>
     /// </summary>
     public LightsController? LightController => Base.LightControllers.Count > 0 ? LightsController.Get(Base.LightControllers[0]) : null;
 
     /// <summary>
     /// Gets all light controllers for this specified room.<br/>
-    /// Some rooms such as 049, warhead and etc may have multiple light controllers as they are split by the elevator.
+    /// Some rooms such as 049, warhead and such may have multiple light controllers as they are split by the elevator.
     /// </summary>
     public IEnumerable<LightsController> AllLightControllers => Base.LightControllers.Select(LightsController.Get);
 
@@ -141,11 +199,108 @@ public class Room
     {
         return $"[{GetType().Name}: Name={Name}, Shape={Shape}, Zone={Zone}]";
     }
-  
+
     /// <summary>
     /// Gets whether the room wrapper is allowed to be cached.
     /// </summary>
-    protected bool CanCache => !IsDestroyed;
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
+    private HashSet<Room>? _connectedRooms;
+
+    private IReadOnlyCollection<Room>? _adjacentRooms;
+
+    /// <summary>
+    /// Gets the closest <see cref="LightsController"/> to the specified player.
+    /// </summary>
+    /// <param name="player">The player to check the closest light controller for.</param>
+    /// <returns>The closest light controller. May return <see langword="null"/> if player is not alive or is not in any room.</returns>
+    public LightsController? GetClosestLightController(Player player)
+    {
+        RoomLightController rlc = Base.GetClosestLightController(player.ReferenceHub);
+        return rlc == null ? null : LightsController.Get(rlc);
+    }
+
+    /// <summary>
+    /// Gets path from <paramref name="start"/> to <paramref name="end"/>.<br/>
+    /// Path is found via <see href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra's algorithm</see>. Path still works between zones (including via elevators) as it uses <see cref="AdjacentRooms"/>.<br/>
+    /// If no path is found, an empty list is returned.
+    /// </summary>
+    /// <param name="start">The starting room.</param>
+    /// <param name="end">The ending room.</param>
+    /// <param name="weightFunction">The weight function to calculate cost to the next room. Can be change if you prefer to go around tesla gates and such.</param>
+    /// <returns>A pooled list containing rooms from <paramref name="start"/> to <paramref name="end"/> (including these rooms).</returns>
+    public static List<Room> FindPath(Room start, Room end, Func<Room, int> weightFunction)
+    {
+        List<Room> path = NorthwoodLib.Pools.ListPool<Room>.Shared.Rent();
+
+        if (start == null || end == null || start == end)
+            return path;
+
+        Dictionary<Room, Room?> previous = DictionaryPool<Room, Room?>.Get();
+        Dictionary<Room, int> distances = DictionaryPool<Room, int>.Get();
+        HashSet<Room> visited = NorthwoodLib.Pools.HashSetPool<Room>.Shared.Rent();
+        PriorityQueue<Room> queue = PriorityQueuePool<Room>.Shared.Rent();
+
+        // Standard dijakstra
+        foreach (Room room in List)
+        {
+            distances[room] = int.MaxValue;
+            previous[room] = null;
+        }
+
+        distances[start] = 0;
+        queue.Enqueue(start, 0);
+
+        while (queue.Count > 0)
+        {
+            Room current = queue.Dequeue();
+
+            if (visited.Contains(current))
+                continue;
+
+            visited.Add(current);
+
+            if (current == end)
+                break;
+
+            foreach (Room neighbor in current.AdjacentRooms)
+            {
+                if (visited.Contains(neighbor))
+                    continue;
+
+                int newDistance = distances[current] + weightFunction(neighbor);
+                if (newDistance < distances[neighbor])
+                {
+                    distances[neighbor] = newDistance;
+                    previous[neighbor] = current;
+                    queue.Enqueue(neighbor, newDistance);
+                }
+            }
+        }
+
+        Room? step = end;
+
+        // Reconstruct the path from start to end room
+        while (step != null)
+        {
+            path.Insert(0, step);
+            step = previous[step];
+        }
+
+        // If only entry is the end room, clear the path as it wasnt found
+        if (path.Count == 1 && path[0] == end)
+            path.Clear();
+
+        DictionaryPool<Room, Room?>.Release(previous);
+        DictionaryPool<Room, int>.Release(distances);
+        NorthwoodLib.Pools.HashSetPool<Room>.Shared.Return(visited);
+        PriorityQueuePool<Room>.Shared.Return(queue);
+
+        return path;
+    }
+
+    /// <inheritdoc cref="FindPath(Room, Room, Func{Room, int})"/>
+    public static List<Room> FindPath(Room start, Room end) => FindPath(start, end, static (room) => 1);
 
     /// <summary>
     /// Gets the room wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
@@ -195,17 +350,6 @@ public class Room
     /// <returns>The requested rooms.</returns>
     public static IEnumerable<Room> Get(IEnumerable<RoomIdentifier> roomIdentifiers) =>
         roomIdentifiers.Select(Get);
-
-    /// <summary>
-    /// Gets the closest <see cref="LightsController"/> to the specified player.
-    /// </summary>
-    /// <param name="player">The player to check the closest light controller for.</param>
-    /// <returns>The closest light controller. May return <see langword="null"/> if player is not alive or is not in any room.</returns>
-    public LightsController? GetClosestLightController(Player player)
-    {
-        RoomLightController rlc = Base.GetClosestLightController(player.ReferenceHub);
-        return rlc == null ? null : LightsController.Get(rlc);
-    }
 
     /// <summary>
     /// Tries to get the room at the specified position.
@@ -258,7 +402,7 @@ public class Room
             if (!Dictionary.ContainsKey(roomIdentifier))
                 _ = CreateRoomWrapper(roomIdentifier);
         }
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Console.Logger.InternalError($"Failed to handle room creation with error: {e}");
         }
@@ -275,7 +419,7 @@ public class Room
             if (Dictionary.TryGetValue(roomIdentifier, out Room room))
                 room.OnRemoved();
         }
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Console.Logger.InternalError($"Failed to handle item destruction with error: {e}");
         }

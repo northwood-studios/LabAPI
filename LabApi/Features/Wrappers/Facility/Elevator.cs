@@ -100,6 +100,11 @@ public class Elevator
     public ElevatorDoor NextDestination => ElevatorDoor.Get(Base.NextDestinationDoor);
 
     /// <summary>
+    /// Gets all rooms this elevator can move to.
+    /// </summary>
+    public IEnumerable<Room> Rooms => Base.FloorDoors.SelectMany(door => door.Rooms.Select(Room.Get));
+
+    /// <summary>
     /// Gets the destination floor index this elevator will head towards once activated.
     /// </summary>
     public int NextDestinationLevel => Base.NextLevel;

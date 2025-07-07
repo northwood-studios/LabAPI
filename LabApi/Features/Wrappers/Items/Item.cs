@@ -210,7 +210,7 @@ public class Item
     /// <summary>
     /// Gets whether the item wrapper is allowed to be cached.
     /// </summary>
-    protected bool CanCache => !IsDestroyed && !IsPrefab && Serial != 0;
+    protected bool CanCache => !IsDestroyed && !IsPrefab && Serial != 0 && Base.isActiveAndEnabled;
 
     /// <summary>
     /// A private constructor to prevent external instantiation.

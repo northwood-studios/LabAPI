@@ -46,7 +46,7 @@ public static partial class CustomHandlersManager
     /// <summary>
     /// Checks if the event is overriden and subscribes the handler to the event if it is.
     /// </summary>
-    private static void CheckEvent<T>(T handler, Type handlerType, string methodDelegate, Type eventType, string eventName)
+    public static void CheckEvent<T>(T handler, Type handlerType, string methodDelegate, Type eventType, string eventName)
         where T : CustomEventsHandler
     {
         // We first get the method from the handler.

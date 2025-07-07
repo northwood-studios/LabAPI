@@ -102,6 +102,9 @@ public abstract class RespawnWave
     /// <summary>
     /// Gets or sets the time this wave's timer is paused.
     /// </summary>
+    /// <remarks>
+    /// Currently the wave timer pauses only at about 10% left.
+    /// </remarks>
     public float PausedTime
     {
         get => Base.Timer.PauseTimeLeft;

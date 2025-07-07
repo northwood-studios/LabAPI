@@ -217,7 +217,7 @@ public class Pickup
     /// <summary>
     /// Gets whether the item wrapper is allowed to be cached.
     /// </summary>
-    protected bool CanCache => !IsDestroyed && !IsPrefab;
+    protected bool CanCache => !IsDestroyed && !IsPrefab && Base.isActiveAndEnabled;
 
     /// <summary>
     /// A protected constructor to prevent external instantiation.

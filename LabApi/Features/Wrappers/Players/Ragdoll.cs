@@ -34,8 +34,7 @@ public class Ragdoll
     {
         Base = ragdoll;
 
-        // fix when #257 is merged.
-        if (ragdoll != null)
+        if (CanCache)
         {
             GameObject = ragdoll.gameObject;
             Transform = ragdoll.transform;
@@ -49,6 +48,11 @@ public class Ragdoll
     public BasicRagdoll Base { get; private set; }
 
     /// <summary>
+    /// Gets whether the base room instance was destroyed.
+    /// </summary>
+    public bool IsDestroyed => Base == null;
+
+    /// <summary>
     /// Gets the ragdoll's <see cref="UnityEngine.GameObject"/>.
     /// </summary>
     public GameObject GameObject { get; }
@@ -57,11 +61,6 @@ public class Ragdoll
     /// Gets the pickup's <see cref="UnityEngine.Transform"/>.
     /// </summary>
     public Transform Transform { get; }
-
-    /// <summary>
-    /// Gets whether the ragdoll was destroyed.
-    /// </summary>
-    public bool IsDestroyed => Base == null;
 
     /// <summary>
     /// Gets or sets the role info of the ragdoll.
@@ -149,6 +148,12 @@ public class Ragdoll
             ZombieConsumeAbility.ConsumedRagdolls.Remove(Base);
         }
     }
+
+    /// <summary>
+    /// Whether to cache this wrapper.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
 
     /// <summary>
     /// Gets whether the ragdoll is revivable by SCP-049 player.

@@ -27,11 +27,13 @@ public class BulkheadDoor : Gate
     internal BulkheadDoor(PryableDoor pryableDoor)
         : base(pryableDoor)
     {
-        Dictionary.Add(pryableDoor, this);
         Base = pryableDoor;
         DoorCrusherExtension extension = pryableDoor.gameObject.GetComponent<DoorCrusherExtension>();
         if (extension != null)
             Crusher = new DoorCrusher(extension);
+
+        if (CanCache)
+            Dictionary.Add(pryableDoor, this);
     }
 
     /// <summary>

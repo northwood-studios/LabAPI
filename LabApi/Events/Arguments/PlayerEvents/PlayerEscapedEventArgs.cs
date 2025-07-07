@@ -2,6 +2,7 @@
 using LabApi.Features.Wrappers;
 using PlayerRoles;
 using System;
+using UnityEngine;
 using static Escape;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
@@ -17,11 +18,12 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The player who escaped.</param>
     /// <param name="newRole">The new role.</param>
     /// <param name="escapeScenarioType">The scenario of the escape.</param>
-    public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId newRole, EscapeScenarioType escapeScenarioType)
+    public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId newRole, EscapeScenarioType escapeScenarioType, Bounds escapeZone)
     {
         Player = Player.Get(player);
         NewRole = newRole;
         EscapeScenarioType = escapeScenarioType;
+        EscapeZone = escapeZone;
     }
 
     /// <summary>
@@ -38,4 +40,9 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     /// Escape scenario of the player.
     /// </summary>
     public EscapeScenarioType EscapeScenarioType { get; }
+
+    /// <summary>
+    /// The bounds of the escape zone that was triggered.
+    /// </summary>
+    public Bounds EscapeZone { get; }
 }
