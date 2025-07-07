@@ -30,11 +30,13 @@ public class SpeakerToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseSpeakerToy">The base <see cref="BaseSpeakerToy"/> object.</param>
-    internal SpeakerToy(BaseSpeakerToy baseSpeakerToy)
+    internal SpeakerToy(BaseSpeakerToy baseSpeakerToy) 
         : base(baseSpeakerToy)
     {
-        Dictionary.Add(baseSpeakerToy, this);
         Base = baseSpeakerToy;
+
+        if (CanCache)
+            Dictionary.Add(baseSpeakerToy, this);
     }
 
     /// <summary>

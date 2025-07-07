@@ -48,6 +48,11 @@ public class Hazard
     public IEnumerable<Player> AffectedPlayers => Base.AffectedPlayers.Select(n => Player.Get(n));
 
     /// <summary>
+    /// Whether to cache the wrapper.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
+    /// <summary>
     /// Gets or sets the maximum distance players have to be at, for this hazard to affect them.
     /// </summary>
     public float MaxDistance
@@ -109,7 +114,9 @@ public class Hazard
     protected Hazard(EnvironmentalHazard hazard)
     {
         Base = hazard;
-        Dictionary.Add(hazard, this);
+
+        if (CanCache)
+            Dictionary.Add(hazard, this);
     }
 
     /// <summary>

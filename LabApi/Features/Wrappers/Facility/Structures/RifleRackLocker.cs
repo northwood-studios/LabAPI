@@ -26,7 +26,8 @@ public class RifleRackLocker : Locker
     internal RifleRackLocker(BaseLocker baseLocker)
         :base(baseLocker)
     {
-        Dictionary.Add(baseLocker, this);
+        if (CanCache)
+            Dictionary.Add(baseLocker, this);
     }
 
     /// <summary>

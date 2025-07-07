@@ -1,4 +1,5 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using MapGeneration.Distributors;
 using System.Collections.Generic;
 using BaseLocker = MapGeneration.Distributors.Locker;
 
@@ -26,7 +27,8 @@ public class WallCabinet : Locker
     internal WallCabinet(BaseLocker baseLocker)
         : base(baseLocker)
     {
-        Dictionary.Add(baseLocker, this);
+        if (CanCache)
+            Dictionary.Add(baseLocker, this);
     }
 
     /// <summary>

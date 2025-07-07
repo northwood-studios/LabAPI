@@ -40,7 +40,9 @@ public class SinkholeHazard : Hazard
         : base(hazard)
     {
         Base = hazard;
-        Dictionary.Add(hazard, this);
+
+        if (CanCache)
+            Dictionary.Add(hazard, this);
     }
 
     /// <summary>

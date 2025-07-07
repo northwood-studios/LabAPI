@@ -29,12 +29,14 @@ public class CheckpointDoor : Door
     internal CheckpointDoor(BaseCheckpointDoor baseCheckpointDoor)
         : base(baseCheckpointDoor)
     {
-        Dictionary.Add(baseCheckpointDoor, this);
         Base = baseCheckpointDoor;
         SubDoors = new Door[baseCheckpointDoor.SubDoors.Length];
 
         for (int i = 0; i < baseCheckpointDoor.SubDoors.Length; i++)
             SubDoors[i] = Get(baseCheckpointDoor.SubDoors[i]);
+
+        if (CanCache)
+            Dictionary.Add(baseCheckpointDoor, this);
     }
 
     /// <summary>

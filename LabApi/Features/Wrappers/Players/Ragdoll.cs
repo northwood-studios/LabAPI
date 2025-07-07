@@ -32,13 +32,20 @@ public class Ragdoll
     private Ragdoll(BasicRagdoll ragdoll)
     {
         Base = ragdoll;
-        Dictionary.TryAdd(ragdoll, this);
+
+        if (CanCache)
+            Dictionary.TryAdd(ragdoll, this);
     }
 
     /// <summary>
     /// Gets the <see cref="BasicRagdoll"/> of the ragdoll.
     /// </summary>
     public BasicRagdoll Base { get; private set; }
+
+    /// <summary>
+    /// Gets whether the base room instance was destroyed.
+    /// </summary>
+    public bool IsDestroyed => Base == null;
 
     /// <summary>
     /// Gets or sets the role info of the ragdoll.
@@ -126,6 +133,12 @@ public class Ragdoll
             ZombieConsumeAbility.ConsumedRagdolls.Remove(Base);
         }
     }
+
+    /// <summary>
+    /// Whether to cache this wrapper.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
 
     /// <summary>
     /// Gets whether the ragdoll is revivable by SCP-049 player.

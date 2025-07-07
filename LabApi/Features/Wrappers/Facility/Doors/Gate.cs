@@ -26,8 +26,10 @@ public class Gate : Door
     internal Gate(PryableDoor pryableDoor)
         : base(pryableDoor)
     {
-        Dictionary.Add(pryableDoor, this);
         Base = pryableDoor;
+
+        if (CanCache)
+            Dictionary.Add(pryableDoor, this);
     }
 
     /// <summary>

@@ -30,6 +30,9 @@ public class Workstation : Structure
     internal Workstation(SpawnableStructure spawnableStructure) : base(spawnableStructure)
     {
         BaseController = spawnableStructure.GetComponent<WorkstationController>();
+
+        if (CanCache)
+            Dictionary.Add(spawnableStructure, this);
     }
 
     /// <summary>

@@ -31,7 +31,9 @@ public class ExperimentalWeaponLocker : Locker
         : base(baseExperimentalWeaponLocker)
     {
         Base = baseExperimentalWeaponLocker;
-        Dictionary.Add(baseExperimentalWeaponLocker, this);
+
+        if (CanCache)
+            Dictionary.Add(baseExperimentalWeaponLocker, this);
     }
 
     /// <summary>
