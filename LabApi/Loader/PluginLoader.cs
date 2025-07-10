@@ -162,7 +162,7 @@ public static partial class PluginLoader
     /// <param name="files">The collection of assemblies to load.</param>
     public static void LoadPlugins(IEnumerable<FileInfo> files)
     {
-        List<(FileInfo File, Assembly Assembly)> plugins = [];
+        List<(string Path, Assembly Assembly)> plugins = [];
 
         foreach (FileInfo file in files)
         {
@@ -177,8 +177,7 @@ public static partial class PluginLoader
                     ? Assembly.Load(File.ReadAllBytes(file.FullName), File.ReadAllBytes(pdb.FullName))
                     // Otherwise, we load the assembly without any debug information.
                     : Assembly.Load(File.ReadAllBytes(file.FullName));
-
-                plugins.Add((file, pluginAssembly));
+                plugins.Add((file.FullName, pluginAssembly));
             }
             catch (Exception e)
             {
@@ -187,21 +186,41 @@ public static partial class PluginLoader
             }
         }
 
-        foreach ((FileInfo file, Assembly assembly) in plugins)
+        foreach ((string path, Assembly assembly) in plugins)
         {
             try
             {
-                // If the assembly has missing dependencies, we skip it.
-                if (AssemblyUtils.HasMissingDependencies(assembly, file.FullName, out Type[]? types))
-                    continue;
-
-                InstantiatePlugins(types, assembly, file.FullName);
+                AssemblyUtils.ResolveEmbeddedResources(assembly);
             }
             catch (Exception e)
             {
-                Logger.Error($"{LoggerPrefix} Couldn't load the plugin inside '{file.FullName}'");
+                Logger.Error($"{LoggerPrefix} Couldn't load the assembly inside '{path}'");
+                LogMissingDependencies(assembly);
                 Logger.Error(e);
             }
+        }
+
+        foreach ((string path, Assembly assembly) in plugins)
+        {
+            try
+            {
+                InstantiatePlugins(assembly.GetTypes(), assembly, path);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"{LoggerPrefix} Couldn't load the plugin inside '{path}'");
+                LogMissingDependencies(assembly);
+                Logger.Error(e);
+            }
+        }
+    }
+
+    private static void LogMissingDependencies(Assembly assembly)
+    {
+        string[] missing = AssemblyUtils.GetMissingDependencies(assembly).ToArray();
+        if (missing.Length != 0)
+        {
+            Logger.Error($"{LoggerPrefix} Missing dependencies:\n{string.Join("\n", missing.Select(x => $"-\t {x}"))}");
         }
     }
 

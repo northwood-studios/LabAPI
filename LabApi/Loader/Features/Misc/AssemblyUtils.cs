@@ -76,7 +76,7 @@ public static class AssemblyUtils
     /// <returns>A formatted <see cref="IEnumerable{T}"/> with the missing dependencies.</returns>
     public static IEnumerable<string> GetMissingDependencies(Assembly assembly)
     {
-        IEnumerable<string> loadedAssemblies = GetLoadedAssemblies();
+        HashSet<string> loadedAssemblies = GetLoadedAssemblies().ToHashSet();
         // Using the same format, we will get the missing dependencies.
         return assembly.GetReferencedAssemblies().Select(FormatAssemblyName).Where(name => !loadedAssemblies.Contains(name));
     }
@@ -85,6 +85,7 @@ public static class AssemblyUtils
     /// Resolves embedded resources from the specified <see cref="Assembly"/>.
     /// </summary>
     /// <param name="assembly">The assembly to resolve embedded resources from.</param>
+    /// <remarks>This method loads each DLL if no such assembly with the same name has been loaded into the current AppDomain yet.</remarks>
     public static void ResolveEmbeddedResources(Assembly assembly)
     {
         const string dllExtension = ".dll";
@@ -108,41 +109,59 @@ public static class AssemblyUtils
             }
         }
     }
-
-    /// <summary>
-    /// Loads an embedded dll from the specified <see cref="Assembly"/>.
-    /// </summary>
-    /// <param name="target">The assembly to load the embedded dll from.</param>
-    /// <param name="name">The resource name of the embedded dll.</param>
-    public static void LoadEmbeddedDll(Assembly target, string name)
+    
+    private static void LoadAssemblyIfMissing(string path)
     {
-        // We try to get the data stream of the specified resource name.
-        if (!TryGetDataStream(target, name, out Stream? dataStream))
-            return;
-
-        // We copy the data stream to a memory stream and load the assembly from the memory stream.
-        using MemoryStream stream = new();
-        dataStream.CopyTo(stream);
-        Assembly.Load(stream.ToArray());
+        try
+        {
+            AssemblyName? name = AssemblyName.GetAssemblyName(path);
+            // only check name to avoid identity problems
+            if (name != null && AppDomain.CurrentDomain.GetAssemblies().All(e => e.GetName().Name != name.Name))
+            {
+                Assembly.Load(File.ReadAllBytes(path));
+            }
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     /// <summary>
-    /// Loads a compressed embedded dll from the specified <see cref="Assembly"/>.
+    /// Loads an embedded dll from the specified <see cref="Assembly"/> if no such assembly with the same name has been loaded.
+    /// </summary>
+    /// <param name="target">The assembly to load the embedded dll from.</param>
+    /// <param name="name">The resource name of the embedded dll.</param>
+    /// <remarks>The name check only checks for the <see cref="AssemblyName.Name"/> of the <see cref="AssemblyName"/>.</remarks>
+    public static void LoadEmbeddedDll(Assembly target, string name)
+    {
+        if (!TryGetDataStream(target, name, out Stream? dataStream))
+            return;
+        string path = Path.GetTempFileName();
+        using (FileStream file = File.Create(path))
+        {
+            dataStream.CopyTo(file);
+        }
+        LoadAssemblyIfMissing(path);
+    }
+
+    /// <summary>
+    /// Loads a compressed embedded dll from the specified <see cref="Assembly"/> if no such assembly with the same name has been loaded.
     /// </summary>
     /// <param name="target">The assembly to load the compressed embedded dll from.</param>
     /// <param name="name">The resource name of the compressed embedded dll.</param>
+    /// <remarks>The name check only checks for the <see cref="AssemblyName.Name"/> of the <see cref="AssemblyName"/>.</remarks>
     public static void LoadCompressedEmbeddedDll(Assembly target, string name)
     {
-        // We try to get the data stream of the specified resource name.
         if (!TryGetDataStream(target, name, out Stream? dataStream))
             return;
-
-        // We decompress the data stream and load the assembly from the memory stream.
-        using DeflateStream stream = new(dataStream, CompressionMode.Decompress);
-        // We use a memory stream to load the assembly from the decompressed data stream.
-        using MemoryStream memStream = new();
-        stream.CopyTo(memStream);
-        Assembly.Load(memStream.ToArray());
+        string path = Path.GetTempFileName();
+        using (DeflateStream stream = new(dataStream, CompressionMode.Decompress))
+        using (FileStream file = File.Create(path))
+        {
+            stream.CopyTo(file);
+        }
+        LoadAssemblyIfMissing(path);
     }
 
     /// <summary>
