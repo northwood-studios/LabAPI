@@ -102,7 +102,7 @@ public class Player
     /// <summary>
     /// Gets the amount of non-verified players
     /// </summary>
-    public static int NonVerifiedCount => ConnectionsCount - Count;
+    public static int NonVerifiedCount => UnauthenticatedList.Count();
 
     /// <summary>
     /// Gets the amount of connected players. Regardless of their authentication status.
@@ -189,6 +189,11 @@ public class Player
     public NetworkConnection Connection => IsHost ? ReferenceHub.networkIdentity.connectionToServer : ReferenceHub.networkIdentity.connectionToClient;
 
     /// <summary>
+    /// Gets the player's <see cref="NetworkConnectionToClient"/>.
+    /// </summary>
+    public NetworkConnectionToClient ConnectionToClient => ReferenceHub.networkIdentity.connectionToClient;
+
+    /// <summary>
     /// Gets the player's <see cref="RecyclablePlayerId"/> value.
     /// </summary>
     public int PlayerId => ReferenceHub.PlayerId;
@@ -196,11 +201,13 @@ public class Player
     /// <summary>
     /// Gets if the player is currently offline.
     /// </summary>
+    [Obsolete("Use IsDestroyed instead.")]
     public bool IsOffline => GameObject == null;
 
     /// <summary>
     /// Gets if the player is currently online.
     /// </summary>
+    [Obsolete("Use !IsDestroyed instead.")]
     public bool IsOnline => !IsOffline;
 
     /// <summary>
