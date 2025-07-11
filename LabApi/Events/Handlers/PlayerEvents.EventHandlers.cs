@@ -1,4 +1,5 @@
 ﻿using LabApi.Events.Arguments.PlayerEvents;
+using MapGeneration;
 
 namespace LabApi.Events.Handlers;
 
@@ -817,6 +818,16 @@ public static partial class PlayerEvents
     /// Gets called when the player has meet the requirements of an achievement.
     /// </summary>
     public static event LabEventHandler<PlayerReceivedAchievementEventArgs>? ReceivedAchievement;
+
+    /// <summary>
+    /// Gets called when player's last known room changes.
+    /// </summary>
+    public static event LabEventHandler<PlayerRoomChangedEventArgs>? RoomChanged;
+
+    /// <summary>
+    /// Gets called when player's last known zone changes.
+    /// </summary>
+    public static event LabEventHandler<PlayerZoneChangedEventArgs>? ZoneChanged;
 
     #endregion
 

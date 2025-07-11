@@ -478,9 +478,20 @@ public class Player
     public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(x => x.Intensity > 0);
 
     /// <summary>
-    /// Gets the <see cref="RoomIdentifier"/> at the player's current position.
+    /// Gets the <see cref="LabApi.Features.Wrappers.Room"/> at the player's current position.
+    /// May be <see langword="null"/> if the player is in the void.
+    /// <para>
+    /// Player inside of the elevator is consider to be in the said room until the elevator teleports to the next door.
+    /// </para>
     /// </summary>
-    public Room? Room => Room.GetRoomAtPosition(Position);
+    public Room? Room => Room.TryGetRoomAtPosition(Position, out Room room) ? room : null;
+
+    /// <summary>
+    /// Gets the cached room of the player. Cached room is revalidated once every frame or when player teleports.<br/>
+    /// It is not guarantee that the <see cref="Position"/> will match the exact same room it should be in due to the caching.<br/>
+    /// May be <see langword="null"/> if the player is in the void.
+    /// </summary>
+    public Room? CachedRoom => ReferenceHub.TryGetCurrentRoom(out RoomIdentifier rid) ? Room.Get(rid) : null;
 
     /// <summary>
     /// Gets the <see cref="FacilityZone"/> for the player's current room. Returns <see cref="FacilityZone.None"/> if the room is null.
@@ -1625,7 +1636,7 @@ public class Player
 
             CreatePlayerWrapper(referenceHub);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.Logger.InternalError($"Failed to handle player addition with exception: {ex}");
         }
@@ -1650,7 +1661,7 @@ public class Player
 
             Dictionary.Remove(referenceHub);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.Logger.InternalError($"Failed to handle player removal with exception: {ex}");
         }
