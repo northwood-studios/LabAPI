@@ -1,5 +1,6 @@
 ﻿using LabApi.Features.Wrappers;
 using Scp914;
+using UnityEngine;
 
 namespace LabApi.Features.Interfaces;
 
@@ -8,6 +9,11 @@ namespace LabApi.Features.Interfaces;
 /// </summary>
 public interface IScp914ItemProcessor
 {
+    /// <summary>
+    /// The amount of world space position that needs to be added to move a pickup item from the input chamber to the output chamber.
+    /// </summary>
+    public static Vector3 MoveVector => Scp914Controller.MoveVector;
+
     /// <summary>
     /// Whether to use the <see cref="UpgradePickup"/> for inventory items and skip using <see cref="UpgradeItem"/>.
     /// </summary>
@@ -28,6 +34,9 @@ public interface IScp914ItemProcessor
     /// <summary>
     /// Called for each pickup in the intake chamber if the <see cref="Wrappers.Scp914.Mode"/> allows so.
     /// </summary>
+    /// <remarks>
+    /// Add <see cref="MoveVector"/> to the pickups world position to move pickup from the input chamber to the output.
+    /// </remarks>
     /// <param name="setting">The <see cref="Scp914KnobSetting"/> used for this upgrade.</param>
     /// <param name="pickup">The <see cref="Pickup"/> to upgrade.</param>
     /// <returns>The upgrade result.</returns>

@@ -170,6 +170,20 @@ public static partial class PlayerEvents
 
     #endregion
 
+    #region Badges
+
+    /// <summary>
+    /// Gets called when the player is changing their global or local badge visibility.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangingBadgeVisibilityEventArgs>? ChangingBadgeVisibility;
+
+    /// <summary>
+    /// Gets called when the player has changed their global or local badge visibility.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangedBadgeVisibilityEventArgs>? ChangedBadgeVisibility;
+
+    #endregion
+
     #region Player properties, inventory and effects
 
     /// <summary>
@@ -426,6 +440,11 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerUsedItemEventArgs>? UsedItem;
 
     /// <summary>
+    /// Gets called when the player is about to complete using an item.
+    /// </summary>
+    public static event LabEventHandler<PlayerItemUsageEffectsApplyingEventArgs>? ItemUsageEffectsApplying;
+
+    /// <summary>
     /// Gets called when the player is using the radio.
     /// </summary>
     public static event LabEventHandler<PlayerUsingRadioEventArgs>? UsingRadio;
@@ -504,6 +523,16 @@ public static partial class PlayerEvents
     /// Gets called when the player has changed range of their radio.
     /// </summary>
     public static event LabEventHandler<PlayerChangedRadioRangeEventArgs>? ChangedRadioRange;
+
+    /// <summary>
+    /// Gets called when processing a player's interaction with the jailbird item.
+    /// </summary>
+    public static event LabEventHandler<PlayerProcessingJailbirdMessageEventArgs>? ProcessingJailbirdMessage;
+
+    /// <summary>
+    /// Gets called when processed the player's interaction with the jailbird item.
+    /// </summary>
+    public static event LabEventHandler<PlayerProcessedJailbirdMessageEventArgs>? ProcessedJailbirdMessage;
 
     /// <summary>
     /// Gets called when the player is toggling a flashlight.

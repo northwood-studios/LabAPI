@@ -7,6 +7,7 @@ using LabApi.Events.Arguments.Scp079Events;
 using LabApi.Events.Arguments.Scp096Events;
 using LabApi.Events.Arguments.Scp106Events;
 using LabApi.Events.Arguments.Scp173Events;
+using LabApi.Events.Arguments.Scp3114Events;
 using LabApi.Events.Arguments.Scp914Events;
 using LabApi.Events.Arguments.Scp939Events;
 using LabApi.Events.Arguments.ServerEvents;
@@ -96,6 +97,16 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnPlayerChangedNickname(PlayerChangedNicknameEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerChangedNickname)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerChangingBadgeVisibility(PlayerChangingBadgeVisibilityEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerChangingBadgeVisibility)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerChangedBadgeVisibility(PlayerChangedBadgeVisibilityEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerChangedBadgeVisibility)} triggered by {ev.Player.UserId}");
     }
 
     public override void OnPlayerChangingRadioRange(PlayerChangingRadioRangeEventArgs ev)
@@ -458,6 +469,16 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerPreAuthenticated)} triggered by {ev.UserId}");
     }
 
+    public override void OnPlayerProcessingJailbirdMessage(PlayerProcessingJailbirdMessageEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerProcessingJailbirdMessage)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerProcessedJailbirdMessage(PlayerProcessedJailbirdMessageEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerProcessedJailbirdMessage)} triggered by {ev.Player.UserId}");
+    }
+
     public override void OnPlayerUpdatingEffect(PlayerEffectUpdatingEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerUpdatingEffect)} triggered by {ev.Player.UserId}");
@@ -751,6 +772,11 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnPlayerUsedItem(PlayerUsedItemEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerUsedItem)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerItemUsageEffectsApplying(PlayerItemUsageEffectsApplyingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerItemUsageEffectsApplying)} triggered by {ev.Player.UserId}");
     }
 
     public override void OnPlayerTogglingNoclip(PlayerTogglingNoclipEventArgs ev)
@@ -1121,6 +1147,26 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnScp173PlayedSound(Scp173PlayedSoundEventArgs ev)
     {
         Logger.Info($"{nameof(OnScp173PlayedSound)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114StrangleAborting(Scp3114StrangleAbortingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114StrangleAborting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114StrangleAborted(Scp3114StrangleAbortedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114StrangleAborted)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114StrangleStarting(Scp3114StrangleStartingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114StrangleStarting)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114StrangleStarted(Scp3114StrangleStartedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114StrangleStarted)} triggered by {ev.Player.UserId}");
     }
 
     public override void OnScp914Activating(Scp914ActivatingEventArgs ev)
