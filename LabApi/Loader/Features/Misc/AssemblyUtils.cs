@@ -66,7 +66,7 @@ public static class AssemblyUtils
     {
         return AppDomain.CurrentDomain.GetAssemblies().Select(NameSelector);
         // We will use this selector to format the assembly names to the format we want.
-        string NameSelector(Assembly assembly) => FormatAssemblyName(assembly.GetName());
+        static string NameSelector(Assembly assembly) => FormatAssemblyName(assembly.GetName());
     }
 
     /// <summary>
@@ -107,23 +107,6 @@ public static class AssemblyUtils
                 // If the resource is a compressed dll, we load it as a compressed embedded dll.
                 LoadCompressedEmbeddedDll(assembly, resourceName);
             }
-        }
-    }
-    
-    private static void LoadAssemblyIfMissing(string path)
-    {
-        try
-        {
-            AssemblyName? name = AssemblyName.GetAssemblyName(path);
-            // only check name to avoid identity problems
-            if (name != null && AppDomain.CurrentDomain.GetAssemblies().All(e => e.GetName().Name != name.Name))
-            {
-                Assembly.Load(File.ReadAllBytes(path));
-            }
-        }
-        finally
-        {
-            File.Delete(path);
         }
     }
 
@@ -198,5 +181,23 @@ public static class AssemblyUtils
     }
 
     // Used for missing assembly comparisons.
+
     private static string FormatAssemblyName(AssemblyName assemblyName) => $"{assemblyName.Name} v{assemblyName.Version}";
+
+    private static void LoadAssemblyIfMissing(string path)
+    {
+        try
+        {
+            AssemblyName? name = AssemblyName.GetAssemblyName(path);
+            // only check name to avoid identity problems
+            if (name != null && AppDomain.CurrentDomain.GetAssemblies().All(e => e.GetName().Name != name.Name))
+            {
+                Assembly.Load(File.ReadAllBytes(path));
+            }
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
 }

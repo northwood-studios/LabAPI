@@ -215,36 +215,6 @@ public static partial class PluginLoader
         }
     }
 
-    private static void LogMissingDependencies(Assembly assembly)
-    {
-        string[] missing = AssemblyUtils.GetMissingDependencies(assembly).ToArray();
-        if (missing.Length != 0)
-        {
-            Logger.Error($"{LoggerPrefix} Missing dependencies:\n{string.Join("\n", missing.Select(x => $"-\t {x}"))}");
-        }
-    }
-
-    private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
-    {
-        foreach (Type type in types)
-        {
-            // We check if the type is derived from Plugin.
-            if (!type.IsSubclassOf(typeof(Plugin)) || type.IsAbstract)
-                continue;
-
-            // We create an instance of the type and check if it was successfully created.
-            if (Activator.CreateInstance(type) is not Plugin plugin)
-                continue;
-
-            // Set the file path
-            plugin.FilePath = filePath;
-
-            // In that case, we add the plugin to the plugins list and log that it has been loaded.
-            Plugins.Add(plugin, assembly);
-            Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
-        }
-    }
-
     /// <summary>
     /// Enables a collection of <see cref="Plugin"/>s.
     /// </summary>
@@ -329,5 +299,35 @@ public static partial class PluginLoader
     private static string ResolvePath(string path)
     {
         return path.Replace("$port", Server.Port.ToString());
+    }
+
+    private static void LogMissingDependencies(Assembly assembly)
+    {
+        IEnumerable<string> missing = AssemblyUtils.GetMissingDependencies(assembly);
+        if (missing.Any())
+        {
+            Logger.Error($"{LoggerPrefix} Missing dependencies:\n{string.Join("\n", missing.Select(static x => $"-\t {x}"))}");
+        }
+    }
+
+    private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
+    {
+        foreach (Type type in types)
+        {
+            // We check if the type is derived from Plugin.
+            if (!type.IsSubclassOf(typeof(Plugin)) || type.IsAbstract)
+                continue;
+
+            // We create an instance of the type and check if it was successfully created.
+            if (Activator.CreateInstance(type) is not Plugin plugin)
+                continue;
+
+            // Set the file path
+            plugin.FilePath = filePath;
+
+            // In that case, we add the plugin to the plugins list and log that it has been loaded.
+            Plugins.Add(plugin, assembly);
+            Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
+        }
     }
 }
