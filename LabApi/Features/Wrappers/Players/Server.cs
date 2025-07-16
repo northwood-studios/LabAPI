@@ -1,8 +1,6 @@
 ﻿using Achievements;
-﻿using CentralAuth;
 using CommandSystem;
 using CustomPlayerEffects;
-using Generators;
 using InventorySystem.Configs;
 using LabApi.Features.Permissions;
 using LabApi.Features.Permissions.Providers;
@@ -136,7 +134,7 @@ public static class Server
     public static bool AchievementsEnabled
     {
         get => !AchievementManager.AchievementsDisabled;
-        set 
+        set
         {
             if (AchievementManager.AchievementsDisabled != value)
                 return;
@@ -175,6 +173,14 @@ public static class Server
         get => PlayerList.RefreshRate.Value;
         set => PlayerList.RefreshRate.Value = value;
     }
+
+    /// <summary>
+    /// Gets or sets whether the server has been marked as transparently modded.<br/>
+    /// For this status to be applied automatically, all installed plugins must have their
+    /// <see cref="LabApi.Loader.Features.Plugins.Plugin.IsTransparent"/> property set to <see langword="true"/>.<br/>
+    /// For more information, see article 5.2 in the official documentation: https://scpslgame.com/csg
+    /// </summary>
+    public static bool IsTransparentlyModded { get; internal set; }
 
     /// <summary>
     /// Gets the <see cref="ItemCategory">Category</see> <see cref="ILimit{ItemCategory, SByte}">limits</see>.

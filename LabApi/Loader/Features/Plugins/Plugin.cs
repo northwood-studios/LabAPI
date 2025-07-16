@@ -40,6 +40,18 @@ public abstract class Plugin
     public virtual LoadPriority Priority { get; } = LoadPriority.Medium;
 
     /// <summary>
+    /// Whether this plugin is considered transparent.<br/>
+    /// A plugin can be marked as transparent if the server’s modifications are strictly limited to non-intrusive features that do not affect gameplay balance or make significant alterations to the user interface.
+    /// Examples of transparent modifications are: admin tools, automated timed broadcasts for tips, message of the day or other administrative utilities.<br/>
+    /// For more information, see article 5.2 in the official documentation: https://scpslgame.com/csg
+    /// </summary>
+    /// <remarks>
+    /// You can keep using the 'transparently modded' flag during occasional short events organised and supervised by 
+    /// Server Staff, regardless of the Modifications used for these events.
+    /// </remarks>
+    public virtual bool IsTransparent { get; } = false;
+
+    /// <summary>
     /// The <see cref="Properties"/> of the <see cref="Plugin"/>.
     /// </summary>
     public Properties? Properties { get; internal set; }

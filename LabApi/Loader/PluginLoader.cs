@@ -73,8 +73,12 @@ public static partial class PluginLoader
 
         // We first load all the dependencies and store them in the dependencies list
         LoadAllDependencies();
+
         // Then we load all the plugins and enable them
         LoadAllPlugins();
+
+        // Resolve the server modded transparency flag
+        ResolveTransparentlyModdedFlag();
 
         // We also register the default permissions provider
         PermissionsManager.RegisterProvider<DefaultPermissionsProvider>();
@@ -153,7 +157,7 @@ public static partial class PluginLoader
 
         // Then we finally enable all the plugins
         Logger.Info($"{LoggerPrefix} Enabling all plugins");
-        EnablePlugins(Plugins.Keys.OrderBy(plugin => plugin.Priority));
+        EnablePlugins(Plugins.Keys.OrderBy(static plugin => plugin.Priority));
     }
 
     /// <summary>
@@ -257,10 +261,10 @@ public static partial class PluginLoader
         {
             // We mark the server as modded.
             CustomNetworkManager.Modded = true;
-            
+
             // We load the configurations of the plugin
             plugin.LoadConfigs();
-            
+
             // We register all the plugin commands
             plugin.RegisterCommands();
 
@@ -304,6 +308,37 @@ public static partial class PluginLoader
         {
             Logger.Error($"{LoggerPrefix} Failed to load LabAPI configuration, using defaults");
             Logger.Error(e);
+        }
+    }
+
+    /// <summary>
+    /// Resolves whether the installed plugins are marked as transparent and sets the <see cref="Server.IsTransparentlyModded"/> flag based on the result.
+    /// </summary>
+    private static void ResolveTransparentlyModdedFlag()
+    {
+        if (Plugins.Count == 0)
+            return;
+
+        if (Server.IsTransparentlyModded)
+            return;
+
+        bool isTransparent = true;
+
+        foreach (Plugin plugin in Plugins.Keys)
+        {
+            if (!plugin.IsTransparent)
+            {
+                isTransparent = false;
+                break;
+            }
+        }
+
+        Server.IsTransparentlyModded = isTransparent;
+
+        if (isTransparent)
+        {
+            Logger.Raw($"{LoggerPrefix} This server has been flagged as transparently modded by one or more installed plugins. If you believe this is a mistake, please review your installed plugins and contact the plugin developers.", ConsoleColor.Red);
+            ServerConsole.Update = true;
         }
     }
 
