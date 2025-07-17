@@ -86,7 +86,7 @@ public class Room
     /// <summary>
     /// Gets the room's neighbors.
     /// </summary>
-    public IEnumerable<Room> ConnectedRooms => Base.ConnectedRooms.Select(Get)!;
+    public HashSet<RoomIdentifier> ConnectedRooms => Base.ConnectedRooms;
 
     /// <summary>
     /// Gets the room's adjacent rooms where the player can traverse to.

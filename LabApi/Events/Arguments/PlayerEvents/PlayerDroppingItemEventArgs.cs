@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DroppingItem"/> event.
 /// </summary>
-public class PlayerDroppingItemEventArgs : EventArgs, ICancellableEvent, IItemEvent, IPlayerEvent
+public class PlayerDroppingItemEventArgs : EventArgs, ICancellableEvent, IItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDroppingItemEventArgs"/> class.

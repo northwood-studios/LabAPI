@@ -57,7 +57,7 @@ public class Scp914 : Room
     /// <summary>
     /// Gets the entrance <see cref="Door"/> of the SCP-914 room.
     /// </summary>
-    public Door Entrance => Doors.FirstOrDefault(x => x.Rooms.Count() == 2);
+    public Door Entrance => Doors.FirstOrDefault(x => x.Rooms.Length == 2);
 
     /// <summary>
     /// Gets the intake <see cref="Door"/> of the SCP-914 machine.
