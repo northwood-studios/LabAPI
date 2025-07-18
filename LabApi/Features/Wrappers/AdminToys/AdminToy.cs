@@ -339,7 +339,10 @@ public class AdminToy
         typeWrappers.Add(typeof(T), x => constructor((T)x));
     }
 
-    private static class PrefabCache<T> where T : AdminToyBase
+    /// <summary>
+    /// Static prefab cache used to speed up prefab search.
+    /// </summary>
+    internal static class PrefabCache<T> where T : NetworkBehaviour
     {
         /// <summary>
         /// Cached prefab instance for type T.
