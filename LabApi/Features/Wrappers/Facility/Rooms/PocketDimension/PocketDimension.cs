@@ -121,7 +121,7 @@ public class PocketDimension : Room
     /// Triggers pocket dimension leaving/left events.
     /// </remarks>
     public static void ForceExit(Player player)
-        => PocketDimensionTeleport.Exit(null, player.ReferenceHub);
+        => PocketDimensionTeleport.TryExit(null, player.ReferenceHub);
 
     /// <summary>
     /// Force a player to be killed by the pocket dimension.
@@ -132,7 +132,7 @@ public class PocketDimension : Room
     /// Triggers pocket dimension leaving/left events.
     /// </remarks>
     public static void ForceKill(Player player)
-        => PocketDimensionTeleport.Kill(null, player.ReferenceHub);
+        => PocketDimensionTeleport.TryKill(null, player.ReferenceHub);
 
     /// <summary>
     /// Gets whether a <see cref="Pickup"/> is inside the pocket dimension.

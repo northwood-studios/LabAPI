@@ -18,9 +18,12 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     /// <param name="player">The player who escaped.</param>
     /// <param name="newRole">The new role.</param>
     /// <param name="escapeScenarioType">The scenario of the escape.</param>
-    public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId newRole, EscapeScenarioType escapeScenarioType, Bounds escapeZone)
+    /// <param name="oldRole">The old role of the player.</param>
+    /// <param name="escapeZone">The bounds of the escape zone that was triggered.</param>
+    public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId oldRole, RoleTypeId newRole, EscapeScenarioType escapeScenarioType, Bounds escapeZone)
     {
         Player = Player.Get(player);
+        OldRole = oldRole;
         NewRole = newRole;
         EscapeScenarioType = escapeScenarioType;
         EscapeZone = escapeZone;
@@ -30,6 +33,11 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     /// Gets the player who escaped.
     /// </summary>
     public Player Player { get; }
+
+    /// <summary>
+    /// Gets the old role of the player.
+    /// </summary>
+    public RoleTypeId OldRole { get; }
 
     /// <summary>
     /// Gets the new role.
