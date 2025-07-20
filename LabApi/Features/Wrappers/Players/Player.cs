@@ -1077,6 +1077,53 @@ public class Player
     #region Get Player from a Name
 
     /// <summary>
+    /// Get closest player by lexicographical order.
+    /// Players are compared by their <see cref="DisplayName"/>.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByDisplayName(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.DisplayName);
+
+    /// <summary>
+    /// Gets the closest player by lexicographical order.
+    /// Players are compared by their <see cref="Nickname"/>.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByNickname(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.Nickname);
+
+    /// <summary>
+    /// Gets the closest player by lexicographical order.
+    /// Base function to allow to select by <see langword="string"/> player property.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <param name="propertySelector">Function to select player property.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByName(string input, bool requireFullMatch, Func<Player, string> propertySelector)
+    {
+        IOrderedEnumerable<Player> sortedPlayers = List.OrderBy(propertySelector);
+
+        foreach (Player player in sortedPlayers)
+        {
+            string toCheck = propertySelector(player);
+            if (requireFullMatch)
+            {
+                if (toCheck.Equals(input, StringComparison.OrdinalIgnoreCase))
+                    return player;
+            }
+            else if (toCheck.StartsWith(input, StringComparison.OrdinalIgnoreCase))
+            {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Tries to get players by name by seeing if their name starts with the input.
     /// </summary>
     /// <param name="input">The input to search for.</param>
@@ -1105,6 +1152,24 @@ public class Player
     /// </summary>
     /// <param name="delta">Rotation to add to the current one. X is vertical and Y is horizontal rotation.</param>
     public void Rotate(Vector2 delta) => ReferenceHub.TryOverrideRotation(LookRotation + delta);
+
+    /// <summary>
+    /// Forces <see cref="IFpcRole"/> to jump.
+    /// <para>Jumping can be also adjusted via <see cref="HeavyFooted"/> and <see cref="Lightweight"/> status effects.</para>
+    /// </summary>
+    /// <param name="jumpStrength">Strength that the player will jump with.</param>
+    public void Jump(float jumpStrength)
+    {
+        if (ReferenceHub.roleManager.CurrentRole is IFpcRole fpcRole)
+            fpcRole.FpcModule.Motor.JumpController.ForceJump(jumpStrength);
+    }
+
+    /// <inheritdoc cref="Jump(float)"/>
+    public void Jump()
+    {
+        if (ReferenceHub.roleManager.CurrentRole is IFpcRole fpcRole)
+            Jump(fpcRole.FpcModule.JumpSpeed);
+    }
 
     /// <summary>
     /// Clears displayed broadcast(s).

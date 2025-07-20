@@ -506,6 +506,26 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerShotWeaponEventArgs>? ShotWeapon;
 
     /// <summary>
+    /// Gets called when player is changing weapon attachments.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangingAttachmentsEventArgs>? ChangingAttachments;
+
+    /// <summary>
+    /// Gets called when player has changed weapon attachments.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangedAttachmentsEventArgs>? ChangedAttachments;
+
+    /// <summary>
+    /// Gets called when player is changing weapon attachments preferences.
+    /// </summary>
+    public static event LabEventHandler<PlayerSendingAttachmentsPrefsEventArgs>? SendingAttachmentsPrefs;
+
+    /// <summary>
+    /// Gets called when player has changed weapon attachments preferences.
+    /// </summary>
+    public static event LabEventHandler<PlayerSentAttachmentsPrefsEventArgs>? SentAttachmentsPrefs;
+
+    /// <summary>
     /// Gets called when the player is cancelling the use of an item.
     /// </summary>
     public static event LabEventHandler<PlayerCancellingUsingItemEventArgs>? CancellingUsingItem;
@@ -564,6 +584,16 @@ public static partial class PlayerEvents
     /// Gets called when the player has toggled a radio.
     /// </summary>
     public static event LabEventHandler<PlayerToggledRadioEventArgs>? ToggledRadio;
+
+    /// <summary>
+    /// Gets called when player successfully jumps. Not called when jumping is prevented by status effects.
+    /// </summary>
+    public static event LabEventHandler<PlayerJumpedEventArgs>? Jumped;
+
+    /// <summary>
+    /// Gets called when player's movement state change. Such as from walking to running, sneaking and opposite way around.
+    /// </summary>
+    public static event LabEventHandler<PlayerMovementStateChangedEventArgs>? MovementStateChanged;
 
     #endregion
 
@@ -829,6 +859,16 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerZoneChangedEventArgs>? ZoneChanged;
 
+    /// <summary>
+    /// Gets called when player interacts with warhead lever.
+    /// </summary>
+    public static event LabEventHandler<PlayerInteractingWarheadLeverEventArgs>? InteractingWarheadLever;
+
+    /// <summary>
+    /// Gets called when player interacted with warhead lever.
+    /// </summary>
+    public static event LabEventHandler<PlayerInteractedWarheadLeverEventArgs>? InteractedWarheadLever;
+
     #endregion
 
     #region Spectating
@@ -871,5 +911,15 @@ public static partial class PlayerEvents
     /// Gets called when a player has validated the visibility of a target player.
     /// </summary>
     public static event LabEventHandler<PlayerValidatedVisibilityEventArgs>? ValidatedVisibility;
+
+    #endregion
+
+    #region Scp1344
+
+    /// <summary>
+    /// Gets called when player detects enemy player using SCP-1344.
+    /// </summary>
+    public static event LabEventHandler<PlayerDetectedByScp1344EventArgs>? DetectedByScp1344;
+
     #endregion
 }

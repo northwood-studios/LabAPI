@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Generators;
+using BaseElevatorDoor = Interactables.Interobjects.ElevatorDoor;
 
 namespace LabApi.Features.Wrappers;
 
@@ -51,6 +52,16 @@ public class Elevator
     }
 
     /// <summary>
+    /// Gets all the doors associated with this elevator.
+    /// </summary>
+    public IEnumerable<ElevatorDoor> Doors => BaseElevatorDoor.GetDoorsForGroup(Group).Select(ElevatorDoor.Get)!;
+
+    /// <summary>
+    /// Gets all the rooms associated with this elevator.
+    /// </summary>
+    public IEnumerable<Room> Rooms => Doors.SelectMany(static x => x.Rooms);
+
+    /// <summary>
     /// Gets the current destination / location of the elevator.
     /// </summary>
     public ElevatorDoor CurrentDestination => ElevatorDoor.Get(Base.DestinationDoor);
@@ -64,11 +75,6 @@ public class Elevator
     /// Gets the destination this elevator will head towards once activated.
     /// </summary>
     public ElevatorDoor NextDestination => ElevatorDoor.Get(Base.NextDestinationDoor);
-
-    /// <summary>
-    /// Gets all rooms this elevator can move to.
-    /// </summary>
-    public IEnumerable<Room> Rooms => Base.FloorDoors.SelectMany(door => door.Rooms.Select(Room.Get));
 
     /// <summary>
     /// Gets the destination floor index this elevator will head towards once activated.
