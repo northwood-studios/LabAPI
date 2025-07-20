@@ -20,7 +20,7 @@ public class SinkholeHazard : Hazard
     /// <summary>
     /// Gets all currently active sinkholes.
     /// </summary>
-    public new IReadOnlyCollection<SinkholeHazard> List => Dictionary.Values;
+    public static new IReadOnlyCollection<SinkholeHazard> List => Dictionary.Values;
 
     /// <summary>
     /// Prefab used to spawn the hazard.

@@ -1534,6 +1534,81 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnObjectivePickedScpItemCompleted)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnPlayerJumped(PlayerJumpedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerJumped)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerMovementStateChanged(PlayerMovementStateChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerMovementStateChanged)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerChangingAttachments(PlayerChangingAttachmentsEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerChangingAttachments)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerChangedAttachments(PlayerChangedAttachmentsEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerChangedAttachments)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerSendingAttachmentsPrefs(PlayerSendingAttachmentsPrefsEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSendingAttachmentsPrefs)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerSentAttachmentsPrefs(PlayerSentAttachmentsPrefsEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSentAttachmentsPrefs)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnServerElevatorSequenceChanged(ElevatorSequenceChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerElevatorSequenceChanged)} triggered");
+    }
+
+    public override void OnPlayerInteractingWarheadLever(PlayerInteractingWarheadLeverEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerInteractingWarheadLever)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerInteractedWarheadLever(PlayerInteractedWarheadLeverEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerInteractedWarheadLever)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114Disguising(Scp3114DisguisingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114Disguising)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114Disguised(Scp3114DisguisedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114Disguised)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114Revealing(Scp3114RevealingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114Revealing)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114Revealed(Scp3114RevealedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114Revealed)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114StartDancing(Scp3114StartingDanceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114StartDancing)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp3114Dance(Scp3114StartedDanceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp3114Dance)} triggered by {ev.Player.UserId}");
+    }
+
 
     #region Excluded Events
 
