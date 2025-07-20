@@ -15,10 +15,17 @@ public class EscapingObjectiveEventArgs : ObjectiveCompletingBaseEventArgs
     /// <param name="influenceToGrant">The influence points to grant to the <paramref name="faction"/>.</param>
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="newRole">The new role the player gets after escaping.</param>
-    public EscapingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, RoleTypeId newRole) : base(hub, faction, influenceToGrant, timeToGrant)
+    /// <param name="oldRole">The old role of the player.</param>
+    public EscapingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, RoleTypeId oldRole, RoleTypeId newRole) : base(hub, faction, influenceToGrant, timeToGrant)
     {
+        OldRole = oldRole;
         NewRole = newRole;
     }
+
+    /// <summary>
+    /// Gets the old role of the player.
+    /// </summary>
+    public RoleTypeId OldRole { get; }
 
     /// <summary>
     /// Gets the new role the player is getting.
