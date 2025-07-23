@@ -1,6 +1,6 @@
 ﻿using Generators;
 using MapGeneration.Distributors;
-using System;
+using PlayerStatsSystem;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
@@ -18,11 +18,12 @@ public class Window
     [InitializeWrapper]
     internal static void Initialize()
     {
-        //TODO: Add added and removed methods
+        BreakableWindow.OnAdded += OnAdded;
+        BreakableWindow.OnDestroyed += OnRemoved;
     }
 
     /// <summary>
-    /// Contains all the cached structures, accessible through their <see cref="SpawnableStructure"/>.
+    /// Contains all the cached structures, accessible through their <see cref="BreakableWindow"/>.
     /// </summary>
     public static Dictionary<BreakableWindow, Window> Dictionary { get; } = [];
 
@@ -72,12 +73,29 @@ public class Window
     protected internal bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
 
     /// <summary>
-    /// Gets whether the window was destroyed.
+    /// Gets whether the window gameobject was destroyed.
     /// </summary>
     public bool IsDestroyed => Base == null || GameObject == null;
 
     /// <summary>
-    /// Gets or sets the window's position.
+    /// Gets whether the window is broken.
+    /// </summary>
+    public bool IsBroken => Base.NetworkIsBroken;
+
+    /// <summary>
+    /// Gets or sets window's health.
+    /// </summary>
+    public float Health
+    {
+        get => Base.Health;
+        set
+        {
+            Base.Damage(Base.Health - value, new CustomReasonDamageHandler(string.Empty), Vector3.zero);
+        }
+    }
+
+    /// <summary>
+    /// Gets the window's position.
     /// </summary>
     public Vector3 Position
     {
@@ -85,7 +103,7 @@ public class Window
     }
 
     /// <summary>
-    /// Gets or sets the window's rotatiom.
+    /// Gets the window's rotation.
     /// </summary>
     public Quaternion Rotation
     {
@@ -117,7 +135,7 @@ public class Window
     /// </summary>
     /// <param name="breakableWindow">The <see cref="Base"/> of the window.</param>
     /// <param name="window">The requested window.</param>
-    /// <returns>True of the structure exists, otherwise false.</returns>
+    /// <returns><see langword="True"/> of the structure exists, otherwise <see langword="false"/>.</returns>
     public static bool TryGet(BreakableWindow? breakableWindow, [NotNullWhen(true)] out Window? window)
     {
         window = Get(breakableWindow);
