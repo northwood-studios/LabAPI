@@ -30,6 +30,7 @@ public class AdminToy
         Register<Scp079CameraToy>(static x => new CameraToy(x));
         Register<AdminToys.CapybaraToy>(static x => new CapybaraToy(x));
         Register<AdminToys.TextToy>(static x => new TextToy(x));
+        Register<AdminToys.WaypointToy>(static x => new WaypointToy(x));
     }
 
     /// <summary>
