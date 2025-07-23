@@ -40,6 +40,7 @@ public static class Cassie
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="rawNumber">Raw numbers.</param>
+    /// <param name="speed">The speed of the cassie talking.</param>
     /// <returns>Duration of the specific message in seconds.</returns>
     public static float CalculateDuration(string message, bool rawNumber = false, float speed = 1f) => singleton.CalculateDuration(message, rawNumber, speed);
 
@@ -71,7 +72,7 @@ public static class Cassie
     /// <summary>
     /// Clears the Cassie announcements queue.
     /// </summary>
-    public static void Clear() => singleton.ClearQueue();
+    public static void Clear() => RespawnEffectsController.ClearQueue();
 
     /// <summary>
     /// Converts player's team into Cassie-able word. Unit names are converted into NATO_X words, followed by a number. For example "Alpha-5" is converted to "NATO_A 5".
