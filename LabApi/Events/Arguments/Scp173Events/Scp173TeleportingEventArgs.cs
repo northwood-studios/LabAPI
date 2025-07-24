@@ -19,6 +19,7 @@ public class Scp173TeleportingEventArgs : EventArgs, IPlayerEvent, ICancellableE
     {
         IsAllowed = true;
         Player = Player.Get(hub);
+        IsAllowed = true;
     }
 
     /// <summary>
