@@ -31,14 +31,11 @@ public class CustomVectorConverter : IYamlTypeConverter
                 if (!parser.TryReadMapping(out string key, out string val))
                     throw new ArgumentException($"Unable to parse Vector, no component at index {idx} provided");
 
-
-                if (!(key is "x" or "y" or "z" or "w"))
+                if (key is not ("x" or "y" or "z" or "w"))
                     throw new ArgumentException($"Unable to parse Vector, invalid component name {key}. Only 'x' 'y' 'z' and 'w' are allowed");
-
 
                 if (storedValues.ContainsKey(key))
                     throw new ArgumentException($"Unable to parse Vector, duplicate component {key}");
-
 
                 storedValues[key] = float.Parse(val, CultureInfo.InvariantCulture);
                 idx++;
@@ -57,10 +54,6 @@ public class CustomVectorConverter : IYamlTypeConverter
                 throw new ArgumentException($"Attempting to deserialize {createdType.Name} for config type of {type.Name}");
 
             return result;
-        }
-        catch (ArgumentException)
-        {
-            throw;
         }
         finally
         {

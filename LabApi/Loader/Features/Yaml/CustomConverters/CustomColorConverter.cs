@@ -30,19 +30,15 @@ public class CustomColorConverter : IYamlTypeConverter
                 if (!parser.TryReadMapping(out string key, out string val))
                     throw new ArgumentException($"Unable to parse {nameof(Color)}, no component at index {i} provided");
 
-                if (!(key is "r" or "g" or "b" or "a"))
+                if (key is not ("r" or "g" or "b" or "a"))
                     throw new ArgumentException($"Unable to parse {nameof(Color)}, invalid component name {key}. Only 'r', 'g', 'b' and 'a' are allowed");
 
                 storedValues[key] = float.Parse(val, CultureInfo.InvariantCulture);
             }
             parser.Consume<MappingEnd>();
 
-            Color value = new Color(storedValues["r"], storedValues["g"], storedValues["b"], storedValues["a"]);
+            Color value = new(storedValues["r"], storedValues["g"], storedValues["b"], storedValues["a"]);
             return value;
-        }
-        catch (ArgumentException)
-        {
-            throw;
         }
         finally
         {
