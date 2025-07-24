@@ -426,6 +426,21 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerInspectedKeycardEventArgs>? InspectedKeycard;
 
+    /// <summary>
+    /// Gets called when the player requests to spin the revolver.
+    /// </summary>
+    public static event LabEventHandler<PlayerSpinningRevolverEventArgs>? SpinningRevolver;
+
+    /// <summary>
+    /// Gets called when the player spinned the revolver.
+    /// </summary>
+    public static event LabEventHandler<PlayerSpinnedRevolverEventArgs>? SpinnedRevolver;
+
+    /// <summary>
+    /// Gets called when the player toggled disruptor firing mode.
+    /// </summary>
+    public static event LabEventHandler<PlayerToggledDisruptorFiringModeEventArgs>? ToggledDisruptorFiringMode;
+
     #endregion
 
     #region Item Actions and Interactions

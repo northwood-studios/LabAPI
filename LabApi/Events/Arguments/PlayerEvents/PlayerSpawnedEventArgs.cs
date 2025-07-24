@@ -14,14 +14,14 @@ public class PlayerSpawnedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSpawnedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is being spawned.</param>
+    /// <param name="hub">The player who is being spawned.</param>
     /// <param name="role">The role that is being applied.</param>
     /// <param name="useSpawnPoint">If spawnpoint should be used.</param>
     /// <param name="spawnLocation">The default spawn location.</param>
     /// <param name="horizontalRotation">The default spawn horizontal rotation.</param>
-    public PlayerSpawnedEventArgs(ReferenceHub player, PlayerRoleBase role, bool useSpawnPoint, Vector3 spawnLocation, float horizontalRotation)
+    public PlayerSpawnedEventArgs(ReferenceHub hub, PlayerRoleBase role, bool useSpawnPoint, Vector3 spawnLocation, float horizontalRotation)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Role = role;
         UseSpawnPoint = useSpawnPoint;
         SpawnLocation = spawnLocation;

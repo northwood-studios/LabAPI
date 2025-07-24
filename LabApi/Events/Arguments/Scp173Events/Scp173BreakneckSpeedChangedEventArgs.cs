@@ -12,11 +12,11 @@ public class Scp173BreakneckSpeedChangedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp173BreakneckSpeedChangedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-173 player instance.</param>
+    /// <param name="hub">The SCP-173 player instance.</param>
     /// <param name="active">The new breakneck speed state.</param>
-    public Scp173BreakneckSpeedChangedEventArgs(ReferenceHub player, bool active)
+    public Scp173BreakneckSpeedChangedEventArgs(ReferenceHub hub, bool active)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Active = active;
     }
 

@@ -13,11 +13,11 @@ public class Scp079BlackedOutZoneEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079BlackedOutRoomEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="zone">The affected zone instance.</param>
-    public Scp079BlackedOutZoneEventArgs(ReferenceHub player, FacilityZone zone)
+    public Scp079BlackedOutZoneEventArgs(ReferenceHub hub, FacilityZone zone)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Zone = zone;
     }
 

@@ -12,11 +12,11 @@ public class PlayerEnteringPocketDimensionEventArgs : EventArgs, IPlayerEvent, I
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEnteringPocketDimensionEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is entering the pocket dimension.</param>
-    public PlayerEnteringPocketDimensionEventArgs(ReferenceHub player)
+    /// <param name="hub">The player who is entering the pocket dimension.</param>
+    public PlayerEnteringPocketDimensionEventArgs(ReferenceHub hub)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

@@ -12,12 +12,12 @@ public class PlayerCuffingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICa
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerCuffingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is detaining another one.</param>
+    /// <param name="hub">The player who is detaining another one.</param>
     /// <param name="target">The player who is being detained.</param>
-    public PlayerCuffingEventArgs(ReferenceHub player, ReferenceHub target)
+    public PlayerCuffingEventArgs(ReferenceHub hub, ReferenceHub target)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
     }
 

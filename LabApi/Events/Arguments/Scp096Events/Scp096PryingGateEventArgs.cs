@@ -13,11 +13,11 @@ public class Scp096PryingGateEventArgs : EventArgs, IPlayerEvent, IGateEvent, IC
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096PryingGateEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
+    /// <param name="hub">The SCP-096 player instance.</param>
     /// <param name="gate">The affected pryable door instance.</param>
-    public Scp096PryingGateEventArgs(ReferenceHub player, PryableDoor gate)
+    public Scp096PryingGateEventArgs(ReferenceHub hub, PryableDoor gate)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Gate = Gate.Get(gate);
         IsAllowed = true;
     }

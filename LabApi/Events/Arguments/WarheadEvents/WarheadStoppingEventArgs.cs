@@ -12,12 +12,12 @@ public class WarheadStoppingEventArgs : EventArgs, IPlayerEvent, ICancellableEve
     /// <summary>
     /// Initializes a new instance of the <see cref="WarheadStoppingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is stopping the warhead.</param>
+    /// <param name="hub">The player who is stopping the warhead.</param>
     /// <param name="warheadState">The current state of the alpha warhead.</param>
-    public WarheadStoppingEventArgs(ReferenceHub player, AlphaWarheadSyncInfo warheadState)
+    public WarheadStoppingEventArgs(ReferenceHub hub, AlphaWarheadSyncInfo warheadState)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         WarheadState = warheadState;
     }
 

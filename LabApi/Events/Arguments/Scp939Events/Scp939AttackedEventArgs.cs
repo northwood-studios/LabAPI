@@ -12,12 +12,12 @@ public class Scp939AttackedEventArgs : EventArgs, IPlayerEvent, ITargetEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp939AttackedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-939 player instance.</param>
+    /// <param name="hub">The SCP-939 player instance.</param>
     /// <param name="target">The destructible that was attacked.</param>
     /// <param name="damage">The damage dealt.</param>
-    public Scp939AttackedEventArgs(ReferenceHub player, ReferenceHub target, float damage)
+    public Scp939AttackedEventArgs(ReferenceHub hub, ReferenceHub target, float damage)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         Damage = damage;
     }

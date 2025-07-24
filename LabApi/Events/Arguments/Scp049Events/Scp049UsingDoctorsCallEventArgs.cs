@@ -12,10 +12,10 @@ public class Scp049UsingDoctorsCallEventArgs : EventArgs, IPlayerEvent, ICancell
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp049UsingDoctorsCallEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-049 player instance.</param>
-    public Scp049UsingDoctorsCallEventArgs(ReferenceHub player)
+    /// <param name="hub">The SCP-049 player instance.</param>
+    public Scp049UsingDoctorsCallEventArgs(ReferenceHub hub)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         IsAllowed = true;
     }
 
