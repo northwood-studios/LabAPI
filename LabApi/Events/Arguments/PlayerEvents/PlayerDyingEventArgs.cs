@@ -13,13 +13,13 @@ public class PlayerDyingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDyingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is dying.</param>
+    /// <param name="hub">The player who is dying.</param>
     /// <param name="attacker">The player who attacked.</param>
     /// <param name="damageHandler">The damage handler who is causing death.</param>
-    public PlayerDyingEventArgs(ReferenceHub player, ReferenceHub? attacker, DamageHandlerBase damageHandler)
+    public PlayerDyingEventArgs(ReferenceHub hub, ReferenceHub? attacker, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Attacker = Player.Get(attacker);
         DamageHandler = damageHandler;
     }

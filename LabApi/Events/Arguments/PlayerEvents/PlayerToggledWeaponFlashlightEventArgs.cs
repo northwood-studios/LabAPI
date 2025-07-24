@@ -13,12 +13,12 @@ public class PlayerToggledWeaponFlashlightEventArgs : EventArgs, IPlayerEvent, I
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerToggledWeaponFlashlightEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who toggled the flashlight.</param>
+    /// <param name="hub">The player who toggled the flashlight.</param>
     /// <param name="item">The flashlight item.</param>
     /// <param name="newState">The new state of the flashlight.</param>
-    public PlayerToggledWeaponFlashlightEventArgs(ReferenceHub player, Firearm item, bool newState)
+    public PlayerToggledWeaponFlashlightEventArgs(ReferenceHub hub, Firearm item, bool newState)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         FirearmItem = FirearmItem.Get(item);
         NewState = newState;
     }

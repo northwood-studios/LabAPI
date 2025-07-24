@@ -13,13 +13,13 @@ public class PlayerPlacedBulletHoleEventArgs : EventArgs
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPlacedBulletHoleEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who caused this bullet hole.</param>
+    /// <param name="hub">The player who caused this bullet hole.</param>
     /// <param name="type">Decal type which has spawned.</param>
     /// <param name="hitPosition">Position at which bullet hole has spawned.</param>
     /// <param name="startRaycast">Position where the bullet hole raycast has started for it to be properly attached to surface.</param>
-    public PlayerPlacedBulletHoleEventArgs(ReferenceHub player, DecalPoolType type, Vector3 hitPosition, Vector3 startRaycast)
+    public PlayerPlacedBulletHoleEventArgs(ReferenceHub hub, DecalPoolType type, Vector3 hitPosition, Vector3 startRaycast)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         DecalType = type;
         HitPosition = hitPosition;
         RaycastStart = startRaycast;

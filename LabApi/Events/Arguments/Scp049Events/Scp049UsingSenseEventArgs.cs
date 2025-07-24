@@ -12,11 +12,11 @@ public class Scp049UsingSenseEventArgs : EventArgs, IPlayerEvent, ITargetEvent, 
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp049UsingSenseEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-049 player instance.</param>
+    /// <param name="hub">The SCP-049 player instance.</param>
     /// <param name="target">The player that SCP-049 is using sense on.</param>
-    public Scp049UsingSenseEventArgs(ReferenceHub player, ReferenceHub target)
+    public Scp049UsingSenseEventArgs(ReferenceHub hub, ReferenceHub target)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         IsAllowed = true;
     }

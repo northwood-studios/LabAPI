@@ -13,14 +13,14 @@ public class PlayerReceivingLoadoutEventArgs : EventArgs, IPlayerEvent, ICancell
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReceivingLoadoutEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player instance.</param>
+    /// <param name="hub">The player instance.</param>
     /// <param name="items">The items which player received.</param>
     /// <param name="ammo">The ammo which player received.</param>
     /// <param name="inventoryReset">If players inventory will be cleared.</param>
-    public PlayerReceivingLoadoutEventArgs(ReferenceHub player, List<ItemType> items, Dictionary<ItemType, ushort> ammo, bool inventoryReset)
+    public PlayerReceivingLoadoutEventArgs(ReferenceHub hub, List<ItemType> items, Dictionary<ItemType, ushort> ammo, bool inventoryReset)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Items = items;
         Ammo = ammo;
         InventoryReset = inventoryReset;

@@ -13,11 +13,11 @@ public class PlayerSearchedArmorEventArgs : EventArgs, IPlayerEvent, IBodyArmorP
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSearchedArmorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who searched for armor pickup.</param>
+    /// <param name="hub">The player who searched for armor pickup.</param>
     /// <param name="pickup">The armor pickup.</param>
-    public PlayerSearchedArmorEventArgs(ReferenceHub player, BaseBodyArmorPickup pickup)
+    public PlayerSearchedArmorEventArgs(ReferenceHub hub, BaseBodyArmorPickup pickup)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         BodyArmorPickup = BodyArmorPickup.Get(pickup);
     }
 

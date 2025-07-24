@@ -13,13 +13,13 @@ public class PlayerEffectUpdatedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReceivingLoadoutEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose effect has been updated.</param>
+    /// <param name="hub">The player whose effect has been updated.</param>
     /// <param name="effect">The effect that is being updated.</param>
     /// <param name="intensity">Intensity of the effect.</param>
     /// <param name="duration">Duration of the effect in seconds.</param>
-    public PlayerEffectUpdatedEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
+    public PlayerEffectUpdatedEventArgs(ReferenceHub hub, StatusEffectBase effect, byte intensity, float duration)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Effect = effect;
         Intensity = intensity;
         Duration = duration;

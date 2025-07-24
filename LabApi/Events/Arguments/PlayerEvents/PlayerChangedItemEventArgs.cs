@@ -13,12 +13,12 @@ public class PlayerChangedItemEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangedItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who changed current item.</param>
+    /// <param name="hub">The player who changed current item.</param>
     /// <param name="oldItem">The old item which player changed to.</param>
     /// <param name="newItem">The new item which player changed to.</param>
-    public PlayerChangedItemEventArgs(ReferenceHub player, ItemBase? oldItem, ItemBase? newItem)
+    public PlayerChangedItemEventArgs(ReferenceHub hub, ItemBase? oldItem, ItemBase? newItem)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldItem = Item.Get(oldItem);
         NewItem = Item.Get(newItem);
     }

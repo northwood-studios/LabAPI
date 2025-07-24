@@ -13,11 +13,11 @@ public class PlayerPickedUpItemEventArgs : EventArgs, IPlayerEvent, IItemEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickedUpItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who picked up the item.</param>
+    /// <param name="hub">The player who picked up the item.</param>
     /// <param name="item">The item that was picked up.</param>
-    public PlayerPickedUpItemEventArgs(ReferenceHub player, ItemBase item)
+    public PlayerPickedUpItemEventArgs(ReferenceHub hub, ItemBase item)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Item = Item.Get(item);
     }
 

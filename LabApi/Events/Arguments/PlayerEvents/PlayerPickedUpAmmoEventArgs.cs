@@ -13,13 +13,13 @@ public class PlayerPickedUpAmmoEventArgs : EventArgs, IPlayerEvent, IAmmoPickupE
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickedUpAmmoEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player that picked up the ammo.</param>
+    /// <param name="hub">The player that picked up the ammo.</param>
     /// <param name="ammoType">Type of the ammo.</param>
     /// <param name="ammoAmount">The amount that is was picked up.</param>
     /// <param name="pickup">The pickup object.</param>
-    public PlayerPickedUpAmmoEventArgs(ReferenceHub player, ItemType ammoType, ushort ammoAmount, BaseAmmoPickup pickup)
+    public PlayerPickedUpAmmoEventArgs(ReferenceHub hub, ItemType ammoType, ushort ammoAmount, BaseAmmoPickup pickup)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         AmmoType = ammoType;
         AmmoAmount = ammoAmount;
         AmmoPickup = AmmoPickup.Get(pickup);

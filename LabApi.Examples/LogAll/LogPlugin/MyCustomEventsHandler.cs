@@ -6,6 +6,7 @@ using LabApi.Events.Arguments.Scp049Events;
 using LabApi.Events.Arguments.Scp079Events;
 using LabApi.Events.Arguments.Scp096Events;
 using LabApi.Events.Arguments.Scp106Events;
+using LabApi.Events.Arguments.Scp127Events;
 using LabApi.Events.Arguments.Scp173Events;
 using LabApi.Events.Arguments.Scp3114Events;
 using LabApi.Events.Arguments.Scp914Events;
@@ -1609,6 +1610,50 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnScp3114Dance)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnPlayerToggledDisruptorFiringMode(PlayerToggledDisruptorFiringModeEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerToggledDisruptorFiringMode)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerSpinningRevolver(PlayerSpinningRevolverEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSpinningRevolver)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnPlayerSpinnedRevolver(PlayerSpinnedRevolverEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSpinnedRevolver)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp127GainingExperience(Scp127GainingExperienceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp127GainingExperience)} triggered by {ev.Scp127Item.CurrentOwner}");
+    }
+
+    public override void OnScp127GainExperience(Scp127GainExperienceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp127GainExperience)} triggered by {ev.Scp127Item.CurrentOwner}");
+    }
+
+    public override void OnScp127LevellingUp(Scp127LevellingUpEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp127LevellingUp)} triggered by {ev.Scp127Item.CurrentOwner}");
+    }
+
+    public override void OnScp127LevelUp(Scp127LevelUpEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp127LevelUp)} triggered by {ev.Scp127Item.CurrentOwner}");
+    }
+
+    public override void OnScp127Talking(Scp127TalkingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp127Talking)} triggered by {ev.Scp127Item.CurrentOwner}");
+    }
+
+    public override void OnScp127Talked(Scp127TalkedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp127Talked)} triggered by {ev.Scp127Item.CurrentOwner}");
+    }
 
     #region Excluded Events
 

@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using InventorySystem.Items.Usables.Scp330;
 using UnityEngine;
 using Utils.Networking;
 using Utils.NonAllocLINQ;
@@ -1417,6 +1418,41 @@ public class Player
         if (clearItems)
             ClearItems();
     }
+    
+    /// <summary>
+    /// Gives a candy to the player.
+    /// </summary>
+    /// <param name="candy">The candy to give the player.</param>
+    /// <param name="reason">The reason to grant the candy bag.</param>
+    public void GiveCandy(CandyKindID candy, ItemAddReason reason)
+        => ReferenceHub.GrantCandy(candy, reason);
+
+    /// <summary>
+    /// Gives a random candy to the player.
+    /// </summary>
+    /// <param name="reason">The reason to grant the candy bag.</param>
+    /// <remarks>This will use <see cref="Scp330Candies.GetRandom"/>, meaning it will use <see cref="ICandy.SpawnChanceWeight"/> to choose the candy.</remarks>
+    public void GiveRandomCandy(ItemAddReason reason = ItemAddReason.AdminCommand)
+        => GiveCandy(Scp330Candies.GetRandom(), reason);
+
+    /// <summary>
+    /// Checks if a player has the specified <see cref="PlayerPermissions"/>.
+    /// </summary>
+    /// <param name="permission">The permission to check the player for.</param>
+    /// <returns>Whether the permission check was successful.</returns>
+    public bool HasPermission(PlayerPermissions permission)
+    {
+        PlayerPermissions currentPerms = (PlayerPermissions)ReferenceHub.serverRoles.Permissions;
+        return currentPerms.HasFlag(permission);
+    }
+
+    /// <summary>
+    /// Adds regeneration to the player.
+    /// </summary>
+    /// <param name="rate">The rate to heal per second.</param>
+    /// <param name="duration">How long the regeneration should last.</param>
+    public void AddRegeneration(float rate, float duration)
+        => Scp330Bag.AddSimpleRegeneration(ReferenceHub, rate, duration);
 
     /// <summary>
     /// Heals the player by the specified amount.
@@ -1425,7 +1461,7 @@ public class Player
     public void Heal(float amount) => ReferenceHub.playerStats.GetModule<HealthStat>().ServerHeal(amount);
 
     /// <summary>
-    /// Creates and run a new AHP proccess.
+    /// Creates and run a new AHP process.
     /// </summary>
     /// <param name="amount">Amount of AHP to be added.</param>
     /// <param name="limit">Adds limit to the AHP.</param>

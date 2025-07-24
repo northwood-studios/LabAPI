@@ -13,13 +13,13 @@ public class PlayerTogglingRadioEventArgs : EventArgs, IPlayerEvent, IRadioItemE
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerTogglingRadioEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is toggling a radio.</param>
+    /// <param name="hub">The player who is toggling a radio.</param>
     /// <param name="radio">The radio item.</param>
     /// <param name="newState">New state of the radio being turned off or on.</param>
-    public PlayerTogglingRadioEventArgs(ReferenceHub player, BaseRadioItem radio, bool newState)
+    public PlayerTogglingRadioEventArgs(ReferenceHub hub, BaseRadioItem radio, bool newState)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         RadioItem = RadioItem.Get(radio);
         NewState = newState;
     }

@@ -13,13 +13,13 @@ public class PlayerUsingIntercomEventArgs : EventArgs, IPlayerEvent, ICancellabl
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUsingIntercomEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player that is using the intercom.</param>
+    /// <param name="hub">The player that is using the intercom.</param>
     /// <param name="state">State of the intercom.</param>
     //TODO: Add intercom class and ref it docs
-    public PlayerUsingIntercomEventArgs(ReferenceHub player, IntercomState state)
+    public PlayerUsingIntercomEventArgs(ReferenceHub hub, IntercomState state)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         State = state;
     }
 

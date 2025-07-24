@@ -13,11 +13,11 @@ public class PlayerEnteringHazardEventArgs : EventArgs, IPlayerEvent, IHazardEve
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEnteringPocketDimensionEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who entered the hazard.</param>
+    /// <param name="hub">The player who entered the hazard.</param>
     /// <param name="hazard">The hazard.</param>
-    public PlayerEnteringHazardEventArgs(ReferenceHub player, EnvironmentalHazard hazard)
+    public PlayerEnteringHazardEventArgs(ReferenceHub hub, EnvironmentalHazard hazard)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Hazard = Hazard.Get(hazard);
 
         IsAllowed = true;

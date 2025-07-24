@@ -15,14 +15,14 @@ public class PlayerEscapedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEscapedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who escaped.</param>
+    /// <param name="hub">The player who escaped.</param>
     /// <param name="newRole">The new role.</param>
     /// <param name="escapeScenarioType">The scenario of the escape.</param>
     /// <param name="oldRole">The old role of the player.</param>
     /// <param name="escapeZone">The bounds of the escape zone that was triggered.</param>
-    public PlayerEscapedEventArgs(ReferenceHub player, RoleTypeId oldRole, RoleTypeId newRole, EscapeScenarioType escapeScenarioType, Bounds escapeZone)
+    public PlayerEscapedEventArgs(ReferenceHub hub, RoleTypeId oldRole, RoleTypeId newRole, EscapeScenarioType escapeScenarioType, Bounds escapeZone)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldRole = oldRole;
         NewRole = newRole;
         EscapeScenarioType = escapeScenarioType;

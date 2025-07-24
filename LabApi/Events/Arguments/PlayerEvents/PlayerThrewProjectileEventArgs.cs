@@ -15,14 +15,14 @@ public class PlayerThrewProjectileEventArgs : EventArgs, IPlayerEvent, IThrowabl
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerThrewProjectileEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who threw the throwable item.</param>
+    /// <param name="hub">The player who threw the throwable item.</param>
     /// <param name="item">The original item that was thrown.</param>
     /// <param name="projectile">The new projectile object created.</param>
     /// <param name="projectileSettings">Projectile settings at which throwable was thrown.</param>
     /// <param name="fullForce">Value whenever the throwable was thrown at full force (overhand).</param>
-    public PlayerThrewProjectileEventArgs(ReferenceHub player, BaseThrowableItem item, ThrownProjectile projectile, ProjectileSettings projectileSettings, bool fullForce)
+    public PlayerThrewProjectileEventArgs(ReferenceHub hub, BaseThrowableItem item, ThrownProjectile projectile, ProjectileSettings projectileSettings, bool fullForce)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         ThrowableItem = ThrowableItem.Get(item);
         Projectile = Projectile.Get(projectile);
         ProjectileSettings = projectileSettings;

@@ -12,11 +12,11 @@ public class Scp939CreatingAmnesticCloudEventArgs : EventArgs, IPlayerEvent, ICa
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp939CreatingAmnesticCloudEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-939 player instance.</param>
-    public Scp939CreatingAmnesticCloudEventArgs(ReferenceHub player)
+    /// <param name="hub">The SCP-939 player instance.</param>
+    public Scp939CreatingAmnesticCloudEventArgs(ReferenceHub hub)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <inheritdoc />

@@ -13,12 +13,12 @@ public class Scp173AddingObserverEventArgs : EventArgs, IPlayerEvent, ITargetEve
     /// Initializes a new instance of the <see cref="Scp173AddingObserverEventArgs"/> class.
     /// </summary>
     /// <param name="target">The player that is observing the SCP-173 player.</param>
-    /// <param name="player">The SCP-173 player instance.</param>
-    public Scp173AddingObserverEventArgs(ReferenceHub target, ReferenceHub player)
+    /// <param name="hub">The SCP-173 player instance.</param>
+    public Scp173AddingObserverEventArgs(ReferenceHub target, ReferenceHub hub)
     {
         IsAllowed = true;
         Target = Player.Get(target);
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

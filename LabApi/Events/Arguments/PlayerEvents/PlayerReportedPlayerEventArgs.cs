@@ -12,12 +12,12 @@ public class PlayerReportedPlayerEventArgs : EventArgs, IPlayerEvent, ITargetEve
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReportedPlayerEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who sent reported.</param>
+    /// <param name="hub">The player who sent reported.</param>
     /// <param name="target">The player who was reported.</param>
     /// <param name="reason">The reason why was the player reported.</param>
-    public PlayerReportedPlayerEventArgs(ReferenceHub player, ReferenceHub target, string reason)
+    public PlayerReportedPlayerEventArgs(ReferenceHub hub, ReferenceHub target, string reason)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         Reason = reason;
     }

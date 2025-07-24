@@ -13,15 +13,15 @@ public class PlayerChangingRoleEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangingRoleEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose role is changing.</param>
+    /// <param name="hub">The player whose role is changing.</param>
     /// <param name="oldRole">The old role object of the player.</param>
     /// <param name="newRole">The new role type.</param>
     /// <param name="changeReason">The reason of role changing.</param>
     /// <param name="spawnFlags">The spawn flags for this role change.</param>
-    public PlayerChangingRoleEventArgs(ReferenceHub player, PlayerRoleBase oldRole, RoleTypeId newRole, RoleChangeReason changeReason, RoleSpawnFlags spawnFlags)
+    public PlayerChangingRoleEventArgs(ReferenceHub hub, PlayerRoleBase oldRole, RoleTypeId newRole, RoleChangeReason changeReason, RoleSpawnFlags spawnFlags)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldRole = oldRole;
         NewRole = newRole;
         ChangeReason = changeReason;

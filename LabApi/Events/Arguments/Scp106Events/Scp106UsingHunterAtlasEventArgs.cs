@@ -13,11 +13,11 @@ public class Scp106UsingHunterAtlasEventArgs : EventArgs, IPlayerEvent, ICancell
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp106UsingHunterAtlasEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-106 player instance.</param>
+    /// <param name="hub">The SCP-106 player instance.</param>
     /// <param name="destinationPosition">The destination position.</param>
-    public Scp106UsingHunterAtlasEventArgs(ReferenceHub player, Vector3 destinationPosition)
+    public Scp106UsingHunterAtlasEventArgs(ReferenceHub hub, Vector3 destinationPosition)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         DestinationPosition = destinationPosition;
         IsAllowed = true;
     }

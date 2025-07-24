@@ -67,6 +67,7 @@ public class Door
         { "HID_CHAMBER", DoorName.HczHidChamber },
         { "HID_UPPER", DoorName.HczHidUpper },
         { "HID_LOWER", DoorName.HczHidLower },
+        { "HID_LAB", DoorName.HczHidChamber },
         { "NUKE_ARMORY", DoorName.HczNukeArmory },
         { "106_PRIMARY", DoorName.Hcz106Primiary },
         { "106_SECONDARY", DoorName.Hcz106Secondary },

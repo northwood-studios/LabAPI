@@ -13,12 +13,12 @@ public class PlayerPickingUpScp330EventArgs : EventArgs, IPlayerEvent, ICandyPic
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickingUpScp330EventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is picking up SCP-330.</param>
+    /// <param name="hub">The player who is picking up SCP-330.</param>
     /// <param name="pickup">The SCP-330 pickup.</param>
-    public PlayerPickingUpScp330EventArgs(ReferenceHub player, BaseScp330Pickup pickup)
+    public PlayerPickingUpScp330EventArgs(ReferenceHub hub, BaseScp330Pickup pickup)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         CandyPickup = Scp330Pickup.Get(pickup);
     }
 

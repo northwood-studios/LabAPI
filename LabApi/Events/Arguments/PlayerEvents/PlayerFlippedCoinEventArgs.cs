@@ -13,12 +13,12 @@ public class PlayerFlippedCoinEventArgs : EventArgs, IPlayerEvent, ICoinItemEven
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFlippingCoinEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who flipped the coin.</param>
+    /// <param name="hub">The player who flipped the coin.</param>
     /// <param name="coin">The coin that was flipped.</param>
     /// <param name="isTails">Whenever the coin flip is tails.</param>
-    public PlayerFlippedCoinEventArgs(ReferenceHub player, Coin coin, bool isTails)
+    public PlayerFlippedCoinEventArgs(ReferenceHub hub, Coin coin, bool isTails)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         CoinItem = CoinItem.Get(coin);
         IsTails = isTails;
     }
