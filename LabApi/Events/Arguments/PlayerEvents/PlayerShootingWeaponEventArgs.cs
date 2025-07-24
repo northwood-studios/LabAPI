@@ -13,12 +13,12 @@ public class PlayerShootingWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmIt
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerShootingWeaponEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is shooting.</param>
+    /// <param name="hub">The player who is shooting.</param>
     /// <param name="weapon">The firearm that the player shooting from.</param>
-    public PlayerShootingWeaponEventArgs(ReferenceHub player, Firearm weapon)
+    public PlayerShootingWeaponEventArgs(ReferenceHub hub, Firearm weapon)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         FirearmItem = FirearmItem.Get(weapon);
     }
 

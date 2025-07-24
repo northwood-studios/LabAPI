@@ -13,12 +13,12 @@ public class PlayerToggledRadioEventArgs : EventArgs, IPlayerEvent, IRadioItemEv
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerToggledRadioEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who toggled the radio.</param>
+    /// <param name="hub">The player who toggled the radio.</param>
     /// <param name="radio">The radio item.</param>
     /// <param name="newState">New state of the radio.</param>
-    public PlayerToggledRadioEventArgs(ReferenceHub player, BaseRadioItem radio, bool newState)
+    public PlayerToggledRadioEventArgs(ReferenceHub hub, BaseRadioItem radio, bool newState)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         RadioItem = RadioItem.Get(radio);
         NewState = newState;
     }

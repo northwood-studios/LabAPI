@@ -14,14 +14,14 @@ namespace LabApi.Events.Arguments.ServerEvents
         /// <summary>
         /// Initializes a new instance of the <see cref="ExplosionSpawningEventArgs"/> class.
         /// </summary>
-        /// <param name="player">The player which caused this explosion.</param>
+        /// <param name="hub">The player which caused this explosion.</param>
         /// <param name="position">The position of explosion.</param>
         /// <param name="settingsReference">The projectile which will cause the explosion.</param>
         /// <param name="explosionType">The type of this explosion.</param>
         /// <param name="destroyDoors">Whether the explosion should destroy doors.</param>
-        public ExplosionSpawningEventArgs(ReferenceHub? player, Vector3 position, ExplosionGrenade settingsReference, ExplosionType explosionType, bool destroyDoors)
+        public ExplosionSpawningEventArgs(ReferenceHub? hub, Vector3 position, ExplosionGrenade settingsReference, ExplosionType explosionType, bool destroyDoors)
         {
-            Player = Player.Get(player);
+            Player = Player.Get(hub);
             Position = position;
             Settings = settingsReference;
             ExplosionType = explosionType;

@@ -13,11 +13,11 @@ public class PlayerUsedItemEventArgs : EventArgs, IPlayerEvent, IUsableItemEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUsedItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who used the item.</param>
+    /// <param name="hub">The player who used the item.</param>
     /// <param name="item">Item that was used.</param>
-    public PlayerUsedItemEventArgs(ReferenceHub player, BaseUsableItem item)
+    public PlayerUsedItemEventArgs(ReferenceHub hub, BaseUsableItem item)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         UsableItem = UsableItem.Get(item);
     }
 

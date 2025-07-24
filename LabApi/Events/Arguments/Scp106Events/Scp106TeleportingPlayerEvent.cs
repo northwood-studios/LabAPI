@@ -12,12 +12,12 @@ public class Scp106TeleportingPlayerEvent : EventArgs, IPlayerEvent, ITargetEven
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp106TeleportingPlayerEvent"/> class.
     /// </summary>
-    /// <param name="player">The SCP-106 player instance.</param>
+    /// <param name="hub">The SCP-106 player instance.</param>
     /// <param name="target">The player that is being teleported.</param>
-    public Scp106TeleportingPlayerEvent(ReferenceHub player, ReferenceHub target)
+    public Scp106TeleportingPlayerEvent(ReferenceHub hub, ReferenceHub target)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
     }
 

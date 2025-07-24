@@ -13,12 +13,12 @@ public class PlayerDeactivatingGeneratorEventArgs : EventArgs, IGeneratorEvent, 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDeactivatingGeneratorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is deactivating the generator.</param>
+    /// <param name="hub">The player who is deactivating the generator.</param>
     /// <param name="generator">The generator.</param>
-    public PlayerDeactivatingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
+    public PlayerDeactivatingGeneratorEventArgs(ReferenceHub hub, Scp079Generator generator)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Generator = Generator.Get(generator);
     }
 

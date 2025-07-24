@@ -12,13 +12,13 @@ public class WarheadStartedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="WarheadStartedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who started the warhead.</param>
+    /// <param name="hub">The player who started the warhead.</param>
     /// <param name="isAutomatic">Whether the warhead is starting automatically.</param>
     /// <param name="suppressSubtitles">Whether subtitles should be suppressed.</param>
     /// <param name="warheadState">The current state of the alpha warhead.</param>
-    public WarheadStartedEventArgs(ReferenceHub player, bool isAutomatic, bool suppressSubtitles, AlphaWarheadSyncInfo warheadState)
+    public WarheadStartedEventArgs(ReferenceHub hub, bool isAutomatic, bool suppressSubtitles, AlphaWarheadSyncInfo warheadState)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         IsAutomatic = isAutomatic;
         SuppressSubtitles = suppressSubtitles;
         WarheadState = warheadState;

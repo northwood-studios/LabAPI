@@ -13,12 +13,12 @@ public class PlayerClosingGeneratorEventArgs : EventArgs, IPlayerEvent, IGenerat
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerClosingGeneratorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is closing the generator.</param>
+    /// <param name="hub">The player who is closing the generator.</param>
     /// <param name="generator">The generator.</param>
-    public PlayerClosingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
+    public PlayerClosingGeneratorEventArgs(ReferenceHub hub, Scp079Generator generator)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Generator = Generator.Get(generator);
     }
 

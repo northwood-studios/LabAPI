@@ -12,14 +12,14 @@ public class PlayerBannedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerBannedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is getting the ban.</param>
+    /// <param name="hub">The player who is getting the ban.</param>
     /// <param name="playerId">The ID of the player who is getting the ban.</param>
     /// <param name="issuer">The player who issued the ban.</param>
     /// <param name="reason">The reason of the ban.</param>
     /// <param name="duration">The duration of the ban.</param>
-    public PlayerBannedEventArgs(ReferenceHub? player, string playerId, ReferenceHub issuer, string reason, long duration)
+    public PlayerBannedEventArgs(ReferenceHub? hub, string playerId, ReferenceHub issuer, string reason, long duration)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         PlayerId = playerId;
         Issuer = Player.Get(issuer);
         Reason = reason;

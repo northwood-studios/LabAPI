@@ -13,13 +13,13 @@ public class PlayerDamagingWindowEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDamagingWindowEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is damaging the window.</param>
+    /// <param name="hub">The player who is damaging the window.</param>
     /// <param name="window">The window.</param>
     /// <param name="damageHandler">The damage handler.</param>
-    public PlayerDamagingWindowEventArgs(ReferenceHub player, BreakableWindow window, DamageHandlerBase damageHandler)
+    public PlayerDamagingWindowEventArgs(ReferenceHub hub, BreakableWindow window, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Window = window;
         DamageHandler = damageHandler;
     }

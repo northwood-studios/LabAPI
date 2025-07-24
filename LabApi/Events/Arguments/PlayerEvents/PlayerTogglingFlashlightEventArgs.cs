@@ -13,13 +13,13 @@ public class PlayerTogglingFlashlightEventArgs : EventArgs, IPlayerEvent, ILight
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerTogglingFlashlightEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is toggling the flashlight.</param>
+    /// <param name="hub">The player who is toggling the flashlight.</param>
     /// <param name="item">The flashlight that is being toggled.</param>
     /// <param name="newState">Whenever the flashlight is being toggled to on or off state.</param>
-    public PlayerTogglingFlashlightEventArgs(ReferenceHub player, ToggleableLightItemBase item, bool newState)
+    public PlayerTogglingFlashlightEventArgs(ReferenceHub hub, ToggleableLightItemBase item, bool newState)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         LightItem = LightItem.Get(item);
         NewState = newState;
     }

@@ -14,14 +14,14 @@ public class PlayerInteractingLockerEventArgs : EventArgs, IPlayerEvent, ILocker
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingLockerEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is interacting with the locker.</param>
+    /// <param name="hub">The player who is interacting with the locker.</param>
     /// <param name="locker">The locker that is being interacted with.</param>
     /// <param name="chamber">The chamber that is being targeted.</param>
     /// <param name="canOpen">Whether the player is allowed to open it.</param>
-    public PlayerInteractingLockerEventArgs(ReferenceHub player, BaseLocker locker, BaseLockerChamber chamber, bool canOpen)
+    public PlayerInteractingLockerEventArgs(ReferenceHub hub, BaseLocker locker, BaseLockerChamber chamber, bool canOpen)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Locker = Locker.Get(locker);
         Chamber = LockerChamber.Get(chamber);
         CanOpen = canOpen;

@@ -12,11 +12,11 @@ public class Scp079UsingTeslaEventArgs : EventArgs, IPlayerEvent, ITeslaEvent, I
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079UsingTeslaEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="tesla">The affected tesla instance.</param>
-    public Scp079UsingTeslaEventArgs(ReferenceHub player, TeslaGate tesla)
+    public Scp079UsingTeslaEventArgs(ReferenceHub hub, TeslaGate tesla)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Tesla = Tesla.Get(tesla);
         IsAllowed = true;
     }

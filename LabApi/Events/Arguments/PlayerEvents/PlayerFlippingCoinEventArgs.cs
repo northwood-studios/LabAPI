@@ -13,12 +13,12 @@ public class PlayerFlippingCoinEventArgs : EventArgs, ICancellableEvent, ICoinIt
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFlippingCoinEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is flipping the coin.</param>
+    /// <param name="hub">The player who is flipping the coin.</param>
     /// <param name="coin">The coin that is being flipped.</param>
     /// <param name="isTails">Whenever the coin flip is tails.</param>
-    public PlayerFlippingCoinEventArgs(ReferenceHub player, Coin coin, bool isTails)
+    public PlayerFlippingCoinEventArgs(ReferenceHub hub, Coin coin, bool isTails)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         CoinItem = CoinItem.Get(coin);
         IsTails = isTails;
         IsAllowed = true;

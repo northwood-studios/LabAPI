@@ -12,10 +12,10 @@ public class PlayerLeftEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerLeftEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who left.</param>
-    public PlayerLeftEventArgs(ReferenceHub player)
+    /// <param name="hub">The player who left.</param>
+    public PlayerLeftEventArgs(ReferenceHub hub)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

@@ -13,11 +13,11 @@ public class Scp079CancelledRoomLockdownEventArgs : EventArgs, IPlayerEvent, IRo
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079CancelledRoomLockdownEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="room">The affected room instance.</param>
-    public Scp079CancelledRoomLockdownEventArgs(ReferenceHub player, RoomIdentifier room)
+    public Scp079CancelledRoomLockdownEventArgs(ReferenceHub hub, RoomIdentifier room)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Room = Room.Get(room);
     }
 

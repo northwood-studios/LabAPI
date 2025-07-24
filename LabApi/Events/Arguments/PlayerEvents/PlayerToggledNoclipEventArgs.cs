@@ -12,11 +12,11 @@ namespace LabApi.Events.Arguments.PlayerEvents
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerToggledNoclipEventArgs"/> class.
         /// </summary>
-        /// <param name="player">The player who has toggled the noclip.</param>
+        /// <param name="hub">The player who has toggled the noclip.</param>
         /// <param name="isNoclipping">The new state of the noclip.</param>
-        public PlayerToggledNoclipEventArgs(ReferenceHub player, bool isNoclipping)
+        public PlayerToggledNoclipEventArgs(ReferenceHub hub, bool isNoclipping)
         {
-            Player = Player.Get(player);
+            Player = Player.Get(hub);
             IsNoclipping = isNoclipping;
         }
 

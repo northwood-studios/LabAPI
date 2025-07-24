@@ -15,12 +15,12 @@ public class ProjectileExplodingEventArgs : EventArgs, IPlayerEvent, ITimedGrena
     /// Initializes a new instance of the <see cref="ProjectileExplodingEventArgs"/> class.
     /// </summary>
     /// <param name="grenade">The grenade which will cause explosion.</param>
-    /// <param name="player">The player which threw that grenade.</param>
+    /// <param name="hub">The player which threw that grenade.</param>
     /// <param name="position">The position of explosion.</param>
-    public ProjectileExplodingEventArgs(TimeGrenade grenade, ReferenceHub player, Vector3 position)
+    public ProjectileExplodingEventArgs(TimeGrenade grenade, ReferenceHub hub, Vector3 position)
     {
         TimedGrenade = TimedGrenadeProjectile.Get(grenade);
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Position = position;
 
         IsAllowed = true;

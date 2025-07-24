@@ -15,15 +15,15 @@ public class PlayerEscapingEventArgs : EventArgs, IPlayerEvent, ICancellableEven
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEscapingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is escaping.</param>
+    /// <param name="hub">The player who is escaping.</param>
     /// <param name="newRole">The new role that is set after escape.</param>
     /// <param name="escapeScenario">The scenario of the escape.</param>
     /// <param name="oldRole">The old role of the player.</param>
     /// <param name="escapeZone">The bounds of the escape zone that was triggered.</param>
-    public PlayerEscapingEventArgs(ReferenceHub player, RoleTypeId oldRole, RoleTypeId newRole, EscapeScenarioType escapeScenario, Bounds escapeZone)
+    public PlayerEscapingEventArgs(ReferenceHub hub, RoleTypeId oldRole, RoleTypeId newRole, EscapeScenarioType escapeScenario, Bounds escapeZone)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldRole = oldRole;
         NewRole = newRole;
         EscapeScenario = escapeScenario;

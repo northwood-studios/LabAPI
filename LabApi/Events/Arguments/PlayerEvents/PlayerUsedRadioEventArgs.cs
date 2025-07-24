@@ -13,12 +13,12 @@ public class PlayerUsedRadioEventArgs : EventArgs, IPlayerEvent, IRadioItemEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUsedRadioEventArgs"/> class.
     /// </summary>
-    /// <param name="player">Player that used the radio.</param>
+    /// <param name="hub">Player that used the radio.</param>
     /// <param name="radio">Radio that was being used.</param>
     /// <param name="drain">Drain amount of the battery per second.</param>
-    public PlayerUsedRadioEventArgs(ReferenceHub player, BaseRadioItem radio, float drain)
+    public PlayerUsedRadioEventArgs(ReferenceHub hub, BaseRadioItem radio, float drain)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         RadioItem = RadioItem.Get(radio);
         Drain = drain;
     }

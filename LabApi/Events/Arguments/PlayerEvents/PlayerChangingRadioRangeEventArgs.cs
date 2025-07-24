@@ -14,13 +14,13 @@ public class PlayerChangingRadioRangeEventArgs : EventArgs, IRadioItemEvent, ICa
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangingRadioRangeEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is changing radio range.</param>
+    /// <param name="hub">The player who is changing radio range.</param>
     /// <param name="radio">The radio item.</param>
     /// <param name="range">The range level that is radio being changed to.</param>
-    public PlayerChangingRadioRangeEventArgs(ReferenceHub player, BaseRadioItem radio, RadioRangeLevel range)
+    public PlayerChangingRadioRangeEventArgs(ReferenceHub hub, BaseRadioItem radio, RadioRangeLevel range)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         RadioItem = RadioItem.Get(radio);
         Range = range;
     }

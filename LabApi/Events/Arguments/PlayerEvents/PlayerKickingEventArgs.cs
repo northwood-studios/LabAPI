@@ -12,13 +12,13 @@ public class PlayerKickingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerKickingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is being kicked.</param>
+    /// <param name="hub">The player who is being kicked.</param>
     /// <param name="issuer">The player who is issuing the kick.</param>
     /// <param name="reason">The reason for which is player being kicked.</param>
-    public PlayerKickingEventArgs(ReferenceHub player, ReferenceHub issuer, string reason)
+    public PlayerKickingEventArgs(ReferenceHub hub, ReferenceHub issuer, string reason)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Issuer = Player.Get(issuer);
         Reason = reason;
     }

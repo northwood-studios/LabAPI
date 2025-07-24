@@ -12,11 +12,11 @@ public class Scp106ChangedSubmersionStatusEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp106ChangedSubmersionStatusEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-106 player instance.</param>
+    /// <param name="hub">The SCP-106 player instance.</param>
     /// <param name="isSubmerging">Whether the SCP-106 is submerging or emerging.</param>
-    public Scp106ChangedSubmersionStatusEventArgs(ReferenceHub player, bool isSubmerging)
+    public Scp106ChangedSubmersionStatusEventArgs(ReferenceHub hub, bool isSubmerging)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         IsSubmerging = isSubmerging;
     }
     

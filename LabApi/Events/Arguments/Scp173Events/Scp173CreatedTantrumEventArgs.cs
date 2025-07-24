@@ -14,11 +14,11 @@ public class Scp173CreatedTantrumEventArgs : EventArgs, IPlayerEvent, ITantrumEv
     /// Initializes a new instance of the <see cref="Scp173CreatedTantrumEventArgs"/> class.
     /// </summary>
     /// <param name="tantrumInstance">The tantrum instance.</param>
-    /// <param name="player">The SCP-173 player instance.</param>
-    public Scp173CreatedTantrumEventArgs(TantrumEnvironmentalHazard tantrumInstance, ReferenceHub player)
+    /// <param name="hub">The SCP-173 player instance.</param>
+    public Scp173CreatedTantrumEventArgs(TantrumEnvironmentalHazard tantrumInstance, ReferenceHub hub)
     {
         Tantrum = TantrumHazard.Get(tantrumInstance);
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>
