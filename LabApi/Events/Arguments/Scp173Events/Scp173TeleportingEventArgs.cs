@@ -17,8 +17,8 @@ public class Scp173TeleportingEventArgs : EventArgs, IPlayerEvent, ICancellableE
     /// <param name="position">The target position to teleport to.</param>
     public Scp173TeleportingEventArgs(ReferenceHub hub, Vector3 position)
     {
-        IsAllowed = true;
         Player = Player.Get(hub);
+        Position = position;
         IsAllowed = true;
     }
 
