@@ -12,11 +12,6 @@ namespace LabApi.Features.Wrappers;
 public static class Map
 {
     /// <summary>
-    /// Gets the current seed of the map.
-    /// </summary>
-    public static int Seed => SeedSynchronizer.Seed;
-
-    /// <summary>
     /// Gets all the <see cref="Room">rooms</see>.
     /// </summary>
     public static IReadOnlyCollection<Room> Rooms => Room.List;
@@ -61,6 +56,44 @@ public static class Map
     /// </summary>
     public static IReadOnlyCollection<Ragdoll> Ragdolls => Ragdoll.List;
 
+    #region Seed
+    /// <summary>
+    /// Gets the current seed of the map.
+    /// </summary>
+    public static int Seed => SeedSynchronizer.Seed;
+
+    /// <summary>
+    /// Sets the seed for the next map generation.
+    /// This must be called before map generation starts.
+    /// </summary>
+    /// <param name="seed">The seed to use for map generation.</param>
+    /// <returns>True if the seed was set successfully, false if map generation has already started.</returns>
+    public static bool SetNextMapSeed(int seed) => MapSeed.SetNextMapSeed(seed);
+
+    /// <summary>
+    /// Gets the currently set pending seed.
+    /// </summary>
+    /// <returns>The pending seed if set, otherwise null.</returns>
+    public static int? GetPendingSeed() => MapSeed.GetPendingSeed();
+
+    /// <summary>
+    /// Clears the pending seed, allowing the game to use its default seed generation.
+    /// </summary>
+    public static void ClearPendingSeed() => MapSeed.ClearPendingSeed();
+
+    /// <summary>
+    /// Checks if a seed has been set for the next map generation.
+    /// </summary>
+    /// <returns>True if a seed is pending, false otherwise.</returns>
+    public static bool HasPendingSeed() => MapSeed.HasPendingSeed();
+
+    /// <summary>
+    /// Checks if the last set seed was successfully applied during map generation.
+    /// </summary>
+    /// <returns>True if the seed was applied, false otherwise.</returns>
+    public static bool WasSeedApplied() => MapSeed.WasSeedApplied();
+
+    #endregion
 
     #region Get Random
     /// <summary>
