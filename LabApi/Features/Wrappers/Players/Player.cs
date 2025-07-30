@@ -1,4 +1,4 @@
-﻿using CentralAuth;
+using CentralAuth;
 using CommandSystem;
 using CustomPlayerEffects;
 using Footprinting;
@@ -1639,15 +1639,20 @@ public class Player
     /// <param name="referenceHub">The reference hub of the player.</param>
     private static void AddPlayer(ReferenceHub referenceHub)
     {
-        if (!referenceHub.isLocalPlayer)
-            _ = new Player(referenceHub);
-    }
+		if (referenceHub.isLocalPlayer)
+			return;
 
-    /// <summary>
-    /// Handles the removal of a player from the server.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub of the player.</param>
-    private static void RemovePlayer(ReferenceHub referenceHub)
+		if (Dictionary.ContainsKey(referenceHub))
+			return;
+
+		_ = new Player(referenceHub);
+	}
+
+	/// <summary>
+	/// Handles the removal of a player from the server.
+	/// </summary>
+	/// <param name="referenceHub">The reference hub of the player.</param>
+	private static void RemovePlayer(ReferenceHub referenceHub)
     {
         if (referenceHub.authManager.UserId != null)
             UserIdCache.Remove(referenceHub.authManager.UserId);
