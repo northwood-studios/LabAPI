@@ -31,17 +31,17 @@ public abstract class ObjectiveCompletingBaseEventArgs : EventArgs, ICancellable
     /// <summary>
     /// Gets or sets the player who triggered the objective completion.
     /// </summary>
-    public Player Player { get; }
+    public Player Player { get; set; }
 
     /// <summary>
     /// Gets or sets the <see cref="PlayerRoles.Faction"/> which receives the <see cref="InfluenceToGrant"/> and <see cref="TimeToGrant"/> rewards.
     /// </summary>
-    public Faction Faction { get; }
+    public Faction Faction { get; set; }
 
     /// <summary>
     /// Gets or sets the amount of influence granted to the <see cref="Faction"/>.
     /// </summary>
-    public float InfluenceToGrant { get; }
+    public float InfluenceToGrant { get; set; }
 
     /// <summary>
     /// Gets or sets the amount of time reduced from the <see cref="Faction"/>'s timer.
@@ -49,12 +49,12 @@ public abstract class ObjectiveCompletingBaseEventArgs : EventArgs, ICancellable
     /// <remarks>
     /// Negative values reduce the timer, positive extends it.
     /// </remarks>
-    public float TimeToGrant { get; }
+    public float TimeToGrant { get; set; }
 
     /// <summary>
     /// Gets or sets whether the objective completion has been sent to players and is visible on their screen.
     /// </summary>
-    public bool SendToPlayers { get; }
+    public bool SendToPlayers { get; set; }
 
     /// <inheritdoc/>
     public bool IsAllowed { get; set; }
