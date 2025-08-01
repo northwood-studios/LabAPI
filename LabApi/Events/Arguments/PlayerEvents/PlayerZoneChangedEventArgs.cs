@@ -34,7 +34,7 @@ public class PlayerZoneChangedEventArgs : EventArgs, IPlayerEvent
     public FacilityZone OldZone;
 
     /// <summary>
-    /// Gets the new rom. May be <see cref="FacilityZone.None"/> if the player went into void, died and such.
+    /// Gets the new room. May be <see cref="FacilityZone.None"/> if the player went into void, died and such.
     /// </summary>
     public FacilityZone NewZone;
 }
