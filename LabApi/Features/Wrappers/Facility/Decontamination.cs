@@ -13,16 +13,7 @@ public static class Decontamination
     public static DecontaminationStatus Status
     {
         get => Singleton.DecontaminationOverride;
-        set
-        {
-            if (value == DecontaminationStatus.Forced)
-            {
-                Singleton.ForceDecontamination();
-                return;
-            }
-
-            Singleton.DecontaminationOverride = value;
-        }
+        set => Singleton.DecontaminationOverride = value;
     }
 
     /// <summary>

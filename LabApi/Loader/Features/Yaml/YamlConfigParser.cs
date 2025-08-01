@@ -15,14 +15,15 @@ public static class YamlConfigParser
     /// Static yaml serializer instance.
     /// </summary>
     public static ISerializer Serializer { get; } = new SerializerBuilder()
-        .WithEmissionPhaseObjectGraphVisitor((EmissionPhaseObjectGraphVisitorArgs visitor) => new CommentsObjectGraphVisitor(visitor.InnerVisitor))
-        .WithTypeInspector((ITypeInspector typeInspector) => new CommentGatheringTypeInspector(typeInspector))
+        .WithEmissionPhaseObjectGraphVisitor(visitor => new CommentsObjectGraphVisitor(visitor.InnerVisitor))
+        .WithTypeInspector(typeInspector => new CommentGatheringTypeInspector(typeInspector))
         .WithNamingConvention(UnderscoredNamingConvention.Instance)
         .DisableAliases()
         .IgnoreFields()
         .WithTypeConverter(new CustomVectorConverter())
         .WithTypeConverter(new CustomColor32Converter())
         .WithTypeConverter(new CustomColorConverter())
+        .WithTypeConverter(new CustomQuaternionConverter())
         .Build();
 
     /// <summary>
@@ -34,5 +35,6 @@ public static class YamlConfigParser
         .WithTypeConverter(new CustomVectorConverter())
         .WithTypeConverter(new CustomColor32Converter())
         .WithTypeConverter(new CustomColorConverter())
+        .WithTypeConverter(new CustomQuaternionConverter())
         .Build();
 }

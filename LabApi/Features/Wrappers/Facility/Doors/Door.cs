@@ -67,6 +67,7 @@ public class Door
         { "HID_CHAMBER", DoorName.HczHidChamber },
         { "HID_UPPER", DoorName.HczHidUpper },
         { "HID_LOWER", DoorName.HczHidLower },
+        { "HID_LAB", DoorName.HczHidChamber },
         { "NUKE_ARMORY", DoorName.HczNukeArmory },
         { "106_PRIMARY", DoorName.Hcz106Primiary },
         { "106_SECONDARY", DoorName.Hcz106Secondary },
@@ -98,15 +99,17 @@ public class Door
     /// <param name="doorVariant">The <see cref="DoorVariant"/> of the door.</param>
     protected Door(DoorVariant doorVariant)
     {
-        Dictionary.Add(doorVariant, this);
         Base = doorVariant;
+
+        if (CanCache)
+            Dictionary.Add(doorVariant, this);
 
         if (doorVariant.TryGetComponent(out DoorNametagExtension nametag) && !string.IsNullOrEmpty(nametag.GetName))
         {
             if (doorNameDictionary.TryGetValue(nametag.GetName, out DoorName doorName))
                 DoorName = doorName;
             else
-                Logger.Warn($"Missing DoorName enum value for door name tag {nametag.GetName}");
+                Logger.InternalWarn($"Missing DoorName enum value for door name tag {nametag.GetName}");
         }
     }
 
@@ -119,12 +122,22 @@ public class Door
     }
 
     /// <summary>
+    /// Whether the door has been destroyed, see <see cref="UnityEngine.Object.DestroyObject(UnityEngine.Object)"/>.
+    /// </summary>
+    public bool IsDestroyed => Base == null;
+
+    /// <summary>
+    /// Whether the wrapper can be cached.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
+    /// <summary>
     /// The base object.
     /// </summary>
     public DoorVariant Base { get; }
 
     /// <summary>
-    /// Gets the <see cref="Enums.DoorName"/> of the door.
+    /// Gets the <see cref="Enums.DoorName"/> of the door.s
     /// </summary>
     /// <remarks>
     /// Is the enum version of <see cref="NameTag"/>.

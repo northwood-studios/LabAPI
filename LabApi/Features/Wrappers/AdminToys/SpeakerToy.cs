@@ -30,11 +30,13 @@ public class SpeakerToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseSpeakerToy">The base <see cref="BaseSpeakerToy"/> object.</param>
-    internal SpeakerToy(BaseSpeakerToy baseSpeakerToy)
+    internal SpeakerToy(BaseSpeakerToy baseSpeakerToy) 
         : base(baseSpeakerToy)
     {
-        Dictionary.Add(baseSpeakerToy, this);
         Base = baseSpeakerToy;
+
+        if (CanCache)
+            Dictionary.Add(baseSpeakerToy, this);
     }
 
     /// <summary>
@@ -305,7 +307,7 @@ public class SpeakerToy : AdminToy
     /// If one does not exists, a new one is created for the id.
     /// </summary>
     /// <param name="controllerId">The <see cref="ControllerId"/> for the transmitter.</param>
-    /// <returns></returns>
+    /// <returns>Cached transmitter.</returns>
     public static AudioTransmitter GetTransmitter(byte controllerId)
     {
         if (!TransmitterByControllerId.TryGetValue(controllerId, out AudioTransmitter transmitter))

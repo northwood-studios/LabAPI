@@ -13,11 +13,11 @@ public class PlayerLeftHazardEventArgs : EventArgs, IPlayerEvent, IHazardEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerLeftHazardEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who left the hazard.</param>
+    /// <param name="hub">The player who left the hazard.</param>
     /// <param name="hazard">The hazard that the player left.</param>
-    public PlayerLeftHazardEventArgs(ReferenceHub player, EnvironmentalHazard hazard)
+    public PlayerLeftHazardEventArgs(ReferenceHub hub, EnvironmentalHazard hazard)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Hazard = Hazard.Get(hazard);
     }
 

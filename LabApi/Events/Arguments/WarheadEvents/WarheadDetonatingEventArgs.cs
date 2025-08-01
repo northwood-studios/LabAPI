@@ -12,11 +12,11 @@ public class WarheadDetonatingEventArgs : EventArgs, IPlayerEvent, ICancellableE
     /// <summary>
     /// Initializes a new instance of the <see cref="WarheadDetonatingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is detonating the warhead.</param>
-    public WarheadDetonatingEventArgs(ReferenceHub player)
+    /// <param name="hub">The player who is detonating the warhead.</param>
+    public WarheadDetonatingEventArgs(ReferenceHub hub)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <inheritdoc />

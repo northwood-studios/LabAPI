@@ -24,11 +24,13 @@ public class CameraToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseCameraToy">The base <see cref="Scp079CameraToy"/> object.</param>
-    internal CameraToy(Scp079CameraToy baseCameraToy)
+    internal CameraToy(Scp079CameraToy baseCameraToy) 
         : base(baseCameraToy)
     {
-        Dictionary.Add(baseCameraToy, this);
         Base = baseCameraToy;
+
+        if (CanCache)
+            Dictionary.Add(baseCameraToy, this);
     }
 
     /// <summary>

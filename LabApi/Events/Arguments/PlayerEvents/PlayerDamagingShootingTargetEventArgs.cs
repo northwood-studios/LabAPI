@@ -14,13 +14,13 @@ public class PlayerDamagingShootingTargetEventArgs : EventArgs, IPlayerEvent, IS
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDamagingShootingTargetEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is damaging the shooting target.</param>
+    /// <param name="hub">The player who is damaging the shooting target.</param>
     /// <param name="target">The shooting target.</param>
     /// <param name="damageHandler">The damage handler.</param>
-    public PlayerDamagingShootingTargetEventArgs(ReferenceHub player, ShootingTarget target, DamageHandlerBase damageHandler)
+    public PlayerDamagingShootingTargetEventArgs(ReferenceHub hub, ShootingTarget target, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         ShootingTarget = ShootingTargetToy.Get(target);
         DamageHandler = damageHandler;
     }

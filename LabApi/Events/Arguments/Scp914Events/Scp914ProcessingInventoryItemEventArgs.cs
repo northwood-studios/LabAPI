@@ -16,13 +16,13 @@ public class Scp914ProcessingInventoryItemEventArgs : EventArgs, IScp914Event, I
     /// </summary>
     /// <param name="item">The item that is being processed by SCP-914.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
-    /// <param name="player">The owner of the item.</param>
-    public Scp914ProcessingInventoryItemEventArgs(ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub player)
+    /// <param name="hub">The owner of the item.</param>
+    public Scp914ProcessingInventoryItemEventArgs(ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub hub)
     {
         IsAllowed = true;
         Item = Item.Get(item);
         KnobSetting = knobSetting;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <inheritdoc />

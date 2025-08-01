@@ -12,11 +12,11 @@ public class Scp079RecontainedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079RecontainedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="activator">The player who activated the recontainment procedure.</param>
-    public Scp079RecontainedEventArgs(ReferenceHub player, ReferenceHub? activator)
+    public Scp079RecontainedEventArgs(ReferenceHub hub, ReferenceHub? activator)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Activator = Player.Get(activator);
     }
 

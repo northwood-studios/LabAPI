@@ -13,13 +13,13 @@ public class PlayerDroppingItemEventArgs : EventArgs, ICancellableEvent, IItemEv
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDroppingItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is dropping the item.</param>
+    /// <param name="hub">The player who is dropping the item.</param>
     /// <param name="item">The item being dropped.</param>
     /// <param name="isThrowing">Whether the item will be thrown.</param>
-    public PlayerDroppingItemEventArgs(ReferenceHub player, ItemBase item, bool isThrowing)
+    public PlayerDroppingItemEventArgs(ReferenceHub hub, ItemBase item, bool isThrowing)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Item = Item.Get(item);
         Throw = isThrowing;
     }

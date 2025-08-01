@@ -12,11 +12,11 @@ public class PlayerGroupChangedEventArgs : EventArgs, IPlayerEvent, IGroupEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerGroupChangedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose group changed.</param>
+    /// <param name="hub">The player whose group changed.</param>
     /// <param name="group">The new group.</param>
-    public PlayerGroupChangedEventArgs(ReferenceHub player, UserGroup group)
+    public PlayerGroupChangedEventArgs(ReferenceHub hub, UserGroup group)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Group = group;
     }
 

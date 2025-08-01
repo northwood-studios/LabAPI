@@ -28,8 +28,10 @@ public class ElevatorDoor : Door
     internal ElevatorDoor(BaseElevatorDoor baseElevatorDoor)
         : base(baseElevatorDoor)
     {
-        Dictionary.Add(baseElevatorDoor, this);
         Base = baseElevatorDoor;
+
+        if (CanCache)
+            Dictionary.Add(baseElevatorDoor, this);
     }
 
     /// <summary>

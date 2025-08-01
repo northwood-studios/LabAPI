@@ -1,7 +1,6 @@
 ﻿using GameCore;
 using Generators;
 using LabApi.Events.Handlers;
-using MapGeneration;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -121,6 +120,34 @@ public static class Warhead
             if (BaseController != null)
                 BaseController.NetworkCooldownEndTime = NetworkTime.time + value;
         }
+    }
+
+    /// <summary>
+    /// Forces DMS sequence to count down even if conditions are not met.
+    /// </summary>
+    public static bool ForceCountdownToggle
+    {
+        get => DeadmanSwitch.ForceCountdownToggle;
+        set => DeadmanSwitch.ForceCountdownToggle = value;
+    }
+
+    /// <summary>
+	/// Indicates how much time is left for the DMS to activate.
+	/// Value is capped by <see cref="DeadManSwitchMaxTime"/>.
+    /// </summary>
+    public static float DeadManSwitchRemaining
+    {
+        get => DeadmanSwitch.CountdownTimeLeft;
+        set => DeadmanSwitch.CountdownTimeLeft = value;
+    }
+
+    /// <summary>
+    /// Indicates the amount of time it takes for the DMS to activate.
+    /// </summary>
+    public static float DeadManSwitchMaxTime
+    {
+        get => DeadmanSwitch.CountdownMaxTime;
+        set => DeadmanSwitch.CountdownMaxTime = value;
     }
 
     /// <summary>

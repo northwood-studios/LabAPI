@@ -26,8 +26,10 @@ public class NonInteractableDoor : Door
     internal NonInteractableDoor(BasicNonInteractableDoor basicNonInteractableDoor)
         : base(basicNonInteractableDoor)
     {
-        Dictionary.Add(basicNonInteractableDoor, this);
         Base = basicNonInteractableDoor;
+
+        if (CanCache)
+            Dictionary.Add(basicNonInteractableDoor, this);
     }
 
     /// <summary>

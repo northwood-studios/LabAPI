@@ -13,12 +13,12 @@ public class PlayerInteractingShootingTargetEventArgs : EventArgs, IPlayerEvent,
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingShootingTargetEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is interacting with the target.</param>
+    /// <param name="hub">The player who is interacting with the target.</param>
     /// <param name="target">The shooting target.</param>
-    public PlayerInteractingShootingTargetEventArgs(ReferenceHub player, ShootingTarget target)
+    public PlayerInteractingShootingTargetEventArgs(ReferenceHub hub, ShootingTarget target)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         ShootingTarget = ShootingTargetToy.Get(target);
     }
 

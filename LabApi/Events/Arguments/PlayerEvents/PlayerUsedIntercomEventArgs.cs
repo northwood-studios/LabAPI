@@ -13,11 +13,11 @@ public class PlayerUsedIntercomEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUsedIntercomEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who used the intercom.</param>
+    /// <param name="hub">The player who used the intercom.</param>
     /// <param name="state">State of the intercom.</param>
-    public PlayerUsedIntercomEventArgs(ReferenceHub? player, IntercomState state)
+    public PlayerUsedIntercomEventArgs(ReferenceHub? hub, IntercomState state)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         State = state;
     }
 

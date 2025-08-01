@@ -12,10 +12,10 @@ public class PlayerUnlockingWarheadButtonEventArgs : EventArgs, IPlayerEvent, IC
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUnlockingWarheadButtonEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who unlocking the warhead button.</param>
-    public PlayerUnlockingWarheadButtonEventArgs(ReferenceHub player)
+    /// <param name="hub">The player who unlocking the warhead button.</param>
+    public PlayerUnlockingWarheadButtonEventArgs(ReferenceHub hub)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         IsAllowed = true;
     }
 

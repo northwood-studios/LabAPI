@@ -13,12 +13,12 @@ public class PlayerSearchingAmmoEventArgs : EventArgs, IPlayerEvent, IAmmoPickup
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSearchingAmmoEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player searching for ammo pickup.</param>
+    /// <param name="hub">The player searching for ammo pickup.</param>
     /// <param name="pickup">The ammo pickup.</param>
-    public PlayerSearchingAmmoEventArgs(ReferenceHub player, BaseAmmoPickup pickup)
+    public PlayerSearchingAmmoEventArgs(ReferenceHub hub, BaseAmmoPickup pickup)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         AmmoPickup = AmmoPickup.Get(pickup);
     }
 

@@ -30,8 +30,10 @@ public class Timed173Gate : Gate
     internal Timed173Gate(Timed173PryableDoor timed173PryableDoor)
         : base(timed173PryableDoor)
     {
-        Dictionary.Add(timed173PryableDoor, this);
         Base = timed173PryableDoor;
+
+        if (CanCache)
+            Dictionary.Add(timed173PryableDoor, this);
     }
 
     /// <summary>

@@ -12,12 +12,12 @@ public class PlayerChangedNicknameEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangedNicknameEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose nickname has changed.</param>
+    /// <param name="hub">The player whose nickname has changed.</param>
     /// <param name="oldNickname">The old nickname of the player.</param>
     /// <param name="newNickname">The new nickname of the player.</param>
-    public PlayerChangedNicknameEventArgs(ReferenceHub player, string? oldNickname, string? newNickname)
+    public PlayerChangedNicknameEventArgs(ReferenceHub hub, string? oldNickname, string? newNickname)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldNickname = oldNickname;
         NewNickname = newNickname;
     }

@@ -51,8 +51,9 @@ public class Item
         Register<Scp268>(x => new Scp268Item(x));
         Register<InventorySystem.Items.Usables.Scp1344.Scp1344Item>(x => new Scp1344Item(x));
 
-        Register<Firearm>(x => new FirearmItem(x));
-        Register<ParticleDisruptor>(x => new ParticleDisruptorItem(x));
+        Register<Firearm>(FirearmItem.CreateFirearmWrapper);
+        Register<ParticleDisruptor>(FirearmItem.CreateFirearmWrapper);
+
         Register<InventorySystem.Items.Jailbird.JailbirdItem>(x => new JailbirdItem(x));
         Register<Coin>(x => new CoinItem(x));
 
@@ -210,7 +211,7 @@ public class Item
     /// <summary>
     /// Gets whether the item wrapper is allowed to be cached.
     /// </summary>
-    protected bool CanCache => !IsDestroyed && !IsPrefab && Serial != 0;
+    protected bool CanCache => !IsDestroyed && !IsPrefab && Serial != 0 && Base.isActiveAndEnabled;
 
     /// <summary>
     /// A private constructor to prevent external instantiation.
@@ -359,9 +360,9 @@ public class Item
             if (!Dictionary.ContainsKey(item))
                 _ = CreateItemWrapper(item);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            Console.Logger.InternalError($"Failed to handle item creation with error: {e}");
+            Logger.InternalError($"Failed to handle item creation with error: {e}");
         }
     }
 
@@ -380,7 +381,7 @@ public class Item
                 item.OnRemove();
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.Logger.InternalError($"Failed to handle item destruction with error: {e}");
         }

@@ -13,12 +13,12 @@ public class PlayerReloadingWeaponEventArgs : EventArgs, IFirearmItemEvent, ICan
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReloadingWeaponEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is reloading the weapon.</param>
+    /// <param name="hub">The player who is reloading the weapon.</param>
     /// <param name="weapon">The weapon that is being reloaded.</param>
-    public PlayerReloadingWeaponEventArgs(ReferenceHub player, Firearm weapon)
+    public PlayerReloadingWeaponEventArgs(ReferenceHub hub, Firearm weapon)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         FirearmItem = FirearmItem.Get(weapon);
     }
 

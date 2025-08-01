@@ -12,12 +12,12 @@ public class PlayerKickedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerKickedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who was kicked.</param>
+    /// <param name="hub">The player who was kicked.</param>
     /// <param name="issuer">The player who issued the kick.</param>
     /// <param name="reason">The reason for which is player being kicked.</param>
-    public PlayerKickedEventArgs(ReferenceHub player, ReferenceHub issuer, string reason)
+    public PlayerKickedEventArgs(ReferenceHub hub, ReferenceHub issuer, string reason)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Issuer = Player.Get(issuer);
         Reason = reason;
     }

@@ -13,12 +13,12 @@ public class PlayerCancellingUsingItemEventArgs : EventArgs, IUsableItemEvent, I
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerCancellingUsingItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is cancelling using the item.</param>
+    /// <param name="hub">The player who is cancelling using the item.</param>
     /// <param name="item">The item which the player cancels using.</param>
-    public PlayerCancellingUsingItemEventArgs(ReferenceHub player, BaseUsableItem item)
+    public PlayerCancellingUsingItemEventArgs(ReferenceHub hub, BaseUsableItem item)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         UsableItem = UsableItem.Get(item);
     }
 

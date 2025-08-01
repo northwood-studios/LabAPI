@@ -13,14 +13,14 @@ public class PlayerChangedRoleEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangedRoleEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose role changed.</param>
+    /// <param name="hub">The player whose role changed.</param>
     /// <param name="oldRole">The old role type.</param>
     /// <param name="newRole">The new role object of the player.</param>
     /// <param name="changeReason">The reason of role changed.</param>
     /// <param name="spawnFlags">The spawn flags used for this role change.</param>
-    public PlayerChangedRoleEventArgs(ReferenceHub player, RoleTypeId oldRole, PlayerRoleBase newRole, RoleChangeReason changeReason, RoleSpawnFlags spawnFlags)
+    public PlayerChangedRoleEventArgs(ReferenceHub hub, RoleTypeId oldRole, PlayerRoleBase newRole, RoleChangeReason changeReason, RoleSpawnFlags spawnFlags)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldRole = oldRole;
         NewRole = newRole;
         ChangeReason = changeReason;
