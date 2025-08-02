@@ -51,21 +51,20 @@ public class Player
     private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
+    /// A reference to ready <see cref="Player"/> instances currently in the game.
+    /// </summary>
+    public static IReadOnlyCollection<Player> List => Dictionary.Values.Where(x => !x.IsHost && x.IsReady).ToList();
+
+    /// <summary>
     /// A reference to all <see cref="Player"/> instances currently in the game.
     /// </summary>
     /// <remarks>
     /// This list includes the host player, NPCs and unauthenticated players.
     /// <para>
     /// Unauthenticated players you must be especially careful with as interacting with them incorrectly will cause them to softlock while joining the game.
-    /// Use <see cref="ReadyList"/> to get connected players that you can send network messages to.
     /// </para>
     /// </remarks>
-    public static IReadOnlyCollection<Player> List => Dictionary.Values;
-
-    /// <summary>
-    /// A reference to all <see cref="Player"/> instances that are authenticated or dummy players.
-    /// </summary>
-    public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
+    public static IReadOnlyCollection<Player> UnfilteredList => Dictionary.Values;
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instances that are NPCs.
@@ -73,22 +72,22 @@ public class Player
     /// <remarks>
     /// The host player is not counted as an NPC.
     /// </remarks>
-    public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
+    public static IEnumerable<Player> NpcList => Dictionary.Values.Where(x => x.IsNpc);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instance that are real players but are not authenticated yet.
     /// </summary>
-    public static IEnumerable<Player> UnauthenticatedList => List.Where(x => x.IsPlayer && !x.IsReady);
+    public static IEnumerable<Player> UnauthenticatedList => Dictionary.Values.Where(x => x.IsPlayer && !x.IsReady);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instances that are dummy NPCs.
     /// </summary>
-    public static IEnumerable<Player> DummyList => List.Where(x => x.IsDummy);
+    public static IEnumerable<Player> DummyList => Dictionary.Values.Where(x => x.IsDummy);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instance that are NPCs but are not dummies.
     /// </summary>
-    public static IEnumerable<Player> RegularNpcList => List.Where(x => x.IsNpc && !x.IsDummy);
+    public static IEnumerable<Player> RegularNpcList => Dictionary.Values.Where(x => x.IsNpc && !x.IsDummy);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
@@ -98,7 +97,7 @@ public class Player
     /// <summary>
     /// Gets the amount of ready players or dummies.
     /// </summary>
-    public static int Count => ReadyList.Count();
+    public static int Count => List.Count();
 
     /// <summary>
     /// Gets the amount of non-verified players
@@ -851,7 +850,7 @@ public class Player
         bool includeNpcs = dummyNpcs || regularNpcs;
         bool allNpcs = dummyNpcs && regularNpcs;
 
-        foreach (Player player in List)
+        foreach (Player player in Dictionary.Values)
         {
             if ((includePlayers && player.IsPlayer && (allPlayers || player.IsReady == authenticated)) ||
                 (includeNpcs && player.IsNpc) && (allNpcs || player.IsDummy == dummyNpcs) ||
@@ -1042,7 +1041,7 @@ public class Player
         if (UserIdCache.TryGetValue(userId!, out player) && player.IsOnline)
             return true;
 
-        player = List.FirstOrDefault(x => x.UserId == userId);
+        player = Dictionary.Values.FirstOrDefault(x => x.UserId == userId);
         if (player == null)
             return false;
 
@@ -1069,7 +1068,7 @@ public class Player
     /// <returns>Whether the player was successfully retrieved.</returns>
     public static bool TryGet(int playerId, [NotNullWhen(true)] out Player? player)
     {
-        player = List.FirstOrDefault(n => n.PlayerId == playerId);
+        player = Dictionary.Values.FirstOrDefault(n => n.PlayerId == playerId);
         return player != null;
     }
 
