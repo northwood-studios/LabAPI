@@ -75,7 +75,7 @@ public class MicroHIDPickup : Pickup
 
     /// <summary>
     /// Gets or sets the energy amount in this Micro-HID pickup.<para/>
-    /// Value for the energy is between 0f - 1f and is automatically clamped.
+    /// The energy value, automatically clamped, ranges from 0f to 1f.
     /// </summary>
     public float Energy
     {
