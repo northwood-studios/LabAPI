@@ -1,5 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using BaseWaypointToy = AdminToys.WaypointToy;
@@ -21,10 +20,60 @@ public class WaypointToy : AdminToy
     /// </summary>
     public new static IReadOnlyCollection<WaypointToy> List => Dictionary.Values;
 
+    /// <inheritdoc />
+    public override Vector3 Position 
+    {
+        get => base.Position;
+        set
+        {
+            base.Position = value;
+            Base.UpdateWaypointChildren();
+        }
+    }
+
+    /// <inheritdoc />
+    public override Quaternion Rotation 
+    {
+        get => base.Rotation;
+        set
+        {
+            base.Rotation = value;
+            Base.UpdateWaypointChildren();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the scale on the waypoint toy.
+    /// Does not effect the bounds of the waypoint, use <see cref="BoundsSize"/> instead.
+    /// </summary>
+    /// <remarks>
+    /// Scale can cause unindented side effects when used on a waypoint toy.
+    /// </remarks>
+    public override Vector3 Scale 
+    { 
+        get => base.Scale;
+        set
+        {
+            base.Scale = value;
+
+            if (value != Vector3.one)
+                Console.Logger.Warn("Setting scale on WaypointToy is not supported and may causes problems.");
+        }
+    }
+
     /// <summary>
     /// The <see cref="BaseWaypointToy"/> object.
     /// </summary>
     public new BaseWaypointToy Base { get; }
+
+    /// <summary>
+    /// Gets or sets
+    /// </summary>
+    public Vector3 BoundsSize
+    {
+        get => Base.BoundsSize;
+        set => Base.NetworkBoundsSize = value;
+    }
 
     /// <summary>
     /// Gets or sets whether to visualize the waypoint's maximum bounds.
@@ -68,10 +117,19 @@ public class WaypointToy : AdminToy
         Dictionary.Remove(Base);
     }
 
+    /// <summary>
+    /// Force update all waypoint children to be up to date with the current position and rotation of the waypoint.
+    /// Call this when ever the waypoint is moved by a parent object or the waypoint is moved using base game APIs or external APIs.
+    /// </summary>
+    /// <remarks>
+    /// Does not work if the waypoint is <see cref="AdminToy.IsStatic"/>.
+    /// </remarks>
+    public void UpdateWaypointChildren() => Base.UpdateWaypointChildren();
+
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[WaypointToy: Position{Position}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
+        return $"[WaypointToy: Position{Position}, BoundsSize:{BoundsSize}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
     }
 
     /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
