@@ -94,7 +94,7 @@ public static class Map
     /// <summary>
     /// Gets a random <see cref="Room"/>.
     /// </summary>
-    /// <returns>The random room if there were any rooms otherwise null.</returns>
+    /// <returns>The random room if there were any rooms otherwise <see langword="null"/>.</returns>
     public static Room? GetRandomRoom()
     {
         return Rooms.Count != 0 ? Rooms.ElementAt(UnityEngine.Random.Range(0, Rooms.Count)) : null;
