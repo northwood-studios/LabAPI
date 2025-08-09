@@ -31,7 +31,7 @@
         HczHidUpper,// HID_UPPER
         HczHidLower,// HID_LOWER
         HczNukeArmory,// NUKE_ARMORY
-        Hcz106Primiary,// 106_PRIMARY
+        Hcz106Primary,// 106_PRIMARY
         Hcz106Secondary,// 106_SECONDARY
         HczCheckpoint,// CHECKPOINT_EZ_HCZ_A
         Hcz127Lab, // HCZ_127_LAB 
