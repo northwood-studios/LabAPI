@@ -79,8 +79,8 @@ public class SpawnableCullingParent
     /// </summary>
     public Vector3 Position
     {
-        get => Base.BoundsPosition;
-        set => Base.BoundsPosition = value;
+        get => Base.NetworkBoundsPosition;
+        set => Base.NetworkBoundsPosition = value;
     }
 
     /// <summary>
@@ -88,8 +88,8 @@ public class SpawnableCullingParent
     /// </summary>
     public Vector3 Size
     {
-        get => Base.BoundsSize;
-        set => Base.BoundsSize = value;
+        get => Base.NetworkBoundsSize;
+        set => Base.NetworkBoundsSize = value;
     }
 
     /// <summary>
@@ -126,9 +126,9 @@ public class SpawnableCullingParent
             PrefabCache<BaseCullingParent>.prefab = found;
         }
 
-        BaseCullingParent instance = UnityEngine.Object.Instantiate(PrefabCache<BaseCullingParent>.prefab);
-        instance.BoundsPosition = position;
-        instance.BoundsSize = size;
+        BaseCullingParent instance = UnityEngine.Object.Instantiate(PrefabCache<BaseCullingParent>.prefab, position, Quaternion.identity);
+        instance.NetworkBoundsPosition = position;
+        instance.NetworkBoundsSize = size;
 
         if (networkSpawn)
             NetworkServer.Spawn(instance.gameObject);
@@ -175,7 +175,7 @@ public class SpawnableCullingParent
         }
         catch (Exception e)
         {
-            Logger.InternalError($"Failed to handle admin toy creation with error: {e}");
+            Logger.InternalError($"Failed to handle cullable parent creation with error: {e}");
         }
     }
 
