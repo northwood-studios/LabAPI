@@ -1,6 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
+using System;
 using UnityEngine;
 
 namespace LabApi.Events.Arguments.Scp106Events;

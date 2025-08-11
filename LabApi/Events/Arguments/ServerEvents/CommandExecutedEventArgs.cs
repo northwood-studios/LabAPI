@@ -1,7 +1,7 @@
 using CommandSystem;
+using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Enums;
 using System;
-using LabApi.Events.Arguments.Interfaces;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 
@@ -18,7 +18,7 @@ public class CommandExecutedEventArgs : EventArgs, ICommandSenderEvent
     /// <param name="command">The command.</param>
     /// <param name="arguments">The arguments of the command.</param>
     /// <param name="successful">Whether the command was executed successfully.</param>
-    /// <param name="response">The response of the command</param>
+    /// <param name="response">The response of the command.</param>
     public CommandExecutedEventArgs(CommandSender? sender, CommandType commandType, ICommand command, ArraySegment<string> arguments, bool successful, string response)
     {
         Sender = sender;

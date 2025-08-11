@@ -22,8 +22,14 @@ public class PlayerDeathEventArgs : EventArgs, IPlayerEvent
     /// <param name="oldPosition">The previous world position of the player before death.</param>
     /// <param name="oldVelocity">The previous velocity of the player before death.</param>
     /// <param name="oldCameraRotation">The previous world rotation of the players camera before death.</param>
-    public PlayerDeathEventArgs(ReferenceHub player, ReferenceHub? attacker, DamageHandlerBase damageHandler,
-        RoleTypeId oldRole, Vector3 oldPosition, Vector3 oldVelocity, Quaternion oldCameraRotation)
+    public PlayerDeathEventArgs(
+        ReferenceHub player,
+        ReferenceHub? attacker,
+        DamageHandlerBase damageHandler,
+        RoleTypeId oldRole,
+        Vector3 oldPosition,
+        Vector3 oldVelocity,
+        Quaternion oldCameraRotation)
     {
         Player = Player.Get(player);
         Attacker = Player.Get(attacker);

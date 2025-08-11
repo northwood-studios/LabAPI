@@ -38,5 +38,4 @@ public class PlayerDryFiringWeaponEventArgs : EventArgs, IFirearmItemEvent, ICan
     /// <inheritdoc cref="FirearmItem"/>
     [Obsolete($"Use {nameof(FirearmItem)} instead")]
     public Item Weapon => FirearmItem;
-
 }

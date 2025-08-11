@@ -12,7 +12,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// </summary>
 public class PlayerRequestedRaPlayersInfoEventArgs : EventArgs, IPlayerEvent
 {
-    private IEnumerable<ReferenceHub> _targets;
+    private readonly IEnumerable<ReferenceHub> _targets;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerRequestedRaPlayersInfoEventArgs"/> class.
@@ -25,9 +25,15 @@ public class PlayerRequestedRaPlayersInfoEventArgs : EventArgs, IPlayerEvent
     /// <param name="idBuilder">The <see cref="StringBuilder"/> used to build the clipboard text for the targets ids.</param>
     /// <param name="ipBuilder">The <see cref="StringBuilder"/> used to build the clipboard text for the targets IPs.</param>
     /// <param name="userIdBuilder">The <see cref="StringBuilder"/> used to build the clipboard text for the targets user ids.</param>
-    public PlayerRequestedRaPlayersInfoEventArgs(CommandSender commandSender, IEnumerable<ReferenceHub> targets, 
-        bool isSensitiveInfo, bool hasUserIdPerms, StringBuilder infoBuilder, StringBuilder idBuilder,
-        StringBuilder ipBuilder, StringBuilder userIdBuilder)
+    public PlayerRequestedRaPlayersInfoEventArgs(
+        CommandSender commandSender,
+        IEnumerable<ReferenceHub> targets,
+        bool isSensitiveInfo,
+        bool hasUserIdPerms,
+        StringBuilder infoBuilder,
+        StringBuilder idBuilder,
+        StringBuilder ipBuilder,
+        StringBuilder userIdBuilder)
     {
         Player = Player.Get(commandSender)!;
         IsSensitiveInfo = isSensitiveInfo;

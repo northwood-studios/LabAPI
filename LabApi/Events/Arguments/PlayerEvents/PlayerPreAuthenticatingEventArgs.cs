@@ -37,7 +37,7 @@ public class PlayerPreAuthenticatingEventArgs : EventArgs, ICancellableEvent
     }
 
     /// <summary>
-    /// Gets or sets whether the player should be able to join server. ( this value can be false if server is full )
+    /// Gets or sets whether the player should be able to join server (this value can be false if server is full).
     /// </summary>
     public bool CanJoin { get; set; }
 
@@ -92,7 +92,7 @@ public class PlayerPreAuthenticatingEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Gets or sets the custom rejection writer.
     /// </summary>
-    //TODO: Write what exactly this does and how does it work
+    // TODO: Write what exactly this does and how does it work
     public NetDataWriter? CustomReject { get; set; }
 
     /// <summary>

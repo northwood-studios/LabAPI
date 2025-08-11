@@ -34,7 +34,7 @@ public class Scp096AddingTargetEventArgs : EventArgs, IPlayerEvent, ITargetEvent
     public Player Target { get; }
 
     /// <summary>
-    /// Whether the target was looking at SCP-096
+    /// Whether the target was looking at SCP-096.
     /// </summary>
     public bool WasLooking { get; }
 

@@ -12,7 +12,7 @@ public class Scp3114RevealingEventArgs : EventArgs, IPlayerEvent, ICancellableEv
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp3114RevealingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player SCP who is undisguising./param>
+    /// <param name="player">The player SCP who is undisguising.</param>
     /// <param name="forced">Bool whether the reveal is forced by timer running out or if it was player's request.</param>
     public Scp3114RevealingEventArgs(ReferenceHub player, bool forced)
     {

@@ -24,7 +24,7 @@ public class Scp079UsedTeslaEventArgs : EventArgs, IPlayerEvent, ITeslaEvent
     /// The SCP-079 player instance.
     /// </summary>
     public Player Player { get; }
-    
+
     /// <inheritdoc />
     public Tesla Tesla { get; }
 }

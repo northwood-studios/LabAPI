@@ -1,8 +1,8 @@
-﻿using LabApi.Events.Arguments.Interfaces;
+﻿using CustomPlayerEffects;
+using InventorySystem.Items.Usables.Scp330;
+using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
-using CustomPlayerEffects;
-using InventorySystem.Items.Usables.Scp330;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
@@ -49,7 +49,7 @@ public class PlayerInteractedScp330EventArgs : EventArgs, IPlayerEvent
     public bool AllowPunishment { get; }
 
     /// <summary>
-    /// Gets the type of the candy that has been given to the player. 
+    /// Gets the type of the candy that has been given to the player.
     /// </summary>
     public CandyKindID CandyType { get; }
 }

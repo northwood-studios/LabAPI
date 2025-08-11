@@ -14,7 +14,7 @@ public class Scp173PlayingSoundEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// The sound id that is going to be played.
     /// </summary>
     /// <param name="player">The SCP-173 player instance.</param>
-    /// <param name="soundId">The sound id that is going to be played.</param>
+    /// <param name="soundId">The sound id going to be played.</param>
     public Scp173PlayingSoundEventArgs(ReferenceHub player, Scp173AudioPlayer.Scp173SoundId soundId)
     {
         IsAllowed = true;

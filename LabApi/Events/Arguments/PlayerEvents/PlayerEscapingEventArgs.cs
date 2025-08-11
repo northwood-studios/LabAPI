@@ -46,7 +46,7 @@ public class PlayerEscapingEventArgs : EventArgs, IPlayerEvent, ICancellableEven
     public RoleTypeId NewRole { get; set; }
 
     /// <summary>
-    /// Gets or sets the escape scenario 
+    /// Gets or sets the escape scenario.
     /// </summary>
     public EscapeScenarioType EscapeScenario { get; set; }
 

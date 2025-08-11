@@ -31,7 +31,7 @@ public class PlayerBanningEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
     /// Gets the player who is being banned.
     /// </summary>
     public Player? Player { get; }
-    
+
     /// <summary>
     /// Gets the ID of the player who is being banned.
     /// </summary>

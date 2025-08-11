@@ -33,7 +33,7 @@ public class PlayerChangingNicknameEventArgs : EventArgs, IPlayerEvent, ICancell
     /// </summary>
     /// <remarks>Null means they did not have a custom display-name before.</remarks>
     public string? OldNickname { get; }
-    
+
     /// <summary>
     /// Gets or sets the new nickname of the player.
     /// </summary>

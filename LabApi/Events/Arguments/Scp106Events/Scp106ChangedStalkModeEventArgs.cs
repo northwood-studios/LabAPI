@@ -1,6 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
+using System;
 
 namespace LabApi.Events.Arguments.Scp106Events;
 
@@ -19,12 +19,12 @@ public class Scp106ChangedStalkModeEventArgs : EventArgs, IPlayerEvent
         Player = Player.Get(player);
         IsStalkActive = active;
     }
-    
+
     /// <summary>
     /// Whether the ability was activated or deactivated.
     /// </summary>
     public bool IsStalkActive { get; }
-    
+
     /// <summary>
     /// The SCP-106 player instance.
     /// </summary>
