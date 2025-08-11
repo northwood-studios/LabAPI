@@ -39,15 +39,15 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Player
 {
+        /// <summary>
+    /// A cache of players by their User ID. Does not necessarily contain all players.
+    /// </summary>
+    private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
+
     /// <summary>
     /// Contains all the cached players in the game, accessible through their <see cref="ReferenceHub"/>.
     /// </summary>
     public static Dictionary<ReferenceHub, Player> Dictionary { get; } = [];
-
-    /// <summary>
-    /// A cache of players by their User ID. Does not necessarily contain all players.
-    /// </summary>
-    private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instances currently in the game.
@@ -100,7 +100,7 @@ public class Player
     public static int Count => ReadyList.Count();
 
     /// <summary>
-    /// Gets the amount of non-verified players
+    /// Gets the amount of non-verified players.
     /// </summary>
     public static int NonVerifiedCount => UnauthenticatedList.Count();
 
@@ -108,6 +108,362 @@ public class Player
     /// Gets the amount of connected players. Regardless of their authentication status.
     /// </summary>
     public static int ConnectionsCount => LiteNetLib4MirrorCore.Host.ConnectedPeersCount;
+
+    /// <summary>
+    /// Validates the custom info text and returns result whether it is valid or invalid.<br/>
+    /// Current validation requirements are the following:
+    /// <br/>
+    /// <list type="bullet">
+    /// <item>Match the <see cref="Misc.PlayerCustomInfoRegex"/> regex.</item>
+    /// <item>Use only color,i,b and size rich text tags.</item>
+    /// <item>Colors used have to be from <see cref="Misc.AcceptedColours"/></item>
+    /// </list>
+    /// <br/>
+    /// </summary>
+    /// <param name="text">The text to check on.</param>
+    /// <param name="rejectionReason">Out parameter containing rejection reason.</param>
+    /// <returns>Whether is the info parameter valid.</returns>
+    public static bool ValidateCustomInfo(string text, out string rejectionReason) => NicknameSync.ValidateCustomInfo(text, out rejectionReason);
+
+    /// <summary>
+    /// Gets a all players matching the criteria specified by the <see cref="PlayerSearchFlags"/>.
+    /// </summary>
+    /// <param name="flags">The <see cref="PlayerSearchFlags"/> of the players to include.</param>
+    /// <returns>The set of players that match the criteria.</returns>
+    /// <remarks>
+    /// By default this returns the same set of players as <see cref="ReadyList"/>.
+    /// </remarks>
+    public static IEnumerable<Player> GetAll(PlayerSearchFlags flags = PlayerSearchFlags.AuthenticatedAndDummy)
+    {
+        bool authenticated = (flags & PlayerSearchFlags.AuthenticatedPlayers) > 0;
+        bool unauthenticated = (flags & PlayerSearchFlags.UnauthenticatedPlayers) > 0;
+        bool dummyNpcs = (flags & PlayerSearchFlags.DummyNpcs) > 0;
+        bool regularNpcs = (flags & PlayerSearchFlags.RegularNpcs) > 0;
+        bool host = (flags & PlayerSearchFlags.Host) > 0;
+
+        bool includePlayers = authenticated || unauthenticated;
+        bool allPlayers = authenticated && unauthenticated;
+        bool includeNpcs = dummyNpcs || regularNpcs;
+        bool allNpcs = dummyNpcs && regularNpcs;
+
+        foreach (Player player in List)
+        {
+            if ((includePlayers && player.IsPlayer && (allPlayers || player.IsReady == authenticated)) ||
+                ((includeNpcs && player.IsNpc) && (allNpcs || player.IsDummy == dummyNpcs)) ||
+                (host && player.IsHost))
+            {
+                yield return player;
+            }
+        }
+    }
+
+    #region Player Getters
+
+    /// <summary>
+    /// Gets the player wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <param name="referenceHub">The reference hub of the player.</param>
+    /// <returns>The requested player or null if the reference hub is null.</returns>
+    [return: NotNullIfNotNull(nameof(referenceHub))]
+    public static Player? Get(ReferenceHub? referenceHub)
+    {
+        if (referenceHub == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(referenceHub, out Player player) ? player : CreatePlayerWrapper(referenceHub);
+    }
+
+    /// <summary>
+    /// Gets a list of players from a list of reference hubs.
+    /// </summary>
+    /// <param name="referenceHubs">The reference hubs of the players.</param>
+    /// <returns>A list of players.</returns>
+    public static List<Player> Get(IEnumerable<ReferenceHub> referenceHubs)
+    {
+        // We rent a list from the pool to avoid unnecessary allocations.
+        // We don't care if the developer forgets to return the list to the pool
+        // as at least it will be more efficient than always allocating a new list.
+        List<Player> list = ListPool<Player>.Shared.Rent();
+        return GetNonAlloc(referenceHubs, list);
+    }
+
+    /// <summary>
+    /// Gets a list of players from a list of reference hubs without allocating a new list.
+    /// </summary>
+    /// <param name="referenceHubs">The reference hubs of the players.</param>
+    /// <param name="list">A reference to the list to add the players to.</param>
+    /// <returns>The <paramref name="list"/> passed in.</returns>
+    public static List<Player> GetNonAlloc(IEnumerable<ReferenceHub> referenceHubs, List<Player> list)
+    {
+        // We clear the list to avoid any previous data.
+        list.Clear();
+
+        // And then we add all the players to the list.
+        list.AddRange(referenceHubs.Select(Get)!);
+
+        // We finally return the list.
+        return list;
+    }
+
+    #region Get Player from a GameObject
+
+    /// <summary>
+    /// Gets the <see cref="Player"/> associated with the <see cref="GameObject"/>.
+    /// </summary>
+    /// <param name="gameObject">The <see cref="UnityEngine.GameObject"/> to get the player from.</param>
+    /// <returns>The <see cref="Player"/> associated with the <see cref="GameObject"/> or null if it doesn't exist.</returns>
+    public static Player? Get(GameObject? gameObject) => TryGet(gameObject, out Player? player) ? player : null;
+
+    /// <summary>
+    /// Tries to get the <see cref="Player"/> associated with the <see cref="GameObject"/>.
+    /// </summary>
+    /// <param name="gameObject">The <see cref="UnityEngine.GameObject"/> to get the player from.</param>
+    /// <param name="player">The <see cref="Player"/> associated with the <see cref="UnityEngine.GameObject"/> or null if it doesn't exist.</param>
+    /// <returns>Whether the player was successfully retrieved.</returns>
+    public static bool TryGet(GameObject? gameObject, [NotNullWhen(true)] out Player? player)
+    {
+        player = null;
+        if (gameObject == null)
+        {
+            return false;
+        }
+
+        if (!ReferenceHub.TryGetHub(gameObject, out ReferenceHub? hub))
+        {
+            return false;
+        }
+
+        player = Get(hub);
+        return true;
+    }
+
+    #endregion
+
+    #region Get Player from a NetworkIdentity
+
+    /// <summary>
+    /// Gets the <see cref="Player"/> associated with the <see cref="NetworkIdentity"/>.
+    /// </summary>
+    /// <param name="identity">The <see cref="NetworkIdentity"/> to get the player from.</param>
+    /// <returns>The <see cref="Player"/> associated with the <see cref="NetworkIdentity"/> or null if it doesn't exist.</returns>
+    public static Player? Get(NetworkIdentity? identity) => TryGet(identity, out Player? player) ? player : null;
+
+    /// <summary>
+    /// Tries to get the <see cref="Player"/> associated with the <see cref="NetworkIdentity"/>.
+    /// </summary>
+    /// <param name="identity">The <see cref="NetworkIdentity"/> to get the player from.</param>
+    /// <param name="player">The <see cref="Player"/> associated with the <see cref="NetworkIdentity"/> or null if it doesn't exist.</param>
+    /// <returns>Whether the player was successfully retrieved.</returns>
+    public static bool TryGet(NetworkIdentity? identity, [NotNullWhen(true)] out Player? player)
+    {
+        player = null;
+        if (identity == null)
+        {
+            return false;
+        }
+
+        if (!TryGet(identity.netId, out player))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    #endregion
+
+    #region Get Player from a NetworkIdentity.netId (uint)
+
+    /// <summary>
+    /// Gets the <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/>.
+    /// </summary>
+    /// <param name="netId">The <see cref="NetworkIdentity.netId"/> to get the player from.</param>
+    /// <returns>The <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/> or null if it doesn't exist.</returns>
+    public static Player? Get(uint netId) => TryGet(netId, out Player? player) ? player : null;
+
+    /// <summary>
+    /// Tries to get the <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/>.
+    /// </summary>
+    /// <param name="netId">The <see cref="NetworkIdentity.netId"/> to get the player from.</param>
+    /// <param name="player">The <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/> or null if it doesn't exist.</param>
+    /// <returns>Whether the player was successfully retrieved.</returns>
+    public static bool TryGet(uint netId, [NotNullWhen(true)] out Player? player)
+    {
+        player = null;
+        if (!ReferenceHub.TryGetHubNetID(netId, out ReferenceHub hub))
+        {
+            return false;
+        }
+
+        player = Get(hub);
+        return true;
+    }
+
+    #endregion
+
+    #region Get Player from a ICommandSender
+
+    /// <summary>
+    /// Gets the <see cref="Player"/> associated with the <see cref="ICommandSender"/>.
+    /// </summary>
+    /// <param name="sender">The <see cref="ICommandSender"/> to get the player from.</param>
+    /// <returns>The <see cref="Player"/> associated with the <see cref="ICommandSender"/> or null if it doesn't exist.</returns>
+    public static Player? Get(ICommandSender? sender) => TryGet(sender, out Player? player) ? player : null;
+
+    /// <summary>
+    /// Tries to get the <see cref="Player"/> associated with the <see cref="ICommandSender"/>.
+    /// </summary>
+    /// <param name="sender">The <see cref="ICommandSender"/> to get the player from.</param>
+    /// <param name="player">The <see cref="Player"/> associated with the <see cref="ICommandSender"/> or null if it doesn't exist.</param>
+    /// <returns>Whether the player was successfully retrieved.</returns>
+    public static bool TryGet(ICommandSender? sender, [NotNullWhen(true)] out Player? player)
+    {
+        player = null;
+
+        if (sender is not CommandSender commandSender)
+        {
+            return false;
+        }
+
+        return TryGet(commandSender.SenderId, out player);
+    }
+
+    #endregion
+
+    #region Get Player from a UserId
+
+    /// <summary>
+    /// Gets the <see cref="Player"/> associated with the <paramref name="userId"/>.
+    /// </summary>
+    /// <param name="userId">The User ID of the player.</param>
+    /// <returns>The <see cref="Player"/> associated with the <paramref name="userId"/> or null if it doesn't exist.</returns>
+    public static Player? Get(string? userId) => TryGet(userId, out Player? player) ? player : null;
+
+    /// <summary>
+    /// Tries to get the <see cref="Player"/> associated with the <paramref name="userId"/>.
+    /// </summary>
+    /// <param name="userId">The user ID of the player.</param>
+    /// <param name="player">The <see cref="Player"/> associated with the <paramref name="userId"/> or null if it doesn't exist.</param>
+    /// <returns>Whether the player was successfully retrieved.</returns>
+    public static bool TryGet(string? userId, [NotNullWhen(true)] out Player? player)
+    {
+        player = null;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return false;
+        }
+
+        if (UserIdCache.TryGetValue(userId!, out player) && player.IsOnline)
+        {
+            return true;
+        }
+
+        player = List.FirstOrDefault(x => x.UserId == userId);
+        if (player == null)
+        {
+            return false;
+        }
+
+        UserIdCache[userId!] = player;
+        return true;
+    }
+
+    #endregion
+
+    #region Get Player from a Player Id
+
+    /// <summary>
+    /// Gets the <see cref="Player" /> associated with the <paramref name="playerId" />.
+    /// </summary>
+    /// <param name="playerId">The player ID of the player.</param>
+    /// <returns>The <see cref="Player" /> associated with the <paramref name="playerId" /> or null if it doesn't exist.</returns>
+    public static Player? Get(int playerId) => TryGet(playerId, out Player? player) ? player : null;
+
+    /// <summary>
+    /// Tries to get the <see cref="Player" /> associated with the <paramref name="playerId" />.
+    /// </summary>
+    /// <param name="playerId">The player ID of the player.</param>
+    /// <param name="player">The <see cref="Player" /> associated with the <paramref name="playerId" /> or null if it doesn't exist.</param>
+    /// <returns>Whether the player was successfully retrieved.</returns>
+    public static bool TryGet(int playerId, [NotNullWhen(true)] out Player? player)
+    {
+        player = List.FirstOrDefault(n => n.PlayerId == playerId);
+        return player != null;
+    }
+
+    #endregion
+
+    #region Get Player from a Name
+
+    /// <summary>
+    /// Get closest player by lexicographical order.
+    /// Players are compared by their <see cref="DisplayName"/>.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByDisplayName(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.DisplayName);
+
+    /// <summary>
+    /// Gets the closest player by lexicographical order.
+    /// Players are compared by their <see cref="Nickname"/>.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByNickname(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.Nickname);
+
+    /// <summary>
+    /// Gets the closest player by lexicographical order.
+    /// Base function to allow to select by <see langword="string"/> player property.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <param name="propertySelector">Function to select player property.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByName(string input, bool requireFullMatch, Func<Player, string> propertySelector)
+    {
+        IOrderedEnumerable<Player> sortedPlayers = List.OrderBy(propertySelector);
+
+        foreach (Player player in sortedPlayers)
+        {
+            string toCheck = propertySelector(player);
+            if (requireFullMatch)
+            {
+                if (toCheck.Equals(input, StringComparison.OrdinalIgnoreCase))
+                {
+                    return player;
+                }
+            }
+            else if (toCheck.StartsWith(input, StringComparison.OrdinalIgnoreCase))
+            {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Tries to get players by name by seeing if their name starts with the input.
+    /// </summary>
+    /// <param name="input">The input to search for.</param>
+    /// <param name="players">The output players if found.</param>
+    /// <returns>True if the players are found, false otherwise.</returns>
+    public static bool TryGetPlayersByName(string input, out List<Player> players)
+    {
+        players = GetNonAlloc(
+            ReferenceHub.AllHubs.Where(x => x.nicknameSync.Network_myNickSync.StartsWith(input, StringComparison.OrdinalIgnoreCase)),
+            ListPool<Player>.Shared.Rent());
+
+        return players.Count > 0;
+    }
+
+    #endregion
+
+    #endregion
 
     /// <summary>
     /// Initializes the <see cref="Player"/> class to subscribe to <see cref="ReferenceHub"/> events and handle the player cache.
@@ -120,6 +476,75 @@ public class Player
 
         ReferenceHub.OnPlayerAdded += AddPlayer;
         ReferenceHub.OnPlayerRemoved += RemovePlayer;
+    }
+
+    /// <summary>
+    /// Creates a new wrapper for the player using the player's <see cref="global::ReferenceHub"/>.
+    /// </summary>
+    /// <param name="referenceHub">The <see cref="global::ReferenceHub"/> of the player.</param>
+    /// <returns>The created player wrapper.</returns>
+    private static Player CreatePlayerWrapper(ReferenceHub referenceHub)
+    {
+        Player player = new(referenceHub);
+
+        if (referenceHub.isLocalPlayer)
+        {
+            Server.Host = player;
+        }
+
+        return player;
+    }
+
+    /// <summary>
+    /// Handles the creation of a player in the server.
+    /// </summary>
+    /// <param name="referenceHub">The reference hub of the player.</param>
+    private static void AddPlayer(ReferenceHub referenceHub)
+    {
+        try
+        {
+            if (Dictionary.ContainsKey(referenceHub))
+            {
+                return;
+            }
+
+            CreatePlayerWrapper(referenceHub);
+        }
+        catch (Exception ex)
+        {
+            Console.Logger.InternalError($"Failed to handle player addition with exception: {ex}");
+        }
+    }
+
+    /// <summary>
+    /// Handles the removal of a player from the server.
+    /// </summary>
+    /// <param name="referenceHub">The reference hub of the player.</param>
+    private static void RemovePlayer(ReferenceHub referenceHub)
+    {
+        try
+        {
+            if (referenceHub.authManager.UserId != null)
+            {
+                UserIdCache.Remove(referenceHub.authManager.UserId);
+            }
+
+            if (TryGet(referenceHub.gameObject, out Player? player))
+            {
+                CustomDataStoreManager.RemovePlayer(player);
+            }
+
+            if (referenceHub.isLocalPlayer)
+            {
+                Server.Host = null;
+            }
+
+            Dictionary.Remove(referenceHub);
+        }
+        catch (Exception ex)
+        {
+            Console.Logger.InternalError($"Failed to handle player removal with exception: {ex}");
+        }
     }
 
     /// <summary>
@@ -260,7 +685,7 @@ public class Player
 
     /// <summary>
     /// Gets or sets the player's custom info.<br/>
-    /// Do note that custom info is restriced by several things listed in <see cref="ValidateCustomInfo"/>. 
+    /// Do note that custom info is restricted by several things listed in <see cref="ValidateCustomInfo"/>.
     /// Please use this method to validate your string as it is validated on the client by the same method.
     /// </summary>
     public string CustomInfo
@@ -271,7 +696,7 @@ public class Player
 
     /// <summary>
     /// Gets or sets the player's info area flags.
-    /// Flags determine what info is displayed to other players when they hover their crosshair over.
+    /// Flags determine what info is displayed to other players when they hover their cross-hair over.
     /// </summary>
     public PlayerInfoArea InfoArea
     {
@@ -299,7 +724,7 @@ public class Player
 
     /// <summary>
     /// Gets or sets the player's current artificial health.<br/>
-    /// Setting the value will clear all the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
+    /// Setting the value will clear all the current "processes" (each process is responsible for decaying AHP value separately. E.g 2 processes blue candy AHP, which doesn't decay and adrenaline process, where AHP does decay).<br/>
     /// Note: This value cannot be greater than <see cref="MaxArtificialHealth"/>. Set it to your desired value first if its over <see cref="AhpStat.DefaultMax"/> and then set this one.
     /// </summary>
     public float ArtificialHealth
@@ -311,7 +736,9 @@ public class Player
             ahp.ServerKillAllProcesses();
 
             if (value > 0)
+            {
                 ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(value, MaxArtificialHealth, 0f, 1f, 0f, false);
+            }
         }
     }
 
@@ -336,7 +763,7 @@ public class Player
 
     /// <summary>
     /// Gets or sets the player's maximum hume shield value.
-    /// Note: This value may change if the player passes a new humeshield treshold for SCPs.
+    /// Note: This value may change if the player passes a new hume shield threshold for SCPs.
     /// </summary>
     public float MaxHumeShield
     {
@@ -345,7 +772,7 @@ public class Player
     }
 
     /// <summary>
-    /// Gets or sets the current regeneration rate of the hume shield per second. 
+    /// Gets or sets the current regeneration rate of the hume shield per second.
     /// Returns -1 if the player's role doesn't have hume shield controller.
     /// </summary>
     public float HumeShieldRegenRate
@@ -353,21 +780,26 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+            {
                 return -1;
+            }
 
             return role.HumeShieldModule.HsRegeneration;
         }
+
         set
         {
             if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+            {
                 return;
+            }
 
-            (role.HumeShieldModule as DynamicHumeShieldController).RegenerationRate = value;
+            ((DynamicHumeShieldController)role.HumeShieldModule).RegenerationRate = value;
         }
     }
 
     /// <summary>
-    /// Gets or sets the time that must pass after taking damage for hume shield to regenerate again. 
+    /// Gets or sets the time that must pass after taking damage for hume shield to regenerate again.
     /// Returns -1 if the player's role doesn't have hume shield controller.
     /// </summary>
     public float HumeShieldRegenCooldown
@@ -375,16 +807,21 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+            {
                 return -1;
+            }
 
-            return (role.HumeShieldModule as DynamicHumeShieldController).RegenerationCooldown;
+            return ((DynamicHumeShieldController)role.HumeShieldModule).RegenerationCooldown;
         }
+
         set
         {
             if (ReferenceHub.roleManager.CurrentRole is not IHumeShieldedRole role)
+            {
                 return;
+            }
 
-            (role.HumeShieldModule as DynamicHumeShieldController).RegenerationCooldown = value;
+            ((DynamicHumeShieldController)role.HumeShieldModule).RegenerationCooldown = value;
         }
     }
 
@@ -398,14 +835,19 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is IFpcRole role)
+            {
                 return role.FpcModule.Motor.GravityController.Gravity;
+            }
 
             return Vector3.zero;
         }
+
         set
         {
             if (ReferenceHub.roleManager.CurrentRole is IFpcRole role)
+            {
                 role.FpcModule.Motor.GravityController.Gravity = value;
+            }
         }
     }
 
@@ -437,10 +879,14 @@ public class Player
         get
         {
             if (RoleBase is not SpectatorRole sr)
+            {
                 return null;
+            }
 
             if (!ReferenceHub.TryGetHubNetID(sr.SyncedSpectatedNetId, out ReferenceHub hub))
+            {
                 return null;
+            }
 
             return Get(hub);
         }
@@ -457,7 +903,9 @@ public class Player
             foreach (Player player in List)
             {
                 if (ReferenceHub.IsSpectatedBy(player.ReferenceHub))
+                {
                     list.Add(player);
+                }
             }
 
             return list;
@@ -473,9 +921,13 @@ public class Player
         set
         {
             if (value == null || value.Type == ItemType.None)
+            {
                 Inventory.ServerSelectItem(0);
+            }
             else
+            {
                 Inventory.ServerSelectItem(value.Serial);
+            }
         }
     }
 
@@ -491,7 +943,7 @@ public class Player
     /// Player inside of the elevator is consider to be in the said room until the elevator teleports to the next door.
     /// </para>
     /// </summary>
-    public Room? Room => Room.TryGetRoomAtPosition(Position, out Room room) ? room : null;
+    public Room? Room => Room.TryGetRoomAtPosition(Position, out Room? room) ? room : null;
 
     /// <summary>
     /// Gets the cached room of the player. Cached room is revalidated once every frame or when player teleports.<br/>
@@ -677,18 +1129,24 @@ public class Player
     {
         get
         {
-            if (!IsDisarmed) return null;
+            if (!IsDisarmed)
+            {
+                return null;
+            }
 
             DisarmedPlayers.DisarmedEntry entry = DisarmedPlayers.Entries.Find(x => x.DisarmedPlayer == NetworkId);
 
             return Get(entry.Disarmer);
         }
+
         set
         {
             Inventory.SetDisarmedStatus(null);
 
             if (value == null)
+            {
                 return;
+            }
 
             DisarmedPlayers.Entries.Add(new DisarmedPlayers.DisarmedEntry(NetworkId, value.NetworkId));
             new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated();
@@ -749,7 +1207,9 @@ public class Player
         get
         {
             if (RoleBase is not IFpcRole fpcRole)
+            {
                 return Vector3.zero;
+            }
 
             return fpcRole.FpcModule.Position;
         }
@@ -774,7 +1234,9 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+            {
                 return Vector2.zero;
+            }
 
             FpcMouseLook mouseLook = fpcRole.FpcModule.MouseLook;
             return new Vector2(mouseLook.CurrentVertical, mouseLook.CurrentHorizontal);
@@ -791,14 +1253,19 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+            {
                 return Vector3.zero;
+            }
 
             return fpcRole.FpcModule.Motor.ScaleController.Scale;
         }
+
         set
         {
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+            {
                 return;
+            }
 
             fpcRole.FpcModule.Motor.ScaleController.Scale = value;
         }
@@ -812,334 +1279,6 @@ public class Player
         get => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue;
         set => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue = value;
     }
-
-    /// <summary>
-    /// Validates the custom info text and returns result whether it is valid or invalid.<br/>
-    /// Current validation requirements are the following:
-    /// 
-    /// <list type="bullet">
-    /// <item>Match the <see cref="Misc.PlayerCustomInfoRegex"/> regex.</item>
-    /// <item>Use only color,i,b and size rich text tags.</item>
-    /// <item>Colors used have to be from <see cref="Misc.AcceptedColours"/></item>
-    /// </list>
-    /// 
-    /// </summary>
-    /// <param name="text">The text to check on.</param>
-    /// <param name="rejectionReason">Out parameter containing rejection reason.</param>
-    /// <returns>Whether is the info parameter valid.</returns>
-    public static bool ValidateCustomInfo(string text, out string rejectionReason) => NicknameSync.ValidateCustomInfo(text, out rejectionReason);
-
-    /// <summary>
-    /// Gets a all players matching the criteria specified by the <see cref="PlayerSearchFlags"/>.
-    /// </summary>
-    /// <param name="flags">The <see cref="PlayerSearchFlags"/> of the players to include.</param>
-    /// <returns>The set of players that match the criteria.</returns>
-    /// <remarks>
-    /// By default this returns the same set of players as <see cref="ReadyList"/>.
-    /// </remarks>
-    public static IEnumerable<Player> GetAll(PlayerSearchFlags flags = PlayerSearchFlags.AuthenticatedAndDummy)
-    {
-        bool authenticated = (flags & PlayerSearchFlags.AuthenticatedPlayers) > 0;
-        bool unauthenticated = (flags & PlayerSearchFlags.UnauthenticatedPlayers) > 0;
-        bool dummyNpcs = (flags & PlayerSearchFlags.DummyNpcs) > 0;
-        bool regularNpcs = (flags & PlayerSearchFlags.RegularNpcs) > 0;
-        bool host = (flags & PlayerSearchFlags.Host) > 0;
-
-        bool includePlayers = authenticated || unauthenticated;
-        bool allPlayers = authenticated && unauthenticated;
-        bool includeNpcs = dummyNpcs || regularNpcs;
-        bool allNpcs = dummyNpcs && regularNpcs;
-
-        foreach (Player player in List)
-        {
-            if ((includePlayers && player.IsPlayer && (allPlayers || player.IsReady == authenticated)) ||
-                (includeNpcs && player.IsNpc) && (allNpcs || player.IsDummy == dummyNpcs) ||
-                (host && player.IsHost))
-                yield return player;
-        }
-    }
-
-    #region Player Getters
-
-    /// <summary>
-    /// Gets the player wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub of the player.</param>
-    /// <returns>The requested player or null if the reference hub is null.</returns>
-    [return: NotNullIfNotNull(nameof(referenceHub))]
-    public static Player? Get(ReferenceHub? referenceHub)
-    {
-        if (referenceHub == null)
-            return null;
-
-        return Dictionary.TryGetValue(referenceHub, out Player player) ? player : CreatePlayerWrapper(referenceHub);
-    }
-
-    /// <summary>
-    /// Gets a list of players from a list of reference hubs.
-    /// </summary>
-    /// <param name="referenceHubs">The reference hubs of the players.</param>
-    /// <returns>A list of players.</returns>
-    public static List<Player> Get(IEnumerable<ReferenceHub> referenceHubs)
-    {
-        // We rent a list from the pool to avoid unnecessary allocations.
-        // We don't care if the developer forgets to return the list to the pool
-        // as at least it will be more efficient than always allocating a new list.
-        List<Player> list = ListPool<Player>.Shared.Rent();
-        return GetNonAlloc(referenceHubs, list);
-    }
-
-    /// <summary>
-    /// Gets a list of players from a list of reference hubs without allocating a new list.
-    /// </summary>
-    /// <param name="referenceHubs">The reference hubs of the players.</param>
-    /// <param name="list">A reference to the list to add the players to.</param>
-    public static List<Player> GetNonAlloc(IEnumerable<ReferenceHub> referenceHubs, List<Player> list)
-    {
-        // We clear the list to avoid any previous data.
-        list.Clear();
-        // And then we add all the players to the list.
-        list.AddRange(referenceHubs.Select(Get));
-        // We finally return the list.
-        return list;
-    }
-
-    #region Get Player from a GameObject
-
-    /// <summary>
-    /// Gets the <see cref="Player"/> associated with the <see cref="GameObject"/>.
-    /// </summary>
-    /// <param name="gameObject">The <see cref="UnityEngine.GameObject"/> to get the player from.</param>
-    /// <returns>The <see cref="Player"/> associated with the <see cref="GameObject"/> or null if it doesn't exist.</returns>
-    public static Player? Get(GameObject? gameObject) => TryGet(gameObject, out Player? player) ? player : null;
-
-    /// <summary>
-    /// Tries to get the <see cref="Player"/> associated with the <see cref="GameObject"/>.
-    /// </summary>
-    /// <param name="gameObject">The <see cref="UnityEngine.GameObject"/> to get the player from.</param>
-    /// <param name="player">The <see cref="Player"/> associated with the <see cref="UnityEngine.GameObject"/> or null if it doesn't exist.</param>
-    /// <returns>Whether the player was successfully retrieved.</returns>
-    public static bool TryGet(GameObject? gameObject, [NotNullWhen(true)] out Player? player)
-    {
-        player = null;
-        if (gameObject == null)
-            return false;
-
-        if (!ReferenceHub.TryGetHub(gameObject, out ReferenceHub? hub))
-            return false;
-
-        player = Get(hub);
-        return true;
-    }
-
-    #endregion
-
-    #region Get Player from a NetworkIdentity
-
-    /// <summary>
-    /// Gets the <see cref="Player"/> associated with the <see cref="NetworkIdentity"/>.
-    /// </summary>
-    /// <param name="identity">The <see cref="NetworkIdentity"/> to get the player from.</param>
-    /// <returns>The <see cref="Player"/> associated with the <see cref="NetworkIdentity"/> or null if it doesn't exist.</returns>
-    public static Player? Get(NetworkIdentity? identity) => TryGet(identity, out Player? player) ? player : null;
-
-    /// <summary>
-    /// Tries to get the <see cref="Player"/> associated with the <see cref="NetworkIdentity"/>.
-    /// </summary>
-    /// <param name="identity">The <see cref="NetworkIdentity"/> to get the player from.</param>
-    /// <param name="player">The <see cref="Player"/> associated with the <see cref="NetworkIdentity"/> or null if it doesn't exist.</param>
-    /// <returns>Whether the player was successfully retrieved.</returns>
-    public static bool TryGet(NetworkIdentity? identity, [NotNullWhen(true)] out Player? player)
-    {
-        player = null;
-        if (identity == null)
-            return false;
-
-        if (!TryGet(identity.netId, out player))
-            return false;
-
-        return true;
-    }
-
-    #endregion
-
-    #region Get Player from a NetworkIdentity.netId (uint)
-
-    /// <summary>
-    /// Gets the <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/>.
-    /// </summary>
-    /// <param name="netId">The <see cref="NetworkIdentity.netId"/> to get the player from.</param>
-    /// <returns>The <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/> or null if it doesn't exist.</returns>
-    public static Player? Get(uint netId) => TryGet(netId, out Player? player) ? player : null;
-
-    /// <summary>
-    /// Tries to get the <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/>.
-    /// </summary>
-    /// <param name="netId">The <see cref="NetworkIdentity.netId"/> to get the player from.</param>
-    /// <param name="player">The <see cref="Player"/> associated with the <see cref="NetworkIdentity.netId"/> or null if it doesn't exist.</param>
-    /// <returns>Whether the player was successfully retrieved.</returns>
-    public static bool TryGet(uint netId, [NotNullWhen(true)] out Player? player)
-    {
-        player = null;
-        if (!ReferenceHub.TryGetHubNetID(netId, out ReferenceHub hub))
-            return false;
-
-        player = Get(hub);
-        return true;
-    }
-
-    #endregion
-
-    #region Get Player from a ICommandSender
-
-    /// <summary>
-    /// Gets the <see cref="Player"/> associated with the <see cref="ICommandSender"/>.
-    /// </summary>
-    /// <param name="sender">The <see cref="ICommandSender"/> to get the player from.</param>
-    /// <returns>The <see cref="Player"/> associated with the <see cref="ICommandSender"/> or null if it doesn't exist.</returns>
-    public static Player? Get(ICommandSender? sender) => TryGet(sender, out Player? player) ? player : null;
-
-    /// <summary>
-    /// Tries to get the <see cref="Player"/> associated with the <see cref="ICommandSender"/>.
-    /// </summary>
-    /// <param name="sender">The <see cref="ICommandSender"/> to get the player from.</param>
-    /// <param name="player">The <see cref="Player"/> associated with the <see cref="ICommandSender"/> or null if it doesn't exist.</param>
-    /// <returns>Whether the player was successfully retrieved.</returns>
-    public static bool TryGet(ICommandSender? sender, [NotNullWhen(true)] out Player? player)
-    {
-        player = null;
-
-        if (sender is not CommandSender commandSender)
-            return false;
-
-        return TryGet(commandSender.SenderId, out player);
-    }
-
-    #endregion
-
-    #region Get Player from a UserId
-
-    /// <summary>
-    /// Gets the <see cref="Player"/> associated with the <paramref name="userId"/>.
-    /// </summary>
-    /// <param name="userId">The User ID of the player.</param>
-    /// <returns>The <see cref="Player"/> associated with the <paramref name="userId"/> or null if it doesn't exist.</returns>
-    public static Player? Get(string? userId) => TryGet(userId, out Player? player) ? player : null;
-
-    /// <summary>
-    /// Tries to get the <see cref="Player"/> associated with the <paramref name="userId"/>.
-    /// </summary>
-    /// <param name="userId">The user ID of the player.</param>
-    /// <param name="player">The <see cref="Player"/> associated with the <paramref name="userId"/> or null if it doesn't exist.</param>
-    /// <returns>Whether the player was successfully retrieved.</returns>
-    public static bool TryGet(string? userId, [NotNullWhen(true)] out Player? player)
-    {
-        player = null;
-        if (string.IsNullOrEmpty(userId))
-            return false;
-
-        if (UserIdCache.TryGetValue(userId!, out player) && player.IsOnline)
-            return true;
-
-        player = List.FirstOrDefault(x => x.UserId == userId);
-        if (player == null)
-            return false;
-
-        UserIdCache[userId!] = player;
-        return true;
-    }
-
-    #endregion
-
-    #region Get Player from a Player Id
-
-    /// <summary>
-    /// Gets the <see cref="Player" /> associated with the <paramref name="playerId" />.
-    /// </summary>
-    /// <param name="playerId">The player ID of the player.</param>
-    /// <returns>The <see cref="Player" /> associated with the <paramref name="playerId" /> or null if it doesn't exist.</returns>
-    public static Player? Get(int playerId) => TryGet(playerId, out Player? player) ? player : null;
-
-    /// <summary>
-    /// Tries to get the <see cref="Player" /> associated with the <paramref name="playerId" />.
-    /// </summary>
-    /// <param name="playerId">The player ID of the player.</param>
-    /// <param name="player">The <see cref="Player" /> associated with the <paramref name="playerId" /> or null if it doesn't exist.</param>
-    /// <returns>Whether the player was successfully retrieved.</returns>
-    public static bool TryGet(int playerId, [NotNullWhen(true)] out Player? player)
-    {
-        player = List.FirstOrDefault(n => n.PlayerId == playerId);
-        return player != null;
-    }
-
-    #endregion
-
-    #region Get Player from a Name
-
-    /// <summary>
-    /// Get closest player by lexicographical order.
-    /// Players are compared by their <see cref="DisplayName"/>.
-    /// </summary>
-    /// <param name="input">The input to search the player by.</param>
-    /// <param name="requireFullMatch">Whether the full match is required.</param>
-    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
-    public static Player? GetByDisplayName(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.DisplayName);
-
-    /// <summary>
-    /// Gets the closest player by lexicographical order.
-    /// Players are compared by their <see cref="Nickname"/>.
-    /// </summary>
-    /// <param name="input">The input to search the player by.</param>
-    /// <param name="requireFullMatch">Whether the full match is required.</param>
-    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
-    public static Player? GetByNickname(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.Nickname);
-
-    /// <summary>
-    /// Gets the closest player by lexicographical order.
-    /// Base function to allow to select by <see langword="string"/> player property.
-    /// </summary>
-    /// <param name="input">The input to search the player by.</param>
-    /// <param name="requireFullMatch">Whether the full match is required.</param>
-    /// <param name="propertySelector">Function to select player property.</param>
-    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
-    public static Player? GetByName(string input, bool requireFullMatch, Func<Player, string> propertySelector)
-    {
-        IOrderedEnumerable<Player> sortedPlayers = List.OrderBy(propertySelector);
-
-        foreach (Player player in sortedPlayers)
-        {
-            string toCheck = propertySelector(player);
-            if (requireFullMatch)
-            {
-                if (toCheck.Equals(input, StringComparison.OrdinalIgnoreCase))
-                    return player;
-            }
-            else if (toCheck.StartsWith(input, StringComparison.OrdinalIgnoreCase))
-            {
-                return player;
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// Tries to get players by name by seeing if their name starts with the input.
-    /// </summary>
-    /// <param name="input">The input to search for.</param>
-    /// <param name="players">The output players if found.</param>
-    /// <returns>True if the players are found, false otherwise.</returns>
-    public static bool TryGetPlayersByName(string input, out List<Player> players)
-    {
-        players = GetNonAlloc(ReferenceHub.AllHubs.Where(x => x.nicknameSync.Network_myNickSync.StartsWith(input, StringComparison.OrdinalIgnoreCase)),
-            ListPool<Player>.Shared.Rent());
-
-        return players.Count > 0;
-    }
-
-    #endregion
-
-    #endregion
 
     /// <summary>
     /// Teleports the player by the delta location.
@@ -1161,14 +1300,18 @@ public class Player
     public void Jump(float jumpStrength)
     {
         if (ReferenceHub.roleManager.CurrentRole is IFpcRole fpcRole)
+        {
             fpcRole.FpcModule.Motor.JumpController.ForceJump(jumpStrength);
+        }
     }
 
     /// <inheritdoc cref="Jump(float)"/>
     public void Jump()
     {
         if (ReferenceHub.roleManager.CurrentRole is IFpcRole fpcRole)
+        {
             Jump(fpcRole.FpcModule.JumpSpeed);
+        }
     }
 
     /// <summary>
@@ -1200,9 +1343,13 @@ public class Player
     public void Mute(bool isTemporary = true)
     {
         if (isTemporary)
+        {
             VoiceChatMutes.SetFlags(ReferenceHub, VoiceChatMutes.GetFlags(ReferenceHub) | VcMuteFlags.LocalRegular);
+        }
         else
+        {
             VoiceChatMutes.IssueLocalMute(UserId);
+        }
     }
 
     /// <summary>
@@ -1212,9 +1359,13 @@ public class Player
     public void Unmute(bool revokeMute)
     {
         if (revokeMute)
+        {
             VoiceChatMutes.RevokeLocalMute(UserId);
+        }
         else
+        {
             VoiceChatMutes.SetFlags(ReferenceHub, VoiceChatMutes.GetFlags(ReferenceHub) & ~VcMuteFlags.LocalRegular);
+        }
     }
 
     /// <summary>
@@ -1224,9 +1375,13 @@ public class Player
     public void IntercomMute(bool isTemporary = false)
     {
         if (isTemporary)
+        {
             VoiceChatMutes.SetFlags(ReferenceHub, VoiceChatMutes.GetFlags(ReferenceHub) | VcMuteFlags.LocalIntercom);
+        }
         else
+        {
             VoiceChatMutes.IssueLocalMute(UserId, true);
+        }
     }
 
     /// <summary>
@@ -1236,9 +1391,13 @@ public class Player
     public void IntercomUnmute(bool revokeMute)
     {
         if (revokeMute)
+        {
             VoiceChatMutes.RevokeLocalMute(UserId, true);
+        }
         else
+        {
             VoiceChatMutes.SetFlags(ReferenceHub, VoiceChatMutes.GetFlags(ReferenceHub) & ~VcMuteFlags.LocalIntercom);
+        }
     }
 
     /// <summary>
@@ -1300,11 +1459,15 @@ public class Player
         {
             ItemBase? itemBase = Items.ElementAt(i).Base;
             if (itemBase.ItemTypeId != item)
+            {
                 continue;
+            }
 
             RemoveItem(itemBase);
             if (++count >= maxAmount)
+            {
                 break;
+            }
         }
     }
 
@@ -1337,7 +1500,9 @@ public class Player
     {
         List<Pickup> items = ListPool<Pickup>.Shared.Rent();
         foreach (Item item in Items.ToArray())
+        {
             items.Add(DropItem(item));
+        }
 
         return items;
     }
@@ -1345,7 +1510,7 @@ public class Player
     /// <summary>
     /// Sets the ammo amount of a specific ammo type.
     /// </summary>
-    /// <param name="item">The type of ammo</param>
+    /// <param name="item">The type of ammo.</param>
     /// <param name="amount">The amount of ammo.</param>
     public void SetAmmo(ItemType item, ushort amount) => Inventory.ServerSetAmmo(item, amount);
 
@@ -1374,7 +1539,9 @@ public class Player
         List<AmmoPickup> ammo = ListPool<AmmoPickup>.Shared.Rent();
 
         foreach (KeyValuePair<ItemType, ushort> pair in Ammo.ToDictionary(e => e.Key, e => e.Value))
+        {
             ammo.AddRange(DropAmmo(pair.Key, pair.Value));
+        }
 
         return ammo;
     }
@@ -1390,7 +1557,9 @@ public class Player
     public void ClearItems()
     {
         foreach (Item item in Items.ToArray())
+        {
             RemoveItem(item);
+        }
     }
 
     /// <summary>
@@ -1399,7 +1568,9 @@ public class Player
     public void ClearAmmo()
     {
         if (Ammo.Any(x => x.Value > 0))
+        {
             Inventory.SendAmmoNextFrame = true;
+        }
 
         Ammo.Clear();
     }
@@ -1412,10 +1583,14 @@ public class Player
     public void ClearInventory(bool clearAmmo = true, bool clearItems = true)
     {
         if (clearAmmo)
+        {
             ClearAmmo();
+        }
 
         if (clearItems)
+        {
             ClearItems();
+        }
     }
 
     /// <summary>
@@ -1425,16 +1600,17 @@ public class Player
     public void Heal(float amount) => ReferenceHub.playerStats.GetModule<HealthStat>().ServerHeal(amount);
 
     /// <summary>
-    /// Creates and run a new AHP proccess.
+    /// Creates and run a new AHP process.
     /// </summary>
     /// <param name="amount">Amount of AHP to be added.</param>
     /// <param name="limit">Adds limit to the AHP.</param>
     /// <param name="decay">Rate of AHP decay (per second).</param>
     /// <param name="efficacy">Value between 0 and 1. Defines what % of damage will be absorbed.</param>
     /// <param name="sustain">Pauses decay for specified amount of seconds.</param>
-    /// <param name="persistant">If true, it won't be automatically removed when reaches 0.</param>
+    /// <param name="persistent">If true, it won't be automatically removed when reaches 0.</param>
     /// <returns>Process in case it needs to be removed. Use <see cref="ServerKillProcess(AhpProcess)"/> to kill it.</returns>
-    public AhpProcess CreateAhpProcess(float amount, float limit, float decay, float efficacy, float sustain, bool persistant) => ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
+    public AhpProcess CreateAhpProcess(float amount, float limit, float decay, float efficacy, float sustain, bool persistent) =>
+        ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistent);
 
     /// <summary>
     /// Kills the AHP process.
@@ -1478,11 +1654,11 @@ public class Player
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="parameters">The parameters to interpolate into the text.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
     /// <param name="effects">The effects used for hint animations. See <see cref="HintEffect"/>.</param>
+    /// <param name="duration">The duration of which the text will be visible.</param>
     /// <remarks>
     /// Parameters are interpolated into the string on the client.
-    /// E.g. <c>"Test param1: {0} param2: {1}"</c>
+    /// E.g. <c>"Test param1: {0} param2: {1}"</c>.
     /// </remarks>
     public void SendHint(string text, HintParameter[] parameters, HintEffect[]? effects = null, float duration = 3f) =>
         ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, effects, duration));
@@ -1531,8 +1707,8 @@ public class Player
     /// Enables a specific <see cref="StatusEffectBase">status effect</see>.
     /// </summary>
     /// <typeparam name="T">The type of the status effect to enable.</typeparam>
-    /// <param name="duration">The duration of the status effect.</param>
     /// <param name="intensity">The intensity of the status effect.</param>
+    /// <param name="duration">The duration of the status effect.</param>
     /// <param name="addDuration">Whether to add the duration to the current duration, if the effect is already active.</param>
     /// <remarks>A duration of 0 means that it will not expire.</remarks>
     public void EnableEffect<T>(byte intensity = 1, float duration = 0f, bool addDuration = false)
@@ -1542,8 +1718,8 @@ public class Player
     /// Enables a specific <see cref="StatusEffectBase">status effect</see>.
     /// </summary>
     /// <param name="effect">The status effect to enable.</param>
-    /// <param name="duration">The duration of the status effect.</param>
     /// <param name="intensity">The intensity of the status effect.</param>
+    /// <param name="duration">The duration of the status effect.</param>
     /// <param name="addDuration">Whether to add the duration to the current duration, if the effect is already active.</param>
     /// <remarks>A duration of 0 means that it will not expire.</remarks>
     public void EnableEffect(StatusEffectBase? effect, byte intensity = 1, float duration = 0f, bool addDuration = false) => effect?.ServerSetState(intensity, duration, addDuration);
@@ -1553,7 +1729,7 @@ public class Player
     /// </summary>
     /// <typeparam name="T">The specified effect that will be looked for.</typeparam>
     /// <param name="effect">The found player effect.</param>
-    /// <returns>Whether the <see cref="StatusEffectBase">status effect</see> was successfully retrieved. (And was cast successfully)</returns>
+    /// <returns>Whether the <see cref="StatusEffectBase">status effect</see> was successfully retrieved (And was cast successfully).</returns>
     public bool TryGetEffect<T>([NotNullWhen(true)] out T? effect)
         where T : StatusEffectBase => ReferenceHub.playerEffectsController.TryGetEffect(out effect) && effect != null;
 
@@ -1596,8 +1772,8 @@ public class Player
     /// <summary>
     /// Kills the player.
     /// </summary>
-    /// <param name="reason">The reason for the kill</param>
-    /// <param name="cassieAnnouncement">The cassie announcement to make upon death.</param>
+    /// <param name="reason">The reason for the kill.</param>
+    /// <param name="cassieAnnouncement">The CASSIE announcement to make upon death.</param>
     /// <returns>Whether the player was successfully killed.</returns>
     public bool Kill(string reason, string cassieAnnouncement = "") => Damage(new CustomReasonDamageHandler(reason, StandardDamageHandler.KillValue, cassieAnnouncement));
 
@@ -1606,7 +1782,7 @@ public class Player
     /// </summary>
     /// <param name="amount">The amount of damage.</param>
     /// <param name="reason">The reason of damage.</param>
-    /// <param name="cassieAnnouncement">The cassie announcement send after death.</param>
+    /// <param name="cassieAnnouncement">The CASSIE announcement send after death.</param>
     /// <returns>Whether the player was successfully damaged.</returns>
     public bool Damage(float amount, string reason, string cassieAnnouncement = "") => Damage(new CustomReasonDamageHandler(reason, amount, cassieAnnouncement));
 
@@ -1614,7 +1790,7 @@ public class Player
     /// Damages player with explosion force.
     /// </summary>
     /// <param name="amount">The amount of damage.</param>
-    /// <param name="attacker">The player which attacked</param>
+    /// <param name="attacker">The player which attacked.</param>
     /// <param name="force">The force of explosion.</param>
     /// <param name="armorPenetration">The amount of armor penetration.</param>
     /// <returns>Whether the player was successfully damaged.</returns>
@@ -1677,65 +1853,6 @@ public class Player
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[Player: DisplayName={DisplayName}, PlayerId={PlayerId}, NetworkId={NetworkId}, UserId={UserId}, IpAddress={IpAddress}, Role={Role}, IsServer={IsServer}, IsReady={IsReady}]";
-    }
-
-    /// <summary>
-    /// Creates a new wrapper for the player using the player's <see cref="global::ReferenceHub"/>.
-    /// </summary>
-    /// <param name="referenceHub">The <see cref="global::ReferenceHub"/> of the player.</param>
-    /// <returns>The created player wrapper.</returns>
-    private static Player CreatePlayerWrapper(ReferenceHub referenceHub)
-    {
-        Player player = new(referenceHub);
-
-        if (referenceHub.isLocalPlayer)
-            Server.Host = player;
-
-        return player;
-    }
-
-    /// <summary>
-    /// Handles the creation of a player in the server.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub of the player.</param>
-    private static void AddPlayer(ReferenceHub referenceHub)
-    {
-        try
-        {
-            if (Dictionary.ContainsKey(referenceHub))
-                return;
-
-            CreatePlayerWrapper(referenceHub);
-        }
-        catch (Exception ex)
-        {
-            Console.Logger.InternalError($"Failed to handle player addition with exception: {ex}");
-        }
-    }
-
-    /// <summary>
-    /// Handles the removal of a player from the server.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub of the player.</param>
-    private static void RemovePlayer(ReferenceHub referenceHub)
-    {
-        try
-        {
-            if (referenceHub.authManager.UserId != null)
-                UserIdCache.Remove(referenceHub.authManager.UserId);
-
-            if (TryGet(referenceHub.gameObject, out Player? player))
-                CustomDataStoreManager.RemovePlayer(player);
-
-            if (referenceHub.isLocalPlayer)
-                Server.Host = null;
-
-            Dictionary.Remove(referenceHub);
-        }
-        catch (Exception ex)
-        {
-            Console.Logger.InternalError($"Failed to handle player removal with exception: {ex}");
-        }
+        return $"[Player: DisplayName={DisplayName}, PlayerId={PlayerId}, NetworkId={NetworkId}, UserId={UserId}, IpAddress={IpAddress}, Role={Role}, IsHost={IsHost}, IsReady={IsReady}]";
     }
 }
