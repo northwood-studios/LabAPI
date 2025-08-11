@@ -30,7 +30,9 @@ public static class Logger
     public static void Debug(object message, bool canBePrinted = true)
     {
         if (!canBePrinted)
+        {
             return;
+        }
 
         Raw(FormatLog(message, DebugPrefix, Assembly.GetCallingAssembly()), ConsoleColor.Gray);
     }
