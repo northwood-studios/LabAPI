@@ -25,49 +25,9 @@ public class Scp914 : Room
     public static Scp914? Instance { get; private set; }
 
     /// <summary>
-    /// Contains all <see cref="IScp914ItemProcessor"/> instances, accessible by their <see cref="ItemBase"/>. 
+    /// Contains all <see cref="IScp914ItemProcessor"/> instances, accessible by their <see cref="ItemBase"/>.
     /// </summary>
-    public static Dictionary<ItemBase, IScp914ItemProcessor> ItemProcessorCache = [];
-
-    /// <summary>
-    /// An internal constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="roomIdentifier">The room identifier for the pocket dimension.</param>
-    internal Scp914(RoomIdentifier roomIdentifier)
-        : base(roomIdentifier)
-    {
-        if (CanCache)
-            Instance = this;
-    }
-
-    /// <summary>
-    /// An internal method to set the instance to null when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemoved()
-    {
-        base.OnRemoved();
-        Instance = null;
-    }
-
-    /// <summary>
-    /// Gets the main <see cref="Wrappers.Gate"/> of the SCP-914 room.
-    /// </summary>
-    public Gate Gate => (Gate)Doors.FirstOrDefault(x => x is Gate);
-
-    /// <summary>
-    /// Gets the entrance <see cref="Door"/> of the SCP-914 room.
-    /// </summary>
-    public Door Entrance => Doors.FirstOrDefault(x => x.Rooms.Length == 2);
-
-    /// <summary>
-    /// Gets the intake <see cref="Door"/> of the SCP-914 machine.
-    /// </summary>
-    public Door IntakeDoor => Door.Get(Scp914Controller.Singleton.Doors.Last());
-
-    /// <summary>
-    /// Gets the output <see cref="Door"/> of the SCP-914 machine.
-    /// </summary>
-    public Door OutputDoor => Door.Get(Scp914Controller.Singleton.Doors.First());
+    public static Dictionary<ItemBase, IScp914ItemProcessor> ItemProcessorCache { get; } = [];
 
     /// <summary>
     /// Gets or sets the <see cref="Scp914KnobSetting"/> of the SCP-914 machine.
@@ -87,10 +47,14 @@ public class Scp914 : Room
         set
         {
             if (Scp914Controller.Singleton.IsUpgrading == value)
+            {
                 return;
+            }
 
             if (value)
+            {
                 Scp914Controller.Singleton.Upgrade();
+            }
             else
             {
                 Scp914Controller.Singleton.IsUpgrading = value;
@@ -202,7 +166,7 @@ public class Scp914 : Room
     /// </remarks>
     public static void Interact(Scp914InteractCode interactCode, Player? player = null)
     {
-        player ??= Server.Host;
+        player ??= Server.Host!;
 
         Scp914Controller.Singleton.ServerInteract(player.ReferenceHub, (byte)interactCode);
     }
@@ -225,18 +189,28 @@ public class Scp914 : Room
     public static IScp914ItemProcessor? GetItemProcessor(ItemType type)
     {
         if (!InventoryItemLoader.TryGetItem(type, out ItemBase item))
+        {
             return null;
+        }
 
         if (ItemProcessorCache.TryGetValue(item, out var processor))
+        {
             return processor;
+        }
 
         if (!item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
+        {
             return null;
+        }
 
         if (baseProcessor is ItemProcessorAdapter adaptor)
+        {
             ItemProcessorCache[item] = adaptor.Processor;
+        }
         else
+        {
             ItemProcessorCache[item] = new BaseGameItemProcessor(baseProcessor);
+        }
 
         return ItemProcessorCache[item];
     }
@@ -254,7 +228,9 @@ public class Scp914 : Room
         foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
         {
             if (!InventoryItemLoader.TryGetItem(type, out ItemBase _))
+            {
                 continue;
+            }
 
             result.Add(type, GetItemProcessor(type));
         }
@@ -268,13 +244,18 @@ public class Scp914 : Room
     /// <typeparam name="T">The class type that implements the <see cref="IScp914ItemProcessor"/> interface.</typeparam>
     /// <param name="type">The <see cref="ItemType"/> to set the processor to.</param>
     /// <param name="processor">An instance of the processor.</param>
-    public static void SetItemProcessor<T>(ItemType type, T processor) where T : class, IScp914ItemProcessor
+    public static void SetItemProcessor<T>(ItemType type, T processor)
+        where T : class, IScp914ItemProcessor
     {
         if (!InventoryItemLoader.TryGetItem(type, out ItemBase item))
+        {
             return;
+        }
 
         if (item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
+        {
             UnityEngine.Object.Destroy(baseProcessor);
+        }
 
         item.gameObject.AddComponent<ItemProcessorAdapter>().Processor = processor;
         ItemProcessorCache[item] = processor;
@@ -286,12 +267,15 @@ public class Scp914 : Room
     /// <typeparam name="T">The class type that implements the <see cref="IScp914ItemProcessor"/> interface.</typeparam>
     /// <param name="predicate">A predicate to match which <see cref="ItemType">Item Types</see> to set the processor on using <see cref="Item"/> as a wrapper.</param>
     /// <param name="processor">An instance of the processor.</param>
-    public static void SetItemProcessor<T>(Func<Item, bool> predicate, T processor) where T : class, IScp914ItemProcessor
+    public static void SetItemProcessor<T>(Func<Item, bool> predicate, T processor)
+        where T : class, IScp914ItemProcessor
     {
-        foreach(ItemType type in Enum.GetValues(typeof(ItemType)))
+        foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
         {
             if (!InventoryItemLoader.TryGetItem(type, out ItemBase item) || !predicate(Item.Get(item)))
+            {
                 continue;
+            }
 
             SetItemProcessor(type, processor);
         }
@@ -305,14 +289,19 @@ public class Scp914 : Room
     /// <remarks>
     /// Note that this is for setting the base game <see cref="Scp914ItemProcessor"/> for an item, you should always use <see cref="IScp914ItemProcessor"/> instead unless using already existing code see <see cref="SetItemProcessor{T}(ItemType, T)"/>.
     /// </remarks>
-    public static void SetItemProcessor<T>(ItemType type) where T : Scp914ItemProcessor, new()
+    public static void SetItemProcessor<T>(ItemType type)
+        where T : Scp914ItemProcessor, new()
     {
         if (!InventoryItemLoader.TryGetItem(type, out ItemBase item))
+        {
             return;
+        }
 
         ItemProcessorCache.Remove(item);
         if (item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
+        {
             UnityEngine.Object.Destroy(baseProcessor);
+        }
 
         item.gameObject.AddComponent<T>();
     }
@@ -325,14 +314,59 @@ public class Scp914 : Room
     /// <remarks>
     /// Note that this is for setting the base game <see cref="Scp914ItemProcessor"/> for an item, you should always use <see cref="IScp914ItemProcessor"/> instead unless using already existing code.
     /// </remarks>
-    public static void SetItemProcessor<T>(Func<Item, bool> predicate) where T : Scp914ItemProcessor, new()
+    public static void SetItemProcessor<T>(Func<Item, bool> predicate)
+        where T : Scp914ItemProcessor, new()
     {
         foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
         {
             if (!InventoryItemLoader.TryGetItem(type, out ItemBase item) || !predicate(Item.Get(item)))
+            {
                 continue;
+            }
 
             SetItemProcessor<T>(type);
         }
+    }
+
+    /// <summary>
+    /// An internal constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="roomIdentifier">The room identifier for the pocket dimension.</param>
+    internal Scp914(RoomIdentifier roomIdentifier)
+        : base(roomIdentifier)
+    {
+        if (CanCache)
+        {
+            Instance = this;
+        }
+    }
+
+    /// <summary>
+    /// Gets the main <see cref="Wrappers.Gate"/> of the SCP-914 room.
+    /// </summary>
+    public Gate Gate => (Gate)Doors.FirstOrDefault(x => x is Gate);
+
+    /// <summary>
+    /// Gets the entrance <see cref="Door"/> of the SCP-914 room.
+    /// </summary>
+    public Door Entrance => Doors.FirstOrDefault(x => x.Rooms.Length == 2);
+
+    /// <summary>
+    /// Gets the intake <see cref="Door"/> of the SCP-914 machine.
+    /// </summary>
+    public Door IntakeDoor => Door.Get(Scp914Controller.Singleton.Doors.Last());
+
+    /// <summary>
+    /// Gets the output <see cref="Door"/> of the SCP-914 machine.
+    /// </summary>
+    public Door OutputDoor => Door.Get(Scp914Controller.Singleton.Doors.First());
+
+    /// <summary>
+    /// An internal method to set the instance to null when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemoved()
+    {
+        base.OnRemoved();
+        Instance = null;
     }
 }
