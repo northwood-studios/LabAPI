@@ -118,7 +118,7 @@ public static partial class ServerEvents
     public static event LabEventHandler<LczDecontaminationAnnouncedEventArgs>? LczDecontaminationAnnounced;
 
     /// <summary>
-    /// Gets called when the server starts LCZ decontamiantion.
+    /// Gets called when the server starts LCZ decontamination.
     /// </summary>
     public static event LabEventHandler<LczDecontaminationStartingEventArgs>? LczDecontaminationStarting;
 

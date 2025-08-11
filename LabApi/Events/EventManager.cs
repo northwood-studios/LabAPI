@@ -21,7 +21,9 @@ public static class EventManager
     {
         // We check if the event handler is null
         if (eventHandler is null)
+        {
             return;
+        }
 
 #if DEBUG
         // In DEBUG mode we add some useful logs about the event.
@@ -35,7 +37,9 @@ public static class EventManager
             {
                 // We invoke the subscriber as a lab event handler.
                 if (sub is LabEventHandler labEventHandler)
+                {
                     labEventHandler.Invoke();
+                }
             }
             catch (Exception e)
             {
@@ -55,7 +59,9 @@ public static class EventManager
     {
         // We check if the event handler is null
         if (eventHandler is null)
+        {
             return;
+        }
 
 #if DEBUG
         // In DEBUG mode we add some useful logs about the event.
@@ -69,7 +75,9 @@ public static class EventManager
             {
                 // We invoke the subscriber as a lab event handler.
                 if (sub is LabEventHandler<TEventArgs> labEventHandler)
+                {
                     labEventHandler.Invoke(args);
+                }
             }
             catch (Exception e)
             {
@@ -105,7 +113,9 @@ public static class EventManager
         // We iterate through all the properties of the EventArgs and append them to the StringBuilder.
         PropertyInfo[] properties = typeof(TEventArgs).GetProperties();
         if (properties.Length > 0)
+        {
             stringBuilder.Append("\n");
+        }
 
         foreach (PropertyInfo property in properties)
         {
@@ -133,12 +143,14 @@ public static class EventManager
     /// </summary>
     /// <param name="eventHandler">The <see cref="LabEventHandler"/> that caused the error.</param>
     /// <param name="exception">The <see cref="Exception"/> that occurred.</param>
-    /// <returns></returns>
+    /// <returns>The formated error message.</returns>
     public static string FormatErrorMessage(Delegate eventHandler, Exception exception)
     {
         if (eventHandler.Target == null) // Static methods
-            return $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Method.DeclaringType}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
+        {
+            return $"'{exception.GetType().Name}' occurred while invoking '{eventHandler.Method.Name}' on '{eventHandler.Method.DeclaringType}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
+        }
 
-        return $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
+        return $"'{exception.GetType().Name}' occurred while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
     }
 }

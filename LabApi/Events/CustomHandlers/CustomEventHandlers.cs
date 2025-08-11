@@ -12,5 +12,5 @@ public abstract partial class CustomEventsHandler
     /// <summary>
     /// Internal dictionary to store the registered events and their delegates.
     /// </summary>
-    internal readonly Dictionary<EventInfo, Delegate> InternalEvents = new ();
+    internal Dictionary<EventInfo, Delegate> InternalEvents { get; } = [];
 }
