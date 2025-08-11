@@ -29,9 +29,20 @@
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		
 		<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+		
+		<CodeAnalysisRuleSet>$(SolutionDir)StyleCopAnalyzers.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
+	
+	<ItemGroup>
+	  <None Remove="stylecop.json" />
+	  <AdditionalFiles Include="stylecop.json" />
+	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="YamlDotNet" Version="11.0.1" />
 	</ItemGroup>
 	
