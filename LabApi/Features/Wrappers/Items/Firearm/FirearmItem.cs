@@ -12,12 +12,28 @@ public class FirearmItem : Item
     /// <summary>
     /// Contains all the cached firearm items, accessible through their <see cref="Firearm"/>.
     /// </summary>
-    public new static Dictionary<Firearm, FirearmItem> Dictionary { get; } = [];
+    public static new Dictionary<Firearm, FirearmItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="FirearmItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<FirearmItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<FirearmItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the firearm item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Firearm"/> was not null.
+    /// </summary>
+    /// <param name="firearm">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(firearm))]
+    public static FirearmItem? Get(Firearm? firearm)
+    {
+        if (firearm == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(firearm, out FirearmItem item) ? item : (FirearmItem)CreateItemWrapper(firearm);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class FirearmItem : Item
         Base = firearm;
 
         if (CanCache)
+        {
             Dictionary.Add(firearm, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class FirearmItem : Item
     public new Firearm Base { get; }
 
     /// <summary>
-    /// Gets the firearm item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Firearm"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="firearm">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(firearm))]
-    public static FirearmItem? Get(Firearm? firearm)
+    internal override void OnRemove()
     {
-        if (firearm == null)
-            return null;
-
-        return Dictionary.TryGetValue(firearm, out FirearmItem item) ? item : (FirearmItem)CreateItemWrapper(firearm);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

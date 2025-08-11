@@ -12,12 +12,28 @@ public class ParticleDisruptorItem : FirearmItem
     /// <summary>
     /// Contains all the cached particle disruptor items, accessible through their <see cref="ParticleDisruptor"/>.
     /// </summary>
-    public new static Dictionary<ParticleDisruptor, ParticleDisruptorItem> Dictionary { get; } = [];
+    public static new Dictionary<ParticleDisruptor, ParticleDisruptorItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="ParticleDisruptorItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<ParticleDisruptorItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<ParticleDisruptorItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the particle disruptor item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ParticleDisruptor"/> was not null.
+    /// </summary>
+    /// <param name="particleDisruptor">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(particleDisruptor))]
+    public static ParticleDisruptorItem? Get(ParticleDisruptor? particleDisruptor)
+    {
+        if (particleDisruptor == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(particleDisruptor, out ParticleDisruptorItem item) ? item : (ParticleDisruptorItem)CreateItemWrapper(particleDisruptor);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class ParticleDisruptorItem : FirearmItem
         Base = particleDisruptor;
 
         if (CanCache)
+        {
             Dictionary.Add(particleDisruptor, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class ParticleDisruptorItem : FirearmItem
     public new ParticleDisruptor Base { get; }
 
     /// <summary>
-    /// Gets the particle disruptor item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ParticleDisruptor"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="particleDisruptor">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(particleDisruptor))]
-    public static ParticleDisruptorItem? Get(ParticleDisruptor? particleDisruptor)
+    internal override void OnRemove()
     {
-        if (particleDisruptor == null)
-            return null;
-
-        return Dictionary.TryGetValue(particleDisruptor, out ParticleDisruptorItem item) ? item : (ParticleDisruptorItem)CreateItemWrapper(particleDisruptor);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }
