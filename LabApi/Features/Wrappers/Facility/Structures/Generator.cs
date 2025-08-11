@@ -1,10 +1,10 @@
-﻿using Interactables.Interobjects.DoorUtils;
+﻿using Generators;
+using Interactables.Interobjects.DoorUtils;
+using MapGeneration;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using static MapGeneration.Distributors.Scp079Generator;
-using Generators;
-using MapGeneration;
 
 namespace LabApi.Features.Wrappers;
 
@@ -16,7 +16,12 @@ public class Generator : Structure
     /// <summary>
     /// Contains all the cached <see cref="Scp079Generator">generators</see> in the game, accessible through their <see cref="Scp079Generator"/>.
     /// </summary>
-    public new static Dictionary<Scp079Generator, Generator> Dictionary { get; } = [];
+    public static new Dictionary<Scp079Generator, Generator> Dictionary { get; } = [];
+
+    /// <summary>
+    /// A reference to all <see cref="Generator"/> instances currently in the game.
+    /// </summary>
+    public static new IReadOnlyCollection<Generator> List => Dictionary.Values;
 
     /// <summary>
     /// Contains generators in a list by room they are in. Generators that have been spawned without an assigned room are not inside of this collection.
@@ -24,9 +29,45 @@ public class Generator : Structure
     private static Dictionary<Room, List<Generator>> GeneratorsByRoom { get; } = [];
 
     /// <summary>
-    /// A reference to all <see cref="Generator"/> instances currently in the game.
+    /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="Scp079Generator"/> was not <see langword="null"/>.
     /// </summary>
-    public new static IReadOnlyCollection<Generator> List => Dictionary.Values;
+    /// <param name="scp079Generator">The <see cref="Scp079Generator"/> of the generator.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(scp079Generator))]
+    public static Generator? Get(Scp079Generator? scp079Generator)
+    {
+        if (scp079Generator == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(scp079Generator, out Generator generator) ? generator : (Generator)CreateStructureWrapper(scp079Generator);
+    }
+
+    /// <summary>
+    /// Gets the generator wrapper from the <see cref="GeneratorsByRoom"/> or returns <see langword="null"/> if specified room does not have any.
+    /// </summary>
+    /// <param name="room">Target room.</param>
+    /// <param name="generators">Generators found.</param>
+    /// <returns>Whether the generator was found.</returns>
+    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generators) => GeneratorsByRoom.TryGetValue(room, out generators);
+
+    /// <summary>
+    /// Initializes the generators by room caching for map generation.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void InitializeCaching()
+    {
+        SeedSynchronizer.OnGenerationFinished += SeedSynchronizer_OnGenerationFinished;
+    }
+
+    private static void SeedSynchronizer_OnGenerationFinished()
+    {
+        foreach (Generator generator in List)
+        {
+            generator.TryRegisterByRoom();
+        }
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -42,64 +83,6 @@ public class Generator : Structure
             Dictionary.Add(generator, this);
             TryRegisterByRoom();
         }
-    }
-
-    /// <summary>
-    /// Initializes the generators by room caching for map generation.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void InitializeCaching()
-    {
-        SeedSynchronizer.OnGenerationFinished += SeedSynchronizer_OnGenerationFinished;
-    }
-
-    private static void SeedSynchronizer_OnGenerationFinished()
-    {
-        foreach (Generator generator in List)
-            generator.TryRegisterByRoom();
-    }
-
-    /// <summary>
-    /// An internal method remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-
-        if (Base.ParentRoom == null)
-        {
-            Dictionary.Remove(Base);
-            return;
-        }
-
-        Room? room = Room.Get(Base.ParentRoom);
-
-        if (room == null) // Room is null after round restart, try find it by iterating over the existing dictionary
-        {
-            Room? potentialRoom = null;
-            foreach (var kvp in GeneratorsByRoom)
-            {
-                if (kvp.Value.Contains(this))
-                {
-                    potentialRoom = kvp.Key;
-                    break;
-                }
-            }
-
-            room = potentialRoom;
-        }
-
-        if (room != null && GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
-        {
-            list.Remove(this);
-
-            if (list.Count == 0)
-            {
-                GeneratorsByRoom.Remove(room);
-            }
-        }
-
-        Dictionary.Remove(Base);
     }
 
     /// <summary>
@@ -168,7 +151,7 @@ public class Generator : Structure
     public float ActivationTime => Base.ActivationTime;
 
     /// <summary>
-    ///	Gets or sets whether the generator is engaged.
+    /// Gets or sets whether the generator is engaged.
     /// </summary>
     public bool Engaged
     {
@@ -201,30 +184,6 @@ public class Generator : Structure
     /// <param name="collider">The <see cref="GeneratorColliderId"/> triggered.</param>
     public void ServerInteract(Player player, GeneratorColliderId collider) => Base.ServerInteract(player.ReferenceHub, (byte)collider);
 
-    private void TryRegisterByRoom()
-    {
-        foreach (var kvp in GeneratorsByRoom)
-        {
-            if (kvp.Value.Contains(this))
-                return;
-        }
-
-        if (Base.ParentRoom == null)
-            return;
-        Room? room = Room.Get(Base.ParentRoom);
-
-        if (room == null)
-            return;
-
-        if (!GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
-        {
-            list = new List<Generator>();
-            GeneratorsByRoom.Add(room, list);
-        }
-
-        list.Add(this);
-    }
-
     /// <summary>
     /// Plays the denied sound cue on the client.
     /// </summary>
@@ -232,24 +191,76 @@ public class Generator : Structure
     public void PlayerDeniedBeep(DoorPermissionFlags flags) => Base.RpcDenied(flags);
 
     /// <summary>
-    /// Gets the generator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="Scp079Generator"/> was not <see langword="null"/>.
+    /// An internal method remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="scp079Generator">The <see cref="Scp079Generator"/> of the generator.</param>
-    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(scp079Generator))]
-    public static Generator? Get(Scp079Generator? scp079Generator)
+    internal override void OnRemove()
     {
-        if (scp079Generator == null)
-            return null;
+        base.OnRemove();
 
-        return Dictionary.TryGetValue(scp079Generator, out Generator generator) ? generator : (Generator)CreateStructureWrapper(scp079Generator);
+        if (Base.ParentRoom == null)
+        {
+            Dictionary.Remove(Base);
+            return;
+        }
+
+        Room? room = Room.Get(Base.ParentRoom);
+
+        if (room == null) // Room is null after round restart, try find it by iterating over the existing dictionary
+        {
+            Room? potentialRoom = null;
+            foreach (var kvp in GeneratorsByRoom)
+            {
+                if (kvp.Value.Contains(this))
+                {
+                    potentialRoom = kvp.Key;
+                    break;
+                }
+            }
+
+            room = potentialRoom;
+        }
+
+        if (room != null && GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
+        {
+            list.Remove(this);
+
+            if (list.Count == 0)
+            {
+                GeneratorsByRoom.Remove(room);
+            }
+        }
+
+        Dictionary.Remove(Base);
     }
 
-    /// <summary>
-    /// Gets the generator wrapper from the <see cref="GeneratorsByRoom"/> or returns <see langword="null"/> if specified room does not have any.
-    /// </summary>
-    /// <param name="room">Target room.</param>
-    /// <param name="generators">Generators found.</param>
-    /// <returns>Whether the generator was found.</returns>
-    public static bool TryGetFromRoom(Room room, [NotNullWhen(true)] out List<Generator>? generators) => GeneratorsByRoom.TryGetValue(room, out generators);
+    private void TryRegisterByRoom()
+    {
+        foreach (var kvp in GeneratorsByRoom)
+        {
+            if (kvp.Value.Contains(this))
+            {
+                return;
+            }
+        }
+
+        if (Base.ParentRoom == null)
+        {
+            return;
+        }
+
+        Room? room = Room.Get(Base.ParentRoom);
+
+        if (room == null)
+        {
+            return;
+        }
+
+        if (!GeneratorsByRoom.TryGetValue(room, out List<Generator> list))
+        {
+            list = [];
+            GeneratorsByRoom.Add(room, list);
+        }
+
+        list.Add(this);
+    }
 }
