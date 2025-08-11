@@ -7,13 +7,13 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class MiniMtfWave : MiniRespawnWave
 {
-    /// <inheritdoc/>
-    internal MiniMtfWave(NtfMiniWave miniWave) : base(miniWave)
+    /// <inheritdoc cref="MiniRespawnWave(IMiniWave)"/>
+    internal MiniMtfWave(NtfMiniWave miniWave)
+        : base(miniWave)
     {
         Base = miniWave;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="MiniRespawnWave.Base"/>
     public new NtfMiniWave Base { get; private set; }
 }
-
