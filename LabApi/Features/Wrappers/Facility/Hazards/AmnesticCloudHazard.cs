@@ -14,17 +14,83 @@ public class AmnesticCloudHazard : DecayableHazard
     /// <summary>
     /// Contains all the cached items, accessible through their <see cref="Base"/>.
     /// </summary>
-    public new static Dictionary<Scp939AmnesticCloudInstance, AmnesticCloudHazard> Dictionary { get; } = [];
+    public static new Dictionary<Scp939AmnesticCloudInstance, AmnesticCloudHazard> Dictionary { get; } = [];
 
     /// <summary>
     /// Gets all currently active tantrum hazards.
     /// </summary>
-    public new IReadOnlyCollection<AmnesticCloudHazard> List => Dictionary.Values;
+    public static new IReadOnlyCollection<AmnesticCloudHazard> List => Dictionary.Values;
 
     /// <summary>
     /// Prefab used to spawn the hazard.
     /// </summary>
-    protected static new Scp939AmnesticCloudInstance? BasePrefab;
+    protected static new Scp939AmnesticCloudInstance? BasePrefab { get; private set; }
+
+    /// <summary>
+    /// Spawns a <see cref="AmnesticCloudHazard"/> at specified position with specified rotation, scale duration and size.
+    /// <para> Do note that changing scale doesn't change the effect size. Use the <see cref="Hazard.MaxDistance"/> and <see cref="Hazard.MaxHeightDistance"/> to match the visual size.</para>
+    /// </summary>
+    /// <param name="position">The target position to spawn this hazard at.</param>
+    /// <param name="rotation">The target rotation to spawn this hazard with.</param>
+    /// <param name="scale">The target scale to spawn with.</param>
+    /// <param name="duration">The duration in seconds for which this cloud will be alive for.</param>
+    /// <param name="size">The size of the cloud.</param>
+    /// <param name="owner">The owner of the cloud.</param>
+    /// <returns>A new hazard.</returns>
+    public static AmnesticCloudHazard Spawn(Vector3 position, Quaternion rotation, Vector3 scale, float duration = 90f, byte size = 255, Player? owner = null)
+    {
+        if (BasePrefab == null)
+        {
+            BasePrefab = GetPrefab<Scp939AmnesticCloudInstance>();
+        }
+
+        AmnesticCloudHazard hazard = (AmnesticCloudHazard)Hazard.Spawn(BasePrefab!, position, rotation, scale);
+        hazard.Base.State = CloudState.Created;
+        hazard.LiveDuration = duration;
+        hazard.VisualSize = size;
+        hazard.SyncedPosition = position;
+
+        Vector2 minMax = hazard.Base.MinMaxTime;
+        hazard.MaxDistance = Mathf.Lerp(minMax.x, minMax.y, size / byte.MaxValue);
+
+        if (owner != null)
+        {
+            hazard.Owner = owner;
+        }
+
+        return hazard;
+    }
+
+    /// <summary>
+    /// Gets the hazard wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Scp939AmnesticCloudInstance"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="hazard">The <see cref="Base"/> of the hazard.</param>
+    /// <returns>The requested hazard or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(hazard))]
+    public static AmnesticCloudHazard? Get(Scp939AmnesticCloudInstance? hazard)
+    {
+        if (hazard == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(hazard, out AmnesticCloudHazard decHazard) ? decHazard : (AmnesticCloudHazard)CreateItemWrapper(hazard)!;
+    }
+
+    /// <summary>
+    /// Internal constructor preventing external instantiation.
+    /// </summary>
+    /// <param name="hazard">The base amnestic cloud hazard.</param>
+    internal AmnesticCloudHazard(Scp939AmnesticCloudInstance hazard)
+        : base(hazard)
+    {
+        Base = hazard;
+
+        if (CanCache)
+        {
+            Dictionary.Add(hazard, this);
+        }
+    }
 
     /// <summary>
     /// Gets or sets the world position of the hazard as it is synchronized with the client.
@@ -93,52 +159,9 @@ public class AmnesticCloudHazard : DecayableHazard
     public new Scp939AmnesticCloudInstance Base { get; }
 
     /// <summary>
-    /// Internal constructor preventing external instantiation.
-    /// </summary>
-    /// <param name="hazard">The base amnestic cloud hazard.</param>
-    internal AmnesticCloudHazard(Scp939AmnesticCloudInstance hazard)
-        : base(hazard)
-    {
-        Base = hazard;
-
-        if (CanCache)
-            Dictionary.Add(hazard, this);
-    }
-
-    /// <summary>
-    /// Spawns a <see cref="AmnesticCloudHazard"/> at specified position with specified rotation, scale duration and size.
-    /// <para> Do note that changing scale doesn't change the effect size. Use the <see cref="Hazard.MaxDistance"/> and <see cref="Hazard.MaxHeightDistance"/> to match the visual size.</para>
-    /// </summary>
-    /// <param name="position">The target position to spawn this hazard at.</param>
-    /// <param name="rotation">The target rotation to spawn this hazard with.</param>
-    /// <param name="scale">The target scale to spawn with.</param>
-    /// <param name="duration">The duration in seconds for which this cloud will be alive for.</param>
-    /// <param name="size">The size of the cloud.</param>
-    /// <param name="owner">The owner of the cloud.</param>
-    /// <returns>A new hazard.</returns>
-    public static AmnesticCloudHazard Spawn(Vector3 position, Quaternion rotation, Vector3 scale, float duration = 90f, byte size = 255, Player? owner = null)
-    {
-        if (BasePrefab == null)
-            BasePrefab = GetPrefab<Scp939AmnesticCloudInstance>();
-
-        AmnesticCloudHazard hazard = (AmnesticCloudHazard)Hazard.Spawn(BasePrefab, position, rotation, scale);
-        hazard.Base.State = CloudState.Created;
-        hazard.LiveDuration = duration;
-        hazard.VisualSize = size;
-        hazard.SyncedPosition = position;
-
-        Vector2 minMax = hazard.Base.MinMaxTime;
-        hazard.MaxDistance = Mathf.Lerp(minMax.x, minMax.y, size / byte.MaxValue);
-
-        if (owner != null)
-            hazard.Owner = owner;
-        return hazard;
-    }
-
-    /// <summary>
     /// Temporary pauses all amnesia effects based on <see cref="PauseDuration"/> or custom time.
     /// </summary>
-    /// <param name="customDuration">Custom duration of the pause. Values less than 0 will use the <see cref="PauseDuration"/></param>
+    /// <param name="customDuration">Custom duration of the pause. Values less than 0 will use the <see cref="PauseDuration"/>.</param>
     public void Pause(float customDuration = -1f)
     {
         if (customDuration > 0f)
@@ -161,19 +184,5 @@ public class AmnesticCloudHazard : DecayableHazard
     {
         base.OnRemove();
         Dictionary.Remove(Base);
-    }
-
-    /// <summary>
-    /// Gets the hazard wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Scp939AmnesticCloudInstance"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="hazard">The <see cref="Base"/> of the hazard.</param>
-    /// <returns>The requested hazard or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(hazard))]
-    public static AmnesticCloudHazard? Get(Scp939AmnesticCloudInstance? hazard)
-    {
-        if (hazard == null)
-            return null;
-
-        return Dictionary.TryGetValue(hazard, out AmnesticCloudHazard decHazard) ? decHazard : (AmnesticCloudHazard)CreateItemWrapper(hazard);
     }
 }
