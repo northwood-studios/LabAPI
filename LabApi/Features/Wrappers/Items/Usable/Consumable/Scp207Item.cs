@@ -12,12 +12,28 @@ public class Scp207Item : ConsumableItem
     /// <summary>
     /// Contains all the cached SCP-207 items, accessible through their <see cref="Scp207"/>.
     /// </summary>
-    public new static Dictionary<Scp207, Scp207Item> Dictionary { get; } = [];
+    public static new Dictionary<Scp207, Scp207Item> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="Scp207Item"/>.
     /// </summary>
-    public new static IReadOnlyCollection<Scp207Item> List => Dictionary.Values;
+    public static new IReadOnlyCollection<Scp207Item> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the SCP-207 item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Scp207"/> was not null.
+    /// </summary>
+    /// <param name="scp207">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(scp207))]
+    public static Scp207Item? Get(Scp207? scp207)
+    {
+        if (scp207 == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(scp207, out Scp207Item item) ? item : (Scp207Item)CreateItemWrapper(scp207);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class Scp207Item : ConsumableItem
         Base = scp207;
 
         if (CanCache)
+        {
             Dictionary.Add(scp207, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class Scp207Item : ConsumableItem
     public new Scp207 Base { get; }
 
     /// <summary>
-    /// Gets the SCP-207 item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Scp207"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="scp207">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(scp207))]
-    public static Scp207Item? Get(Scp207? scp207)
+    internal override void OnRemove()
     {
-        if (scp207 == null)
-            return null;
-
-        return Dictionary.TryGetValue(scp207, out Scp207Item item) ? item : (Scp207Item)CreateItemWrapper(scp207);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }
