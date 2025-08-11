@@ -31,7 +31,7 @@ public static class CommandLoader
         [typeof(RemoteAdminCommandHandler)] = CommandProcessor.RemoteAdminCommandHandler,
 
         // The client console command handler.
-        [typeof(ClientCommandHandler)] = QueryProcessor.DotCommandHandler
+        [typeof(ClientCommandHandler)] = QueryProcessor.DotCommandHandler,
     };
 
     /// <summary>
@@ -43,16 +43,6 @@ public static class CommandLoader
     /// The dictionary of registered LabAPI commands.
     /// </summary>
     public static IEnumerable<ICommand>? LabApiCommands { get; private set; }
-
-    /// <summary>
-    /// Registers all commands in the LabAPI solution.
-    /// </summary>
-    internal static void RegisterCommands()
-    {
-        // We register all commands in the LabAPI assembly.
-        // We convert it to an array since IEnumerable are lazy and need to be iterated through to be executed.
-         LabApiCommands = RegisterCommands(Assembly.GetExecutingAssembly(), "LabApi").ToArray();
-    }
 
     /// <summary>
     /// Registers all commands in the given <see cref="Plugin"/>.
@@ -80,6 +70,7 @@ public static class CommandLoader
     /// </summary>
     /// <param name="assembly">The <see cref="Assembly"/> to register the commands from.</param>
     /// <param name="logName">The name of the plugin to log to use when logging errors.</param>
+    /// <returns>An enumeration of all registered commands.</returns>
     public static IEnumerable<ICommand> RegisterCommands(Assembly assembly, string logName = "")
     {
         // We use reflection to get all types in the assembly.
@@ -107,14 +98,18 @@ public static class CommandLoader
     {
         // We check if the type implements the ICommand interface.
         if (!typeof(ICommand).IsAssignableFrom(type))
+        {
             yield break;
+        }
 
         // We iterate through all custom attributes of the type.
         foreach (CustomAttributeData attributeData in type.GetCustomAttributesData())
         {
             // If the attribute type is not a CommandHandlerAttribute, we continue.
             if (attributeData.AttributeType != typeof(CommandHandlerAttribute))
+            {
                 continue;
+            }
 
             // We retrieve the command handler type from the attribute data.
             Type commandHandlerType = (Type)attributeData.ConstructorArguments[0].Value;
@@ -132,7 +127,9 @@ public static class CommandLoader
 
             // And we finally register the command.
             if (!TryRegisterCommand(type, commandHandlerType, out ICommand? command, logName))
+            {
                 continue;
+            }
 
             // We add the command to the list of registered commands.
             yield return command;
@@ -144,8 +141,9 @@ public static class CommandLoader
     /// </summary>
     /// <param name="commandType">The <see cref="Type"/> of the command to register.</param>
     /// <param name="commandHandlerType">The <see cref="Type"/> of the command handler to register the command to.</param>
-    /// <param name="logName">The name of the plugin to log to use when logging errors.</param>
     /// <param name="command">The registered command if the command was successfully registered.</param>
+    /// <param name="logName">The name of the plugin to log to use when logging errors.</param>
+    /// <returns>Whether the command registered successfully.</returns>
     public static bool TryRegisterCommand(Type commandType, Type commandHandlerType, [NotNullWhen(true)] out ICommand? command, string logName)
     {
         command = null;
@@ -202,12 +200,13 @@ public static class CommandLoader
 
             // We check if the command type is a parent command.
             if (command is not ParentCommand parentCommand)
+            {
                 return true;
+            }
 
             // If the command type is a parent command, we register the command type as a command handler type.
             // This allows us to register subcommands to the parent command by just using the CommandHandlerAttribute.
             // [CommandHandler(typeof(MyParentCommand))]
-
             Type commandType = command.GetType();
             if (!CommandHandlers.ContainsKey(commandType))
             {
@@ -241,7 +240,9 @@ public static class CommandLoader
     public static void UnregisterCommands(this Plugin plugin)
     {
         if (!RegisteredCommands.TryGetValue(plugin, out IEnumerable<ICommand> commands))
+        {
             return;
+        }
 
         // We iterate through all commands in the plugin.
         foreach (ICommand command in commands)
@@ -265,7 +266,9 @@ public static class CommandLoader
         {
             // If the command handler does not contain the command, we continue.
             if (!commandHandler.AllCommands.Contains(command))
+            {
                 continue;
+            }
 
             // We manually unregister the command from the command handler.
             commandHandler.UnregisterCommand(command);
@@ -273,10 +276,22 @@ public static class CommandLoader
 
         // We check if the command is a parent command.
         if (command is not ParentCommand parentCommand)
+        {
             return;
+        }
 
         // If the command is a parent command, we remove the command type from the dictionary of command handlers.
         Type commandType = parentCommand.GetType();
         CommandHandlers.Remove(commandType);
+    }
+
+    /// <summary>
+    /// Registers all commands in the LabAPI solution.
+    /// </summary>
+    internal static void RegisterCommands()
+    {
+        // We register all commands in the LabAPI assembly.
+        // We convert it to an array since IEnumerable are lazy and need to be iterated through to be executed.
+         LabApiCommands = RegisterCommands(Assembly.GetExecutingAssembly(), "LabApi").ToArray();
     }
 }
