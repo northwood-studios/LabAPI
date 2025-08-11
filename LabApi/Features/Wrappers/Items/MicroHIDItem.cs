@@ -13,12 +13,28 @@ public class MicroHIDItem : Item
     /// <summary>
     /// Contains all the cached micro hid items, accessible through their <see cref="BaseMicroHIDItem"/>.
     /// </summary>
-    public new static Dictionary<BaseMicroHIDItem, MicroHIDItem> Dictionary { get; } = [];
+    public static new Dictionary<BaseMicroHIDItem, MicroHIDItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="MicroHIDItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<MicroHIDItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<MicroHIDItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the micro hid item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseMicroHIDItem"/> was not null.
+    /// </summary>
+    /// <param name="baseMicroHIDItem">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseMicroHIDItem))]
+    public static MicroHIDItem? Get(BaseMicroHIDItem? baseMicroHIDItem)
+    {
+        if (baseMicroHIDItem == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseMicroHIDItem, out MicroHIDItem item) ? item : (MicroHIDItem)CreateItemWrapper(baseMicroHIDItem);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,16 +46,9 @@ public class MicroHIDItem : Item
         Base = baseMicroHIDItem;
 
         if (CanCache)
+        {
             Dictionary.Add(baseMicroHIDItem, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -133,16 +142,11 @@ public class MicroHIDItem : Item
     public bool TryGetSoundEmissionRange(out float range) => Base.ServerTryGetSoundEmissionRange(out range);
 
     /// <summary>
-    /// Gets the micro hid item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseMicroHIDItem"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseMicroHIDItem">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseMicroHIDItem))]
-    public static MicroHIDItem? Get(BaseMicroHIDItem? baseMicroHIDItem)
+    internal override void OnRemove()
     {
-        if (baseMicroHIDItem == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseMicroHIDItem, out MicroHIDItem item) ? item : (MicroHIDItem)CreateItemWrapper(baseMicroHIDItem);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }
