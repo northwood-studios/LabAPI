@@ -8,6 +8,7 @@ using InventorySystem;
 using InventorySystem.Disarming;
 using InventorySystem.Items;
 using InventorySystem.Items.Pickups;
+using InventorySystem.Items.Usables.Scp330;
 using LabApi.Features.Enums;
 using LabApi.Features.Stores;
 using MapGeneration;
@@ -25,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using InventorySystem.Items.Usables.Scp330;
 using UnityEngine;
 using Utils.Networking;
 using Utils.NonAllocLINQ;
@@ -1593,7 +1593,7 @@ public class Player
             ClearItems();
         }
     }
-    
+
     /// <summary>
     /// Gives a candy to the player.
     /// </summary>
