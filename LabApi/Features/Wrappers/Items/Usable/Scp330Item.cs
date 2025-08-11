@@ -13,19 +13,35 @@ namespace LabApi.Features.Wrappers;
 public class Scp330Item : UsableItem
 {
     /// <summary>
+    /// Maximum number of candies that can be contained in a bag.
+    /// </summary>
+    public const int MaxCandies = BaseScp330Item.MaxCandies;
+
+    /// <summary>
     /// Contains all the cached SCP-330 items, accessible through their <see cref="BaseScp330Item"/>.
     /// </summary>
-    public new static Dictionary<BaseScp330Item, Scp330Item> Dictionary { get; } = [];
+    public static new Dictionary<BaseScp330Item, Scp330Item> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="Scp330Item"/>.
     /// </summary>
-    public new static IReadOnlyCollection<Scp330Item> List => Dictionary.Values;
+    public static new IReadOnlyCollection<Scp330Item> List => Dictionary.Values;
 
     /// <summary>
-    /// Maximum number of candies that can be contained in a bag.
+    /// Gets the SCP-330 item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseScp330Item"/> was not null.
     /// </summary>
-    public const int MaxCandies = BaseScp330Item.MaxCandies;
+    /// <param name="baseScp330Item">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseScp330Item))]
+    public static Scp330Item? Get(BaseScp330Item? baseScp330Item)
+    {
+        if (baseScp330Item == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseScp330Item, out Scp330Item item) ? item : (Scp330Item)CreateItemWrapper(baseScp330Item);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -37,16 +53,9 @@ public class Scp330Item : UsableItem
         Base = baseScp330Item;
 
         if (CanCache)
+        {
             Dictionary.Add(baseScp330Item, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -76,10 +85,14 @@ public class Scp330Item : UsableItem
     {
         IEnumerator<CandyKindID> enumerator = candies.GetEnumerator();
         while (enumerator.MoveNext() && Base.Candies.Count < MaxCandies)
+        {
             Base.Candies.Add(enumerator.Current);
+        }
 
         if (sync)
+        {
             SyncCandies();
+        }
     }
 
     /// <summary>
@@ -94,10 +107,14 @@ public class Scp330Item : UsableItem
     {
         IEnumerator<CandyKindID> enumerator = candies.GetEnumerator();
         while (enumerator.MoveNext() && !Base.Candies.IsEmpty())
+        {
             Base.Candies.Remove(enumerator.Current);
+        }
 
         if (sync)
+        {
             SyncCandies();
+        }
     }
 
     /// <summary>
@@ -126,15 +143,21 @@ public class Scp330Item : UsableItem
     public bool TryDrop(CandyKindID kind, [NotNullWhen(true)] out Pickup? dropped)
     {
         dropped = null;
-        if(!Candies.Contains(kind))
+        if (!Candies.Contains(kind))
+        {
             return false;
+        }
 
         if (CurrentOwner == null)
+        {
             return false;
+        }
 
         dropped = Pickup.Create(Type, CurrentOwner.Position);
         if (dropped == null)
+        {
             return false;
+        }
 
         Scp330Pickup scp330 = (Scp330Pickup)dropped;
         scp330.ExposedCandy = kind;
@@ -144,16 +167,11 @@ public class Scp330Item : UsableItem
     }
 
     /// <summary>
-    /// Gets the SCP-330 item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseScp330Item"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseScp330Item">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseScp330Item))]
-    public static Scp330Item? Get(BaseScp330Item? baseScp330Item)
+    internal override void OnRemove()
     {
-        if (baseScp330Item == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseScp330Item, out Scp330Item item) ? item : (Scp330Item)CreateItemWrapper(baseScp330Item);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }
