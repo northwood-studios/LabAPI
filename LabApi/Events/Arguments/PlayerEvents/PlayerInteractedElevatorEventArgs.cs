@@ -13,12 +13,12 @@ public class PlayerInteractedElevatorEventArgs : EventArgs, IPlayerEvent, IEleva
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedElevatorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who interacted with elevator panel.</param>
+    /// <param name="hub">The player who interacted with elevator panel.</param>
     /// <param name="elevator">The elevator chamber.</param>
     /// <param name="panel">The elevator panel that was interaction done with.</param>
-    public PlayerInteractedElevatorEventArgs(ReferenceHub player, ElevatorChamber elevator, ElevatorPanel panel)
+    public PlayerInteractedElevatorEventArgs(ReferenceHub hub, ElevatorChamber elevator, ElevatorPanel panel)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Elevator = Elevator.Get(elevator);
         Panel = panel;
     }

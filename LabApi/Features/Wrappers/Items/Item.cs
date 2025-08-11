@@ -43,7 +43,7 @@ public class Item
     private static Dictionary<ushort, Item> SerialsCache { get; } = [];
 
     /// <summary>
-    /// Gets the item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ItemBase"/> was not null.
+    /// Gets the item wrapper from the <see cref="Dictionary"/> if it exists and the <see cref="ItemBase"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="itemBase">The <see cref="Base"/> of the item.</param>
     /// <returns>The requested item or null.</returns>
@@ -154,8 +154,9 @@ public class Item
         Register<Scp268>(x => new Scp268Item(x));
         Register<InventorySystem.Items.Usables.Scp1344.Scp1344Item>(x => new Scp1344Item(x));
 
-        Register<Firearm>(x => new FirearmItem(x));
-        Register<ParticleDisruptor>(x => new ParticleDisruptorItem(x));
+        Register<Firearm>(FirearmItem.CreateFirearmWrapper);
+        Register<ParticleDisruptor>(FirearmItem.CreateFirearmWrapper);
+
         Register<InventorySystem.Items.Jailbird.JailbirdItem>(x => new JailbirdItem(x));
         Register<Coin>(x => new CoinItem(x));
 
@@ -207,7 +208,7 @@ public class Item
         }
         catch (Exception e)
         {
-            Console.Logger.InternalError($"Failed to handle item creation with error: {e}");
+            Logger.InternalError($"Failed to handle item creation with error: {e}");
         }
     }
 

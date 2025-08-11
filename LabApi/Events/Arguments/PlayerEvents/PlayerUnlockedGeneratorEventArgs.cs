@@ -13,11 +13,11 @@ public class PlayerUnlockedGeneratorEventArgs : EventArgs, IPlayerEvent, IGenera
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUnlockedGeneratorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who unlocked the generator.</param>
+    /// <param name="hub">The player who unlocked the generator.</param>
     /// <param name="generator">The generator that the player has unlocked.</param>
-    public PlayerUnlockedGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
+    public PlayerUnlockedGeneratorEventArgs(ReferenceHub hub, Scp079Generator generator)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Generator = Generator.Get(generator);
     }
 

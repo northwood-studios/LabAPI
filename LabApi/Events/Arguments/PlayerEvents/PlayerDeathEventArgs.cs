@@ -15,7 +15,7 @@ public class PlayerDeathEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDeathEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who died.</param>
+    /// <param name="hub">The player who died.</param>
     /// <param name="attacker">The player who caused the death.</param>
     /// <param name="damageHandler">The damage that caused the death.</param>
     /// <param name="oldRole">The previous role of the player before death.</param>
@@ -23,7 +23,7 @@ public class PlayerDeathEventArgs : EventArgs, IPlayerEvent
     /// <param name="oldVelocity">The previous velocity of the player before death.</param>
     /// <param name="oldCameraRotation">The previous world rotation of the players camera before death.</param>
     public PlayerDeathEventArgs(
-        ReferenceHub player,
+        ReferenceHub hub,
         ReferenceHub? attacker,
         DamageHandlerBase damageHandler,
         RoleTypeId oldRole,
@@ -31,7 +31,7 @@ public class PlayerDeathEventArgs : EventArgs, IPlayerEvent
         Vector3 oldVelocity,
         Quaternion oldCameraRotation)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Attacker = Player.Get(attacker);
         DamageHandler = damageHandler;
         OldRole = oldRole;

@@ -13,11 +13,11 @@ public class Scp096PriedGateEventArgs : EventArgs, IPlayerEvent, IGateEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096PriedGateEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
+    /// <param name="hub">The SCP-096 player instance.</param>
     /// <param name="gate">The affected pryable door instance.</param>
-    public Scp096PriedGateEventArgs(ReferenceHub player, PryableDoor gate)
+    public Scp096PriedGateEventArgs(ReferenceHub hub, PryableDoor gate)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Gate = Gate.Get(gate);
     }
 

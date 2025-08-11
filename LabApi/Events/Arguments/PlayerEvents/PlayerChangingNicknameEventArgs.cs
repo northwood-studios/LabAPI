@@ -12,13 +12,13 @@ public class PlayerChangingNicknameEventArgs : EventArgs, IPlayerEvent, ICancell
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangingNicknameEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose nickname is changing.</param>
+    /// <param name="hub">The player whose nickname is changing.</param>
     /// <param name="oldNickname">The old nickname of the player.</param>
     /// <param name="newNickname">The new nickname of the player.</param>
-    public PlayerChangingNicknameEventArgs(ReferenceHub player, string? oldNickname, string? newNickname)
+    public PlayerChangingNicknameEventArgs(ReferenceHub hub, string? oldNickname, string? newNickname)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldNickname = oldNickname;
         NewNickname = newNickname;
     }

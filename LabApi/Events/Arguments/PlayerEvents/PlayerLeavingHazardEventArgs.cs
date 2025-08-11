@@ -13,11 +13,11 @@ public class PlayerLeavingHazardEventArgs : EventArgs, IPlayerEvent, IHazardEven
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerLeavingHazardEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is leaving.</param>
+    /// <param name="hub">The player who is leaving.</param>
     /// <param name="hazard">The hazard that the player is leaving.</param>
-    public PlayerLeavingHazardEventArgs(ReferenceHub player, EnvironmentalHazard hazard)
+    public PlayerLeavingHazardEventArgs(ReferenceHub hub, EnvironmentalHazard hazard)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Hazard = Hazard.Get(hazard);
 
         IsAllowed = true;

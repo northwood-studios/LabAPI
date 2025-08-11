@@ -13,12 +13,12 @@ public class PlayerDryFiringWeaponEventArgs : EventArgs, IFirearmItemEvent, ICan
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDryFiringWeaponEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is dry firing.</param>
+    /// <param name="hub">The player who is dry firing.</param>
     /// <param name="weapon">The weapon item.</param>
-    public PlayerDryFiringWeaponEventArgs(ReferenceHub player, Firearm weapon)
+    public PlayerDryFiringWeaponEventArgs(ReferenceHub hub, Firearm weapon)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         FirearmItem = FirearmItem.Get(weapon);
     }
 

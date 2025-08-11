@@ -12,13 +12,13 @@ public class PlayerUncuffingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, I
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUncuffingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is uncuffing another player.</param>
+    /// <param name="hub">The player who is uncuffing another player.</param>
     /// <param name="target">The player who is being uncuffed.</param>
     /// <param name="canUnDetainAsScp">Whenever the player can undetain as SCP player.</param>
-    public PlayerUncuffingEventArgs(ReferenceHub player, ReferenceHub target, bool canUnDetainAsScp)
+    public PlayerUncuffingEventArgs(ReferenceHub hub, ReferenceHub target, bool canUnDetainAsScp)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         CanUnDetainAsScp = canUnDetainAsScp;
     }

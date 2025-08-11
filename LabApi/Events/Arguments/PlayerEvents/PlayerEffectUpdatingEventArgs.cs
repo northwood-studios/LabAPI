@@ -13,14 +13,14 @@ public class PlayerEffectUpdatingEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEffectUpdatingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose effect is being updated.</param>
+    /// <param name="hub">The player whose effect is being updated.</param>
     /// <param name="effect">The effect that is being updated.</param>
     /// <param name="intensity">Intensity of the effect.</param>
     /// <param name="duration">Duration of the effect in seconds.</param>
-    public PlayerEffectUpdatingEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
+    public PlayerEffectUpdatingEventArgs(ReferenceHub hub, StatusEffectBase effect, byte intensity, float duration)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Effect = effect;
         Intensity = intensity;
         Duration = duration;

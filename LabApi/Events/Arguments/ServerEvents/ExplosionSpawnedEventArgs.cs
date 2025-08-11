@@ -14,14 +14,14 @@ public class ExplosionSpawnedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="ExplosionSpawnedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player which caused this explosion.</param>
+    /// <param name="hub">The player which caused this explosion.</param>
     /// <param name="position">The position of explosion.</param>
     /// <param name="settingsReference">The projectile which caused explosion.</param>
     /// <param name="explosionType">The type of this explosion.</param>
     /// <param name="destroyDoors">Whether the explosion was allowed to destroy doors.</param>
-    public ExplosionSpawnedEventArgs(ReferenceHub? player, Vector3 position, ExplosionGrenade settingsReference, ExplosionType explosionType, bool destroyDoors)
+    public ExplosionSpawnedEventArgs(ReferenceHub? hub, Vector3 position, ExplosionGrenade settingsReference, ExplosionType explosionType, bool destroyDoors)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Position = position;
         Settings = settingsReference;
         ExplosionType = explosionType;

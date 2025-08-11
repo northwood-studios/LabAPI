@@ -13,11 +13,11 @@ public class PlayerInteractedToyEventArgs : EventArgs, IPlayerEvent, IInteractab
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedToyEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who interacted with the toy.</param>
+    /// <param name="hub">The player who interacted with the toy.</param>
     /// <param name="toy">The toy instance that was interacted with.</param>
-    public PlayerInteractedToyEventArgs(ReferenceHub player, InvisibleInteractableToy toy)
+    public PlayerInteractedToyEventArgs(ReferenceHub hub, InvisibleInteractableToy toy)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Interactable = InteractableToy.Get(toy);
     }
 

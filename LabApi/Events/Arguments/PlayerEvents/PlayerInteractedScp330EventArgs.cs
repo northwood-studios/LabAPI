@@ -14,14 +14,14 @@ public class PlayerInteractedScp330EventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedScp330EventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who interacted with SCP-330.</param>
+    /// <param name="hub">The player who interacted with SCP-330.</param>
     /// <param name="uses">The amount of uses that target player did.</param>
     /// <param name="playSound">Whenever pickup sound should have been.</param>
     /// <param name="allowPunishment">Whenever the <see cref="SeveredHands"/> effect was applied.</param>
     /// <param name="type">Type of the candy which was given to the player.</param>
-    public PlayerInteractedScp330EventArgs(ReferenceHub player, int uses, bool playSound, bool allowPunishment, CandyKindID type)
+    public PlayerInteractedScp330EventArgs(ReferenceHub hub, int uses, bool playSound, bool allowPunishment, CandyKindID type)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Uses = uses;
         PlaySound = playSound;
         AllowPunishment = allowPunishment;

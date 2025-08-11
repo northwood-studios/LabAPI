@@ -12,10 +12,10 @@ public class Scp096StartedCryingEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096StartedCryingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
-    public Scp096StartedCryingEventArgs(ReferenceHub player)
+    /// <param name="hub">The SCP-096 player instance.</param>
+    public Scp096StartedCryingEventArgs(ReferenceHub hub)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

@@ -13,13 +13,13 @@ public class PlayerUsingRadioEventArgs : EventArgs, IPlayerEvent, IRadioItemEven
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUsingRadioEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is using the radio.</param>
+    /// <param name="hub">The player who is using the radio.</param>
     /// <param name="radio">Radio item that is being used.</param>
     /// <param name="drain">Battery drain amount per second.</param>
-    public PlayerUsingRadioEventArgs(ReferenceHub player, BaseRadioItem radio, float drain)
+    public PlayerUsingRadioEventArgs(ReferenceHub hub, BaseRadioItem radio, float drain)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         RadioItem = RadioItem.Get(radio);
         Drain = drain;
     }

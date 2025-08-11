@@ -14,11 +14,11 @@ public class Scp914ActivatedEventArgs : EventArgs, IScp914Event, IPlayerEvent
     /// Initializes a new instance of the <see cref="Scp914ActivatedEventArgs"/> class.
     /// </summary>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
-    /// <param name="player">The player that activated SCP-914.</param>
-    public Scp914ActivatedEventArgs(Scp914KnobSetting knobSetting, ReferenceHub player)
+    /// <param name="hub">The player that activated SCP-914.</param>
+    public Scp914ActivatedEventArgs(Scp914KnobSetting knobSetting, ReferenceHub hub)
     {
         KnobSetting = knobSetting;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <inheritdoc />

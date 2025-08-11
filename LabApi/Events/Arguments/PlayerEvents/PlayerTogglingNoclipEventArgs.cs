@@ -12,12 +12,12 @@ public class PlayerTogglingNoclipEventArgs : EventArgs, IPlayerEvent, ICancellab
     /// <summary>
     /// Initializes a new instance of <see cref=" PlayerTogglingNoclipEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is attempting to toggle noclip.</param>
+    /// <param name="hub">The player who is attempting to toggle noclip.</param>
     /// <param name="newState">Whether the noclip state will be enabled or disabled.</param>
-    public PlayerTogglingNoclipEventArgs(ReferenceHub player, bool newState)
+    public PlayerTogglingNoclipEventArgs(ReferenceHub hub, bool newState)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         NewNoclipState = newState;
     }
 

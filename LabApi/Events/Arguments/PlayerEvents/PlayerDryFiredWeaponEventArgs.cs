@@ -13,11 +13,11 @@ public class PlayerDryFiredWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmIt
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDryFiredWeaponEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who dry fired.</param>
+    /// <param name="hub">The player who dry fired.</param>
     /// <param name="weapon">The weapon item.</param>
-    public PlayerDryFiredWeaponEventArgs(ReferenceHub player, Firearm weapon)
+    public PlayerDryFiredWeaponEventArgs(ReferenceHub hub, Firearm weapon)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         FirearmItem = FirearmItem.Get(weapon);
     }
 

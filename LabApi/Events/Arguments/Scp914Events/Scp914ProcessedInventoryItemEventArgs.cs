@@ -17,13 +17,13 @@ public class Scp914ProcessedInventoryItemEventArgs : EventArgs, IScp914Event, II
     /// <param name="oldItemType">The old item type.</param>
     /// <param name="item">The new item that has been processed by SCP-914.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
-    /// <param name="player">The owner of the item.</param>
-    public Scp914ProcessedInventoryItemEventArgs(ItemType oldItemType, ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub player)
+    /// <param name="hub">The owner of the item.</param>
+    public Scp914ProcessedInventoryItemEventArgs(ItemType oldItemType, ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub hub)
     {
         OldItemType = oldItemType;
         Item = Item.Get(item);
         KnobSetting = knobSetting;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

@@ -13,12 +13,12 @@ public class Scp173PlayingSoundEventArgs : EventArgs, IPlayerEvent, ICancellable
     /// <summary>
     /// The sound id that is going to be played.
     /// </summary>
-    /// <param name="player">The SCP-173 player instance.</param>
+    /// <param name="hub">The SCP-173 player instance.</param>
     /// <param name="soundId">The sound id going to be played.</param>
-    public Scp173PlayingSoundEventArgs(ReferenceHub player, Scp173AudioPlayer.Scp173SoundId soundId)
+    public Scp173PlayingSoundEventArgs(ReferenceHub hub, Scp173AudioPlayer.Scp173SoundId soundId)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         SoundId = soundId;
     }
 

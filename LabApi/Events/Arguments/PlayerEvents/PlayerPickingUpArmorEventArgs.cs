@@ -13,12 +13,12 @@ public class PlayerPickingUpArmorEventArgs : EventArgs, IPlayerEvent, IBodyArmor
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickingUpArmorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who picked up the armor.</param>
+    /// <param name="hub">The player who picked up the armor.</param>
     /// <param name="pickup">The armor pickup.</param>
-    public PlayerPickingUpArmorEventArgs(ReferenceHub player, BaseBodyArmorPickup pickup)
+    public PlayerPickingUpArmorEventArgs(ReferenceHub hub, BaseBodyArmorPickup pickup)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         BodyArmorPickup = BodyArmorPickup.Get(pickup);
     }
 

@@ -14,12 +14,12 @@ public class PlayerInteractedGeneratorEventArgs : EventArgs, IPlayerEvent, IGene
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedGeneratorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who interacted with the generator.</param>
+    /// <param name="hub">The player who interacted with the generator.</param>
     /// <param name="generator">The generator object.</param>
     /// <param name="colliderId">The collider ID.</param>
-    public PlayerInteractedGeneratorEventArgs(ReferenceHub player, Scp079Generator generator, GeneratorColliderId colliderId)
+    public PlayerInteractedGeneratorEventArgs(ReferenceHub hub, Scp079Generator generator, GeneratorColliderId colliderId)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Generator = Generator.Get(generator);
         ColliderId = colliderId;
     }

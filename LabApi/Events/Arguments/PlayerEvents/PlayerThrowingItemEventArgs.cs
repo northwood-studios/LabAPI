@@ -14,13 +14,13 @@ public class PlayerThrowingItemEventArgs : EventArgs, IPlayerEvent, IPickupEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerThrowingItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is throwing the item.</param>
+    /// <param name="hub">The player who is throwing the item.</param>
     /// <param name="item">The item that is being thrown.</param>
     /// <param name="rigidbody">The rigidbody of the item.</param>
-    public PlayerThrowingItemEventArgs(ReferenceHub player, ItemPickupBase item, Rigidbody rigidbody)
+    public PlayerThrowingItemEventArgs(ReferenceHub hub, ItemPickupBase item, Rigidbody rigidbody)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Pickup = Pickup.Get(item);
         Rigidbody = rigidbody;
     }

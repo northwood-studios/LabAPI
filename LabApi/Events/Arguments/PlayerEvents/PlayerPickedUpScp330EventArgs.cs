@@ -14,12 +14,12 @@ public class PlayerPickedUpScp330EventArgs : EventArgs, IPlayerEvent, ICandyItem
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickedUpScp330EventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who picked up SCP-330.</param>
+    /// <param name="hub">The player who picked up SCP-330.</param>
     /// <param name="pickup">The pickup item.</param>
     /// <param name="item">SCP-330 bag item of the player.</param>
-    public PlayerPickedUpScp330EventArgs(ReferenceHub player, BaseScp330Pickup pickup, BaseScp330Bag item)
+    public PlayerPickedUpScp330EventArgs(ReferenceHub hub, BaseScp330Pickup pickup, BaseScp330Bag item)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         CandyPickup = Scp330Pickup.Get(pickup);
         CandyItem = Scp330Item.Get(item);
     }

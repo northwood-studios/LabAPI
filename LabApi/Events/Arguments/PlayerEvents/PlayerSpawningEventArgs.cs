@@ -17,15 +17,15 @@ public class PlayerSpawningEventArgs : EventArgs, IPlayerEvent, ICancellableEven
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSpawningEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is being spawned.</param>
+    /// <param name="hub">The player who is being spawned.</param>
     /// <param name="role">The role that is being applied.</param>
     /// <param name="useSpawnPoint">If spawnpoint should be used.</param>
     /// <param name="spawnLocation">The default spawn location.</param>
     /// <param name="horizontalRotation">The default spawn horizontal rotation.</param>
-    public PlayerSpawningEventArgs(ReferenceHub player, PlayerRoleBase role, bool useSpawnPoint, Vector3 spawnLocation, float horizontalRotation)
+    public PlayerSpawningEventArgs(ReferenceHub hub, PlayerRoleBase role, bool useSpawnPoint, Vector3 spawnLocation, float horizontalRotation)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Role = role;
         UseSpawnPoint = useSpawnPoint;
         _spawnLocation = spawnLocation;

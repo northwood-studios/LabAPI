@@ -14,13 +14,13 @@ public class PlayerSpawningRagdollEventArgs : EventArgs, IPlayerEvent, ICancella
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSpawningRagdollEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player from who is ragdoll from.</param>
+    /// <param name="hub">The player from who is ragdoll from.</param>
     /// <param name="ragdoll">The ragdoll which being spawned.</param>
     /// <param name="damageHandler">The damage handler that caused the death of the player.</param>
-    public PlayerSpawningRagdollEventArgs(ReferenceHub player, BasicRagdoll ragdoll, DamageHandlerBase damageHandler)
+    public PlayerSpawningRagdollEventArgs(ReferenceHub hub, BasicRagdoll ragdoll, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         RagdollPrefab = Ragdoll.Get(ragdoll);
         DamageHandler = damageHandler;
     }

@@ -12,13 +12,13 @@ public class PlayerDroppingAmmoEventArgs : EventArgs, ICancellableEvent, IPlayer
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDroppingAmmoEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is dropping the ammo.</param>
+    /// <param name="hub">The player who is dropping the ammo.</param>
     /// <param name="type">The type of ammo being dropped.</param>
     /// <param name="amount">The amount of ammo being dropped.</param>
-    public PlayerDroppingAmmoEventArgs(ReferenceHub player, ItemType type, int amount)
+    public PlayerDroppingAmmoEventArgs(ReferenceHub hub, ItemType type, int amount)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Type = type;
         Amount = amount;
     }

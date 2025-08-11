@@ -31,7 +31,7 @@ public class CustomColorConverter : IYamlTypeConverter
                     throw new ArgumentException($"Unable to parse {nameof(Color)}, no component at index {i} provided");
                 }
 
-                if (!(key is "r" or "g" or "b" or "a"))
+                if (key is not ("r" or "g" or "b" or "a"))
                 {
                     throw new ArgumentException($"Unable to parse {nameof(Color)}, invalid component name {key}. Only 'r', 'g', 'b' and 'a' are allowed");
                 }
@@ -43,10 +43,6 @@ public class CustomColorConverter : IYamlTypeConverter
 
             Color value = new(storedValues["r"], storedValues["g"], storedValues["b"], storedValues["a"]);
             return value;
-        }
-        catch (ArgumentException)
-        {
-            throw;
         }
         finally
         {
