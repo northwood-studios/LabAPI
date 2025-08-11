@@ -1,10 +1,10 @@
-using System.Collections.Concurrent;
 using NorthwoodLib.Pools;
+using System.Collections.Concurrent;
 
 namespace LabApi.Features.Extensions;
 
 /// <summary>
-/// Pool for <see cref="PriorityQueue{T}"/>
+/// Pool for <see cref="PriorityQueue{T}"/>.
 /// </summary>
 /// <typeparam name="T">Type of the queue.</typeparam>
 public sealed class PriorityQueuePool<T> : IPool<PriorityQueue<T>>
@@ -15,7 +15,7 @@ public sealed class PriorityQueuePool<T> : IPool<PriorityQueue<T>>
     public static readonly PriorityQueuePool<T> Shared = new();
 
     private readonly ConcurrentQueue<PriorityQueue<T>> _pool = new();
-    
+
     /// <summary>
     /// Gives a pooled <see cref="PriorityQueue{T}"/> or creates a new one if the pool is empty.
     /// </summary>

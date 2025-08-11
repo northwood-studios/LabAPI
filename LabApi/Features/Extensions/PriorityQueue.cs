@@ -9,20 +9,20 @@ namespace LabApi.Features.Extensions;
 /// <typeparam name="T">Data type to store in the queue.</typeparam>
 public class PriorityQueue<T>
 {
-    /// <summary>
-    /// Gets the number of items currently in the queue.
-    /// </summary>
-    public int Count => _elements.Count;
-
-    private readonly List<ValueTuple<int, T>> _elements;
+    private readonly List<(int, T)> _elements;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PriorityQueue{T}"/> class.
     /// </summary>
     public PriorityQueue()
     {
-        _elements = new List<ValueTuple<int, T>>();
+        _elements = [];
     }
+
+    /// <summary>
+    /// Gets the number of items currently in the queue.
+    /// </summary>
+    public int Count => _elements.Count;
 
     /// <summary>
     /// Adds an item to the priority queue with the specified priority.
@@ -32,10 +32,11 @@ public class PriorityQueue<T>
     /// <param name="priority">The priority of the item.</param>
     public void Enqueue(T item, int priority)
     {
-        ValueTuple<int, T> newItem = new ValueTuple<int, T>(priority, item);
+        ValueTuple<int, T> newItem = new(priority, item);
         _elements.Add(newItem);
         HeapifyUp(_elements.Count - 1);
     }
+
     /// <summary>
     /// Removes and returns the item with the highest priority (smallest priority value) from the queue.
     /// </summary>
@@ -44,7 +45,9 @@ public class PriorityQueue<T>
     public T Dequeue()
     {
         if (Count == 0)
+        {
             throw new InvalidOperationException("The queue is empty.");
+        }
 
         T bestItem = _elements[0].Item2;
         int lastIndex = _elements.Count - 1;
@@ -53,10 +56,13 @@ public class PriorityQueue<T>
         _elements.RemoveAt(lastIndex);
 
         if (Count > 0)
+        {
             HeapifyDown(0);
+        }
 
         return bestItem;
     }
+
     /// <summary>
     /// Clears all items from the queue.
     /// </summary>
@@ -88,13 +94,19 @@ public class PriorityQueue<T>
             smallestChildIndex = index;
 
             if (leftChildIndex < Count && _elements[leftChildIndex].Item1 < _elements[smallestChildIndex].Item1)
+            {
                 smallestChildIndex = leftChildIndex;
+            }
 
             if (rightChildIndex < Count && _elements[rightChildIndex].Item1 < _elements[smallestChildIndex].Item1)
+            {
                 smallestChildIndex = rightChildIndex;
+            }
 
             if (smallestChildIndex == index)
+            {
                 break;
+            }
 
             Swap(index, smallestChildIndex);
             index = smallestChildIndex;
