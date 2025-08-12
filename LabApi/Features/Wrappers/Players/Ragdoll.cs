@@ -5,6 +5,7 @@ using PlayerRoles.PlayableScps.Scp049;
 using PlayerRoles.PlayableScps.Scp049.Zombies;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
+using RelativePositioning;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,7 +55,14 @@ public class Ragdoll
     public RoleTypeId Role
     {
         get => Base.NetworkInfo.RoleType;
-        set => Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, value, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+        set => Base.NetworkInfo = new RagdollData(
+            Base.Info.OwnerHub,
+            Base.Info.Handler,
+            value,
+            Base.Info.StartRelativePosition,
+            Base.Info.StartRelativeRotation,
+            Base.Info.Nickname,
+            Base.Info.CreationTime);
     }
 
     /// <summary>
@@ -63,7 +71,14 @@ public class Ragdoll
     public string Nickname
     {
         get => Base.NetworkInfo.Nickname;
-        set => Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, value, Base.NetworkInfo.CreationTime);
+        set => Base.NetworkInfo = new RagdollData(
+            Base.Info.OwnerHub,
+            Base.Info.Handler,
+            Base.Info.RoleType,
+            Base.Info.StartRelativePosition,
+            Base.Info.StartRelativeRotation,
+            value,
+            Base.Info.CreationTime);
     }
 
     /// <summary>
@@ -73,7 +88,14 @@ public class Ragdoll
     public DamageHandlerBase DamageHandler
     {
         get => Base.NetworkInfo.Handler;
-        set => Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, value, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+        set => Base.NetworkInfo = new RagdollData(
+            Base.Info.OwnerHub,
+            value,
+            Base.Info.RoleType,
+            Base.Info.StartRelativePosition,
+            Base.Info.StartRelativeRotation,
+            Base.Info.Nickname,
+            Base.Info.CreationTime);
     }
 
     /// <summary>
@@ -85,7 +107,17 @@ public class Ragdoll
         set
         {
             Base.transform.position = value;
-            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, value, Base.NetworkInfo.StartRotation, Base.NetworkInfo.Scale, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+            RelativePosition relPos = new(value);
+            Quaternion relRot = WaypointBase.GetRelativeRotation(relPos.WaypointId, WaypointBase.GetWorldRotation(Base.Info.StartRelativePosition.WaypointId, Base.Info.StartRelativeRotation));
+            Base.NetworkInfo = new RagdollData(
+                Base.Info.OwnerHub,
+                Base.Info.Handler,
+                Base.Info.RoleType,
+                relPos, 
+                relRot,
+                Base.Info.Scale,
+                Base.Info.Nickname,
+                Base.Info.CreationTime);
         }
     }
 
@@ -98,7 +130,16 @@ public class Ragdoll
         set
         {
             Base.transform.rotation = value;
-            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, value, Base.NetworkInfo.Scale, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+            Quaternion relRot = WaypointBase.GetRelativeRotation(Base.Info.StartRelativePosition.WaypointId, value);
+            Base.NetworkInfo = new RagdollData(
+                Base.Info.OwnerHub,
+                Base.Info.Handler,
+                Base.Info.RoleType,
+                Base.Info.StartRelativePosition,
+                relRot,
+                Base.Info.Scale,
+                Base.Info.Nickname,
+                Base.Info.CreationTime);
         }
     }
 
@@ -112,7 +153,15 @@ public class Ragdoll
         set
         {
             Base.transform.localScale = value;
-            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, Vector3.Scale(value, RagdollManager.GetDefaultScale(Role)), Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+            Base.NetworkInfo = new RagdollData(
+                Base.Info.OwnerHub,
+                Base.Info.Handler,
+                Base.Info.RoleType,
+                Base.Info.StartRelativePosition,
+                Base.Info.StartRelativeRotation,
+                Vector3.Scale(value, RagdollManager.GetDefaultScale(Role)),
+                Base.Info.Nickname,
+                Base.Info.CreationTime);
         }
     }
 
@@ -184,7 +233,7 @@ public class Ragdoll
 
         Destroy();
         Dictionary.Remove(Base);
-        Base = RagdollManager.ServerCreateRagdoll(data.RoleType, data.StartPosition, data.StartRotation, data.Handler, data.Nickname, data.Scale, data.Serial);
+        Base = RagdollManager.ServerCreateRagdoll(data.RoleType, data.StartRelativePosition.Position, data.StartRelativeRotation, data.Handler, data.Nickname, data.Scale, data.Serial);
         Dictionary.TryAdd(Base, this);
 
         RagdollManager.OnRagdollSpawned += RagdollSpawned;
