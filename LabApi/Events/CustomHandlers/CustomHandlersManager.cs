@@ -46,6 +46,12 @@ public static partial class CustomHandlersManager
     /// <summary>
     /// Checks if the event is overriden and subscribes the handler to the event if it is.
     /// </summary>
+    /// <param name="handler">The custom event handler instance.</param>
+    /// <param name="handlerType">The <see cref="Type"/> of the handler instance.</param>
+    /// <param name="methodDelegate">The <see langword="nameof"/> of the <see cref="CustomEventsHandler"/> event method.</param>
+    /// <param name="eventType">The <see cref="Type"/> class of the handler.</param>
+    /// <param name="eventName">The <see langword="nameof"/> the event in the handler.</param>
+    /// <typeparam name="T">The custom event handler type.</typeparam>
     public static void CheckEvent<T>(T handler, Type handlerType, string methodDelegate, Type eventType, string eventName)
         where T : CustomEventsHandler
     {
@@ -54,7 +60,9 @@ public static partial class CustomHandlersManager
 
         // If the method is null or not an override, we return.
         if (method == null || !IsOverride(method))
+        {
             return;
+        }
 
         // We get the event from the event type.
         EventInfo eventInfo = eventType.GetEvent(eventName);

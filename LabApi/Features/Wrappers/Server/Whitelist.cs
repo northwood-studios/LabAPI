@@ -41,7 +41,7 @@ public static class Whitelist
     public static bool IsOnWhitelist(string userId) => WhiteList.IsOnWhitelist(userId);
 
     /// <summary>
-    /// Chhecks if the player is allowed on the server if the whitelist is enabled.
+    /// Checks if the player is allowed on the server if the whitelist is enabled.
     /// </summary>
     /// <param name="userId">The user id of the player.</param>
     /// <returns>Whether the player is whitelisted. Will always return true if whitelist is disabled.</returns>
@@ -55,11 +55,13 @@ public static class Whitelist
     /// <summary>
     /// Adds player to whitelist and saves it to file.
     /// </summary>
-    /// <param name="userId">The userid.</param>
+    /// <param name="userId">The user id.</param>
     public static void Add(string userId)
     {
         if (IsOnWhitelist(userId))
+        {
             return;
+        }
 
         List<string> lines = FileManager.ReadAllLinesList(FilePath);
         lines.Add(userId);
@@ -81,7 +83,9 @@ public static class Whitelist
     public static bool Remove(string userId)
     {
         if (!IsOnWhitelist(userId))
+        {
             return false;
+        }
 
         List<string> lines = FileManager.ReadAllLinesList(FilePath);
 

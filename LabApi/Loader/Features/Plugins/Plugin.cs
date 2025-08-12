@@ -43,10 +43,10 @@ public abstract class Plugin
     /// Whether this plugin is considered transparent.<br/>
     /// A plugin can be marked as transparent if the server’s modifications are strictly limited to non-intrusive features that do not affect gameplay balance or make significant alterations to the user interface.
     /// Examples of transparent modifications are: admin tools, automated timed broadcasts for tips, message of the day or other administrative utilities.<br/>
-    /// For more information, see article 5.2 in the official documentation: https://scpslgame.com/csg
+    /// For more information, see article 5.2 in the official documentation: https://scpslgame.com/csg.
     /// </summary>
     /// <remarks>
-    /// You can keep using the 'transparently modded' flag during occasional short events organised and supervised by 
+    /// You can keep using the 'transparently modded' flag during occasional short events organized and supervised by
     /// Server Staff, regardless of the Modifications used for these events.
     /// </remarks>
     public virtual bool IsTransparent { get; } = false;
@@ -75,10 +75,12 @@ public abstract class Plugin
 
     /// <summary>
     /// Called before the <see cref="Plugin"/> is enabled.
-    /// 
+    /// <br/>
     /// <para>Commonly used to load configurations, or any data files before the plugin is enabled.</para>
     /// </summary>
-    public virtual void LoadConfigs() { }
+    public virtual void LoadConfigs()
+    {
+    }
 
     /// <inheritdoc/>
     public override string ToString() => $"'{Name}', Version: {Version}, Author: '{Author}'";

@@ -1,5 +1,4 @@
-﻿using LabApi.Events.Arguments.Interfaces;
-using LabApi.Features.Wrappers;
+﻿using LabApi.Features.Wrappers;
 
 namespace LabApi.Events.Arguments.Interfaces;
 
@@ -16,4 +15,3 @@ public interface IScp127ItemEvent : IItemEvent
     /// </summary>
     public Scp127Firearm? Scp127Item { get; }
 }
-

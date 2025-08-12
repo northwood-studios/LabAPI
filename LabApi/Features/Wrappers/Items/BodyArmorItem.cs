@@ -1,5 +1,5 @@
-﻿using System;
-using InventorySystem.Items.Armor;
+﻿using InventorySystem.Items.Armor;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -13,12 +13,28 @@ public class BodyArmorItem : Item
     /// <summary>
     /// Contains all the cached body armor items, accessible through their <see cref="BodyArmor"/>.
     /// </summary>
-    public new static Dictionary<BodyArmor, BodyArmorItem> Dictionary { get; } = [];
+    public static new Dictionary<BodyArmor, BodyArmorItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="BodyArmorItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<BodyArmorItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<BodyArmorItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the body armor item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BodyArmor"/> was not null.
+    /// </summary>
+    /// <param name="bodyArmor">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(bodyArmor))]
+    public static BodyArmorItem? Get(BodyArmor? bodyArmor)
+    {
+        if (bodyArmor == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(bodyArmor, out BodyArmorItem item) ? item : (BodyArmorItem)CreateItemWrapper(bodyArmor);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,16 +46,9 @@ public class BodyArmorItem : Item
         Base = bodyArmor;
 
         if (CanCache)
+        {
             Dictionary.Add(bodyArmor, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -63,7 +72,7 @@ public class BodyArmorItem : Item
     public bool IsMovementModifierActive => Base.MovementModifierActive;
 
     /// <summary>
-    /// Gets the movement speed multiplier after being processed by <see cref="CivilianDownsideMultiplier"/>. 
+    /// Gets the movement speed multiplier after being processed by <see cref="BodyArmor.CivilianClassDownsidesMultiplier"/>.
     /// </summary>
     public float ActualMovementSpeedMultiplier => Base.MovementSpeedMultiplier;
 
@@ -73,21 +82,16 @@ public class BodyArmorItem : Item
     public bool IsStaminaModifierActive => Base.StaminaModifierActive;
 
     /// <summary>
-    /// Gets the stamina usage multiplier after being processed by <see cref="CivilianDownsideMultiplier"/>.
+    /// Gets the stamina usage multiplier after being processed by <see cref="BodyArmor.CivilianClassDownsidesMultiplier"/>.
     /// </summary>
     public float ActualStaminaUsageMultiplier => Base.StaminaUsageMultiplier;
 
     /// <summary>
-    /// Gets the body armor item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BodyArmor"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="bodyArmor">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(bodyArmor))]
-    public static BodyArmorItem? Get(BodyArmor? bodyArmor)
+    internal override void OnRemove()
     {
-        if (bodyArmor == null)
-            return null;
-
-        return Dictionary.TryGetValue(bodyArmor, out BodyArmorItem item) ? item : (BodyArmorItem)CreateItemWrapper(bodyArmor);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

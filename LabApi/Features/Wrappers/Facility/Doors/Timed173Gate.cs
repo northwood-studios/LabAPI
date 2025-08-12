@@ -16,12 +16,33 @@ public class Timed173Gate : Gate
     /// <summary>
     /// Contains all the cached <see cref="Timed173Gate"/> instances, accessible through their <see cref="Timed173PryableDoor"/>.
     /// </summary>
-    public new static Dictionary<Timed173PryableDoor, Timed173Gate> Dictionary { get; } = [];
+    public static new Dictionary<Timed173PryableDoor, Timed173Gate> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="Timed173Gate"/> instances currently in the game.
     /// </summary>
-    public new static IReadOnlyCollection<Timed173Gate> List => Dictionary.Values;
+    public static new IReadOnlyCollection<Timed173Gate> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the <see cref="Timed173Gate"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <param name="timed173PryableDoor">The <see cref="Timed173PryableDoor"/> of the door.</param>
+    /// <returns>The requested door wrapper or null if the input was null.</returns>
+    [return: NotNullIfNotNull(nameof(timed173PryableDoor))]
+    public static Timed173Gate? Get(Timed173PryableDoor? timed173PryableDoor)
+    {
+        if (timed173PryableDoor == null)
+        {
+            return null;
+        }
+
+        if (Dictionary.TryGetValue(timed173PryableDoor, out Timed173Gate door))
+        {
+            return door;
+        }
+
+        return (Timed173Gate)CreateDoorWrapper(timed173PryableDoor);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -33,16 +54,9 @@ public class Timed173Gate : Gate
         Base = timed173PryableDoor;
 
         if (CanCache)
+        {
             Dictionary.Add(timed173PryableDoor, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -77,19 +91,11 @@ public class Timed173Gate : Gate
     }
 
     /// <summary>
-    /// Gets the <see cref="Timed173Gate"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="timed173PryableDoor">The <see cref="Timed173PryableDoor"/> of the door.</param>
-    /// <returns>The requested door wrapper or null if the input was null.</returns>
-    [return: NotNullIfNotNull(nameof(timed173PryableDoor))]
-    public static Timed173Gate? Get(Timed173PryableDoor? timed173PryableDoor)
+    internal override void OnRemove()
     {
-        if (timed173PryableDoor == null)
-            return null;
-
-        if (Dictionary.TryGetValue(timed173PryableDoor, out Timed173Gate door))
-            return door;
-
-        return (Timed173Gate)CreateDoorWrapper(timed173PryableDoor);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

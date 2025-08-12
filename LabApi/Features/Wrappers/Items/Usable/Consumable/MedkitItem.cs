@@ -12,12 +12,28 @@ public class MedkitItem : ConsumableItem
     /// <summary>
     /// Contains all the cached medkit items, accessible through their <see cref="Medkit"/>.
     /// </summary>
-    public new static Dictionary<Medkit, MedkitItem> Dictionary { get; } = [];
+    public static new Dictionary<Medkit, MedkitItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="MedkitItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<MedkitItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<MedkitItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the medkit item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Medkit"/> was not null.
+    /// </summary>
+    /// <param name="medkit">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(medkit))]
+    public static MedkitItem? Get(Medkit? medkit)
+    {
+        if (medkit == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(medkit, out MedkitItem item) ? item : (MedkitItem)CreateItemWrapper(medkit);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class MedkitItem : ConsumableItem
         Base = medkit;
 
         if (CanCache)
+        {
             Dictionary.Add(medkit, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class MedkitItem : ConsumableItem
     public new Medkit Base { get; }
 
     /// <summary>
-    /// Gets the medkit item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Medkit"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="medkit">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(medkit))]
-    public static MedkitItem? Get(Medkit? medkit)
+    internal override void OnRemove()
     {
-        if (medkit == null)
-            return null;
-
-        return Dictionary.TryGetValue(medkit, out MedkitItem item) ? item : (MedkitItem)CreateItemWrapper(medkit);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

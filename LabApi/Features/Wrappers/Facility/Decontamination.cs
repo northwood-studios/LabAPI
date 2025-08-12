@@ -22,7 +22,7 @@ public static class Decontamination
     public static bool IsDecontaminating => Singleton.IsDecontaminating;
 
     /// <summary>
-    /// Gets the current server time since round has started plus the <see cref="Offset"/>
+    /// Gets the current server time since round has started plus the <see cref="Offset"/>.
     /// </summary>
     public static double ServerTime => GetServerTime;
 

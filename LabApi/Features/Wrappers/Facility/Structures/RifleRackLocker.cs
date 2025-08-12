@@ -12,31 +12,24 @@ public class RifleRackLocker : Locker
     /// <summary>
     /// Contains all the cached rifle rack lockers, accessible through their <see cref="BaseLocker"/>.
     /// </summary>
-    public new static Dictionary<BaseLocker, RifleRackLocker> Dictionary { get; } = [];
+    public static new Dictionary<BaseLocker, RifleRackLocker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="RifleRackLocker"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<RifleRackLocker> List => Dictionary.Values;
+    public static new IReadOnlyCollection<RifleRackLocker> List => Dictionary.Values;
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseLocker">The base <see cref="BaseLocker"/> object.</param>
     internal RifleRackLocker(BaseLocker baseLocker)
-        :base(baseLocker)
+        : base(baseLocker)
     {
         if (CanCache)
+        {
             Dictionary.Add(baseLocker, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,7 +40,7 @@ public class RifleRackLocker : Locker
         get => MainChamber.IsOpen;
         set => MainChamber.IsOpen = value;
     }
-    
+
     /// <summary>
     /// Gets whether the rifle rack can be interacted with by a <see cref="Player"/>.
     /// </summary>
@@ -111,4 +104,13 @@ public class RifleRackLocker : Locker
     /// Gets the chamber used for grenade spawn 2.
     /// </summary>
     public LockerChamber HeGrenade2 => Chambers[6];
+
+    /// <summary>
+    /// An internal method to remove itself from the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
+    }
 }

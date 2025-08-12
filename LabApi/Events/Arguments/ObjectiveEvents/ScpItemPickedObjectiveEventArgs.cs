@@ -18,7 +18,8 @@ public class ScpItemPickedObjectiveEventArgs : ObjectiveCompletedBaseEventArgs
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="sendToPlayers">Whether the objective completion has been sent to players.</param>
     /// <param name="item">The item that has been picked up.</param>
-    public ScpItemPickedObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, ItemBase item) : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
+    public ScpItemPickedObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, ItemBase item)
+        : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
     {
         Item = Item.Get(item);
     }

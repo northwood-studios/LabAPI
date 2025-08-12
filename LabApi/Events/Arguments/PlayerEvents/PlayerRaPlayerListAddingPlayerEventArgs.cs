@@ -20,8 +20,14 @@ public class PlayerRaPlayerListAddingPlayerEventArgs : EventArgs, IPlayerEvent, 
     /// <param name="inOverwatch">Whether to include the overwatch icon in the list item.</param>
     /// <param name="isMuted">Whether to include the is muted icon and link in the list item.</param>
     /// <param name="body">The body string for the Ra list item.</param>
-    public PlayerRaPlayerListAddingPlayerEventArgs(CommandSender commandSender, ReferenceHub targetHub, 
-        StringBuilder builder, string prefix, bool inOverwatch, bool isMuted, string body)
+    public PlayerRaPlayerListAddingPlayerEventArgs(
+        CommandSender commandSender,
+        ReferenceHub targetHub,
+        StringBuilder builder,
+        string prefix,
+        bool inOverwatch,
+        bool isMuted,
+        string body)
     {
         Player = Player.Get(commandSender)!;
         Target = Player.Get(targetHub);

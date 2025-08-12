@@ -1,5 +1,4 @@
-﻿using InventorySystem.Items;
-using InventorySystem.Items.Pickups;
+﻿using InventorySystem.Items.Pickups;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;

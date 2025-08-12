@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Generators;
+using MapGeneration;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using Utils.NonAllocLINQ;
-using Generators;
-using MapGeneration;
 
 namespace LabApi.Features.Wrappers;
 
@@ -18,14 +18,57 @@ public class Tesla
     public static Dictionary<TeslaGate, Tesla> Dictionary { get; } = [];
 
     /// <summary>
+    /// A reference to all instances of <see cref="Tesla"/>.
+    /// </summary>
+    public static IReadOnlyCollection<Tesla> List => Dictionary.Values;
+
+    /// <summary>
     /// Cached tesla gates by <see cref="Room"/> they are in.
     /// </summary>
     private static Dictionary<RoomIdentifier, Tesla> TeslaByRoom { get; } = [];
 
     /// <summary>
-    /// A reference to all instances of <see cref="Tesla"/>.
+    /// Gets the tesla wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
     /// </summary>
-    public static IReadOnlyCollection<Tesla> List => Dictionary.Values;
+    /// <param name="teslaGate">The <see cref="TeslaGate"/> of the tesla.</param>
+    /// <returns>The requested tesla.</returns>
+    public static Tesla Get(TeslaGate teslaGate) => Dictionary.TryGetValue(teslaGate, out Tesla tesla) ? tesla : new Tesla(teslaGate);
+
+    /// <summary>
+    /// Gets the tesla wrapper inside of <see cref="Room"/> from the <see cref="TeslaByRoom"/>.
+    /// </summary>
+    /// <param name="room">The <see cref="Room"/> with the tesla.</param>
+    /// <param name="tesla">The tesla to be returned.</param>
+    /// <returns>Whether the tesla is in out parameter.</returns>
+    public static bool TryGet(Room room, [NotNullWhen(true)] out Tesla? tesla)
+        => TeslaByRoom.TryGetValue(room.Base, out tesla);
+
+    /// <summary>
+    /// Initializes the <see cref="Tesla"/> class to subscribe to <see cref="TeslaGate"/> events and handle the tesla caching.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        Dictionary.Clear();
+        TeslaByRoom.Clear();
+        TeslaGate.OnAdded += (tesla) => _ = new Tesla(tesla);
+        TeslaGate.OnRemoved += (tesla) =>
+        {
+            Dictionary.Remove(tesla);
+            TeslaByRoom.Remove(tesla.Room);
+        };
+    }
+
+    /// <summary>
+    /// A private constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="tesla">The <see cref="TeslaGate"/> of the item.</param>
+    private Tesla(TeslaGate tesla)
+    {
+        Dictionary.Add(tesla, this);
+        TeslaByRoom.Add(tesla.Room, this);
+        Base = tesla;
+    }
 
     /// <summary>
     /// The base of the tesla.
@@ -103,47 +146,4 @@ public class Tesla
     /// Tesla gate instant burst.
     /// </summary>
     public void InstantTrigger() => Base.RpcInstantBurst();
-
-    /// <summary>
-    /// Initializes the <see cref="Tesla"/> class to subscribe to <see cref="TeslaGate"/> events and handle the tesla caching.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        Dictionary.Clear();
-        TeslaByRoom.Clear();
-        TeslaGate.OnAdded += (tesla) => _ = new Tesla(tesla);
-        TeslaGate.OnRemoved += (tesla) =>
-        {
-            Dictionary.Remove(tesla);
-            TeslaByRoom.Remove(tesla.Room);
-        };
-    }
-
-    /// <summary>
-    /// A private constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="tesla">The <see cref="TeslaGate"/> of the item.</param>
-    private Tesla(TeslaGate tesla)
-    {
-        Dictionary.Add(tesla, this);
-        TeslaByRoom.Add(tesla.Room, this);
-        Base = tesla;
-    }
-
-    /// <summary>
-    /// Gets the tesla wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist.
-    /// </summary>
-    /// <param name="teslaGate">The <see cref="TeslaGate"/> of the tesla.</param>
-    /// <returns>The requested tesla.</returns>
-    public static Tesla Get(TeslaGate teslaGate) => Dictionary.TryGetValue(teslaGate, out Tesla tesla) ? tesla : new Tesla(teslaGate);
-
-    /// <summary>
-    /// Gets the tesla wrapper inside of <see cref="Room"/> from the <see cref="TeslaByRoom"/>.
-    /// </summary>
-    /// <param name="room">The <see cref="Room"/> with the tesla.</param>
-    /// <param name="tesla">The tesla to be returned.</param>
-    /// <returns>Whether the tesla is in out parameter.</returns>
-    public static bool TryGet(Room room, [NotNullWhen(true)] out Tesla? tesla)
-        => TeslaByRoom.TryGetValue(room.Base, out tesla);
 }

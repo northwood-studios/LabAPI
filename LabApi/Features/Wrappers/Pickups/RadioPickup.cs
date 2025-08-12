@@ -13,12 +13,28 @@ public class RadioPickup : Pickup
     /// <summary>
     /// Contains all the cached radio pickups, accessible through their <see cref="BaseRadioPickup"/>.
     /// </summary>
-    public new static Dictionary<BaseRadioPickup, RadioPickup> Dictionary { get; } = [];
+    public static new Dictionary<BaseRadioPickup, RadioPickup> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="RadioPickup"/>.
     /// </summary>
-    public new static IReadOnlyCollection<RadioPickup> List => Dictionary.Values;
+    public static new IReadOnlyCollection<RadioPickup> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the radio pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseRadioPickup"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <returns>The requested pickup or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(pickup))]
+    public static RadioPickup? Get(BaseRadioPickup? pickup)
+    {
+        if (pickup == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(pickup, out RadioPickup wrapper) ? wrapper : (RadioPickup)CreateItemWrapper(pickup);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,16 +46,9 @@ public class RadioPickup : Pickup
         Base = baseRadioPickup;
 
         if (CanCache)
+        {
             Dictionary.Add(baseRadioPickup, this);
-    }
-
-    /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -65,9 +74,13 @@ public class RadioPickup : Pickup
         set
         {
             if (value == RadioMessages.RadioRangeLevel.RadioDisabled)
+            {
                 IsEnabled = false;
+            }
             else
+            {
                 Base.NetworkSavedRange = (byte)value;
+            }
         }
     }
 
@@ -81,16 +94,11 @@ public class RadioPickup : Pickup
     }
 
     /// <summary>
-    /// Gets the radio pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseRadioPickup"/> was not <see langword="null"/>.
+    /// A internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
-    /// <returns>The requested pickup or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(pickup))]
-    public static RadioPickup? Get(BaseRadioPickup? pickup)
+    internal override void OnRemove()
     {
-        if (pickup == null)
-            return null;
-
-        return Dictionary.TryGetValue(pickup, out RadioPickup wrapper) ? wrapper : (RadioPickup)CreateItemWrapper(pickup);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

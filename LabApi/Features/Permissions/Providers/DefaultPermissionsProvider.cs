@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using LabApi.Features.Console;
 using LabApi.Features.Wrappers;
 using LabApi.Loader.Features.Paths;
 using NorthwoodLib.Pools;
 using Serialization;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace LabApi.Features.Permissions.Providers;
 
@@ -20,7 +20,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     private const string PermissionsFileName = "permissions.yml";
 
     private readonly FileInfo _permissions;
-    private Dictionary<string, PermissionGroup> _permissionsDictionary = new();
+    private Dictionary<string, PermissionGroup> _permissionsDictionary = [];
 
     /// <summary>
     /// Creates a new instance of the <see cref="DefaultPermissionsProvider"/> class.
@@ -86,7 +86,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     public void AddPermissions(Player player, params string[] permissions)
     {
         PermissionGroup group = GetPlayerGroup(player);
-        group.Permissions = group.Permissions.Concat(permissions).ToArray();
+        group.Permissions = [.. group.Permissions, .. permissions];
         ReloadPermissions();
         SavePermissions();
     }
@@ -100,6 +100,9 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         SavePermissions();
     }
 
+    /// <inheritdoc />
+    void IPermissionsProvider.ReloadPermissions() => ReloadPermissions();
+
     private PermissionGroup GetPlayerGroup(Player player) => _permissionsDictionary.GetValueOrDefault(player.PermissionsGroupName ?? "default") ?? PermissionGroup.Default;
 
     private string[] GetPermissions(PermissionGroup group)
@@ -112,22 +115,28 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         foreach (string inheritedGroup in group.InheritedGroups)
         {
             if (!_permissionsDictionary.TryGetValue(inheritedGroup, out PermissionGroup inherited))
+            {
                 continue;
+            }
 
             permissions.AddRange(GetPermissions(inherited));
         }
 
-        return permissions.ToArray();
+        return [.. permissions];
     }
 
     private bool HasPermission(PermissionGroup group, string permission)
     {
         if (group.IsRoot)
+        {
             return true;
-    
+        }
+
         // We do first check if the group has the permission.
         if (group.Permissions.Contains(permission))
+        {
             return true;
+        }
 
         if (permission.Contains("."))
         {
@@ -135,17 +144,23 @@ public class DefaultPermissionsProvider : IPermissionsProvider
             string perm = permission[..index];
 
             if (group.SpecialPermissionsSuperset.Contains(perm + ".*"))
+            {
                 return true;
+            }
         }
 
         // Then we check if the group has the permission from the inherited groups.
         foreach (string inheritedGroup in group.InheritedGroups)
         {
             if (!_permissionsDictionary.TryGetValue(inheritedGroup, out PermissionGroup inherited))
+            {
                 continue;
+            }
 
             if (HasPermission(inherited, permission))
+            {
                 return true;
+            }
         }
 
         return false;
@@ -156,8 +171,6 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         _permissionsDictionary = PermissionGroup.DefaultPermissionGroups;
         ReloadPermissions();
     }
-
-    void IPermissionsProvider.ReloadPermissions() => ReloadPermissions();
 
     private void ReloadPermissions()
     {
@@ -170,12 +183,15 @@ public class DefaultPermissionsProvider : IPermissionsProvider
                 if (permission == ".*")
                 {
                     permissionsGroup.IsRoot = true;
+
                     // We don't have to continue.
                     break;
                 }
-            
+
                 if (!permission.Contains(".*"))
+                {
                     continue;
+                }
 
                 int index = permission.LastIndexOf(".", StringComparison.Ordinal);
                 string perm = permission[..index];

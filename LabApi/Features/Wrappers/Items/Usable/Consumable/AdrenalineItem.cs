@@ -12,12 +12,28 @@ public class AdrenalineItem : ConsumableItem
     /// <summary>
     /// Contains all the cached adrenaline items, accessible through their <see cref="Adrenaline"/>.
     /// </summary>
-    public new static Dictionary<Adrenaline, AdrenalineItem> Dictionary { get; } = [];
+    public static new Dictionary<Adrenaline, AdrenalineItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="AdrenalineItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<AdrenalineItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<AdrenalineItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the adrenaline item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Adrenaline"/> was not null.
+    /// </summary>
+    /// <param name="adrenaline">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(adrenaline))]
+    public static AdrenalineItem? Get(Adrenaline? adrenaline)
+    {
+        if (adrenaline == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(adrenaline, out AdrenalineItem item) ? item : (AdrenalineItem)CreateItemWrapper(adrenaline);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class AdrenalineItem : ConsumableItem
         Base = adrenaline;
 
         if (CanCache)
+        {
             Dictionary.Add(adrenaline, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class AdrenalineItem : ConsumableItem
     public new Adrenaline Base { get; }
 
     /// <summary>
-    /// Gets the adrenaline item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Adrenaline"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="adrenaline">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(adrenaline))]
-    public static AdrenalineItem? Get(Adrenaline? adrenaline)
+    internal override void OnRemove()
     {
-        if (adrenaline == null)
-            return null;
-
-        return Dictionary.TryGetValue(adrenaline, out AdrenalineItem item) ? item : (AdrenalineItem)CreateItemWrapper(adrenaline);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Hazards;
-using System.Collections.Generic;
-using UnityEngine;
 using Mirror;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
 
@@ -15,7 +15,7 @@ public class SinkholeHazard : Hazard
     /// <summary>
     /// Contains all the cached items, accessible through their <see cref="Base"/>.
     /// </summary>
-    public new static Dictionary<SinkholeEnvironmentalHazard, SinkholeHazard> Dictionary { get; } = [];
+    public static new Dictionary<SinkholeEnvironmentalHazard, SinkholeHazard> Dictionary { get; } = [];
 
     /// <summary>
     /// Gets all currently active sinkholes.
@@ -25,34 +25,7 @@ public class SinkholeHazard : Hazard
     /// <summary>
     /// Prefab used to spawn the hazard.
     /// </summary>
-    protected static new SinkholeEnvironmentalHazard? BasePrefab;
-
-    /// <summary>
-    /// The base object.
-    /// </summary>
-    public new SinkholeEnvironmentalHazard Base { get; }
-
-    /// <summary>
-    /// An internal constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="hazard">The base <see cref="SinkholeEnvironmentalHazard"/> object.</param>
-    internal SinkholeHazard(SinkholeEnvironmentalHazard hazard)
-        : base(hazard)
-    {
-        Base = hazard;
-
-        if (CanCache)
-            Dictionary.Add(hazard, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
-    }
+    protected static new SinkholeEnvironmentalHazard? BasePrefab { get; private set; }
 
     /// <summary>
     /// Spawns a <see cref="SinkholeHazard"/> at specified position with specified rotation and scale.
@@ -65,9 +38,11 @@ public class SinkholeHazard : Hazard
     public static SinkholeHazard Spawn(Vector3 position, Quaternion rotation, Vector3 scale)
     {
         if (BasePrefab == null)
+        {
             BasePrefab = GetPrefab<SinkholeEnvironmentalHazard>();
+        }
 
-        SinkholeHazard hazard = (SinkholeHazard)Hazard.Spawn(BasePrefab, position, rotation, scale);
+        SinkholeHazard hazard = (SinkholeHazard)Hazard.Spawn(BasePrefab!, position, rotation, scale);
         hazard.IsActive = true;
         return hazard;
     }
@@ -81,8 +56,39 @@ public class SinkholeHazard : Hazard
     public static SinkholeHazard? Get(SinkholeEnvironmentalHazard? hazard)
     {
         if (hazard == null)
+        {
             return null;
+        }
 
-        return Dictionary.TryGetValue(hazard, out SinkholeHazard sinkhole) ? sinkhole : (SinkholeHazard)CreateItemWrapper(hazard);
+        return Dictionary.TryGetValue(hazard, out SinkholeHazard sinkhole) ? sinkhole : (SinkholeHazard)CreateItemWrapper(hazard)!;
+    }
+
+    /// <summary>
+    /// An internal constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="hazard">The base <see cref="SinkholeEnvironmentalHazard"/> object.</param>
+    internal SinkholeHazard(SinkholeEnvironmentalHazard hazard)
+        : base(hazard)
+    {
+        Base = hazard;
+
+        if (CanCache)
+        {
+            Dictionary.Add(hazard, this);
+        }
+    }
+
+    /// <summary>
+    /// The base object.
+    /// </summary>
+    public new SinkholeEnvironmentalHazard Base { get; }
+
+    /// <summary>
+    /// An internal method to remove itself from the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

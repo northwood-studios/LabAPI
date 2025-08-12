@@ -29,7 +29,9 @@ public static class LabApiProperties
         AssemblyInformationalVersionAttribute att = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
 
         if (att == null)
+        {
             return defaultVersion;
+        }
 
         string version = att.InformationalVersion ?? defaultVersion;
         int index = version.IndexOf('+');

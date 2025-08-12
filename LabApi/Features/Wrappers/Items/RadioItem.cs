@@ -14,12 +14,28 @@ public class RadioItem : Item
     /// <summary>
     /// Contains all the cached radio items, accessible through their <see cref="BaseRadioItem"/>.
     /// </summary>
-    public new static Dictionary<BaseRadioItem, RadioItem> Dictionary { get; } = [];
+    public static new Dictionary<BaseRadioItem, RadioItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="RadioItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<RadioItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<RadioItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the radio item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseRadioItem"/> was not null.
+    /// </summary>
+    /// <param name="baseRadioItem">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseRadioItem))]
+    public static RadioItem? Get(BaseRadioItem? baseRadioItem)
+    {
+        if (baseRadioItem == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseRadioItem, out RadioItem item) ? item : (RadioItem)CreateItemWrapper(baseRadioItem);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -31,16 +47,9 @@ public class RadioItem : Item
         Base = baseRadioItem;
 
         if (CanCache)
+        {
             Dictionary.Add(baseRadioItem, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -73,16 +82,11 @@ public class RadioItem : Item
     public RadioMessages.RadioRangeLevel RangeLevel => Base.RangeLevel;
 
     /// <summary>
-    /// Gets the radio item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseRadioItem"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseRadioItem">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseRadioItem))]
-    public static RadioItem? Get(BaseRadioItem? baseRadioItem)
+    internal override void OnRemove()
     {
-        if (baseRadioItem == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseRadioItem, out RadioItem item) ? item : (RadioItem)CreateItemWrapper(baseRadioItem);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

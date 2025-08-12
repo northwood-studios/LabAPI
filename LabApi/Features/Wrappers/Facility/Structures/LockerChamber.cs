@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
-using BaseLockerChamber = MapGeneration.Distributors.LockerChamber;
 using BaseLocker = MapGeneration.Distributors.Locker;
+using BaseLockerChamber = MapGeneration.Distributors.LockerChamber;
 
 namespace LabApi.Features.Wrappers;
 
@@ -22,6 +22,28 @@ public class LockerChamber
     public static Dictionary<BaseLockerChamber, LockerChamber> Dictionary { get; } = [];
 
     /// <summary>
+    /// Gets the locker chamber wrapper from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseLockerChamber"/> was not null.
+    /// </summary>
+    /// <param name="baseLockerChamber">The <see cref="BaseLockerChamber"/> object.</param>
+    /// <returns>The requested locker chamber wrapper or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseLockerChamber))]
+    public static LockerChamber? Get(BaseLockerChamber? baseLockerChamber)
+    {
+        if (baseLockerChamber == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseLockerChamber, out LockerChamber lockerChamber) ? lockerChamber : CreateLockerChamberWrapper(baseLockerChamber);
+    }
+
+    private static LockerChamber CreateLockerChamberWrapper(BaseLockerChamber baseLockerChamber)
+    {
+        BaseLocker locker = baseLockerChamber.GetComponentInParent<BaseLocker>();
+        return new LockerChamber(baseLockerChamber, (Locker)Structure.Get(locker), (byte)locker.Chambers.IndexOf(baseLockerChamber));
+    }
+
+    /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseLockerChamber">The base <see cref="BaseLockerChamber"/> object.</param>
@@ -34,15 +56,9 @@ public class LockerChamber
         Id = id;
 
         if (locker.CanCache)
+        {
             Dictionary.Add(baseLockerChamber, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal void OnRemove()
-    {
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -130,7 +146,9 @@ public class LockerChamber
         foreach (ItemPickupBase pickupBase in Base.Content)
         {
             if (!pickupBase.TryGetComponent(out Rigidbody rigidbody))
+            {
                 continue;
+            }
 
             rigidbody.isKinematic = false;
         }
@@ -163,7 +181,9 @@ public class LockerChamber
     public void RemoveAllItems()
     {
         foreach (ItemPickupBase pickupBase in Base.Content)
+        {
             pickupBase.DestroySelf();
+        }
 
         Base.Content.Clear();
         Base.ToBeSpawned.Clear();
@@ -187,7 +207,7 @@ public class LockerChamber
     /// <returns>The created <see cref="Pickup"/>.</returns>
     public Pickup AddItem(ItemType type)
     {
-        Pickup pickup = Pickup.Create(type, Base.Spawnpoint.position, Base.Spawnpoint.rotation);
+        Pickup pickup = Pickup.Create(type, Base.Spawnpoint.position, Base.Spawnpoint.rotation)!;
         pickup.Transform.SetParent(Base.Spawnpoint);
         Base.Content.Add(pickup.Base);
         (pickup.Base as IPickupDistributorTrigger)?.OnDistributed();
@@ -198,9 +218,13 @@ public class LockerChamber
         }
 
         if (Base.SpawnOnFirstChamberOpening && !IsOpen)
+        {
             Base.ToBeSpawned.Add(pickup.Base);
+        }
         else
+        {
             pickup.Spawn();
+        }
 
         return pickup;
     }
@@ -215,7 +239,9 @@ public class LockerChamber
     public void Interact(Player player)
     {
         if (player == null)
+        {
             throw new ArgumentNullException(nameof(player));
+        }
 
         Locker.Base.ServerInteract(player.ReferenceHub, Id);
     }
@@ -227,22 +253,10 @@ public class LockerChamber
     public void PlayDeniedSound(DoorPermissionFlags permissionUsed) => Locker.Base.RpcPlayDenied(Id, permissionUsed);
 
     /// <summary>
-    /// Gets the locker chamber wrapper from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseLockerChamber"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseLockerChamber">The <see cref="BaseLockerChamber"/> object.</param>
-    /// <returns>The requested locker chamber wrapper or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseLockerChamber))]
-    public static LockerChamber? Get(BaseLockerChamber? baseLockerChamber)
+    internal void OnRemove()
     {
-        if (baseLockerChamber == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseLockerChamber, out LockerChamber lockerChamber) ? lockerChamber : CreateLockerChamberWrapper(baseLockerChamber);
-    }
-
-    private static LockerChamber CreateLockerChamberWrapper(BaseLockerChamber baseLockerChamber)
-    {
-        BaseLocker locker = baseLockerChamber.GetComponentInParent<BaseLocker>();
-        return new LockerChamber(baseLockerChamber, (Locker)Structure.Get(locker), (byte)locker.Chambers.IndexOf(baseLockerChamber));
+        Dictionary.Remove(Base);
     }
 }

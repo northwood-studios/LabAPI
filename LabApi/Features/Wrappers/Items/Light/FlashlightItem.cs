@@ -12,12 +12,28 @@ public class FlashlightItem : LightItem
     /// <summary>
     /// Contains all the cached flashlight items, accessible through their <see cref="BaseFlashlightItem"/>.
     /// </summary>
-    public new static Dictionary<BaseFlashlightItem, FlashlightItem> Dictionary { get; } = [];
+    public static new Dictionary<BaseFlashlightItem, FlashlightItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="FlashlightItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<FlashlightItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<FlashlightItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the flashlight item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseFlashlightItem"/> was not null.
+    /// </summary>
+    /// <param name="baseFlashlightItem">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseFlashlightItem))]
+    public static FlashlightItem? Get(BaseFlashlightItem? baseFlashlightItem)
+    {
+        if (baseFlashlightItem == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseFlashlightItem, out FlashlightItem item) ? item : (FlashlightItem)CreateItemWrapper(baseFlashlightItem);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class FlashlightItem : LightItem
         Base = baseFlashlightItem;
 
         if (CanCache)
+        {
             Dictionary.Add(baseFlashlightItem, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class FlashlightItem : LightItem
     public new BaseFlashlightItem Base { get; }
 
     /// <summary>
-    /// Gets the flashlight item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseFlashlightItem"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseFlashlightItem">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseFlashlightItem))]
-    public static FlashlightItem? Get(BaseFlashlightItem? baseFlashlightItem)
+    internal override void OnRemove()
     {
-        if (baseFlashlightItem == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseFlashlightItem, out FlashlightItem item) ? item : (FlashlightItem)CreateItemWrapper(baseFlashlightItem);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

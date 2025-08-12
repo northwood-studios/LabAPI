@@ -48,7 +48,7 @@ public class PocketDimension : Room
         get => Scp106PocketItemManager.TimerRange.x;
         set => Scp106PocketItemManager.TimerRange = Scp106PocketItemManager.TimerRange with
         {
-            x = value
+            x = value,
         };
     }
 
@@ -60,28 +60,8 @@ public class PocketDimension : Room
         get => Scp106PocketItemManager.TimerRange.y;
         set => Scp106PocketItemManager.TimerRange = Scp106PocketItemManager.TimerRange with
         {
-            y = value
+            y = value,
         };
-    }
-
-    /// <summary>
-    /// An internal constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="room">The room identifier for the pocket dimension.</param>
-    internal PocketDimension(RoomIdentifier room)
-        : base(room)
-    {
-        if (CanCache)
-            Instance = this;
-    }
-
-    /// <summary>
-    /// An internal method to set the instance to null when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemoved()
-    {
-        base.OnRemoved();
-        Instance = null;
     }
 
     /// <summary>
@@ -107,7 +87,9 @@ public class PocketDimension : Room
         PocketCorroding? effect = player.GetEffect<PocketCorroding>();
 
         if (effect != null && effect.Intensity > 0)
+        {
             return effect.CapturePosition.Position;
+        }
 
         return Vector3.zero;
     }
@@ -143,7 +125,7 @@ public class PocketDimension : Room
         => Scp106PocketItemManager.TrackedItems.ContainsKey(pickup.Base);
 
     /// <summary>
-    /// Randomizes which pocket dimension's teleports are exits. 
+    /// Randomizes which pocket dimension's teleports are exits.
     /// </summary>
     public static void RandomizeExits() => PocketDimensionGenerator.RandomizeTeleports();
 
@@ -164,9 +146,11 @@ public class PocketDimension : Room
     {
         // Attempts to generate the pose array as it could be empty.
         if (!Scp106PocketExitFinder.PosesForZoneCache.ContainsKey(zone))
+        {
             Scp106PocketExitFinder.GetPosesForZone(zone);
+        }
 
-        Scp106PocketExitFinder.PosesForZoneCache[zone] = Scp106PocketExitFinder.PosesForZoneCache[zone].Concat(poses).ToArray();
+        Scp106PocketExitFinder.PosesForZoneCache[zone] = [.. Scp106PocketExitFinder.PosesForZoneCache[zone], .. poses];
     }
 
     /// <summary>
@@ -192,7 +176,9 @@ public class PocketDimension : Room
     {
         // Attempts to generate the pose array as it could be empty.
         if (!Scp106PocketExitFinder.PosesForZoneCache.ContainsKey(zone))
+        {
             Scp106PocketExitFinder.GetPosesForZone(zone);
+        }
 
         Scp106PocketExitFinder.PosesForZoneCache[zone] = Scp106PocketExitFinder.PosesForZoneCache[zone].Except(poses).ToArray();
     }
@@ -226,4 +212,26 @@ public class PocketDimension : Room
     /// <returns>The rarity of the item.</returns>
     public static int GetRarity(ItemBase item)
         => Scp106PocketItemManager.GetRarity(item);
+
+    /// <summary>
+    /// An internal constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="room">The room identifier for the pocket dimension.</param>
+    internal PocketDimension(RoomIdentifier room)
+        : base(room)
+    {
+        if (CanCache)
+        {
+            Instance = this;
+        }
+    }
+
+    /// <summary>
+    /// An internal method to set the instance to null when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemoved()
+    {
+        base.OnRemoved();
+        Instance = null;
+    }
 }

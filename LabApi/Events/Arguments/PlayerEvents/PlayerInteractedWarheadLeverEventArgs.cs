@@ -20,7 +20,7 @@ public class PlayerInteractedWarheadLeverEventArgs : EventArgs, IPlayerEvent
         Enabled = enabled;
     }
 
-    /// <inheritdoc/ >
+    /// <inheritdoc />
     public Player Player { get; }
 
     /// <summary>

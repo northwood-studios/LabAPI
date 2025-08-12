@@ -1,7 +1,7 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
-using System;
 using MapGeneration;
+using System;
 
 namespace LabApi.Events.Arguments.Scp079Events;
 

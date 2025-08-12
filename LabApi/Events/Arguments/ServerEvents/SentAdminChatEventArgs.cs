@@ -1,5 +1,5 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
+using System;
 
 namespace LabApi.Events.Arguments.ServerEvents;
 

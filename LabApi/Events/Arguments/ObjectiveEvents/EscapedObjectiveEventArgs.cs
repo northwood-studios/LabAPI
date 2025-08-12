@@ -17,7 +17,8 @@ public class EscapedObjectiveEventArgs : ObjectiveCompletedBaseEventArgs
     /// <param name="newRole">The new role the player gets after escaping.</param>
     /// <param name="sendToPlayers">Whether the objective completion has been sent to players.</param>
     /// <param name="oldRole">The old role of the player.</param>
-    public EscapedObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, RoleTypeId oldRole, RoleTypeId newRole) : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
+    public EscapedObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, RoleTypeId oldRole, RoleTypeId newRole)
+        : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
     {
         OldRole = oldRole;
         NewRole = newRole;

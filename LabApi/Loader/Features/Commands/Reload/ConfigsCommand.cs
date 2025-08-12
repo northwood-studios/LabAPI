@@ -25,7 +25,9 @@ public class ConfigsCommand : ICommand
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
         if (!sender.CheckPermission(PlayerPermissions.ServerConfigs, out response))
+        {
             return false;
+        }
 
         int pluginCount = PluginLoader.Plugins.Count;
         if (pluginCount == 0)
@@ -35,7 +37,7 @@ public class ConfigsCommand : ICommand
         }
 
         StringBuilder sb = StringBuilderPool.Shared.Rent();
-        sb.AppendLine($"Reloading configs for {pluginCount} plugin{(pluginCount == 1 ? "" : "s")}");
+        sb.AppendLine($"Reloading configs for {pluginCount} plugin{(pluginCount == 1 ? string.Empty : "s")}");
 
         int successCount = 0;
         bool success = true;

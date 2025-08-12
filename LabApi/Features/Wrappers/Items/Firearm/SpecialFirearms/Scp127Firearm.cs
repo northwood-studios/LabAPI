@@ -13,11 +13,16 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Scp127Firearm : FirearmItem
 {
+    private Scp127TierManagerModule _tierModule = null!;
+
+    private Scp127VoiceLineManagerModule _voiceModule = null!;
+
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="firearm">The base <see cref="Firearm"/> object.</param>
-    internal Scp127Firearm(Firearm firearm) : base(firearm)
+    internal Scp127Firearm(Firearm firearm)
+        : base(firearm)
     {
     }
 
@@ -33,10 +38,14 @@ public class Scp127Firearm : FirearmItem
         get
         {
             if (!Scp127VoiceLineManagerModule.FriendshipMemory.TryGetValue(Serial, out HashSet<uint> friendNetIds))
+            {
                 yield break;
+            }
 
             foreach (uint netId in friendNetIds)
+            {
                 yield return Player.Get(netId);
+            }
         }
     }
 
@@ -48,10 +57,13 @@ public class Scp127Firearm : FirearmItem
         get
         {
             if (_tierModule == null)
+            {
                 return Scp127Tier.Tier1;
+            }
 
             return _tierModule.CurTier;
         }
+
         set
         {
             if (_tierModule == null)
@@ -72,10 +84,13 @@ public class Scp127Firearm : FirearmItem
         get
         {
             if (_tierModule == null)
+            {
                 return 0;
+            }
 
             return _tierModule.ServerExp;
         }
+
         set
         {
             if (_tierModule == null)
@@ -93,14 +108,17 @@ public class Scp127Firearm : FirearmItem
     {
         get
         {
-            if (_actionModule is Scp127ActionModule actionModule)
+            if (ActionModule is Scp127ActionModule actionModule)
+            {
                 return actionModule.AmmoStored;
+            }
 
             return 0;
         }
+
         set
         {
-            if (_actionModule is not Scp127ActionModule actionModule)
+            if (ActionModule is not Scp127ActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(ChamberedAmmo)} as the action module is null.");
                 return;
@@ -116,14 +134,17 @@ public class Scp127Firearm : FirearmItem
     {
         get
         {
-            if (_actionModule is Scp127ActionModule actionModule)
+            if (ActionModule is Scp127ActionModule actionModule)
+            {
                 return actionModule.ChamberSize;
+            }
 
             return 0;
         }
+
         set
         {
-            if (_actionModule is not Scp127ActionModule actionModule)
+            if (ActionModule is not Scp127ActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(ChamberMax)} as the action module is null.");
                 return;
@@ -140,16 +161,16 @@ public class Scp127Firearm : FirearmItem
         {
             return true;
         }
+
         set
         {
-            if (_magazineControllerModule is Scp127MagazineModule magazineModule)
+            if (MagazineControllerModule is Scp127MagazineModule magazineModule)
             {
                 Logger.Error($"Unable to set {nameof(MagazineInserted)} as SCP-127's magazine is not detachable.");
                 return;
             }
         }
     }
-
 
     /// <summary>
     /// Gets or sets the stored ammo in a <b>ammo container</b> for this firearm.
@@ -162,10 +183,6 @@ public class Scp127Firearm : FirearmItem
         get => base.StoredAmmo;
         set => base.StoredAmmo = value;
     }
-
-    private Scp127TierManagerModule _tierModule;
-
-    private Scp127VoiceLineManagerModule _voiceModule;
 
     /// <summary>
     /// Plays a specific voiceline defined by the <see cref="Scp127VoiceLinesTranslation"/>.
@@ -187,7 +204,6 @@ public class Scp127Firearm : FirearmItem
         }
 
         _voiceModule.ServerSendVoiceLine(trigger, null, clip, (byte)priority);
-
     }
 
     /// <inheritdoc/>

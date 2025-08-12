@@ -1,9 +1,7 @@
 ﻿using Interactables.Interobjects.DoorUtils;
-using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Security;
 using BaseExperimentalWeaponLocker = MapGeneration.Distributors.ExperimentalWeaponLocker;
 
 namespace LabApi.Features.Wrappers;
@@ -14,14 +12,30 @@ namespace LabApi.Features.Wrappers;
 public class ExperimentalWeaponLocker : Locker
 {
     /// <summary>
-    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocler"/>.
+    /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocker"/>.
     /// </summary>
-    public new static Dictionary<BaseExperimentalWeaponLocker, ExperimentalWeaponLocker> Dictionary { get; } = [];
+    public static new Dictionary<BaseExperimentalWeaponLocker, ExperimentalWeaponLocker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="ExperimentalWeaponLocker"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<ExperimentalWeaponLocker> List => Dictionary.Values;
+    public static new IReadOnlyCollection<ExperimentalWeaponLocker> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the experimental weapon locker wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="BaseExperimentalWeaponLocker"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="baseLocker">The <see cref="Base"/> of the experimental weapon locker.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(baseLocker))]
+    public static ExperimentalWeaponLocker? Get(BaseExperimentalWeaponLocker? baseLocker)
+    {
+        if (baseLocker == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseLocker, out ExperimentalWeaponLocker found) ? found : (ExperimentalWeaponLocker)CreateStructureWrapper(baseLocker);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -33,16 +47,9 @@ public class ExperimentalWeaponLocker : Locker
         Base = baseExperimentalWeaponLocker;
 
         if (CanCache)
+        {
             Dictionary.Add(baseExperimentalWeaponLocker, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the abase object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -141,16 +148,11 @@ public class ExperimentalWeaponLocker : Locker
     public void PlayDeniedSound(DoorPermissionFlags flags = DoorPermissionFlags.None) => Chamber.PlayDeniedSound(flags);
 
     /// <summary>
-    /// Gets the experimental weapon locker wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="BaseExperimentalWeaponLocker"/> was not <see langword="null"/>.
+    /// An internal method to remove itself from the cache when the abase object is destroyed.
     /// </summary>
-    /// <param name="baseLocker">The <see cref="Base"/> of the experimental weapon locker.</param>
-    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(baseLocker))]
-    public static ExperimentalWeaponLocker? Get(BaseExperimentalWeaponLocker? baseLocker)
+    internal override void OnRemove()
     {
-        if (baseLocker == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseLocker, out ExperimentalWeaponLocker found) ? found : (ExperimentalWeaponLocker)CreateStructureWrapper(baseLocker);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

@@ -1,6 +1,6 @@
-using System;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
+using System;
 
 namespace LabApi.Events.Arguments.Scp106Events;
 
@@ -19,12 +19,12 @@ public class Scp106ChangedSubmersionStatusEventArgs : EventArgs, IPlayerEvent
         Player = Player.Get(hub);
         IsSubmerging = isSubmerging;
     }
-    
+
     /// <summary>
     /// Whether the SCP-106 is submerging or emerging.
     /// </summary>
     public bool IsSubmerging { get; }
-    
+
     /// <summary>
     /// The SCP-106 player instance.
     /// </summary>

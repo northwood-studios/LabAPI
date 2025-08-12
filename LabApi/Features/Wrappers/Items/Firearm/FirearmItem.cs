@@ -12,11 +12,57 @@ namespace LabApi.Features.Wrappers;
 
 /// <summary>
 /// The wrapper representing <see cref="Firearm"/>.<para/>
-/// Firearms are functioning as they close as they would in real life. 
+/// Firearms are functioning as they close as they would in real life.
 /// This means that there are properties for whether the bolt is closed or opened, whether the hammer is cocked for specific firearms, whether the magazine is inserted and so many other properties you may need to be aware of when adjusting this firearm item.
 /// </summary>
 public class FirearmItem : Item
 {
+    /// <summary>
+    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// </summary>
+    private static readonly Dictionary<ItemType, Func<Firearm, FirearmItem>> TypeWrappers = [];
+
+    /// <summary>
+    /// Contains all the cached firearm items, accessible through their <see cref="Firearm"/>.
+    /// </summary>
+    public static new Dictionary<Firearm, FirearmItem> Dictionary { get; } = [];
+
+    /// <summary>
+    /// A reference to all instances of <see cref="FirearmItem"/>.
+    /// </summary>
+    public static new IReadOnlyCollection<FirearmItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the firearm item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Firearm"/> was not null.
+    /// </summary>
+    /// <param name="firearm">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(firearm))]
+    public static FirearmItem? Get(Firearm? firearm)
+    {
+        if (firearm == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(firearm, out FirearmItem item) ? item : CreateFirearmWrapper(firearm);
+    }
+
+    /// <summary>
+    /// Creates a firearm wrapper or it's subtype.
+    /// </summary>
+    /// <param name="firearm">The base game firearm.</param>
+    /// <returns>Firearm wrapper object.</returns>
+    internal static FirearmItem CreateFirearmWrapper(Firearm firearm)
+    {
+        if (!TypeWrappers.TryGetValue(firearm.ItemTypeId, out Func<Firearm, FirearmItem> ctor))
+        {
+            return new FirearmItem(firearm);
+        }
+
+        return ctor(firearm);
+    }
+
     /// <summary>
     /// Initializes the <see cref="FirearmItem"/> class by subscribing to <see cref="Firearm"/> events and registers derived wrappers.
     /// </summary>
@@ -28,31 +74,30 @@ public class FirearmItem : Item
         Register(ItemType.GunSCP127, (x) => new Scp127Firearm(x));
         Register(ItemType.GunShotgun, (x) => new ShotgunFirearm(x));
     }
-    /// <summary>
-    /// Contains all the cached firearm items, accessible through their <see cref="Firearm"/>.
-    /// </summary>
-    public new static Dictionary<Firearm, FirearmItem> Dictionary { get; } = [];
 
     /// <summary>
-    /// A reference to all instances of <see cref="FirearmItem"/>.
+    /// A private method to handle the addition of wrapper handlers.
     /// </summary>
-    public new static IReadOnlyCollection<FirearmItem> List => Dictionary.Values;
-
-    /// <summary>
-    /// Contains all the handlers for constructing wrappers for the associated base game types.
-    /// </summary>
-    private static readonly Dictionary<ItemType, Func<Firearm, FirearmItem>> typeWrappers = [];
+    /// <param name="itemType">Item type of the target firearm.</param>
+    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
+    private static void Register(ItemType itemType, Func<Firearm, FirearmItem> constructor)
+    {
+        TypeWrappers.Add(itemType, x => constructor(x));
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="firearm">The base <see cref="Firearm"/> object.</param>
-    internal FirearmItem(Firearm firearm) : base(firearm)
+    internal FirearmItem(Firearm firearm)
+        : base(firearm)
     {
         Base = firearm;
 
         if (CanCache)
+        {
             Dictionary.Add(firearm, this);
+        }
 
         CacheModules();
     }
@@ -102,10 +147,12 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_ammoContainerModule == null)
+            if (AmmoContainerModule == null)
+            {
                 return ItemType.None;
+            }
 
-            return _ammoContainerModule.AmmoType;
+            return AmmoContainerModule.AmmoType;
         }
     }
 
@@ -119,14 +166,17 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_actionModule is AutomaticActionModule actionModule)
+            if (ActionModule is AutomaticActionModule actionModule)
+            {
                 return actionModule.Cocked;
+            }
 
             return false;
         }
+
         set
         {
-            if (_actionModule is not AutomaticActionModule actionModule)
+            if (ActionModule is not AutomaticActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(Cocked)} as this firearm's {nameof(IActionModule)} is invalid");
                 return;
@@ -145,14 +195,17 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_actionModule is AutomaticActionModule actionModule)
+            if (ActionModule is AutomaticActionModule actionModule)
+            {
                 return actionModule.BoltLocked;
+            }
 
             return false;
         }
+
         set
         {
-            if (_actionModule is not AutomaticActionModule actionModule)
+            if (ActionModule is not AutomaticActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(BoltLocked)} as this firearm's {nameof(IActionModule)} is invalid");
                 return;
@@ -170,8 +223,10 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_actionModule is AutomaticActionModule actionModule)
+            if (ActionModule is AutomaticActionModule actionModule)
+            {
                 return actionModule.OpenBolt;
+            }
 
             return false;
         }
@@ -184,8 +239,10 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_actionModule != null)
-                return _actionModule.DisplayCyclicRate;
+            if (ActionModule != null)
+            {
+                return ActionModule.DisplayCyclicRate;
+            }
 
             return 0;
         }
@@ -218,23 +275,30 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_magazineControllerModule == null)
+            if (MagazineControllerModule == null)
+            {
                 return false;
+            }
 
-            return _magazineControllerModule.MagazineInserted;
+            return MagazineControllerModule.MagazineInserted;
         }
+
         set
         {
-            if (_magazineControllerModule is not MagazineModule magazineModule)
+            if (MagazineControllerModule is not MagazineModule magazineModule)
             {
                 Logger.Error($"Unable to set {nameof(MagazineInserted)} as this firearm's {nameof(IMagazineControllerModule)} is null");
                 return;
             }
 
             if (value)
+            {
                 magazineModule.ServerInsertEmptyMagazine();
+            }
             else
+            {
                 magazineModule.ServerRemoveMagazine();
+            }
         }
     }
 
@@ -248,21 +312,24 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_ammoContainerModule == null)
+            if (AmmoContainerModule == null)
+            {
                 return 0;
+            }
 
-            return _ammoContainerModule.AmmoStored;
+            return AmmoContainerModule.AmmoStored;
         }
+
         set
         {
-            if (_ammoContainerModule == null)
+            if (AmmoContainerModule == null)
             {
                 Logger.Error($"Unable to set {nameof(StoredAmmo)} as this firearm's {nameof(IPrimaryAmmoContainerModule)} is null");
                 return;
             }
 
-            int toAdd = value - _ammoContainerModule.AmmoStored;
-            _ammoContainerModule.ServerModifyAmmo(toAdd);
+            int toAdd = value - AmmoContainerModule.AmmoStored;
+            AmmoContainerModule.ServerModifyAmmo(toAdd);
         }
     }
 
@@ -273,10 +340,12 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_ammoContainerModule == null)
+            if (AmmoContainerModule == null)
+            {
                 return 0;
+            }
 
-            return _ammoContainerModule.AmmoMax;
+            return AmmoContainerModule.AmmoMax;
         }
     }
 
@@ -288,14 +357,17 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_actionModule is AutomaticActionModule actionModule)
+            if (ActionModule is AutomaticActionModule actionModule)
+            {
                 return actionModule.AmmoStored;
+            }
 
             return 0;
         }
+
         set
         {
-            if (_actionModule is not AutomaticActionModule actionModule)
+            if (ActionModule is not AutomaticActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(ChamberedAmmo)} as this firearm's {nameof(IActionModule)} is not valid.");
                 return;
@@ -315,15 +387,17 @@ public class FirearmItem : Item
     {
         get
         {
-            if (_actionModule is AutomaticActionModule actionModule)
+            if (ActionModule is AutomaticActionModule actionModule)
+            {
                 return actionModule.ChamberSize;
-
+            }
 
             return 0;
         }
+
         set
         {
-            if (_actionModule is not AutomaticActionModule actionModule)
+            if (ActionModule is not AutomaticActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(ChamberMax)} as this firearm's {nameof(IActionModule)} is not valid.");
                 return;
@@ -343,19 +417,24 @@ public class FirearmItem : Item
             foreach (Attachment attachment in Attachments)
             {
                 if (attachment is not FlashlightAttachment flashlightAttachment)
+                {
                     continue;
+                }
 
                 return flashlightAttachment.IsEnabled && flashlightAttachment.IsEmittingLight;
             }
 
             return false;
         }
+
         set
         {
             foreach (Attachment attachment in Attachments)
             {
                 if (attachment is not FlashlightAttachment flashlightAttachment)
+                {
                     continue;
+                }
 
                 flashlightAttachment.ServerSendStatus(value);
             }
@@ -398,7 +477,9 @@ public class FirearmItem : Item
             foreach (Attachment attachment in Attachments)
             {
                 if (attachment.IsEnabled)
+                {
                     yield return attachment;
+                }
             }
         }
     }
@@ -406,22 +487,22 @@ public class FirearmItem : Item
     /// <summary>
     /// Module for the magazine.
     /// </summary>
-    protected IPrimaryAmmoContainerModule _ammoContainerModule;
+    protected IPrimaryAmmoContainerModule AmmoContainerModule { get; set; } = null!;
 
     /// <summary>
     /// Module for firearm's chamber.
     /// </summary>
-    protected IActionModule _actionModule;
+    protected IActionModule ActionModule { get; set; } = null!;
 
     /// <summary>
     /// Module for handling gun's reloading and unloading.
     /// </summary>
-    protected IReloaderModule _reloaderModule;
+    protected IReloaderModule ReloaderModule { get; set; } = null!;
 
     /// <summary>
     /// Module for handling gun's magazine.
     /// </summary>
-    protected IMagazineControllerModule _magazineControllerModule;
+    protected IMagazineControllerModule MagazineControllerModule { get; set; } = null!;
 
     /// <summary>
     /// Gets whether the provided attachments code is valid and can be applied.
@@ -474,7 +555,9 @@ public class FirearmItem : Item
         foreach (Attachment attachment in Attachments)
         {
             if (attachments.Contains(attachment.Name))
+            {
                 resultCode += bin;
+            }
 
             bin *= 2;
         }
@@ -488,7 +571,7 @@ public class FirearmItem : Item
     /// <returns>Whether the player started to reload.</returns>
     public bool Reload()
     {
-        if (_reloaderModule is not AnimatorReloaderModuleBase animatorModule)
+        if (ReloaderModule is not AnimatorReloaderModuleBase animatorModule)
         {
             Logger.Error($"Unable to reload this firearm as it's animator module is invalid");
             return false;
@@ -503,7 +586,7 @@ public class FirearmItem : Item
     /// <returns>Whether the player started the unload.</returns>
     public bool Unload()
     {
-        if (_reloaderModule is not AnimatorReloaderModuleBase animatorModule)
+        if (ReloaderModule is not AnimatorReloaderModuleBase animatorModule)
         {
             Logger.Error($"Unable to unload this firearm as it's animator module is invalid");
             return false;
@@ -531,55 +614,18 @@ public class FirearmItem : Item
             switch (module)
             {
                 case IPrimaryAmmoContainerModule ammoModule:
-                    _ammoContainerModule = ammoModule;
+                    AmmoContainerModule = ammoModule;
                     continue;
                 case IActionModule actionModule:
-                    _actionModule = actionModule;
+                    ActionModule = actionModule;
                     continue;
                 case IReloaderModule reloaderModule:
-                    _reloaderModule = reloaderModule;
+                    ReloaderModule = reloaderModule;
                     continue;
                 case IMagazineControllerModule magazineControllerModule:
-                    _magazineControllerModule = magazineControllerModule;
+                    MagazineControllerModule = magazineControllerModule;
                     continue;
             }
         }
-    }
-
-    /// <summary>
-    /// Gets the firearm item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Firearm"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="firearm">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(firearm))]
-    public static FirearmItem? Get(Firearm? firearm)
-    {
-        if (firearm == null)
-            return null;
-
-        return Dictionary.TryGetValue(firearm, out FirearmItem item) ? item : (FirearmItem)CreateItemWrapper(firearm);
-    }
-
-    /// <summary>
-    /// Creates a firearm wrapper or it's subtype.
-    /// </summary>
-    /// <param name="firearm">The base game firearm.</param>
-    /// <returns>Firearm wrapper object.</returns>
-    internal static FirearmItem CreateFirearmWrapper(Firearm firearm)
-    {
-        if (!typeWrappers.TryGetValue(firearm.ItemTypeId, out Func<Firearm, FirearmItem> ctor))
-            return new FirearmItem(firearm);
-
-        return ctor(firearm);
-    }
-
-    /// <summary>
-    /// A private method to handle the addition of wrapper handlers.
-    /// </summary>
-    /// <param name="itemType">Item type of the target firearm.</param>
-    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
-    private static void Register(ItemType itemType, Func<Firearm, FirearmItem> constructor)
-    {
-        typeWrappers.Add(itemType, x => constructor(x));
     }
 }

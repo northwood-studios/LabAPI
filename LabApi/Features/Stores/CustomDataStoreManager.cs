@@ -1,7 +1,7 @@
+using LabApi.Features.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using LabApi.Features.Wrappers;
 
 namespace LabApi.Features.Stores;
 
@@ -10,10 +10,10 @@ namespace LabApi.Features.Stores;
 /// </summary>
 public static class CustomDataStoreManager
 {
-    private static readonly List<Type> RegisteredStores = new ();
-    private static readonly Dictionary<Type, MethodInfo> GetOrAddMethods = new ();
-    private static readonly Dictionary<Type, MethodInfo> DestroyMethods = new ();
-    private static readonly Dictionary<Type, MethodInfo> DestroyAllMethods = new ();
+    private static readonly List<Type> RegisteredStores = [];
+    private static readonly Dictionary<Type, MethodInfo> GetOrAddMethods = [];
+    private static readonly Dictionary<Type, MethodInfo> DestroyMethods = [];
+    private static readonly Dictionary<Type, MethodInfo> DestroyAllMethods = [];
 
     /// <summary>
     /// Registers a custom data store.
@@ -24,25 +24,34 @@ public static class CustomDataStoreManager
         where T : CustomDataStore
     {
         Type type = typeof(T);
-        if (RegisteredStores.Contains(type)) return false;
+        if (RegisteredStores.Contains(type))
+        {
+            return false;
+        }
 
         MethodInfo? getOrAddMethod = typeof(CustomDataStore).GetMethod(nameof(CustomDataStore.GetOrAdd), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
         if (getOrAddMethod == null)
+        {
             return false;
+        }
 
         getOrAddMethod = getOrAddMethod.MakeGenericMethod(type);
         GetOrAddMethods.Add(type, getOrAddMethod);
 
         MethodInfo? destroyMethod = typeof(CustomDataStore).GetMethod(nameof(CustomDataStore.Destroy), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
         if (destroyMethod == null)
+        {
             return false;
+        }
 
         destroyMethod = destroyMethod.MakeGenericMethod(type);
         DestroyMethods.Add(type, destroyMethod);
 
         MethodInfo? destroyAllMethod = typeof(CustomDataStore).GetMethod(nameof(CustomDataStore.DestroyAll), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
         if (destroyAllMethod == null)
+        {
             return false;
+        }
 
         destroyAllMethod = destroyAllMethod.MakeGenericMethod(type);
         DestroyAllMethods.Add(type, destroyAllMethod);
@@ -60,9 +69,11 @@ public static class CustomDataStoreManager
         where T : CustomDataStore
     {
         Type type = typeof(T);
-        
+
         if (DestroyAllMethods.TryGetValue(type, out MethodInfo? method))
+        {
             method.Invoke(null, null);
+        }
 
         DestroyAllMethods.Remove(type);
         RegisteredStores.Remove(type);
@@ -70,19 +81,41 @@ public static class CustomDataStoreManager
         DestroyMethods.Remove(type);
     }
 
+    /// <summary>
+    /// Method used to initialize stores when a new player joins the server.
+    /// </summary>
+    /// <param name="player">The player added to the game.</param>
     internal static void AddPlayer(Player player)
     {
         foreach (Type? storeType in RegisteredStores)
-            GetOrAddMethods[storeType].Invoke(null, new object[] { player });
+        {
+            GetOrAddMethods[storeType].Invoke(null, [player]);
+        }
     }
 
-    internal  static void RemovePlayer(Player player)
+    /// <summary>
+    /// Method used to destroy stores when an existing player leaves the server.
+    /// </summary>
+    /// <param name="player">The player removed from the game.</param>
+    internal static void RemovePlayer(Player player)
     {
         foreach (Type? storeType in RegisteredStores)
-            DestroyMethods[storeType].Invoke(null, new object[] { player });
+        {
+            DestroyMethods[storeType].Invoke(null, [player]);
+        }
     }
 
+    /// <summary>
+    /// Whether the store type had been registered.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> of the store.</param>
+    /// <returns><see langword="true"/> if registered; otherwise <see langword="false"/>.</returns>
     internal static bool IsRegistered(Type type) => RegisteredStores.Contains(type);
 
+    /// <summary>
+    /// Whether the store type had been registered.
+    /// </summary>
+    /// <typeparam name="T">The stores type.</typeparam>
+    /// <returns><see langword="true"/> if registered; otherwise <see langword="false"/>.</returns>
     internal static bool IsRegistered<T>() => IsRegistered(typeof(T));
 }

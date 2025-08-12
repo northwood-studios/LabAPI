@@ -11,12 +11,12 @@ public class StandardLocker : Locker
     /// <summary>
     /// Contains all the cached standard lockers, accessible through their <see cref="BaseLocker"/>.
     /// </summary>
-    public new static Dictionary<BaseLocker, StandardLocker> Dictionary { get; } = [];
+    public static new Dictionary<BaseLocker, StandardLocker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="StandardLocker"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<StandardLocker> List => Dictionary.Values;
+    public static new IReadOnlyCollection<StandardLocker> List => Dictionary.Values;
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -26,16 +26,9 @@ public class StandardLocker : Locker
         : base(baseLocker)
     {
         if (CanCache)
+        {
             Dictionary.Add(baseLocker, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the abase object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -85,4 +78,13 @@ public class StandardLocker : Locker
     /// This chamber does not control any doors.
     /// </remarks>
     public LockerChamber BottomRight => Chambers[3];
+
+    /// <summary>
+    /// An internal method to remove itself from the cache when the abase object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
+    }
 }
