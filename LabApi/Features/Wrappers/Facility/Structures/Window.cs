@@ -135,7 +135,7 @@ public class Window
     /// </summary>
     /// <param name="breakableWindow">The <see cref="Base"/> of the window.</param>
     /// <param name="window">The requested window.</param>
-    /// <returns><see langword="True"/> of the structure exists, otherwise <see langword="false"/>.</returns>
+    /// <returns><see langword="true"/> of the structure exists, otherwise <see langword="false"/>.</returns>
     public static bool TryGet(BreakableWindow? breakableWindow, [NotNullWhen(true)] out Window? window)
     {
         window = Get(breakableWindow);
@@ -161,6 +161,4 @@ public class Window
         if (Dictionary.TryGetValue(spawnableStructure, out Window structure))
             structure.OnRemove();
     }
-
-
 }
