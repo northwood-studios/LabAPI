@@ -53,7 +53,9 @@ public abstract class RespawnWave
         get
         {
             if (Base is IAnimatedWave wave)
+            {
                 return wave.AnimationDuration;
+            }
 
             return 0f;
         }
@@ -67,14 +69,19 @@ public abstract class RespawnWave
         get
         {
             if (Base is ILimitedWave wave)
+            {
                 return wave.RespawnTokens;
+            }
 
             return 0;
         }
+
         set
         {
             if (Base is not ILimitedWave wave)
+            {
                 return;
+            }
 
             wave.RespawnTokens = value;
             WaveUpdateMessage.ServerSendUpdate(Base, UpdateMessageFlags.Tokens);
@@ -117,12 +124,12 @@ public abstract class RespawnWave
     public float TimePassed => Base.Timer.TimePassed;
 
     /// <summary>
-    /// Attempts to get milestone for next <see cref="RespawnTokens"/>. 
+    /// Attempts to get milestone for next <see cref="RespawnTokens"/>.
     /// Returns <see langword="false"/> if this <see cref="Faction"/> has maximum influence possible.
     /// </summary>
-    /// <param name="influenceTreshold">Out param containing next target influence.</param>
+    /// <param name="influenceThreshold">Out param containing next target influence.</param>
     /// <returns>Whether there is next available milestone.</returns>
-    public bool TryGetCurrentMilestone(out int influenceTreshold) => RespawnTokensManager.TryGetNextThreshold(Faction, Influence, out influenceTreshold);
+    public bool TryGetCurrentMilestone(out int influenceThreshold) => RespawnTokensManager.TryGetNextThreshold(Faction, Influence, out influenceThreshold);
 
     /// <summary>
     /// Initiates the respawn with animation.
@@ -140,7 +147,9 @@ public abstract class RespawnWave
     public void PlayAnnouncement()
     {
         if (Base is IAnnouncedWave wave)
+        {
             wave.Announcement.PlayAnnouncement();
+        }
     }
 
     /// <summary>

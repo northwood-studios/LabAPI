@@ -13,12 +13,33 @@ public class BreakableDoor : Door
     /// <summary>
     /// Contains all the cached <see cref="BreakableDoor"/> instances, accessible through their <see cref="BaseBreakableDoor"/>.
     /// </summary>
-    public new static Dictionary<BaseBreakableDoor, BreakableDoor> Dictionary { get; } = [];
+    public static new Dictionary<BaseBreakableDoor, BreakableDoor> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="BreakableDoor"/> instances currently in the game.
     /// </summary>
-    public new static IReadOnlyCollection<BreakableDoor> List => Dictionary.Values;
+    public static new IReadOnlyCollection<BreakableDoor> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the <see cref="BreakableDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <param name="baseBreakableDoor">The <see cref="BaseBreakableDoor"/> of the door.</param>
+    /// <returns>The requested door wrapper or null if the input was null.</returns>
+    [return: NotNullIfNotNull(nameof(baseBreakableDoor))]
+    public static BreakableDoor? Get(BaseBreakableDoor? baseBreakableDoor)
+    {
+        if (baseBreakableDoor == null)
+        {
+            return null;
+        }
+
+        if (Dictionary.TryGetValue(baseBreakableDoor, out BreakableDoor door))
+        {
+            return door;
+        }
+
+        return (BreakableDoor)CreateDoorWrapper(baseBreakableDoor);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,16 +51,9 @@ public class BreakableDoor : Door
         Base = baseBreakableDoor;
 
         if (CanCache)
+        {
             Dictionary.Add(baseBreakableDoor, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -120,19 +134,11 @@ public class BreakableDoor : Door
     public bool TryRepair() => Base.ServerRepair();
 
     /// <summary>
-    /// Gets the <see cref="BreakableDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseBreakableDoor">The <see cref="BaseBreakableDoor"/> of the door.</param>
-    /// <returns>The requested door wrapper or null if the input was null.</returns>
-    [return: NotNullIfNotNull(nameof(baseBreakableDoor))]
-    public static BreakableDoor? Get(BaseBreakableDoor? baseBreakableDoor)
+    internal override void OnRemove()
     {
-        if (baseBreakableDoor == null)
-            return null;
-
-        if (Dictionary.TryGetValue(baseBreakableDoor, out BreakableDoor door))
-            return door;
-
-        return (BreakableDoor)CreateDoorWrapper(baseBreakableDoor);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

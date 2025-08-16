@@ -1,8 +1,8 @@
+using LabApi.Features.Console;
+using LabApi.Features.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LabApi.Features.Console;
-using LabApi.Features.Wrappers;
 
 namespace LabApi.Features.Permissions;
 
@@ -16,13 +16,14 @@ public static class PermissionsManager
     /// <summary>
     /// Internal dictionary to store the registered permission providers.
     /// </summary>
-    private static readonly Dictionary<Type, IPermissionsProvider> PermissionProviders = new();
+    private static readonly Dictionary<Type, IPermissionsProvider> PermissionProviders = [];
 
     /// <summary>
     /// Registers the given <see cref="IPermissionsProvider"/>.
     /// </summary>
     /// <typeparam name="T">The type of the permission provider to register.</typeparam>
-    public static void RegisterProvider<T>() where T : IPermissionsProvider, new()
+    public static void RegisterProvider<T>()
+        where T : IPermissionsProvider, new()
     {
         if (PermissionProviders.ContainsKey(typeof(T)))
         {
@@ -43,10 +44,13 @@ public static class PermissionsManager
     /// Unregisters the given <see cref="IPermissionsProvider"/>.
     /// </summary>
     /// <typeparam name="T">The type of the permission provider to unregister.</typeparam>
-    public static void UnregisterProvider<T>() where T : IPermissionsProvider, new()
+    public static void UnregisterProvider<T>()
+        where T : IPermissionsProvider, new()
     {
         if (PermissionProviders.Remove(typeof(T)))
+        {
             return;
+        }
 
         Logger.Warn($"{LoggerPrefix} Failed to unregister the permission provider of type {typeof(T).FullName}. It is not registered.");
     }
@@ -56,10 +60,13 @@ public static class PermissionsManager
     /// </summary>
     /// <typeparam name="T">The type of the permission provider to retrieve.</typeparam>
     /// <returns>The registered <see cref="IPermissionsProvider"/> of the given type <typeparamref name="T"/>; otherwise, null.</returns>
-    public static IPermissionsProvider? GetProvider<T>() where T : IPermissionsProvider, new()
+    public static IPermissionsProvider? GetProvider<T>()
+        where T : IPermissionsProvider, new()
     {
         if (PermissionProviders.TryGetValue(typeof(T), out IPermissionsProvider provider))
+        {
             return provider;
+        }
 
         Logger.Warn($"{LoggerPrefix} The permission provider of type {typeof(T).FullName} is not registered.");
         return null;

@@ -13,14 +13,14 @@ public static class RoleExtensions
     /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
     /// <returns>The <see cref="PlayerRoleBase"/>.</returns>
     public static PlayerRoleBase GetRoleBase(this RoleTypeId roleType) => PlayerRoleLoader.TryGetRoleTemplate(roleType, out PlayerRoleBase role) ? role : null!;
-    
+
     /// <summary>
     /// Gets the human-readable version of a <see cref="RoleTypeId"/>'s name.
     /// </summary>
     /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
     /// <returns>The name of the role.</returns>
     public static string GetFullName(this RoleTypeId roleType) => roleType.GetRoleBase().RoleName;
-    
+
     /// <summary>
     /// Checks if the role is an SCP role.
     /// </summary>

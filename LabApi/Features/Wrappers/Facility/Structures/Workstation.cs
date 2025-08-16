@@ -16,32 +16,42 @@ public class Workstation : Structure
     /// <summary>
     /// Contains all the cached workstations, accessible through their <see cref="SpawnableStructure"/>.
     /// </summary>
-    public new static Dictionary<SpawnableStructure, Workstation> Dictionary = [];
+    public static new Dictionary<SpawnableStructure, Workstation> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="Workstation"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<Workstation> List => Dictionary.Values;
+    public static new IReadOnlyCollection<Workstation> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the workstation wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="SpawnableStructure"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="spawnableStructure">The <see cref="Structure.Base"/> of the workstation.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(spawnableStructure))]
+    public static new Workstation? Get(SpawnableStructure? spawnableStructure)
+    {
+        if (spawnableStructure == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(spawnableStructure, out Workstation found) ? found : (Workstation)CreateStructureWrapper(spawnableStructure);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="spawnableStructure">The base <see cref="SpawnableStructure"/> object.</param>
-    internal Workstation(SpawnableStructure spawnableStructure) : base(spawnableStructure)
+    internal Workstation(SpawnableStructure spawnableStructure)
+        : base(spawnableStructure)
     {
         BaseController = spawnableStructure.GetComponent<WorkstationController>();
 
         if (CanCache)
+        {
             Dictionary.Add(spawnableStructure, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -88,16 +98,11 @@ public class Workstation : Structure
         => BaseController.ServerInteract(player.ReferenceHub, BaseController.ActivateCollider.ColliderId);
 
     /// <summary>
-    /// Gets the workstation wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="SpawnableStructure"/> was not <see langword="null"/>.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="spawnableStructure">The <see cref="Structure.Base"/> of the workstation.</param>
-    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(spawnableStructure))]
-    public static new Workstation? Get(SpawnableStructure? spawnableStructure)
+    internal override void OnRemove()
     {
-        if (spawnableStructure == null)
-            return null;
-
-        return Dictionary.TryGetValue(spawnableStructure, out Workstation found) ? found : (Workstation)CreateStructureWrapper(spawnableStructure);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

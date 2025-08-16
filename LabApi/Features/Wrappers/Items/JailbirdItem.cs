@@ -12,12 +12,28 @@ public class JailbirdItem : Item
     /// <summary>
     /// Contains all the cached jailbird items, accessible through their <see cref="BaseJailbirdItem"/>.
     /// </summary>
-    public new static Dictionary<BaseJailbirdItem, JailbirdItem> Dictionary { get; } = [];
+    public static new Dictionary<BaseJailbirdItem, JailbirdItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="JailbirdItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<JailbirdItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<JailbirdItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the jailbird item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseJailbirdItem"/> was not null.
+    /// </summary>
+    /// <param name="baseJailbirdItem">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseJailbirdItem))]
+    public static JailbirdItem? Get(BaseJailbirdItem? baseJailbirdItem)
+    {
+        if (baseJailbirdItem == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseJailbirdItem, out JailbirdItem item) ? item : (JailbirdItem)CreateItemWrapper(baseJailbirdItem);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class JailbirdItem : Item
         Base = baseJailbirdItem;
 
         if (CanCache)
+        {
             Dictionary.Add(baseJailbirdItem, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -57,16 +66,11 @@ public class JailbirdItem : Item
     public bool IsCharging => Base.MovementOverrideActive;
 
     /// <summary>
-    /// Gets the jailbird item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseJailbirdItem"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseJailbirdItem">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseJailbirdItem))]
-    public static JailbirdItem? Get(BaseJailbirdItem? baseJailbirdItem)
+    internal override void OnRemove()
     {
-        if (baseJailbirdItem == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseJailbirdItem, out JailbirdItem item) ? item : (JailbirdItem)CreateItemWrapper(baseJailbirdItem);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

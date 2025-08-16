@@ -25,10 +25,10 @@ public class PlayerChangedAttachmentsEventArgs : EventArgs, IPlayerEvent, IFirea
         NewAttachments = newAttachments;
     }
 
-    /// <inheritdoc>
+    /// <inheritdoc />
     public Player Player { get; }
 
-    /// <inheritdoc>
+    /// <inheritdoc />
     public FirearmItem FirearmItem { get; }
 
     /// <summary>

@@ -26,10 +26,10 @@ public class PlayerChangingAttachmentsEventArgs : EventArgs, IPlayerEvent, IFire
         IsAllowed = true;
     }
 
-    /// <inheritdoc/ >
+    /// <inheritdoc />
     public Player Player { get; }
 
-    /// <inheritdoc/ >
+    /// <inheritdoc />
     public FirearmItem FirearmItem { get; }
 
     /// <summary>
@@ -42,6 +42,6 @@ public class PlayerChangingAttachmentsEventArgs : EventArgs, IPlayerEvent, IFire
     /// </summary>
     public uint NewAttachments { get; set; }
 
-    /// <inheritdoc/ >
+    /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

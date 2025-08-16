@@ -8,18 +8,20 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class ChaosWave : RespawnWave
 {
-    /// <inheritdoc/>
-    internal ChaosWave(ChaosSpawnWave wave) : base(wave)
+    /// <inheritdoc cref="RespawnWave(TimeBasedWave)"/>
+    internal ChaosWave(ChaosSpawnWave wave)
+        : base(wave)
     {
         Base = wave;
     }
+
     /// <summary>
     /// The base <see cref="ChaosSpawnWave"/> object.
     /// </summary>
     public new ChaosSpawnWave Base { get; private set; }
 
     /// <summary>
-    /// Percentage of chaos supressors per wave.
+    /// Percentage of chaos suppressors per wave.
     /// </summary>
     public float LogicerPercent
     {
@@ -44,8 +46,9 @@ public class ChaosWave : RespawnWave
         {
             float percentageValue = (float)value / ReferenceHub.AllHubs.Count;
             if (Base.Configuration is PrimaryWaveConfig<ChaosSpawnWave> config)
+            {
                 config.SizePercentage = percentageValue;
+            }
         }
     }
 }
-

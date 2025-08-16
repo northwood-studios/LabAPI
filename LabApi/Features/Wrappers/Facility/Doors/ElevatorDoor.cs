@@ -14,12 +14,33 @@ public class ElevatorDoor : Door
     /// <summary>
     /// Contains all the cached <see cref="ElevatorDoor"/> instances, accessible through their <see cref="BaseElevatorDoor"/>.
     /// </summary>
-    public new static Dictionary<BaseElevatorDoor, ElevatorDoor> Dictionary { get; } = [];
+    public static new Dictionary<BaseElevatorDoor, ElevatorDoor> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="ElevatorDoor"/> instances currently in the game.
     /// </summary>
-    public new static IReadOnlyCollection<ElevatorDoor> List => Dictionary.Values;
+    public static new IReadOnlyCollection<ElevatorDoor> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the <see cref="ElevatorDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <param name="baseElevatorDoor">The <see cref="BaseElevatorDoor"/> of the door.</param>
+    /// <returns>The requested door wrapper or null if the input was null.</returns>
+    [return: NotNullIfNotNull(nameof(baseElevatorDoor))]
+    public static ElevatorDoor? Get(BaseElevatorDoor? baseElevatorDoor)
+    {
+        if (baseElevatorDoor == null)
+        {
+            return null;
+        }
+
+        if (Dictionary.TryGetValue(baseElevatorDoor, out ElevatorDoor door))
+        {
+            return door;
+        }
+
+        return (ElevatorDoor)CreateDoorWrapper(baseElevatorDoor);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -31,16 +52,9 @@ public class ElevatorDoor : Door
         Base = baseElevatorDoor;
 
         if (CanCache)
+        {
             Dictionary.Add(baseElevatorDoor, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -59,19 +73,11 @@ public class ElevatorDoor : Door
     public ElevatorGroup Group => Base.Group;
 
     /// <summary>
-    /// Gets the <see cref="ElevatorDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseElevatorDoor">The <see cref="BaseElevatorDoor"/> of the door.</param>
-    /// <returns>The requested door wrapper or null if the input was null.</returns>
-    [return: NotNullIfNotNull(nameof(baseElevatorDoor))]
-    public static ElevatorDoor? Get(BaseElevatorDoor? baseElevatorDoor)
+    internal override void OnRemove()
     {
-        if (baseElevatorDoor == null)
-            return null;
-
-        if (Dictionary.TryGetValue(baseElevatorDoor, out ElevatorDoor door))
-            return door;
-
-        return (ElevatorDoor)CreateDoorWrapper(baseElevatorDoor);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

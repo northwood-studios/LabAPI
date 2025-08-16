@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
 using CommandSystem;
 using LabApi.Features.Wrappers;
 using RemoteAdmin;
+using System;
+using System.Collections.Generic;
 
 namespace LabApi.Features.Permissions;
 
@@ -13,11 +13,11 @@ public static class PermissionsExtensions
 {
     /// <inheritdoc cref="PermissionsManager.GetPermissionsByProvider"/>
     public static Dictionary<Type, string[]> GetPermissionsByProvider(this ICommandSender sender) =>
-        Player.Get(sender)?.GetPermissionsByProvider() ?? new Dictionary<Type, string[]>();
+        Player.Get(sender)?.GetPermissionsByProvider() ?? [];
 
     /// <inheritdoc cref="IPermissionsProvider.GetPermissions"/>
     public static string[] GetPermissions(this ICommandSender sender) =>
-        Player.Get(sender)?.GetPermissions() ?? Array.Empty<string>();
+        Player.Get(sender)?.GetPermissions() ?? [];
 
     /// <inheritdoc cref="IPermissionsProvider.HasPermissions"/>
     public static bool HasPermissions(this ICommandSender sender, params string[] permissions) =>

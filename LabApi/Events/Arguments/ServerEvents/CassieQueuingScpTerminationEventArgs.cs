@@ -40,11 +40,11 @@ public class CassieQueuingScpTerminationEventArgs : EventArgs, IPlayerEvent, ICa
     /// <summary>
     /// Gets or sets the subtitle parts of the message.
     /// </summary>
-    public SubtitlePart[] SubtitleParts { get; set; }    
+    public SubtitlePart[] SubtitleParts { get; set; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
-    
+
     /// <summary>
     /// The Damage Handler responsible for the SCP Termination.
     /// </summary>

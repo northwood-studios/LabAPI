@@ -34,7 +34,7 @@ public class PlayerLeavingHazardEventArgs : EventArgs, IPlayerEvent, IHazardEven
     public Hazard Hazard { get; }
 
     /// <summary>
-    /// Gets or sets whether the player is allowed to leave the hazard. 
+    /// Gets or sets whether the player is allowed to leave the hazard.
     /// Setting this to false will result in player keeping the hazard effects and the event will be fired again until it is allowed or the player is back within the hazard's range.
     /// </summary>
     public bool IsAllowed { get; set; }

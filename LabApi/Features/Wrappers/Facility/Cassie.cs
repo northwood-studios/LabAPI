@@ -8,27 +8,27 @@ using static NineTailedFoxAnnouncer;
 namespace LabApi.Features.Wrappers;
 
 /// <summary>
-/// The wrapper for in game Cassie announcer.
+/// The wrapper for in game CASSIE announcer.
 /// </summary>
 public static class Cassie
 {
     /// <summary>
-    /// Gets whether Cassie is currently speaking.
+    /// Gets whether CASSIE is currently speaking.
     /// </summary>
     public static bool IsSpeaking => singleton.queue.Count != 0;
 
     /// <summary>
-    /// Gets all available voice lines for Cassie.
+    /// Gets all available voice lines for CASSIE.
     /// </summary>
     public static VoiceLine[] AllLines => singleton.voiceLines;
 
     /// <summary>
-    /// Gets all collection names in which voicelines are in.
+    /// Gets all collection names in which voice lines are in.
     /// </summary>
     public static string[] CollectionNames => singleton.voiceLines.Select(n => n.collection).Distinct().ToArray();
 
     /// <summary>
-    /// Checks whether a specified word is valid for cassie.
+    /// Checks whether a specified word is valid for CASSIE.
     /// <note>String comparison is case-insensitive.</note>
     /// </summary>
     /// <param name="word">The word to check.</param>
@@ -45,19 +45,19 @@ public static class Cassie
     public static float CalculateDuration(string message, bool rawNumber = false, float speed = 1f) => singleton.CalculateDuration(message, rawNumber, speed);
 
     /// <summary>
-    ///	Plays a custom announcement.
+    /// Plays a custom announcement.
     /// </summary>
-    ///	<param name="message">The sentence Cassie is supposed to say.</param>
-    ///	<param name="isHeld">Sets a minimal 3-second moment of silence before the announcement. For most cases you wanna keep it true.</param>
-    ///	<param name="isNoisy">Whether the background noises play.</param>
-    ///	<param name="isSubtitles">Show subtitles.</param>
-    ///	<param name="customSubtitles">Custom subtitles to appear instead of the actual message.</param>
+    /// <param name="message">The sentence CASSIE is supposed to say.</param>
+    /// <param name="isHeld">Sets a minimal 3-second moment of silence before the announcement. For most cases you wanna keep it true.</param>
+    /// <param name="isNoisy">Whether the background noises play.</param>
+    /// <param name="isSubtitles">Show subtitles.</param>
+    /// <param name="customSubtitles">Custom subtitles to appear instead of the actual message.</param>
     public static void Message(string message, bool isHeld = false, bool isNoisy = true, bool isSubtitles = true, string customSubtitles = "") => RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles, customSubtitles);
 
     /// <summary>
     /// Plays the custom announcement with chance of 0f to 1f of adding a glitch or jam before each word. Values closer to 1f are higher chances.
     /// </summary>
-    /// <param name="message">The sentence Cassie is supposed to say.</param>
+    /// <param name="message">The sentence CASSIE is supposed to say.</param>
     /// <param name="glitchChance">The chance for glitch sound to be added before each word. Range from 0f to 1f.</param>
     /// <param name="jamChance">The chance for jam sound to be added before each word. Range from 0f to 1f.</param>
     public static void GlitchyMessage(string message, float glitchChance, float jamChance) => singleton.ServerOnlyAddGlitchyPhrase(message, glitchChance, jamChance);
@@ -70,12 +70,12 @@ public static class Cassie
     public static void ScpTermination(Player player, DamageHandlerBase info) => AnnounceScpTermination(player.ReferenceHub, info);
 
     /// <summary>
-    /// Clears the Cassie announcements queue.
+    /// Clears the CASSIE announcements queue.
     /// </summary>
     public static void Clear() => RespawnEffectsController.ClearQueue();
 
     /// <summary>
-    /// Converts player's team into Cassie-able word. Unit names are converted into NATO_X words, followed by a number. For example "Alpha-5" is converted to "NATO_A 5".
+    /// Converts player's team into CASSIE-able word. Unit names are converted into NATO_X words, followed by a number. For example "Alpha-5" is converted to "NATO_A 5".
     /// </summary>
     /// <param name="team">Target team.</param>
     /// <param name="unitName">MTF Unit name (for team <see cref="Team.FoundationForces"/>).</param>
@@ -93,15 +93,15 @@ public static class Cassie
     /// Converts player's <see cref="RoleTypeId"/> into an SCP <b>number</b> identifier.
     /// </summary>
     /// <param name="role">The target <see cref="RoleTypeId"/>.</param>
-    /// <param name="withoutSpace">The SCP number without spaces between. Used by Cassie.</param>
+    /// <param name="withoutSpace">The SCP number without spaces between. Used by CASSIE.</param>
     /// <param name="withSpace">The SCP number with spaces between. Used by Subtitles.</param>
     public static void ConvertScp(RoleTypeId role, out string withoutSpace, out string withSpace) => NineTailedFoxAnnouncer.ConvertSCP(role, out withoutSpace, out withSpace);
 
     /// <summary>
     /// Converts player's role name into an SCP <b>number</b> identifier.
     /// </summary>
-    /// <param name="roleName">The targets role name</param>
-    /// <param name="withoutSpace">The SCP number without spaces between. Used by Cassie.</param>
+    /// <param name="roleName">The targets role name.</param>
+    /// <param name="withoutSpace">The SCP number without spaces between. Used by CASSIE.</param>
     /// <param name="withSpace">The SCP number with spaces between. Used by Subtitles.</param>
     public static void ConvertScp(string roleName, out string withoutSpace, out string withSpace) => NineTailedFoxAnnouncer.ConvertSCP(roleName, out withoutSpace, out withSpace);
 }

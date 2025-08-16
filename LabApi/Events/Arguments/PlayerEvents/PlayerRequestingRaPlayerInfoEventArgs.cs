@@ -19,8 +19,13 @@ public class PlayerRequestingRaPlayerInfoEventArgs : EventArgs, IPlayerEvent, IT
     /// <param name="hasSensitiveInfoPerms">Whether the player has perms to view sensitive info.</param>
     /// <param name="hasUserIdPerms">Whether the player has perms to view the targets user id.</param>
     /// <param name="infoBuilder">The <see cref="StringBuilder"/> used to construct the response message.</param>
-    public PlayerRequestingRaPlayerInfoEventArgs(CommandSender commandSender, ReferenceHub targetHub, 
-        bool isSensitiveInfo, bool hasSensitiveInfoPerms, bool hasUserIdPerms, StringBuilder infoBuilder)
+    public PlayerRequestingRaPlayerInfoEventArgs(
+        CommandSender commandSender,
+        ReferenceHub targetHub,
+        bool isSensitiveInfo,
+        bool hasSensitiveInfoPerms,
+        bool hasUserIdPerms,
+        StringBuilder infoBuilder)
     {
         Player = Player.Get(commandSender)!;
         Target = Player.Get(targetHub);

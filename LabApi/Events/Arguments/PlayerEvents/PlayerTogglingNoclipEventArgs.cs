@@ -10,7 +10,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 public class PlayerTogglingNoclipEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
-    /// Initializes a new instance of <see cref=" PlayerTogglingNoclipEventArgs"/> clas.
+    /// Initializes a new instance of <see cref=" PlayerTogglingNoclipEventArgs"/> class.
     /// </summary>
     /// <param name="hub">The player who is attempting to toggle noclip.</param>
     /// <param name="newState">Whether the noclip state will be enabled or disabled.</param>

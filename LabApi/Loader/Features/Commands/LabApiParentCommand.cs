@@ -21,7 +21,9 @@ public class LabApiParentCommand : ParentCommand
     public override string Description => "Parent command for all LabAPI subcommands.";
 
     /// <inheritdoc />
-    public override void LoadGeneratedCommands() { }
+    public override void LoadGeneratedCommands()
+    {
+    }
 
     /// <inheritdoc />
     protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)

@@ -14,12 +14,28 @@ public class FirearmPickup : Pickup
     /// <summary>
     /// Contains all the cached firearm pickups, accessible through their <see cref="BaseFirearmPickup"/>.
     /// </summary>
-    public new static Dictionary<BaseFirearmPickup, FirearmPickup> Dictionary { get; } = [];
+    public static new Dictionary<BaseFirearmPickup, FirearmPickup> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="FirearmPickup"/>.
     /// </summary>
-    public new static IReadOnlyCollection<FirearmPickup> List => Dictionary.Values;
+    public static new IReadOnlyCollection<FirearmPickup> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the firearm pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseFirearmPickup"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <returns>The requested pickup or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(pickup))]
+    public static FirearmPickup? Get(BaseFirearmPickup? pickup)
+    {
+        if (pickup == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(pickup, out FirearmPickup wrapper) ? wrapper : (FirearmPickup)CreateItemWrapper(pickup);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -31,16 +47,9 @@ public class FirearmPickup : Pickup
         Base = baseFirearmPickup;
 
         if (CanCache)
+        {
             Dictionary.Add(baseFirearmPickup, this);
-    }
-
-    /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -63,16 +72,11 @@ public class FirearmPickup : Pickup
     }
 
     /// <summary>
-    /// Gets the firearm pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseFirearmPickup"/> was not <see langword="null"/>.
+    /// A internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
-    /// <returns>The requested pickup or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(pickup))]
-    public static FirearmPickup? Get(BaseFirearmPickup? pickup)
+    internal override void OnRemove()
     {
-        if (pickup == null)
-            return null;
-
-        return Dictionary.TryGetValue(pickup, out FirearmPickup wrapper) ? wrapper : (FirearmPickup)CreateItemWrapper(pickup);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

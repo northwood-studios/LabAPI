@@ -1,8 +1,8 @@
-using System;
 using InventorySystem.Items.Pickups;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using Scp914;
+using System;
 using UnityEngine;
 
 namespace LabApi.Events.Arguments.Scp914Events;

@@ -13,12 +13,28 @@ public class ThrowableItem : Item
     /// <summary>
     /// Contains all the cached throwable items, accessible through their <see cref="BaseThrowableItem"/>.
     /// </summary>
-    public new static Dictionary<BaseThrowableItem, ThrowableItem> Dictionary { get; } = [];
+    public static new Dictionary<BaseThrowableItem, ThrowableItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="ThrowableItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<ThrowableItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<ThrowableItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the throwable item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseThrowableItem"/> was not null.
+    /// </summary>
+    /// <param name="baseThrowableItem">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseThrowableItem))]
+    public static ThrowableItem? Get(BaseThrowableItem? baseThrowableItem)
+    {
+        if (baseThrowableItem == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseThrowableItem, out ThrowableItem item) ? item : (ThrowableItem)CreateItemWrapper(baseThrowableItem);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,16 +46,9 @@ public class ThrowableItem : Item
         Base = baseThrowableItem;
 
         if (CanCache)
+        {
             Dictionary.Add(baseThrowableItem, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,12 +56,12 @@ public class ThrowableItem : Item
     /// </summary>
     public new BaseThrowableItem Base { get; }
 
-    /// <summary>
-    /// The projectile prefab instance, changes to this will be reflect across all new spawned projectiles.
-    /// </summary>
+    ///// <summary>
+    ///// The projectile prefab instance, changes to this will be reflect across all new spawned projectiles.
+    ///// </summary>
     // TODO: use projectile wrapper.
     // FIX: prefab caching.
-    //Pickup ProjectilePrefab => Pickup.Get(Base.Projectile);
+    // Pickup ProjectilePrefab => Pickup.Get(Base.Projectile);
 
     /// <summary>
     /// Gets or set the velocity added in the forward direction on a weak throw.
@@ -127,16 +136,11 @@ public class ThrowableItem : Item
     }
 
     /// <summary>
-    /// Gets the throwable item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseThrowableItem"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseThrowableItem">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseThrowableItem))]
-    public static ThrowableItem? Get(BaseThrowableItem? baseThrowableItem)
+    internal override void OnRemove()
     {
-        if (baseThrowableItem == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseThrowableItem, out ThrowableItem item) ? item : (ThrowableItem)CreateItemWrapper(baseThrowableItem);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

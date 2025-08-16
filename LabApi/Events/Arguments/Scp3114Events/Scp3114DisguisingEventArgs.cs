@@ -13,7 +13,7 @@ public class Scp3114DisguisingEventArgs : EventArgs, IPlayerEvent, IRagdollEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp3114DisguisedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player SCP who is disguising./param>
+    /// <param name="player">The player SCP who is disguising.</param>
     /// <param name="ragdoll">The ragdoll used for disguising purposes.</param>
     public Scp3114DisguisingEventArgs(ReferenceHub player, BasicRagdoll ragdoll)
     {

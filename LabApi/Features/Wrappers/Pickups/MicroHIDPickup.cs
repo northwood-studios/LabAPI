@@ -15,12 +15,28 @@ public class MicroHIDPickup : Pickup
     /// <summary>
     /// Contains all the cached micro hid pickups, accessible through their <see cref="BaseMicroHIDPickup"/>.
     /// </summary>
-    public new static Dictionary<BaseMicroHIDPickup, MicroHIDPickup> Dictionary { get; } = [];
+    public static new Dictionary<BaseMicroHIDPickup, MicroHIDPickup> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="MicroHIDPickup"/>.
     /// </summary>
-    public new static IReadOnlyCollection<MicroHIDPickup> List => Dictionary.Values;
+    public static new IReadOnlyCollection<MicroHIDPickup> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the micro hid pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseMicroHIDPickup"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <returns>The requested pickup or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(pickup))]
+    public static MicroHIDPickup? Get(BaseMicroHIDPickup? pickup)
+    {
+        if (pickup == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(pickup, out MicroHIDPickup wrapper) ? wrapper : (MicroHIDPickup)CreateItemWrapper(pickup);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -33,16 +49,9 @@ public class MicroHIDPickup : Pickup
         BaseCycleController = CycleSyncModule.GetCycleController(Serial);
 
         if (CanCache)
+        {
             Dictionary.Add(baseMicroHIDPickup, this);
-    }
-
-    /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -107,16 +116,11 @@ public class MicroHIDPickup : Pickup
     public float PhaseElapsed => BaseCycleController.CurrentPhaseElapsed;
 
     /// <summary>
-    /// Gets the micro hid pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseMicroHIDPickup"/> was not <see langword="null"/>.
+    /// A internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
-    /// <returns>The requested pickup or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(pickup))]
-    public static MicroHIDPickup? Get(BaseMicroHIDPickup? pickup)
+    internal override void OnRemove()
     {
-        if (pickup == null)
-            return null;
-
-        return Dictionary.TryGetValue(pickup, out MicroHIDPickup wrapper) ? wrapper : (MicroHIDPickup)CreateItemWrapper(pickup);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

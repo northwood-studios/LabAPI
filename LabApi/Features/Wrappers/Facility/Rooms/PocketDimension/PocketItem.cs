@@ -19,6 +19,52 @@ namespace LabApi.Features.Wrappers;
 public class PocketItem
 {
     /// <summary>
+    /// Contains all the cached <see cref="PocketItem"/> instances, accessible through their <see cref="ItemBase"/>.
+    /// </summary>
+    private static readonly Dictionary<ItemPickupBase, PocketItem> Dictionary = [];
+
+    /// <summary>
+    /// A reference to all <see cref="PocketItem"/> instances currently in the game.
+    /// </summary>
+    public static IReadOnlyCollection<PocketItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Tries to get the <see cref="PocketItem"/> associated with the <see cref="Wrappers.Pickup"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Wrappers.Pickup"/> inside the pocket dimension to get the <see cref="PocketItem"/> from.</param>
+    /// <param name="pocketItem">The <see cref="PocketItem"/> associated with <see cref="Wrappers.Pickup"/> or null if it doesn't exists.</param>
+    /// <returns>Whether the <see cref="PocketItem"/> was successfully retrieved.</returns>
+    public static bool TryGet(Pickup pickup, [NotNullWhen(true)] out PocketItem? pocketItem)
+        => Dictionary.TryGetValue(pickup.Base, out pocketItem);
+
+    /// <summary>
+    /// Gets the <see cref="PocketItem"/> associated with the <see cref="Wrappers.Pickup"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Wrappers.Pickup"/> inside the pocket dimension to get the <see cref="PocketItem"/> from.</param>
+    /// <returns>The associated <see cref="PocketItem"/> for the <see cref="Wrappers.Pickup"/> or null if it doesn't exist.</returns>
+    public static PocketItem? Get(Pickup pickup) => TryGet(pickup, out PocketItem? pocketItem) ? pocketItem : null;
+
+    /// <summary>
+    /// Gets or adds a <see cref="PocketItem"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Wrappers.Pickup"/> to get or add to the pocket dimension.</param>
+    /// <returns>The <see cref="PocketItem"/> instance.</returns>
+    /// <remarks>
+    /// If the pickup is not in the pocket dimension it is teleported there on creation of the <see cref="PocketItem"/>.
+    /// </remarks>
+    public static PocketItem GetOrAdd(Pickup pickup)
+    {
+        if (Dictionary.TryGetValue(pickup.Base, out PocketItem? pocketItem))
+        {
+            return pocketItem;
+        }
+
+        pickup.Position = PocketDimension.Instance!.Position + Vector3.up;
+        Scp106PocketItemManager.AddItem(pickup.Base);
+        return Get(pickup)!;
+    }
+
+    /// <summary>
     /// Initializes the PocketItem wrapper by subscribing to the PocketDimensionTeleport events.
     /// </summary>
     [InitializeWrapper]
@@ -27,16 +73,6 @@ public class PocketItem
         Scp106PocketItemManager.OnPocketItemAdded += (itemPickupBase, pocketItem) => _ = new PocketItem(itemPickupBase, pocketItem);
         Scp106PocketItemManager.OnPocketItemRemoved += (itemPickupBase) => Dictionary.Remove(itemPickupBase);
     }
-
-    /// <summary>
-    /// Contains all the cached <see cref="PocketItem"/> instances, accessible through their <see cref="ItemBase"/>.
-    /// </summary>
-    private static Dictionary<ItemPickupBase, PocketItem> Dictionary = [];
-
-    /// <summary>
-    /// A reference to all <see cref="PocketItem"/> instances currently in the game.
-    /// </summary>
-    public static IReadOnlyCollection<PocketItem> List => Dictionary.Values;
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -88,41 +124,7 @@ public class PocketItem
     }
 
     /// <summary>
-    /// Gets whether a warning cue was sent to the players about a dropping item pickup. 
+    /// Gets whether a warning cue was sent to the players about a dropping item pickup.
     /// </summary>
     public bool IsWarningSent => Base.WarningSent;
-
-    /// <summary>
-    /// Tries to get the <see cref="PocketItem"/> associated with the <see cref="Wrappers.Pickup"/>.
-    /// </summary>
-    /// <param name="pickup">The <see cref="Wrappers.Pickup"/> inside the pocket dimension to get the <see cref="PocketItem"/> from.</param>
-    /// <param name="pocketItem">The <see cref="PocketItem"/> associated with <see cref="Wrappers.Pickup"/> or null if it doesn't exists.</param>
-    /// <returns>Whether the <see cref="PocketItem"/> was successfully retrieved.</returns>
-    public static bool TryGet(Pickup pickup, [NotNullWhen(true)] out PocketItem? pocketItem)
-        => Dictionary.TryGetValue(pickup.Base, out pocketItem);
-
-    /// <summary>
-    /// Gets the <see cref="PocketItem"/> associated with the <see cref="Wrappers.Pickup"/>.
-    /// </summary>
-    /// <param name="pickup">The <see cref="Wrappers.Pickup"/> inside the pocket dimension to get the <see cref="PocketItem"/> from.</param>
-    /// <returns>The associated <see cref="PocketItem"/> for the <see cref="Wrappers.Pickup"/> or null if it doesn't exist.</returns>
-    public static PocketItem? Get(Pickup pickup) => TryGet(pickup, out PocketItem? pocketItem) ? pocketItem : null;
-
-    /// <summary>
-    /// Gets or adds a <see cref="PocketItem"/>.
-    /// </summary>
-    /// <param name="pickup">The <see cref="Wrappers.Pickup"/> to get or add to the pocket dimension.</param>
-    /// <returns>The <see cref="PocketItem"/> instance.</returns>
-    /// <remarks>
-    /// If the pickup is not in the pocket dimension it is teleported there on creation of the <see cref="PocketItem"/>.
-    /// </remarks>
-    public static PocketItem GetOrAdd(Pickup pickup)
-    {
-        if (Dictionary.TryGetValue(pickup.Base, out PocketItem? pocketItem))
-            return pocketItem;
-
-        pickup.Position = PocketDimension.Instance!.Position + Vector3.up;
-        Scp106PocketItemManager.AddItem(pickup.Base);
-        return Get(pickup)!;
-    }
 }

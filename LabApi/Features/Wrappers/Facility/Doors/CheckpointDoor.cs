@@ -15,12 +15,33 @@ public class CheckpointDoor : Door
     /// <summary>
     /// Contains all the cached <see cref="CheckpointDoor"/> instances, accessible through their <see cref="BaseCheckpointDoor"/>.
     /// </summary>
-    public new static Dictionary<BaseCheckpointDoor, CheckpointDoor> Dictionary { get; } = [];
+    public static new Dictionary<BaseCheckpointDoor, CheckpointDoor> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="CheckpointDoor"/> instances currently in the game.
     /// </summary>
-    public new static IReadOnlyCollection<CheckpointDoor> List => Dictionary.Values;
+    public static new IReadOnlyCollection<CheckpointDoor> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the <see cref="CheckpointDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <param name="baseCheckpointDoor">The <see cref="BaseCheckpointDoor"/> of the door.</param>
+    /// <returns>The requested door wrapper or null if the input was null.</returns>
+    [return: NotNullIfNotNull(nameof(baseCheckpointDoor))]
+    public static CheckpointDoor? Get(BaseCheckpointDoor? baseCheckpointDoor)
+    {
+        if (baseCheckpointDoor == null)
+        {
+            return null;
+        }
+
+        if (Dictionary.TryGetValue(baseCheckpointDoor, out CheckpointDoor door))
+        {
+            return door;
+        }
+
+        return (CheckpointDoor)CreateDoorWrapper(baseCheckpointDoor);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -33,19 +54,14 @@ public class CheckpointDoor : Door
         SubDoors = new Door[baseCheckpointDoor.SubDoors.Length];
 
         for (int i = 0; i < baseCheckpointDoor.SubDoors.Length; i++)
+        {
             SubDoors[i] = Get(baseCheckpointDoor.SubDoors[i]);
+        }
 
         if (CanCache)
+        {
             Dictionary.Add(baseCheckpointDoor, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -157,19 +173,11 @@ public class CheckpointDoor : Door
         => TryDamage(float.MaxValue, type);
 
     /// <summary>
-    /// Gets the <see cref="CheckpointDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseCheckpointDoor">The <see cref="BaseCheckpointDoor"/> of the door.</param>
-    /// <returns>The requested door wrapper or null if the input was null.</returns>
-    [return: NotNullIfNotNull(nameof(baseCheckpointDoor))]
-    public static CheckpointDoor? Get(BaseCheckpointDoor? baseCheckpointDoor)
+    internal override void OnRemove()
     {
-        if (baseCheckpointDoor == null)
-            return null;
-
-        if (Dictionary.TryGetValue(baseCheckpointDoor, out CheckpointDoor door))
-            return door;
-
-        return (CheckpointDoor)CreateDoorWrapper(baseCheckpointDoor);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

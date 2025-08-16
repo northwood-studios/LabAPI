@@ -1,7 +1,7 @@
-﻿using LabApi.Events.Arguments.Interfaces;
+﻿using Interactables.Interobjects.DoorUtils;
+using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
-using Interactables.Interobjects.DoorUtils;
 
 namespace LabApi.Events.Arguments.Scp079Events;
 

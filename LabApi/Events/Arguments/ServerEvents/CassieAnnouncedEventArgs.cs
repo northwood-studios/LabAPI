@@ -13,7 +13,7 @@ public class CassieAnnouncedEventArgs : EventArgs
     /// <param name="words">The sentence C.A.S.S.I.E. is supposed to say.</param>
     /// <param name="makeHold">For most cases you wanna keep it true. Sets a minimal 3-second moment of silence before the announcement.</param>
     /// <param name="makeNoise">The background noises before playing.</param>
-    /// <param name="customAnnouncement">If thats custom announcement? Custom announcements show subtitles</param>
+    /// <param name="customAnnouncement">If thats custom announcement? Custom announcements show subtitles.</param>
     /// <param name="customSubtitles">Custom subtitles text.</param>
     public CassieAnnouncedEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement, string customSubtitles)
     {
@@ -25,7 +25,7 @@ public class CassieAnnouncedEventArgs : EventArgs
     }
 
     /// <summary>
-    /// Gets sentece which C.A.S.S.I.E. said.
+    /// Gets sentence which C.A.S.S.I.E. said.
     /// </summary>
     public string Words { get; }
 

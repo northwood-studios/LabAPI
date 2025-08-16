@@ -1,8 +1,8 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
-using BaseScp330Pickup = InventorySystem.Items.Usables.Scp330.Scp330Pickup;
 using BaseScp330Bag = InventorySystem.Items.Usables.Scp330.Scp330Bag;
+using BaseScp330Pickup = InventorySystem.Items.Usables.Scp330.Scp330Pickup;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 

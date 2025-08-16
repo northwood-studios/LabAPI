@@ -1,7 +1,7 @@
-﻿using LabApi.Events.Arguments.Interfaces;
+﻿using Interactables.Interobjects;
+using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
-using Interactables.Interobjects;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 

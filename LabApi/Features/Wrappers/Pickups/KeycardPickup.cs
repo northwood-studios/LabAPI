@@ -12,12 +12,28 @@ public class KeycardPickup : Pickup
     /// <summary>
     /// Contains all the cached keycard pickups, accessible through their <see cref="BaseKeycardPickup"/>.
     /// </summary>
-    public new static Dictionary<BaseKeycardPickup, KeycardPickup> Dictionary { get; } = [];
+    public static new Dictionary<BaseKeycardPickup, KeycardPickup> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="KeycardPickup"/>.
     /// </summary>
-    public new static IReadOnlyCollection<KeycardPickup> List => Dictionary.Values;
+    public static new IReadOnlyCollection<KeycardPickup> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the keycard pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseKeycardPickup"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <returns>The requested pickup or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(pickup))]
+    public static KeycardPickup? Get(BaseKeycardPickup? pickup)
+    {
+        if (pickup == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(pickup, out KeycardPickup wrapper) ? wrapper : (KeycardPickup)CreateItemWrapper(pickup);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class KeycardPickup : Pickup
         Base = baseKeycardPickup;
 
         if (CanCache)
+        {
             Dictionary.Add(baseKeycardPickup, this);
-    }
-
-    /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class KeycardPickup : Pickup
     public new BaseKeycardPickup Base { get; }
 
     /// <summary>
-    /// Gets the keycard pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseKeycardPickup"/> was not <see langword="null"/>.
+    /// A internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
-    /// <returns>The requested pickup or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(pickup))]
-    public static KeycardPickup? Get(BaseKeycardPickup? pickup)
+    internal override void OnRemove()
     {
-        if (pickup == null)
-            return null;
-
-        return Dictionary.TryGetValue(pickup, out KeycardPickup wrapper) ? wrapper : (KeycardPickup)CreateItemWrapper(pickup);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

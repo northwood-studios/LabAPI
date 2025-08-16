@@ -26,14 +26,16 @@ public static class YamlMappingExtensions
     /// <param name="parser">This parser to read from.</param>
     /// <param name="key">The key value.</param>
     /// <param name="value">The value.</param>
-    /// <returns>Whether was the kvp succesfully parsed.</returns>
+    /// <returns>Whether was the kvp successfully parsed.</returns>
     public static bool TryReadMapping(this IParser parser, out string key, out string value)
     {
         key = string.Empty;
         value = string.Empty;
 
         if (!parser.TryConsume(out Scalar keyScalar) || !parser.TryConsume(out Scalar valueScalar))
+        {
             return false;
+        }
 
         key = keyScalar.Value.Trim();
         value = valueScalar.Value.Trim();

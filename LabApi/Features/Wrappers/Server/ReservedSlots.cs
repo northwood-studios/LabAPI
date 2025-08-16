@@ -39,11 +39,13 @@ public static class ReservedSlots
     /// <summary>
     /// Gives the player a reserved slot and saves it to file.
     /// </summary>
-    /// <param name="userId">The userid.</param>
+    /// <param name="userId">The user id.</param>
     public static void Add(string userId)
     {
         if (HasReservedSlot(userId))
+        {
             return;
+        }
 
         List<string> lines = FileManager.ReadAllLinesList(FilePath);
         lines.Add(userId);
@@ -65,7 +67,9 @@ public static class ReservedSlots
     public static bool Remove(string userId)
     {
         if (!HasReservedSlot(userId))
+        {
             return false;
+        }
 
         List<string> lines = FileManager.ReadAllLinesList(FilePath);
 
@@ -84,4 +88,3 @@ public static class ReservedSlots
     /// <returns>Whether the player was found and removed from the reserved slots.</returns>
     public static bool Remove(Player player) => Remove(player.UserId);
 }
-

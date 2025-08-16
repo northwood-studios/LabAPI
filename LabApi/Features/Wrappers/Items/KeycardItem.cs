@@ -17,49 +17,12 @@ public class KeycardItem : Item
     /// <summary>
     /// Contains all the cached keycard items, accessible through their <see cref="BaseKeycardItem"/>.
     /// </summary>
-    public new static Dictionary<BaseKeycardItem, KeycardItem> Dictionary { get; } = [];
+    public static new Dictionary<BaseKeycardItem, KeycardItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="KeycardItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<KeycardItem> List => Dictionary.Values;
-
-    /// <summary>
-    /// An internal constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="baseKeycardItem">The base <see cref="BaseKeycardItem"/> object.</param>
-    internal KeycardItem(BaseKeycardItem baseKeycardItem)
-        : base(baseKeycardItem)
-    {
-        Base = baseKeycardItem;
-
-        if (CanCache)
-            Dictionary.Add(baseKeycardItem, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
-    }
-
-    /// <summary>
-    /// The base <see cref="BaseKeycardItem"/> object.
-    /// </summary>
-    public new BaseKeycardItem Base { get; }
-
-    /// <summary>
-    /// Gets the <see cref="DoorPermissionFlags"/> of the keycard.
-    /// </summary>
-    public DoorPermissionFlags Permissions => Base.GetPermissions(null);
-
-    /// <summary>
-    /// Gets the <see cref="KeycardLevels"/> of the keycard which represent the tiers shown on the keycard.
-    /// </summary>
-    public KeycardLevels Levels => new KeycardLevels(Permissions);
+    public static new IReadOnlyCollection<KeycardItem> List => Dictionary.Values;
 
     #region Custom Keycards
 
@@ -136,19 +99,27 @@ public class KeycardItem : Item
     public static KeycardItem? CreateCustomCard(ItemType itemType, Player targetPlayer, params object[] args)
     {
         if (targetPlayer == null)
+        {
             return null;
+        }
 
         if (!itemType.TryGetTemplate(out BaseKeycardItem template))
+        {
             throw new ArgumentException($"Template for {nameof(itemType)} not found");
+        }
 
         if (!template.Customizable)
+        {
             return null;
+        }
 
         int index = 0;
         foreach (DetailBase detailBase in template.Details)
         {
             if (detailBase is not ICustomizableDetail customizableDetail)
+            {
                 continue;
+            }
 
             customizableDetail.SetArguments(new ArraySegment<object>(args, index, customizableDetail.CustomizablePropertiesAmount));
             index += customizableDetail.CustomizablePropertiesAmount;
@@ -168,8 +139,49 @@ public class KeycardItem : Item
     public static KeycardItem? Get(BaseKeycardItem? baseKeycardItem)
     {
         if (baseKeycardItem == null)
+        {
             return null;
+        }
 
         return Dictionary.TryGetValue(baseKeycardItem, out KeycardItem item) ? item : (KeycardItem)CreateItemWrapper(baseKeycardItem);
+    }
+
+    /// <summary>
+    /// An internal constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="baseKeycardItem">The base <see cref="BaseKeycardItem"/> object.</param>
+    internal KeycardItem(BaseKeycardItem baseKeycardItem)
+        : base(baseKeycardItem)
+    {
+        Base = baseKeycardItem;
+
+        if (CanCache)
+        {
+            Dictionary.Add(baseKeycardItem, this);
+        }
+    }
+
+    /// <summary>
+    /// The base <see cref="BaseKeycardItem"/> object.
+    /// </summary>
+    public new BaseKeycardItem Base { get; }
+
+    /// <summary>
+    /// Gets the <see cref="DoorPermissionFlags"/> of the keycard.
+    /// </summary>
+    public DoorPermissionFlags Permissions => Base.GetPermissions(null);
+
+    /// <summary>
+    /// Gets the <see cref="KeycardLevels"/> of the keycard which represent the tiers shown on the keycard.
+    /// </summary>
+    public KeycardLevels Levels => new(Permissions);
+
+    /// <summary>
+    /// An internal method to remove itself from the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

@@ -12,7 +12,8 @@ public abstract class MiniRespawnWave : RespawnWave
     /// Internal constructor preventing external instantiation.
     /// </summary>
     /// <param name="miniWave">The base game object.</param>
-    internal MiniRespawnWave(IMiniWave miniWave) : base((TimeBasedWave)miniWave)
+    internal MiniRespawnWave(IMiniWave miniWave)
+        : base((TimeBasedWave)miniWave)
     {
         Base = miniWave;
     }
@@ -28,14 +29,19 @@ public abstract class MiniRespawnWave : RespawnWave
         get
         {
             if (Base is TimeBasedWave baseWave)
+            {
                 return baseWave.MaxWaveSize;
+            }
 
             return 0;
         }
+
         set
         {
             if (value < 0)
+            {
                 return;
+            }
 
             float percentageValue = (float)value / ReferenceHub.AllHubs.Count;
             Base.WaveSizeMultiplier = percentageValue;
@@ -77,4 +83,3 @@ public abstract class MiniRespawnWave : RespawnWave
     /// </summary>
     public virtual void Lock() => Base.ResetTokens();
 }
-

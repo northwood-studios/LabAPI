@@ -1,5 +1,4 @@
-﻿using InventorySystem.Items.MicroHID;
-using MapGeneration.Distributors;
+﻿using MapGeneration.Distributors;
 using NorthwoodLib.Pools;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -17,12 +16,28 @@ public class Locker : Structure
     /// <summary>
     /// Contains all the cached lockers, accessible through their <see cref="BaseLocker"/>.
     /// </summary>
-    public new static Dictionary<BaseLocker, Locker> Dictionary { get; } = [];
+    public static new Dictionary<BaseLocker, Locker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="Locker"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<Locker> List => Dictionary.Values;
+    public static new IReadOnlyCollection<Locker> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the locker wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="BaseLocker"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="baseLocker">The <see cref="Base"/> of the locker.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(baseLocker))]
+    public static Locker? Get(BaseLocker? baseLocker)
+    {
+        if (baseLocker == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseLocker, out Locker found) ? found : (Locker)CreateStructureWrapper(baseLocker);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -35,19 +50,9 @@ public class Locker : Structure
         Chambers = baseLocker.Chambers.Select(static x => LockerChamber.Get(x)).ToArray();
 
         if (CanCache)
+        {
             Dictionary.Add(baseLocker, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
-
-        foreach (LockerChamber chamber in Chambers)
-            chamber.OnRemove();
+        }
     }
 
     /// <summary>
@@ -103,7 +108,7 @@ public class Locker : Structure
     /// <summary>
     /// Adds a new <see cref="LockerLoot"/> entry to the possible spawnable <see cref="Loot"/>.
     /// </summary>
-    /// <param name="type">The <see cref="ItemType"/> to spawn. <see cref="LockerChamber"/> might only support certain <see cref="ItemType"/> values see <see cref="LockerChamber.AcceptableItems"/></param>
+    /// <param name="type">The <see cref="ItemType"/> to spawn. <see cref="LockerChamber"/> might only support certain <see cref="ItemType"/> values see <see cref="LockerChamber.AcceptableItems"/>.</param>
     /// <param name="remainingUses">The number of times this loot is selected to spawn in a chamber.</param>
     /// <param name="probabilityPoints">The probability weight given for this loot to spawn over other <see cref="LockerLoot"/> instances.</param>
     /// <param name="minPerChamber">The minimum number of items to spawn per chamber.</param>
@@ -120,7 +125,7 @@ public class Locker : Structure
             RemainingUses = remainingUses,
             ProbabilityPoints = probabilityPoints,
             MinPerChamber = minPerChamber,
-            MaxPerChamber = maxPerChamber
+            MaxPerChamber = maxPerChamber,
         };
 
         Base.Loot = [.. Base.Loot, loot];
@@ -147,11 +152,15 @@ public class Locker : Structure
         {
             int removeCount = Chambers.Count - Random.Range(MinChambersToFill, MaxChambersToFill + 1);
             for (int i = 0; i < removeCount; i++)
+            {
                 chambers.RemoveAt(Random.Range(0, chambers.Count));
+            }
         }
 
         foreach (LockerChamber chamber in chambers)
+        {
             chamber.Fill();
+        }
 
         ListPool<LockerChamber>.Shared.Return(chambers);
     }
@@ -165,7 +174,9 @@ public class Locker : Structure
     public void FillAllChambers()
     {
         foreach (LockerChamber chamber in Chambers)
+        {
             chamber.Fill();
+        }
     }
 
     /// <summary>
@@ -174,7 +185,9 @@ public class Locker : Structure
     public void ClearAllChambers()
     {
         foreach (LockerChamber chamber in Chambers)
+        {
             chamber.RemoveAllItems();
+        }
     }
 
     /// <summary>
@@ -183,7 +196,9 @@ public class Locker : Structure
     public void OpenAllChambers()
     {
         foreach (LockerChamber chamber in Chambers)
+        {
             chamber.IsOpen = true;
+        }
     }
 
     /// <summary>
@@ -192,21 +207,22 @@ public class Locker : Structure
     public void CloseAllChambers()
     {
         foreach (LockerChamber chamber in Chambers)
+        {
             chamber.IsOpen = false;
+        }
     }
 
     /// <summary>
-    /// Gets the locker wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="BaseLocker"/> was not <see langword="null"/>.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseLocker">The <see cref="Base"/> of the locker.</param>
-    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(baseLocker))]
-    public static Locker? Get(BaseLocker? baseLocker)
+    internal override void OnRemove()
     {
-        if (baseLocker == null)
-            return null;
+        base.OnRemove();
+        Dictionary.Remove(Base);
 
-        return Dictionary.TryGetValue(baseLocker, out Locker found) ? found : (Locker)CreateStructureWrapper(baseLocker);
+        foreach (LockerChamber chamber in Chambers)
+        {
+            chamber.OnRemove();
+        }
     }
 }
-

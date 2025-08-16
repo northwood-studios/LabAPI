@@ -15,7 +15,6 @@ namespace LabApi.Loader.Features.Yaml.CustomConverters;
 /// </summary>
 public class CustomVectorConverter : IYamlTypeConverter
 {
-
     /// <inheritdoc/>
     public object? ReadYaml(IParser parser, Type type)
     {
@@ -29,13 +28,19 @@ public class CustomVectorConverter : IYamlTypeConverter
             while (!parser.TryConsume(out MappingEnd _))
             {
                 if (!parser.TryReadMapping(out string key, out string val))
+                {
                     throw new ArgumentException($"Unable to parse Vector, no component at index {idx} provided");
+                }
 
                 if (key is not ("x" or "y" or "z" or "w"))
+                {
                     throw new ArgumentException($"Unable to parse Vector, invalid component name {key}. Only 'x' 'y' 'z' and 'w' are allowed");
+                }
 
                 if (storedValues.ContainsKey(key))
+                {
                     throw new ArgumentException($"Unable to parse Vector, duplicate component {key}");
+                }
 
                 storedValues[key] = float.Parse(val, CultureInfo.InvariantCulture);
                 idx++;
@@ -46,12 +51,14 @@ public class CustomVectorConverter : IYamlTypeConverter
                 2 => new Vector2(storedValues["x"], storedValues["y"]),
                 3 => new Vector3(storedValues["x"], storedValues["y"], storedValues["z"]),
                 4 => new Vector4(storedValues["x"], storedValues["y"], storedValues["z"], storedValues["w"]),
-                _ => throw new ArgumentException($"Unable to deserialize vector with {storedValues.Count} components")
+                _ => throw new ArgumentException($"Unable to deserialize vector with {storedValues.Count} components"),
             };
 
             Type createdType = result.GetType();
             if (createdType != type)
+            {
                 throw new ArgumentException($"Attempting to deserialize {createdType.Name} for config type of {type.Name}");
+            }
 
             return result;
         }
