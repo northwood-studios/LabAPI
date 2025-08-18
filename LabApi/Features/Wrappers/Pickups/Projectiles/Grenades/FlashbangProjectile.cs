@@ -21,15 +21,34 @@ public class FlashbangProjectile : TimedGrenadeProjectile
     public static new IReadOnlyCollection<FlashbangProjectile> List => Dictionary.Values;
 
     /// <summary>
+    /// Gets the flashbang from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="FlashbangGrenade"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
+    /// <returns>The requested projectile or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(projectile))]
+    public static FlashbangProjectile? Get(FlashbangGrenade? projectile)
+    {
+        if (projectile == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(projectile, out FlashbangProjectile wrapper) ? wrapper : (FlashbangProjectile)CreateItemWrapper(projectile);
+    }
+
+    /// <summary>
     /// A protected constructor to prevent external instantiation.
     /// </summary>
     /// <param name="projectilePickup">The <see cref="FlashbangGrenade"/> of the pickup.</param>
-    internal FlashbangProjectile(FlashbangGrenade projectilePickup) : base(projectilePickup)
+    internal FlashbangProjectile(FlashbangGrenade projectilePickup)
+        : base(projectilePickup)
     {
         Base = projectilePickup;
 
         if (CanCache)
+        {
             Dictionary.Add(projectilePickup, this);
+        }
     }
 
     /// <summary>
@@ -48,7 +67,7 @@ public class FlashbangProjectile : TimedGrenadeProjectile
 
     /// <summary>
     /// Gets or sets the base blind time to affect people with.
-    /// <para>Note that this value is affected by distance from the grenade aswell as whether the player is looking at it and if it is on surface.</para>
+    /// <para>Note that this value is affected by distance from the grenade as well as whether the player is looking at it and if it is on surface.</para>
     /// </summary>
     public float BaseBlindTime
     {
@@ -63,19 +82,4 @@ public class FlashbangProjectile : TimedGrenadeProjectile
 
         Dictionary.Remove(Base);
     }
-
-    /// <summary>
-    /// Gets the flashbang from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="FlashbangGrenade"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
-    /// <returns>The requested projectile or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(projectile))]
-    public static FlashbangProjectile? Get(FlashbangGrenade? projectile)
-    {
-        if (projectile == null)
-            return null;
-
-        return Dictionary.TryGetValue(projectile, out FlashbangProjectile wrapper) ? wrapper : (FlashbangProjectile)CreateItemWrapper(projectile);
-    }
 }
-

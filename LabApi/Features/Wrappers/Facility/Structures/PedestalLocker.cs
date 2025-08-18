@@ -1,5 +1,4 @@
 ﻿using Interactables.Interobjects.DoorUtils;
-using InventorySystem.Items.MicroHID;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -15,12 +14,28 @@ public class PedestalLocker : Locker
     /// <summary>
     /// Contains all the cached pedestal lockers, accessible through their <see cref="PedestalScpLocker"/>.
     /// </summary>
-    public new static Dictionary<PedestalScpLocker, PedestalLocker> Dictionary { get; } = [];
+    public static new Dictionary<PedestalScpLocker, PedestalLocker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="PedestalLocker"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<PedestalLocker> List => Dictionary.Values;
+    public static new IReadOnlyCollection<PedestalLocker> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the pedestal wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="PedestalScpLocker"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="basePedestal">The <see cref="Base"/> of the pedestal locker.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(basePedestal))]
+    public static PedestalLocker? Get(PedestalScpLocker? basePedestal)
+    {
+        if (basePedestal == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(basePedestal, out PedestalLocker found) ? found : (PedestalLocker)CreateStructureWrapper(basePedestal);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -32,16 +47,9 @@ public class PedestalLocker : Locker
         Base = pedestalScpLocker;
 
         if (CanCache)
+        {
             Dictionary.Add(pedestalScpLocker, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -140,16 +148,11 @@ public class PedestalLocker : Locker
     public void PlayDeniedSound(DoorPermissionFlags flags = DoorPermissionFlags.None) => Chamber.PlayDeniedSound(flags);
 
     /// <summary>
-    /// Gets the pedestal wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="PedestalScpLocker"/> was not <see langword="null"/>.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="basePedestal">The <see cref="Base"/> of the pedestal locker.</param>
-    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(basePedestal))]
-    public static PedestalLocker? Get(PedestalScpLocker? basePedestal)
+    internal override void OnRemove()
     {
-        if (basePedestal == null)
-            return null;
-
-        return Dictionary.TryGetValue(basePedestal, out PedestalLocker found) ? found : (PedestalLocker)CreateStructureWrapper(basePedestal);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

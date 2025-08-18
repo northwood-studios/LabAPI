@@ -20,8 +20,13 @@ public class PlayerRequestingRaPlayerListEventArgs : EventArgs, IPlayerEvent, IC
     /// <param name="sorting">The <see cref="PlayerSorting"/> mode to use.</param>
     /// <param name="viewHiddenLocalBadges">Whether the requester can view hidden local RA badges or not.</param>
     /// <param name="viewHiddenGlobalBadges">Whether the requester can view hidden global RA badges or not.</param>
-    public PlayerRequestingRaPlayerListEventArgs(CommandSender commandSender, StringBuilder builder, bool isDescending,
-        PlayerSorting sorting, bool viewHiddenLocalBadges, bool viewHiddenGlobalBadges)
+    public PlayerRequestingRaPlayerListEventArgs(
+        CommandSender commandSender,
+        StringBuilder builder,
+        bool isDescending,
+        PlayerSorting sorting,
+        bool viewHiddenLocalBadges,
+        bool viewHiddenGlobalBadges)
     {
         Player = Player.Get(commandSender)!;
         ListBuilder = builder;

@@ -36,5 +36,4 @@ public interface IObjectiveEvent
     /// Gets whether the objective completion should be sent to players and visible on their screen.
     /// </summary>
     public bool SendToPlayers { get; }
-
 }

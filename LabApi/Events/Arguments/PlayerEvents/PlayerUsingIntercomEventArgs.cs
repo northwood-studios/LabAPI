@@ -15,7 +15,7 @@ public class PlayerUsingIntercomEventArgs : EventArgs, IPlayerEvent, ICancellabl
     /// </summary>
     /// <param name="hub">The player that is using the intercom.</param>
     /// <param name="state">State of the intercom.</param>
-    //TODO: Add intercom class and ref it docs
+    // TODO: Add intercom class and ref it docs
     public PlayerUsingIntercomEventArgs(ReferenceHub hub, IntercomState state)
     {
         IsAllowed = true;

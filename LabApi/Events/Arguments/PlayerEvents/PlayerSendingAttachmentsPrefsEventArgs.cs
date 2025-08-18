@@ -5,7 +5,7 @@ using System;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.PlayerEvents.ChangingAttachmentsPrefs"/> event.
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.SendingAttachmentsPrefs"/> event.
 /// </summary>
 public class PlayerSendingAttachmentsPrefsEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
@@ -25,7 +25,7 @@ public class PlayerSendingAttachmentsPrefsEventArgs : EventArgs, IPlayerEvent, I
         IsAllowed = true;
     }
 
-    /// <inheritdoc/ >
+    /// <inheritdoc />
     public Player Player { get; }
 
     /// <summary>
@@ -43,6 +43,6 @@ public class PlayerSendingAttachmentsPrefsEventArgs : EventArgs, IPlayerEvent, I
     /// </summary>
     public uint NewAttachments { get; set; }
 
-    /// <inheritdoc/ >
+    /// <inheritdoc />
     public bool IsAllowed { get; set; }
 }

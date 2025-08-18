@@ -34,5 +34,5 @@ public enum LoadPriority : byte
     /// These plugins are loaded last.
     /// <para>We recommend using it in plugins which require plugins as dependencies.</para>
     /// </summary>
-    Lowest = Priority.Lowest
+    Lowest = Priority.Lowest,
 }

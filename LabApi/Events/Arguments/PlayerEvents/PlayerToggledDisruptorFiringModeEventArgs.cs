@@ -38,4 +38,3 @@ public class PlayerToggledDisruptorFiringModeEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     public bool SingleShotMode { get; }
 }
-

@@ -25,8 +25,8 @@ public class Scp3114StartingDanceEventArgs : EventArgs, IPlayerEvent, ICancellab
     public Player Player { get; }
 
     /// <summary>
-    /// Gets or sets the index of the animation to play. 
-    /// Currently there are 7 dance variants in game. 
+    /// Gets or sets the index of the animation to play.
+    /// Currently there are 7 dance variants in game.
     /// <para>Any value above max length will be moved to equal index via modulo (%) operator.</para>
     /// </summary>
     public byte DanceId { get; set; }

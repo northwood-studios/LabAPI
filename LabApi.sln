@@ -25,7 +25,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{3B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandsPlugin", "LabApi.Examples\Commands\CommandsPlugin\CommandsPlugin.csproj", "{DFDB27D3-70C9-44A6-B2D3-6D8D0716D6FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandsPlugin2", "LabApi.Examples\Commands\CommandsPlugin2\CommandsPlugin2.csproj", "{295205EA-B4A2-42CF-8B91-7F9BF6909694}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandsPlugin2", "LabApi.Examples\Commands\CommandsPlugin2\CommandsPlugin2.csproj", "{295205EA-B4A2-42CF-8B91-7F9BF6909694}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9FDD2A60-56E4-4E77-9E87-B62F3BF06CC8}"
+	ProjectSection(SolutionItems) = preProject
+		StyleCopAnalyzers.ruleset = StyleCopAnalyzers.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

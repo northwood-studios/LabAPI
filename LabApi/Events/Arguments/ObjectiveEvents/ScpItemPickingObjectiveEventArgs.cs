@@ -17,7 +17,8 @@ public class ScpItemPickingObjectiveEventArgs : ObjectiveCompletingBaseEventArgs
     /// <param name="influenceToGrant">The influence points to grant to the <paramref name="faction"/>.</param>
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="item">The item that has been picked up.</param>
-    public ScpItemPickingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, ItemBase item) : base(hub, faction, influenceToGrant, timeToGrant)
+    public ScpItemPickingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, ItemBase item)
+        : base(hub, faction, influenceToGrant, timeToGrant)
     {
         Item = Item.Get(item);
     }

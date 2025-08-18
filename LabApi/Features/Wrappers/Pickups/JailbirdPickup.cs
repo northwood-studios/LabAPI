@@ -13,12 +13,28 @@ public class JailbirdPickup : Pickup
     /// <summary>
     /// Contains all the cached ammo pickups, accessible through their <see cref="BaseJailbirdPickup"/>.
     /// </summary>
-    public new static Dictionary<BaseJailbirdPickup, JailbirdPickup> Dictionary { get; } = [];
+    public static new Dictionary<BaseJailbirdPickup, JailbirdPickup> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="JailbirdPickup"/>.
     /// </summary>
-    public new static IReadOnlyCollection<JailbirdPickup> List => Dictionary.Values;
+    public static new IReadOnlyCollection<JailbirdPickup> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the jailbird pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseJailbirdPickup"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <returns>The requested pickup or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(pickup))]
+    public static JailbirdPickup? Get(BaseJailbirdPickup? pickup)
+    {
+        if (pickup == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(pickup, out JailbirdPickup wrapper) ? wrapper : (JailbirdPickup)CreateItemWrapper(pickup);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,16 +46,9 @@ public class JailbirdPickup : Pickup
         Base = baseJailbirdPickup;
 
         if (CanCache)
+        {
             Dictionary.Add(baseJailbirdPickup, this);
-    }
-
-    /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -75,16 +84,11 @@ public class JailbirdPickup : Pickup
     }
 
     /// <summary>
-    /// Gets the jailbird pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseJailbirdPickup"/> was not <see langword="null"/>.
+    /// A internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
-    /// <returns>The requested pickup or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(pickup))]
-    public static JailbirdPickup? Get(BaseJailbirdPickup? pickup)
+    internal override void OnRemove()
     {
-        if (pickup == null)
-            return null;
-
-        return Dictionary.TryGetValue(pickup, out JailbirdPickup wrapper) ? wrapper : (JailbirdPickup)CreateItemWrapper(pickup);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

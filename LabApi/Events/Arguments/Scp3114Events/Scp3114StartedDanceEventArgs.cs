@@ -21,7 +21,7 @@ public class Scp3114StartedDanceEventArgs : EventArgs, IPlayerEvent
     }
 
     /// <summary>
-    /// Gets or sets the index of the animation to play. 
+    /// Gets or sets the index of the animation to play.
     /// </summary>
     public byte DanceId { get; }
 

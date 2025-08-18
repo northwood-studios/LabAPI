@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BaseScp1576Pickup = InventorySystem.Items.Usables.Scp1576.Scp1576Pickup;
 
 namespace LabApi.Features.Wrappers;
@@ -16,12 +12,28 @@ public class Scp1576Pickup : Pickup
     /// <summary>
     /// Contains all the cached SCP-1576 pickups, accessible through their <see cref="BaseScp1576Pickup"/>.
     /// </summary>
-    public new static Dictionary<BaseScp1576Pickup, Scp1576Pickup> Dictionary { get; } = [];
+    public static new Dictionary<BaseScp1576Pickup, Scp1576Pickup> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="Scp1576Pickup"/>.
     /// </summary>
-    public new static IReadOnlyCollection<Scp1576Pickup> List => Dictionary.Values;
+    public static new IReadOnlyCollection<Scp1576Pickup> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the SCP-1576 pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseScp1576Pickup"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <returns>The requested pickup or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(pickup))]
+    public static Scp1576Pickup? Get(BaseScp1576Pickup? pickup)
+    {
+        if (pickup == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(pickup, out Scp1576Pickup wrapper) ? wrapper : (Scp1576Pickup)CreateItemWrapper(pickup);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -33,16 +45,9 @@ public class Scp1576Pickup : Pickup
         Base = baseScp1576Pickup;
 
         if (CanCache)
+        {
             Dictionary.Add(baseScp1576Pickup, this);
-    }
-
-    /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -60,17 +65,11 @@ public class Scp1576Pickup : Pickup
     }
 
     /// <summary>
-    /// Gets the SCP-1576 pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseScp1576Pickup"/> was not <see langword="null"/>.
+    /// A internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
-    /// <returns>The requested pickup or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(pickup))]
-    public static Scp1576Pickup? Get(BaseScp1576Pickup? pickup)
+    internal override void OnRemove()
     {
-        if (pickup == null)
-            return null;
-
-        return Dictionary.TryGetValue(pickup, out Scp1576Pickup wrapper) ? wrapper : (Scp1576Pickup)CreateItemWrapper(pickup);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
-
 }

@@ -16,7 +16,8 @@ public class EnemyKillingObjectiveEventArgs : ObjectiveCompletingBaseEventArgs
     /// <param name="influenceToGrant">The influence points to grant to the <paramref name="faction"/>.</param>
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="targetHub">The player that has been killed.</param>
-    public EnemyKillingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, ReferenceHub targetHub) : base(hub, faction, influenceToGrant, timeToGrant)
+    public EnemyKillingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, ReferenceHub targetHub)
+        : base(hub, faction, influenceToGrant, timeToGrant)
     {
         Target = Player.Get(targetHub);
     }

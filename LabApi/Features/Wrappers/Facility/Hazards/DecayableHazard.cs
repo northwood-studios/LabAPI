@@ -13,12 +13,43 @@ public class DecayableHazard : Hazard
     /// <summary>
     /// Contains all the cached items, accessible through their <see cref="Base"/>.
     /// </summary>
-    public new static Dictionary<TemporaryHazard, DecayableHazard> Dictionary { get; } = [];
+    public static new Dictionary<TemporaryHazard, DecayableHazard> Dictionary { get; } = [];
 
     /// <summary>
     /// Gets all currently active decayable hazards.
     /// </summary>
-    public new IReadOnlyCollection<DecayableHazard> List => Dictionary.Values;
+    public static new IReadOnlyCollection<DecayableHazard> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the hazard wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="TemporaryHazard"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="hazard">The <see cref="Base"/> of the hazard.</param>
+    /// <returns>The requested hazard or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(hazard))]
+    public static DecayableHazard? Get(TemporaryHazard? hazard)
+    {
+        if (hazard == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(hazard, out DecayableHazard decHazard) ? decHazard : (DecayableHazard)CreateItemWrapper(hazard)!;
+    }
+
+    /// <summary>
+    /// An internal constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="hazard">The base game object.</param>
+    protected DecayableHazard(TemporaryHazard hazard)
+        : base(hazard)
+    {
+        Base = hazard;
+
+        if (CanCache)
+        {
+            Dictionary.Add(hazard, this);
+        }
+    }
 
     /// <summary>
     /// Gets or sets the modifier applied to <see cref="Time.deltaTime"/> when calculating how much time has passed.<br/>
@@ -55,21 +86,8 @@ public class DecayableHazard : Hazard
     public new TemporaryHazard Base { get; }
 
     /// <summary>
-    /// An internal constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="hazard">The base game object.</param>
-    protected DecayableHazard(TemporaryHazard hazard)
-        : base(hazard)
-    {
-        Base = hazard;
-
-        if (CanCache)
-            Dictionary.Add(hazard, this);
-    }
-
-    /// <summary>
     /// Destroys this hazard.<br/>
-    /// Do note that subclasses usually implement few seconds delay before the actual object is destroyed. (Usually to wait for animations to finish on clients)
+    /// Do note that subclasses usually implement few seconds delay before the actual object is destroyed (Usually to wait for animations to finish on clients).
     /// </summary>
     public override void Destroy() => Base.ServerDestroy();
 
@@ -78,19 +96,5 @@ public class DecayableHazard : Hazard
     {
         base.OnRemove();
         Dictionary.Remove(Base);
-    }
-
-    /// <summary>
-    /// Gets the hazard wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="TemporaryHazard"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="hazard">The <see cref="Base"/> of the hazard.</param>
-    /// <returns>The requested hazard or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(hazard))]
-    public static DecayableHazard? Get(TemporaryHazard? hazard)
-    {
-        if (hazard == null)
-            return null;
-
-        return Dictionary.TryGetValue(hazard, out DecayableHazard decHazard) ? decHazard : (DecayableHazard)CreateItemWrapper(hazard);
     }
 }

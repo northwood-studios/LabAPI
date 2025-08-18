@@ -18,7 +18,8 @@ public class GeneratorActivatedObjectiveEventArgs : ObjectiveCompletedBaseEventA
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="sendToPlayers">Whether the objective completion has been sent to players.</param>
     /// <param name="generator">The generator that has been activated.</param>
-    public GeneratorActivatedObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, Scp079Generator generator) : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
+    public GeneratorActivatedObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, Scp079Generator generator)
+        : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
     {
         Generator = Generator.Get(generator);
     }

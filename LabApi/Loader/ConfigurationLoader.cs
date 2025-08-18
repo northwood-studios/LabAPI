@@ -1,4 +1,5 @@
 ﻿using LabApi.Features.Console;
+using LabApi.Features.Wrappers;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Configuration;
@@ -6,7 +7,6 @@ using LabApi.Loader.Features.Yaml;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using LabApi.Features.Wrappers;
 
 namespace LabApi.Loader;
 
@@ -75,7 +75,9 @@ public static class ConfigurationLoader
 
             // If the configuration file doesn't exist, we return false to indicate that the configuration wasn't successfully read.
             if (!File.Exists(path))
+            {
                 return false;
+            }
 
             // We read the configuration file.
             string serializedConfig = File.ReadAllText(path);
@@ -105,8 +107,6 @@ public static class ConfigurationLoader
     public static bool TryLoadConfig<TConfig>(this Plugin plugin, string fileName, [NotNullWhen(true)] out TConfig? config, bool isGlobal = false)
         where TConfig : class, new()
     {
-        config = null;
-
         // We retrieve the path of the configuration file.
         string path = plugin.GetConfigPath(fileName, isGlobal);
 
@@ -120,10 +120,11 @@ public static class ConfigurationLoader
                 return plugin.TrySaveConfig(config, fileName, isGlobal);
             }
         }
+
         // We try to read the configuration from its file.
         else if (plugin.TryReadConfig(fileName, out config, isGlobal))
         {
-            // We save the configuration to update new properties and return whether it was successfully saved.            
+            // We save the configuration to update new properties and return whether it was successfully saved.
             return plugin.TrySaveConfig(config, fileName, isGlobal);
         }
 
@@ -194,6 +195,9 @@ public static class ConfigurationLoader
     /// <summary>
     /// Gets the configuration directory for a plugin, considering whether it's global or per-port.
     /// </summary>
+    /// <param name="plugin">The plugin to gets its config directory.</param>
+    /// <param name="isGlobal">Whether the directory is for global configs or per-port ones.</param>
+    /// <returns>The <see cref="DirectoryInfo"/> of the plugin.</returns>
     public static DirectoryInfo GetConfigDirectory(this Plugin plugin, bool isGlobal = false)
     {
         DirectoryInfo baseDir = PathManager.Configs;
@@ -215,7 +219,9 @@ public static class ConfigurationLoader
 
         // We check if the file name doesn't end with .yml or .yaml and add it if it doesn't.
         if (!fileName.EndsWith(".yml", StringComparison.InvariantCultureIgnoreCase) && !fileName.EndsWith(".yaml", StringComparison.InvariantCultureIgnoreCase))
+        {
             fileName += ".yml";
+        }
 
         // We return the path of the configuration file.
         return Path.Combine(directory.FullName, fileName);
@@ -230,7 +236,9 @@ public static class ConfigurationLoader
     {
         // We try to load the properties of the plugin and return them.
         if (!plugin.TryLoadConfig(PropertiesFileName, out Properties? properties))
+        {
             return false;
+        }
 
         // We set the properties of the plugin.
         plugin.Properties = properties;

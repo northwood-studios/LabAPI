@@ -12,7 +12,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// </summary>
 public class PlayerRequestingRaPlayersInfoEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
-    private IEnumerable<ReferenceHub> _targets;
+    private readonly IEnumerable<ReferenceHub> _targets;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerRequestingRaPlayersInfoEventArgs"/> class.
@@ -23,8 +23,13 @@ public class PlayerRequestingRaPlayersInfoEventArgs : EventArgs, IPlayerEvent, I
     /// <param name="hasSensitiveInfoPerms">Whether the player has perms to view sensitive info.</param>
     /// <param name="hasUserIdPerms">Whether the player has perms to view the user ids of the targets.</param>
     /// <param name="infoBuilder">The <see cref="StringBuilder"/> used to construct the response message.</param>
-    public PlayerRequestingRaPlayersInfoEventArgs(CommandSender commandSender, IEnumerable<ReferenceHub> targets, 
-        bool isSensitiveInfo, bool hasSensitiveInfoPerms, bool hasUserIdPerms, StringBuilder infoBuilder)
+    public PlayerRequestingRaPlayersInfoEventArgs(
+        CommandSender commandSender,
+        IEnumerable<ReferenceHub> targets,
+        bool isSensitiveInfo,
+        bool hasSensitiveInfoPerms,
+        bool hasUserIdPerms,
+        StringBuilder infoBuilder)
     {
         Player = Player.Get(commandSender)!;
         IsSensitiveInfo = isSensitiveInfo;

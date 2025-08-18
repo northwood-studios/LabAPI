@@ -13,7 +13,8 @@ public class ShotgunFirearm : FirearmItem
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="firearm">The base <see cref="Firearm"/> object.</param>
-    internal ShotgunFirearm(Firearm firearm) : base(firearm)
+    internal ShotgunFirearm(Firearm firearm)
+        : base(firearm)
     {
     }
 
@@ -28,15 +29,17 @@ public class ShotgunFirearm : FirearmItem
     {
         get
         {
-            if (_actionModule is PumpActionModule actionModule)
+            if (ActionModule is PumpActionModule actionModule)
+            {
                 return actionModule.SyncCocked == actionModule.Barrels;
+            }
 
             return false;
         }
 
         set
         {
-            if (_actionModule is not PumpActionModule actionModule)
+            if (ActionModule is not PumpActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(Cocked)} as it is invalid.");
                 return;
@@ -53,14 +56,17 @@ public class ShotgunFirearm : FirearmItem
     {
         get
         {
-            if (_actionModule is PumpActionModule actionModule)
+            if (ActionModule is PumpActionModule actionModule)
+            {
                 return actionModule.SyncCocked;
+            }
 
             return 0;
         }
+
         set
         {
-            if (_actionModule is not PumpActionModule actionModule)
+            if (ActionModule is not PumpActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(CockedChambers)} as it is invalid.");
                 return;
@@ -79,14 +85,17 @@ public class ShotgunFirearm : FirearmItem
     {
         get
         {
-            if (_actionModule is PumpActionModule actionModule)
+            if (ActionModule is PumpActionModule actionModule)
+            {
                 return actionModule.Barrels;
+            }
 
             return 0;
         }
+
         set
         {
-            if (_actionModule is not PumpActionModule actionModule)
+            if (ActionModule is not PumpActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(ChamberMax)} as it is invalid.");
                 return;
@@ -103,14 +112,17 @@ public class ShotgunFirearm : FirearmItem
     {
         get
         {
-            if (_actionModule is PumpActionModule actionModule)
+            if (ActionModule is PumpActionModule actionModule)
+            {
                 return actionModule.AmmoStored;
+            }
 
             return 0;
         }
+
         set
         {
-            if (_actionModule is not PumpActionModule actionModule)
+            if (ActionModule is not PumpActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(ChamberedAmmo)} as it is null.");
                 return;
@@ -127,7 +139,7 @@ public class ShotgunFirearm : FirearmItem
     /// <param name="shotsFired">The amount of shots that has been fired. Pumping is delayed by <paramref name="shotsFired"/> * 0.5 second.</param>
     public void Pump(int shotsFired = 0)
     {
-        if (_actionModule is not PumpActionModule actionModule)
+        if (ActionModule is not PumpActionModule actionModule)
         {
             Logger.Error($"Unable to pump {nameof(PumpActionModule)} as it is null.");
             return;

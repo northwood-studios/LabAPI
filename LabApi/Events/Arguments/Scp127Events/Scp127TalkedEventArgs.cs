@@ -1,5 +1,5 @@
-﻿using InventorySystem.Items.Firearms.Modules.Scp127;
-using InventorySystem.Items.Firearms;
+﻿using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Firearms.Modules.Scp127;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;

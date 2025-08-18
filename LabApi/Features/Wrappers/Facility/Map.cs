@@ -68,7 +68,7 @@ public static class Map
     /// <remarks>
     /// By default this is included in the <see cref="EscapeZones"/> list.
     /// </remarks>
-    public static Bounds DefaultEscapeZone = Escape.DefaultEscapeZone;
+    public static Bounds DefaultEscapeZone { get; } = Escape.DefaultEscapeZone;
 
     /// <summary>
     /// A list of all bounds used as escape zones.
@@ -91,10 +91,11 @@ public static class Map
     public static void RemoveEscapeZone(Bounds escapeZone) => EscapeZones.Remove(escapeZone);
 
     #region Get Random
-        /// <summary>
-        /// Gets a random <see cref="Room"/>.
-        /// </summary>
-        /// <returns>The random room if there were any rooms otherwise null.</returns>
+
+    /// <summary>
+    /// Gets a random <see cref="Room"/>.
+    /// </summary>
+    /// <returns>The random room if there were any rooms otherwise null.</returns>
     public static Room? GetRandomRoom()
     {
         return Rooms.Count != 0 ? Rooms.ElementAt(UnityEngine.Random.Range(0, Rooms.Count)) : null;
@@ -369,7 +370,9 @@ public static class Map
     public static void TurnOffLights(float duration)
     {
         foreach (LightsController lc in LightsController.List)
+        {
             lc.FlickerLights(duration);
+        }
     }
 
     /// <summary>
@@ -383,11 +386,13 @@ public static class Map
     /// <param name="zone">The zone to turn the lights off in.</param>
     public static void TurnOffLights(FacilityZone zone)
     {
-        //TODO: use zone wrapper?
+        // TODO: use zone wrapper?
         foreach (LightsController lc in LightsController.List)
         {
             if (lc.Room.Zone != zone)
+            {
                 continue;
+            }
 
             lc.FlickerLights(float.MaxValue);
         }
@@ -403,12 +408,13 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (!zones.Contains(lc.Room.Zone))
+            {
                 continue;
+            }
 
             lc.FlickerLights(float.MaxValue);
         }
     }
-
 
     /// <summary>
     /// Turns off all lights in a zone for a certain duration.
@@ -421,7 +427,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (lc.Room.Zone != zone)
+            {
                 continue;
+            }
 
             lc.FlickerLights(duration);
         }
@@ -438,7 +446,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (!zones.Contains(lc.Room.Zone))
+            {
                 continue;
+            }
 
             lc.FlickerLights(duration);
         }
@@ -450,7 +460,9 @@ public static class Map
     public static void TurnOnLights()
     {
         foreach (LightsController lc in LightsController.List)
+        {
             lc.LightsEnabled = true;
+        }
     }
 
     /// <summary>
@@ -463,7 +475,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (lc.Room.Zone != zone)
+            {
                 continue;
+            }
 
             lc.LightsEnabled = true;
         }
@@ -479,7 +493,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (!zones.Contains(lc.Room.Zone))
+            {
                 continue;
+            }
 
             lc.LightsEnabled = true;
         }
@@ -494,7 +510,9 @@ public static class Map
     public static void SetColorOfLights(UnityEngine.Color color)
     {
         foreach (LightsController lc in LightsController.List)
+        {
             lc.OverrideLightsColor = color;
+        }
     }
 
     /// <summary>
@@ -508,7 +526,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (lc.Room.Zone != zone)
+            {
                 continue;
+            }
 
             lc.OverrideLightsColor = color;
         }
@@ -525,7 +545,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (!zones.Contains(lc.Room.Zone))
+            {
                 continue;
+            }
 
             lc.OverrideLightsColor = color;
         }
@@ -537,11 +559,13 @@ public static class Map
     public static void ResetColorOfLights()
     {
         foreach (LightsController lc in LightsController.List)
+        {
             lc.OverrideLightsColor = UnityEngine.Color.clear;
+        }
     }
 
     /// <summary>
-    /// Sets the color of all the lights in a zone back to their default;
+    /// Sets the color of all the lights in a zone back to their default.
     /// </summary>
     /// <param name="zone">The zone to effect.</param>
     public static void ResetColorOfLights(FacilityZone zone)
@@ -550,7 +574,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (lc.Room.Zone != zone)
+            {
                 continue;
+            }
 
             lc.OverrideLightsColor = UnityEngine.Color.clear;
         }
@@ -566,7 +592,9 @@ public static class Map
         foreach (LightsController lc in LightsController.List)
         {
             if (!zones.Contains(lc.Room.Zone))
+            {
                 continue;
+            }
 
             lc.OverrideLightsColor = UnityEngine.Color.clear;
         }

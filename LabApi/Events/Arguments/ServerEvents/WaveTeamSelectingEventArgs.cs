@@ -21,7 +21,7 @@ public class WaveTeamSelectingEventArgs : EventArgs, ICancellableEvent
     }
 
     /// <summary>
-    /// Gets or sets the spawnable wave. See <see cref="SpawnableWaveBase"/> and its subclasses.<br/> 
+    /// Gets or sets the spawnable wave. See <see cref="SpawnableWaveBase"/> and its subclasses.<br/>
     /// Use the <see cref="WaveManager.Waves"/> to set it to a different value.
     /// </summary>
     public SpawnableWaveBase Wave { get; set; }
