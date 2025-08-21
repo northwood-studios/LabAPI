@@ -1,5 +1,4 @@
-﻿using InventorySystem.Items.ThrowableProjectiles;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LabApi.Features.Wrappers;
@@ -20,15 +19,34 @@ public class Scp2176Projectile : TimedGrenadeProjectile
     public static new IReadOnlyCollection<Scp2176Projectile> List => Dictionary.Values;
 
     /// <summary>
+    /// Gets the Scp-2176 from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
+    /// <returns>The requested projectile or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(projectile))]
+    public static Scp2176Projectile? Get(InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile? projectile)
+    {
+        if (projectile == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(projectile, out Scp2176Projectile wrapper) ? wrapper : (Scp2176Projectile)CreateItemWrapper(projectile);
+    }
+
+    /// <summary>
     /// A protected constructor to prevent external instantiation.
     /// </summary>
     /// <param name="projectilePickup">The <see cref="InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile"/> of the pickup.</param>
-    internal Scp2176Projectile(InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile projectilePickup) : base(projectilePickup)
+    internal Scp2176Projectile(InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile projectilePickup)
+        : base(projectilePickup)
     {
         Base = projectilePickup;
 
         if (CanCache)
+        {
             Dictionary.Add(projectilePickup, this);
+        }
     }
 
     /// <summary>
@@ -60,19 +78,4 @@ public class Scp2176Projectile : TimedGrenadeProjectile
 
         Dictionary.Remove(Base);
     }
-
-    /// <summary>
-    /// Gets the Scp-2176 from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
-    /// <returns>The requested projectile or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(projectile))]
-    public static Scp2176Projectile? Get(InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile? projectile)
-    {
-        if (projectile == null)
-            return null;
-
-        return Dictionary.TryGetValue(projectile, out Scp2176Projectile wrapper) ? wrapper : (Scp2176Projectile)CreateItemWrapper(projectile);
-    }
 }
-

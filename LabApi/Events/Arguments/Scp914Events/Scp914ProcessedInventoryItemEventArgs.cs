@@ -1,8 +1,8 @@
+using InventorySystem.Items;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using Scp914;
 using System;
-using InventorySystem.Items;
 
 namespace LabApi.Events.Arguments.Scp914Events;
 

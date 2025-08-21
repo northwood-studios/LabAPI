@@ -21,11 +21,13 @@ public class WaveRespawningEventArgs : EventArgs, ICancellableEvent
     public WaveRespawningEventArgs(SpawnableWaveBase wave, Dictionary<ReferenceHub, RoleTypeId> roles)
     {
         IsAllowed = true;
-        Wave = RespawnWaves.Get(wave);
+        Wave = RespawnWaves.Get(wave)!;
         Roles = DictionaryPool<Player, RoleTypeId>.Get();
 
         foreach (KeyValuePair<ReferenceHub, RoleTypeId> kvp in roles)
+        {
             Roles.Add(Player.Get(kvp.Key), kvp.Value);
+        }
     }
 
     /// <inheritdoc />

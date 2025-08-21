@@ -1,5 +1,4 @@
 ﻿using Interactables.Interobjects.DoorUtils;
-using MapGeneration.Distributors;
 using System.Collections.Generic;
 using BaseLocker = MapGeneration.Distributors.Locker;
 
@@ -13,12 +12,12 @@ public class WallCabinet : Locker
     /// <summary>
     /// Contains all the cached wall cabinets, accessible through their <see cref="BaseLocker"/>.
     /// </summary>
-    public new static Dictionary<BaseLocker, WallCabinet> Dictionary { get; } = [];
+    public static new Dictionary<BaseLocker, WallCabinet> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="WallCabinet"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<WallCabinet> List => Dictionary.Values;
+    public static new IReadOnlyCollection<WallCabinet> List => Dictionary.Values;
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -28,16 +27,9 @@ public class WallCabinet : Locker
         : base(baseLocker)
     {
         if (CanCache)
+        {
             Dictionary.Add(baseLocker, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself form the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -98,4 +90,13 @@ public class WallCabinet : Locker
     /// This chamber does not control any doors.
     /// </remarks>
     public LockerChamber UpperShelf => Chambers[2];
+
+    /// <summary>
+    /// An internal method to remove itself form the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
+    }
 }

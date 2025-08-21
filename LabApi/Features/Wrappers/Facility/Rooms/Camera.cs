@@ -1,7 +1,7 @@
-﻿using PlayerRoles.PlayableScps.Scp079.Cameras;
+﻿using Generators;
+using PlayerRoles.PlayableScps.Scp079.Cameras;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Generators;
 using UnityEngine;
 
 namespace LabApi.Features.Wrappers;
@@ -22,7 +22,35 @@ public class Camera
     public static IReadOnlyCollection<Camera> List => Dictionary.Values;
 
     /// <summary>
-    /// Initializes the <see cref="Camera"/> class to subscribe to
+    /// Gets the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
+    /// </summary>
+    /// <param name="camera">The <see cref="Scp079Camera"/> to get the camera from.</param>
+    /// <returns>The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or <see langword="null"/> if it doesn't exist.</returns>
+    [return: NotNullIfNotNull(nameof(camera))]
+    public static Camera? Get(Scp079Camera? camera)
+    {
+        if (camera == null)
+        {
+            return null;
+        }
+
+        return TryGet(camera, out Camera? cam) ? cam : new Camera(camera);
+    }
+
+    /// <summary>
+    /// Tries to get the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
+    /// </summary>
+    /// <param name="camera">The <see cref="Scp079Camera"/> to get the camera from.</param>
+    /// <param name="wrapper">The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or <see langword="null"/> if it doesn't exist.</param>
+    /// <returns>Whether the camera was successfully retrieved.</returns>
+    public static bool TryGet(Scp079Camera camera, [NotNullWhen(true)] out Camera? wrapper)
+    {
+        wrapper = null;
+        return camera != null && Dictionary.TryGetValue(camera, out wrapper);
+    }
+
+    /// <summary>
+    /// Initializes the <see cref="Camera"/> class to subscribe to.
     /// </summary>
     [InitializeWrapper]
     internal static void Initialize()
@@ -31,6 +59,15 @@ public class Camera
 
         Scp079Camera.OnInstanceCreated += (camera) => new Camera(camera);
         Scp079Camera.OnInstanceRemoved += (camera) => Remove(camera);
+    }
+
+    /// <summary>
+    /// Handles the removal of a camera from the dictionary.
+    /// </summary>
+    /// <param name="camera">The camera to remove.</param>
+    private static void Remove(Scp079Camera camera)
+    {
+        Dictionary.Remove(camera);
     }
 
     /// <summary>
@@ -90,40 +127,5 @@ public class Camera
     public override string ToString()
     {
         return $"[Camera: Position={Position}, Rotation={Rotation}, Room={Room}, Zoom={Zoom}, IsBeingUsed={IsBeingUsed}]";
-    }
-
-    /// <summary>
-    /// Gets the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
-    /// </summary>
-    /// <param name="camera">The <see cref="Scp079Camera"/> to get the camera from.</param>
-    /// <returns>The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or <see langword="null"/> if it doesn't exist.</returns>
-    [return: NotNullIfNotNull(nameof(camera))]
-    public static Camera? Get(Scp079Camera? camera)
-    {
-        if (camera == null)
-            return null;
-
-        return TryGet(camera, out Camera? cam) ? cam : new Camera(camera);
-    }
-
-    /// <summary>
-    /// Tries to get the <see cref="Camera"/> associated with the <see cref="Scp079Camera"/>.
-    /// </summary>
-    /// <param name="camera">The <see cref="Scp079Camera"/> to get the camera from.</param>
-    /// <param name="wrapper">The <see cref="Camera"/> associated with the <see cref="Scp079Camera"/> or <see langword="null"/> if it doesn't exist.</param>
-    /// <returns>Whether the camera was successfully retrieved.</returns>
-    public static bool TryGet(Scp079Camera camera, [NotNullWhen(true)] out Camera? wrapper)
-    {
-        wrapper = null;
-        return camera != null && Dictionary.TryGetValue(camera, out wrapper);
-    }
-
-    /// <summary>
-    /// Handles the removal of a camera from the dictionary.
-    /// </summary>
-    /// <param name="camera">The camera to remove.</param>
-    private static void Remove(Scp079Camera camera)
-    {
-        Dictionary.Remove(camera);
     }
 }

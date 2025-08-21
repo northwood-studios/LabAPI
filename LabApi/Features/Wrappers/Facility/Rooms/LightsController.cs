@@ -11,23 +11,29 @@ namespace LabApi.Features.Wrappers;
 public class LightsController
 {
     /// <summary>
-    /// Contains all the cached rooms in the game, accessible through their <see cref="RoomLightController"/>.
-    /// </summary>
-    private static Dictionary<RoomLightController, LightsController> Dictionary { get; } = [];
-
-    /// <summary>
     /// A reference to all <see cref="LightsController"/> instances currently in the game.
     /// </summary>
     public static IReadOnlyCollection<LightsController> List => Dictionary.Values;
 
     /// <summary>
-    /// A private constructor to prevent external instantiation.
+    /// Contains all the cached rooms in the game, accessible through their <see cref="RoomLightController"/>.
     /// </summary>
-    /// <param name="original">The original object.</param>
-    private LightsController(RoomLightController original)
+    private static Dictionary<RoomLightController, LightsController> Dictionary { get; } = [];
+
+    /// <summary>
+    /// Gets the controller wrapper from <see cref="Dictionary"/>, or creates a new one if it doesn't exists.
+    /// </summary>
+    /// <param name="roomLightController">The original light controller.</param>
+    /// <returns>The requested light controller wrapper.</returns>
+    [return: NotNullIfNotNull(nameof(roomLightController))]
+    public static LightsController? Get(RoomLightController roomLightController)
     {
-        Dictionary.Add(original, this);
-        Base = original;
+        if (roomLightController == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(roomLightController, out LightsController lightController) ? lightController : new LightsController(roomLightController);
     }
 
     /// <summary>
@@ -41,6 +47,16 @@ public class LightsController
     }
 
     /// <summary>
+    /// A private constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="original">The original object.</param>
+    private LightsController(RoomLightController original)
+    {
+        Dictionary.Add(original, this);
+        Base = original;
+    }
+
+    /// <summary>
     /// The base game object.
     /// </summary>
     public RoomLightController Base { get; }
@@ -48,7 +64,7 @@ public class LightsController
     /// <summary>
     /// The room this controller is assigned to.
     /// </summary>
-    public Room? Room => Room.Get(Base.Room);
+    public Room Room => Room.Get(Base.Room)!;
 
     /// <summary>
     /// Gets or sets whether the lights are enabled in this room.
@@ -73,18 +89,4 @@ public class LightsController
     /// </summary>
     /// <param name="duration">Duration of light shutdown in seconds.</param>
     public void FlickerLights(float duration) => Base.ServerFlickerLights(duration);
-
-    /// <summary>
-    /// Gets the controller wrapper from <see cref="Dictionary"/>, or creates a new one if it doesnt exists.
-    /// </summary>
-    /// <param name="roomLightController">The original light controller.</param>
-    /// <returns>The requested light controller wrapper.</returns>
-    [return: NotNullIfNotNull(nameof(roomLightController))]
-    public static LightsController? Get(RoomLightController roomLightController)
-    {
-        if (roomLightController == null)
-            return null;
-
-        return Dictionary.TryGetValue(roomLightController, out LightsController lightController) ? lightController : new LightsController(roomLightController);
-    }
 }

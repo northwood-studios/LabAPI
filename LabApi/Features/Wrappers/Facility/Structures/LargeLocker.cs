@@ -11,12 +11,12 @@ public class LargeLocker : Locker
     /// <summary>
     /// Contains all the cached large lockers, accessible through their <see cref="BaseLocker"/>.
     /// </summary>
-    public new static Dictionary<BaseLocker, LargeLocker> Dictionary = [];
+    public static new Dictionary<BaseLocker, LargeLocker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="LargeLocker"/> instances.
     /// </summary>
-    public new static IReadOnlyCollection<LargeLocker> List => Dictionary.Values;
+    public static new IReadOnlyCollection<LargeLocker> List => Dictionary.Values;
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -26,16 +26,9 @@ public class LargeLocker : Locker
         : base(baseLocker)
     {
         if (CanCache)
+        {
             Dictionary.Add(baseLocker, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -87,4 +80,13 @@ public class LargeLocker : Locker
     /// Gets the drawer chamber that is at the bottom.
     /// </summary>
     public LockerChamber Drawer => Chambers[9];
+
+    /// <summary>
+    /// An internal method to remove itself from the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
+    }
 }

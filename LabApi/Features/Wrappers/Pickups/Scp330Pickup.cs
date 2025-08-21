@@ -6,19 +6,35 @@ using BaseScp330Pickup = InventorySystem.Items.Usables.Scp330.Scp330Pickup;
 namespace LabApi.Features.Wrappers;
 
 /// <summary>
-/// Wrapper for the 
+/// Wrapper for the <see cref="BaseScp330Pickup"/>.
 /// </summary>
 public class Scp330Pickup : Pickup
 {
     /// <summary>
     /// Contains all the cached SCP-330 pickups, accessible through their <see cref="BaseScp330Pickup"/>.
     /// </summary>
-    public new static Dictionary<BaseScp330Pickup, Scp330Pickup> Dictionary { get; } = [];
+    public static new Dictionary<BaseScp330Pickup, Scp330Pickup> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="Scp330Pickup"/>.
     /// </summary>
-    public new static IReadOnlyCollection<Scp330Pickup> List => Dictionary.Values;
+    public static new IReadOnlyCollection<Scp330Pickup> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the SCP-330 pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseScp330Pickup"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
+    /// <returns>The requested pickup or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(pickup))]
+    public static Scp330Pickup? Get(BaseScp330Pickup? pickup)
+    {
+        if (pickup == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(pickup, out Scp330Pickup wrapper) ? wrapper : (Scp330Pickup)CreateItemWrapper(pickup);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,16 +46,9 @@ public class Scp330Pickup : Pickup
         Base = baseScp330Pickup;
 
         if (CanCache)
+        {
             Dictionary.Add(baseScp330Pickup, this);
-    }
-
-    /// <summary>
-    /// A internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -63,17 +72,11 @@ public class Scp330Pickup : Pickup
     }
 
     /// <summary>
-    /// Gets the SCP-330 pickup from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseScp330Pickup"/> was not <see langword="null"/>.
+    /// A internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pickup">The <see cref="Base"/> if the pickup.</param>
-    /// <returns>The requested pickup or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(pickup))]
-    public static Scp330Pickup? Get(BaseScp330Pickup? pickup)
+    internal override void OnRemove()
     {
-        if (pickup == null)
-            return null;
-
-        return Dictionary.TryGetValue(pickup, out Scp330Pickup wrapper) ? wrapper : (Scp330Pickup)CreateItemWrapper(pickup);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
-
 }

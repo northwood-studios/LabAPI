@@ -15,7 +15,7 @@ public class PlayerZoneChangedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player whose zone changed.</param>
     /// <param name="oldZone">The old zone.</param>
-    /// <param name="newZone">The new zone</param>
+    /// <param name="newZone">The new zone.</param>
     public PlayerZoneChangedEventArgs(ReferenceHub player, FacilityZone oldZone, FacilityZone newZone)
     {
         Player = Player.Get(player);
@@ -31,10 +31,10 @@ public class PlayerZoneChangedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the old zone. May be <see cref="FacilityZone.None"/> if the player just spawned, went through void and such.
     /// </summary>
-    public FacilityZone OldZone;
+    public FacilityZone OldZone { get; }
 
     /// <summary>
-    /// Gets the new rom. May be <see cref="FacilityZone.None"/> if the player went into void, died and such.
+    /// Gets the new room. May be <see cref="FacilityZone.None"/> if the player went into void, died and such.
     /// </summary>
-    public FacilityZone NewZone;
+    public FacilityZone NewZone { get; }
 }

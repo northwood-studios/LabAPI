@@ -21,5 +21,5 @@ public class PlayerEnteredPocketDimensionEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the player who entered the pocket dimension.
     /// </summary>
-    public Player Player { get; } 
+    public Player Player { get; }
 }

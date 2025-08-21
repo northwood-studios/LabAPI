@@ -1,6 +1,6 @@
-﻿using Respawning;
+﻿using Generators;
+using Respawning;
 using Respawning.Waves;
-using Generators;
 
 namespace LabApi.Features.Wrappers;
 
@@ -30,16 +30,6 @@ public static class RespawnWaves
     public static MiniChaosWave? MiniChaosWave { get; private set; }
 
     /// <summary>
-    /// Initializes the <see cref="RespawnWaves"/> wrapper and its wave wrapper instances.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        foreach (SpawnableWaveBase wave in WaveManager.Waves)
-            Get(wave);
-    }
-
-    /// <summary>
     /// Gets the respawn wave wrapper from the static references or creates a new one if it doesn't exist and the provided <see cref="SpawnableWaveBase"/> was not <see langword="null"/> or not valid subclass.
     /// </summary>
     /// <param name="baseWave">The <see cref="RespawnWave.Base"/> of the respawn wave.</param>
@@ -55,5 +45,16 @@ public static class RespawnWaves
             _ => null,
         };
     }
-}
 
+    /// <summary>
+    /// Initializes the <see cref="RespawnWaves"/> wrapper and its wave wrapper instances.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        foreach (SpawnableWaveBase wave in WaveManager.Waves)
+        {
+            Get(wave);
+        }
+    }
+}

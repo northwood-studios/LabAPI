@@ -1,7 +1,7 @@
-﻿using System;
-using LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using PlayerRoles.Ragdolls;
+using System;
 
 namespace LabApi.Events.Arguments.Scp0492Events;
 

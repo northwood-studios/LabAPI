@@ -18,7 +18,7 @@ public class WaveRespawnedEventArgs : EventArgs
     public WaveRespawnedEventArgs(SpawnableWaveBase wave, List<Player> players)
     {
         Players = players;
-        Wave = RespawnWaves.Get(wave);
+        Wave = RespawnWaves.Get(wave)!;
     }
 
     /// <summary>

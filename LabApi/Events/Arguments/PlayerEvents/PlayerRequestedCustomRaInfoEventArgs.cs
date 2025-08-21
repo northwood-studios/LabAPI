@@ -17,6 +17,8 @@ public class PlayerRequestedCustomRaInfoEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     public const int MaxClipboardCount = 3;
 
+    private string[]? _clipboardTexts = null;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerRequestedCustomRaInfoEventArgs"/> class.
     /// </summary>
@@ -24,8 +26,11 @@ public class PlayerRequestedCustomRaInfoEventArgs : EventArgs, IPlayerEvent
     /// <param name="selectionArgs">The request arguments.</param>
     /// <param name="isSensitiveInfo">Whether the info being requested is sensitive.</param>
     /// <param name="infoBuilder">The <see cref="StringBuilder"/> use to build the response.</param>
-    public PlayerRequestedCustomRaInfoEventArgs(CommandSender commandSender, ArraySegment<string> selectionArgs,
-        bool isSensitiveInfo, StringBuilder infoBuilder)
+    public PlayerRequestedCustomRaInfoEventArgs(
+        CommandSender commandSender,
+        ArraySegment<string> selectionArgs,
+        bool isSensitiveInfo,
+        StringBuilder infoBuilder)
     {
         Player = Player.Get(commandSender)!;
         SelectedIdentifiers = selectionArgs.First().Split(".");
@@ -54,25 +59,26 @@ public class PlayerRequestedCustomRaInfoEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     public StringBuilder InfoBuilder { get; }
 
-    private string[]? clipboardTexts = null;
-
     /// <summary>
     /// Creates a clipboard link for the RA.
     /// </summary>
     /// <remarks>
-    /// Usage <c>ev.InfoBuilder.Append(ev.SetClipboardText("Click Me", "Text to copy to clipboard on click", 0))</c>
+    /// Usage <c>ev.InfoBuilder.Append(ev.SetClipboardText("Click Me", "Text to copy to clipboard on click", 0));</c>.
     /// </remarks>
     /// <param name="linkText">Text to display as the link.</param>
     /// <param name="clipboardText">Text to copy to the clipboard when clicking on the link.</param>
     /// <param name="id">The id of the clipboard, must be between 0 and <see cref="MaxClipboardCount"/>.</param>
     /// <returns>The formated clipboard link text.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thown when id is not between 0 and <see cref="MaxClipboardCount"/>.</exception>
     public string SetClipboardText(string linkText, string clipboardText, byte id)
     {
         if (id >= MaxClipboardCount)
+        {
             throw new ArgumentOutOfRangeException(nameof(id), id, $"id must be between 0 and {MaxClipboardCount}");
+        }
 
-        clipboardTexts ??= new string[MaxClipboardCount];
-        clipboardTexts[id] = clipboardText;
+        _clipboardTexts ??= new string[MaxClipboardCount];
+        _clipboardTexts[id] = clipboardText;
 
         return $"<link={LinkIdForClipboardId(id)}>{linkText}</link>";
     }
@@ -83,18 +89,22 @@ public class PlayerRequestedCustomRaInfoEventArgs : EventArgs, IPlayerEvent
     /// <param name="id">The id associated with the clipboard text.</param>
     /// <param name="text">The found text, otherwise <see langword="null"/>.</param>
     /// <returns><see langword="true"/> if set and not empty, otherwise <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thown when id is not between 0 and <see cref="MaxClipboardCount"/>.</exception>
     public bool TryGetClipboardText(byte id, [NotNullWhen(true)] out string? text)
     {
         if (id >= MaxClipboardCount)
+        {
             throw new ArgumentOutOfRangeException(nameof(id), id, $"id must be between 0 and {MaxClipboardCount}");
+        }
 
         text = null;
 
-        if (clipboardTexts == null)
+        if (_clipboardTexts == null)
+        {
             return false;
+        }
 
-        text = clipboardTexts[id];
+        text = _clipboardTexts[id];
         return !string.IsNullOrEmpty(text);
     }
 
@@ -103,6 +113,6 @@ public class PlayerRequestedCustomRaInfoEventArgs : EventArgs, IPlayerEvent
         0 => "CP_ID",
         1 => "CP_IP",
         2 => "CP_USERID",
-        _ => throw new ArgumentOutOfRangeException(nameof(id), id, $"id must be between 0 and {MaxClipboardCount}")
+        _ => throw new ArgumentOutOfRangeException(nameof(id), id, $"id must be between 0 and {MaxClipboardCount}"),
     };
 }

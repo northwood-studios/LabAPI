@@ -65,8 +65,9 @@ public static class AssemblyUtils
     public static IEnumerable<string> GetLoadedAssemblies()
     {
         return AppDomain.CurrentDomain.GetAssemblies().Select(NameSelector);
+
         // We will use this selector to format the assembly names to the format we want.
-        string NameSelector(Assembly assembly) => FormatAssemblyName(assembly.GetName());
+        static string NameSelector(Assembly assembly) => FormatAssemblyName(assembly.GetName());
     }
 
     /// <summary>
@@ -77,6 +78,7 @@ public static class AssemblyUtils
     public static IEnumerable<string> GetMissingDependencies(Assembly assembly)
     {
         IEnumerable<string> loadedAssemblies = GetLoadedAssemblies();
+
         // Using the same format, we will get the missing dependencies.
         return assembly.GetReferencedAssemblies().Select(FormatAssemblyName).Where(name => !loadedAssemblies.Contains(name));
     }
@@ -100,6 +102,7 @@ public static class AssemblyUtils
                 // If the resource is a dll, we load it as an embedded dll.
                 LoadEmbeddedDll(assembly, resourceName);
             }
+
             // We check if the resource is a compressed dll.
             else if (resourceName.EndsWith(compressedDllExtension, StringComparison.OrdinalIgnoreCase))
             {
@@ -118,7 +121,9 @@ public static class AssemblyUtils
     {
         // We try to get the data stream of the specified resource name.
         if (!TryGetDataStream(target, name, out Stream? dataStream))
+        {
             return;
+        }
 
         // We copy the data stream to a memory stream and load the assembly from the memory stream.
         using MemoryStream stream = new();
@@ -135,10 +140,13 @@ public static class AssemblyUtils
     {
         // We try to get the data stream of the specified resource name.
         if (!TryGetDataStream(target, name, out Stream? dataStream))
+        {
             return;
+        }
 
         // We decompress the data stream and load the assembly from the memory stream.
         using DeflateStream stream = new(dataStream, CompressionMode.Decompress);
+
         // We use a memory stream to load the assembly from the decompressed data stream.
         using MemoryStream memStream = new();
         stream.CopyTo(memStream);
@@ -159,7 +167,9 @@ public static class AssemblyUtils
 
         // If the data stream is not null, we successfully retrieved the data stream and therefore return true.
         if (dataStream is not null)
+        {
             return true;
+        }
 
         // If the data stream is null, we log an error message and return false.
         Logger.Error($"{LoggerPrefix} Unable to resolve {name} Stream was null");

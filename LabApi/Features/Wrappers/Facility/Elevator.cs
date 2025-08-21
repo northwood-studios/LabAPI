@@ -1,10 +1,10 @@
-﻿using Interactables.Interobjects;
+﻿using Generators;
+using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Generators;
 using BaseElevatorDoor = Interactables.Interobjects.ElevatorDoor;
 
 namespace LabApi.Features.Wrappers;
@@ -25,6 +25,55 @@ public class Elevator
     public static IReadOnlyCollection<Elevator> List => Dictionary.Values;
 
     /// <summary>
+    /// Locks every door of every elevator on map.
+    /// </summary>
+    public static void LockAll()
+    {
+        foreach (Elevator el in List)
+        {
+            el.LockAllDoors();
+        }
+    }
+
+    /// <summary>
+    /// Unlocks every door of every elevator on map.
+    /// </summary>
+    public static void UnlockAll()
+    {
+        foreach (Elevator el in List)
+        {
+            el.UnlockAllDoors();
+        }
+    }
+
+    /// <summary>
+    /// Gets the elevator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <param name="elevatorChamber">The <see cref="ElevatorChamber"/> of the elevator.</param>
+    /// <returns>The requested elevator.</returns>
+    public static Elevator Get(ElevatorChamber elevatorChamber) =>
+        Dictionary.TryGetValue(elevatorChamber, out Elevator generator) ? generator : new Elevator(elevatorChamber);
+
+    /// <summary>
+    /// Gets the enumerable of elevators that are assigned to the specific group.
+    /// </summary>
+    /// <param name="group">The specified elevator group.</param>
+    /// <returns>Enumerable where the group is equal to the one specified.</returns>
+    public static IEnumerable<Elevator> GetByGroup(ElevatorGroup group) => List.Where(n => n.Group == group);
+
+    /// <summary>
+    /// Initializes the <see cref="Elevator"/> class to subscribe to <see cref="ElevatorChamber"/> events.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        Dictionary.Clear();
+
+        ElevatorChamber.OnElevatorSpawned += (chamber) => _ = new Elevator(chamber);
+        ElevatorChamber.OnElevatorRemoved += (chamber) => Dictionary.Remove(chamber);
+    }
+
+    /// <summary>
     /// A private constructor to prevent external instantiation.
     /// </summary>
     /// <param name="elevator">The <see cref="ElevatorChamber"/> of the elevator.</param>
@@ -38,18 +87,6 @@ public class Elevator
     /// The base object.
     /// </summary>
     public ElevatorChamber Base { get; }
-
-    /// <summary>
-    /// Initializes the <see cref="Elevator"/> class to subscribe to <see cref="ElevatorChamber"/> events.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        Dictionary.Clear();
-
-        ElevatorChamber.OnElevatorSpawned += (chamber) => _ = new Elevator(chamber);
-        ElevatorChamber.OnElevatorRemoved += (chamber) => Dictionary.Remove(chamber);
-    }
 
     /// <summary>
     /// Gets all the doors associated with this elevator.
@@ -138,24 +175,6 @@ public class Elevator
     }
 
     /// <summary>
-    /// Locks every door of every elevator on map.
-    /// </summary>
-    public static void LockAll()
-    {
-        foreach (Elevator el in List)
-            el.LockAllDoors();
-    }
-
-    /// <summary>
-    /// Unlocks every door of every elevator on map.
-    /// </summary>
-    public static void UnlockAll()
-    {
-        foreach (Elevator el in List)
-            el.UnlockAllDoors();
-    }
-
-    /// <summary>
     /// Attempts to send the elevator to target destination.
     /// </summary>
     /// <param name="targetLevel">Target level index of the floor.</param>
@@ -182,19 +201,4 @@ public class Elevator
     /// Unlocks all elevator doors assigned to this chamber.
     /// </summary>
     public void UnlockAllDoors() => Base.ServerLockAllDoors(DoorLockReason.AdminCommand, false);
-
-    /// <summary>
-    /// Gets the elevator wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
-    /// </summary>
-    /// <param name="elevatorChamber">The <see cref="ElevatorChamber"/> of the elevator.</param>
-    /// <returns>The requested elevator.</returns>
-    public static Elevator Get(ElevatorChamber elevatorChamber) =>
-        Dictionary.TryGetValue(elevatorChamber, out Elevator generator) ? generator : new Elevator(elevatorChamber);
-
-    /// <summary>
-    /// Gets the enumerable of elevators that are assigned to the specific group.
-    /// </summary>
-    /// <param name="group">The specified elevator group.</param>
-    /// <returns>Enumerable where the group is equal to the one specified.</returns>
-    public static IEnumerable<Elevator> GetByGroup(ElevatorGroup group) => List.Where(n => n.Group == group);
 }

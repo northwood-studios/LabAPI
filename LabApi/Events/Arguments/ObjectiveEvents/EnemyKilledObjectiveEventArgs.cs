@@ -17,7 +17,8 @@ public class EnemyKilledObjectiveEventArgs : ObjectiveCompletedBaseEventArgs
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="sendToPlayers">Whether the objective completion has been sent to players.</param>
     /// <param name="targetHub">The player that has been killed.</param>
-    public EnemyKilledObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, ReferenceHub targetHub) : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
+    public EnemyKilledObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers, ReferenceHub targetHub)
+        : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
     {
         Target = Player.Get(targetHub);
     }

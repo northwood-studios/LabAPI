@@ -27,7 +27,7 @@ public class Scp173BreakneckSpeedChangingEventArgs : EventArgs, IPlayerEvent, IC
     public bool Active { get; }
 
     /// <summary>
-    /// The SCP-173 player instance. 
+    /// The SCP-173 player instance.
     /// </summary>
     public Player Player { get; }
 

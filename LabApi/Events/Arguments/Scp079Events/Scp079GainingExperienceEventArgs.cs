@@ -17,7 +17,7 @@ public class Scp079GainingExperienceEventArgs : EventArgs, IPlayerEvent, ICancel
     /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="amount">The amount of experience that is going to be gained.</param>
     /// <param name="reason">The reason of experience gain that is going to be shown in HUD.</param>
-    /// <param name="subject">The optional subject of the notification, used as replacement to display which class has been terminated</param>
+    /// <param name="subject">The optional subject of the notification, used as replacement to display which class has been terminated.</param>
     public Scp079GainingExperienceEventArgs(ReferenceHub hub, float amount, Scp079HudTranslation reason, RoleTypeId subject)
     {
         Player = Player.Get(hub);

@@ -1,5 +1,4 @@
 ﻿using InventorySystem.Items.Pickups;
-using InventorySystem.Items.ThrowableProjectiles;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
@@ -22,15 +21,34 @@ public class Scp018Projectile : TimedGrenadeProjectile
     public static new IReadOnlyCollection<Scp018Projectile> List => Dictionary.Values;
 
     /// <summary>
+    /// Gets the Scp-018 from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="InventorySystem.Items.ThrowableProjectiles.Scp018Projectile"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
+    /// <returns>The requested projectile or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(projectile))]
+    public static Scp018Projectile? Get(InventorySystem.Items.ThrowableProjectiles.Scp018Projectile? projectile)
+    {
+        if (projectile == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(projectile, out Scp018Projectile wrapper) ? wrapper : (Scp018Projectile)CreateItemWrapper(projectile);
+    }
+
+    /// <summary>
     /// A protected constructor to prevent external instantiation.
     /// </summary>
     /// <param name="projectilePickup">The <see cref="InventorySystem.Items.ThrowableProjectiles.Scp018Projectile"/> of the pickup.</param>
-    internal Scp018Projectile(InventorySystem.Items.ThrowableProjectiles.Scp018Projectile projectilePickup) : base(projectilePickup)
+    internal Scp018Projectile(InventorySystem.Items.ThrowableProjectiles.Scp018Projectile projectilePickup)
+        : base(projectilePickup)
     {
         Base = projectilePickup;
 
         if (CanCache)
+        {
             Dictionary.Add(projectilePickup, this);
+        }
     }
 
     /// <summary>
@@ -49,12 +67,12 @@ public class Scp018Projectile : TimedGrenadeProjectile
     public float CurrentDamage => Base.CurrentDamage;
 
     /// <summary>
-    /// Gets or sets the 
+    /// Gets or sets the velocity of SCP-018.
     /// </summary>
     public Vector3 Velocity
     {
-        get => PhysicsModule.Rb.velocity;
-        set => PhysicsModule.Rb.velocity = value;
+        get => PhysicsModule.Rb.linearVelocity;
+        set => PhysicsModule.Rb.linearVelocity = value;
     }
 
     /// <summary>
@@ -63,7 +81,7 @@ public class Scp018Projectile : TimedGrenadeProjectile
     /// Intensities:<br/>
     /// 4-150 Low<br/>
     /// 150-400 Medium<br/>
-    /// 400+ High
+    /// 400+ High.
     /// </para>
     /// </summary>
     /// <param name="velSqrt">Velocity to play the sound for.</param>
@@ -76,19 +94,4 @@ public class Scp018Projectile : TimedGrenadeProjectile
 
         Dictionary.Remove(Base);
     }
-
-    /// <summary>
-    /// Gets the Scp-018 from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="InventorySystem.Items.ThrowableProjectiles.Scp018Projectile"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
-    /// <returns>The requested projectile or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(projectile))]
-    public static Scp018Projectile? Get(InventorySystem.Items.ThrowableProjectiles.Scp018Projectile? projectile)
-    {
-        if (projectile == null)
-            return null;
-
-        return Dictionary.TryGetValue(projectile, out Scp018Projectile wrapper) ? wrapper : (Scp018Projectile)CreateItemWrapper(projectile);
-    }
 }
-

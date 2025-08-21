@@ -10,6 +10,8 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// </summary>
 public class PlayerReceivingVoiceMessageEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, IVoiceMessageEvent
 {
+    private VoiceMessage _message;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReceivingVoiceMessageEventArgs"/> class.
     /// </summary>
@@ -45,6 +47,4 @@ public class PlayerReceivingVoiceMessageEventArgs : EventArgs, ICancellableEvent
     /// <see cref="VoiceChat.VoiceChatChannel.None" /> this will be ignored.
     /// </remarks>
     public bool IsAllowed { get; set; }
-
-    private VoiceMessage _message;
 }

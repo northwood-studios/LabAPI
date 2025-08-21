@@ -16,6 +16,49 @@ namespace LabApi.Features.Wrappers;
 public class Structure
 {
     /// <summary>
+    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// </summary>
+    private static readonly Dictionary<Type, Func<SpawnableStructure, Structure>> TypeWrappers = [];
+
+    /// <summary>
+    /// Contains all the cached structures, accessible through their <see cref="SpawnableStructure"/>.
+    /// </summary>
+    public static Dictionary<SpawnableStructure, Structure> Dictionary { get; } = [];
+
+    /// <summary>
+    /// A reference to all <see cref="Structure"/> instances.
+    /// </summary>
+    public static IReadOnlyCollection<Structure> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the structure wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="SpawnableStructure"/> was not null.
+    /// </summary>
+    /// <param name="spawnableStructure">The <see cref="Base"/> of the structure.</param>
+    /// <returns>The requested structure or null.</returns>
+    [return: NotNullIfNotNull(nameof(spawnableStructure))]
+    public static Structure? Get(SpawnableStructure? spawnableStructure)
+    {
+        if (spawnableStructure == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(spawnableStructure, out Structure structure) ? structure : CreateStructureWrapper(spawnableStructure);
+    }
+
+    /// <summary>
+    /// Tries to get the structure wrapper from the <see cref="Dictionary"/>.
+    /// </summary>
+    /// <param name="spawnableStructure">The <see cref="Base"/> of the structure.</param>
+    /// <param name="structure">The requested structure.</param>
+    /// <returns>True of the structure exists, otherwise false.</returns>
+    public static bool TryGet(SpawnableStructure? spawnableStructure, [NotNullWhen(true)] out Structure? structure)
+    {
+        structure = Get(spawnableStructure);
+        return structure != null;
+    }
+
+    /// <summary>
     /// Initializes the <see cref="Structure"/> wrapper by subscribing to <see cref="SpawnableStructure"/> events.
     /// </summary>
     [InitializeWrapper]
@@ -42,19 +85,65 @@ public class Structure
     }
 
     /// <summary>
-    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// Creates a new wrapper from the base game object.
     /// </summary>
-    private static readonly Dictionary<Type, Func<SpawnableStructure, Structure>> typeWrappers = [];
+    /// <param name="structure">The base game structure to wrap.</param>
+    /// <returns>The newly created wrapper.</returns>
+    protected static Structure CreateStructureWrapper(SpawnableStructure structure)
+    {
+        Type targetType = structure.GetType();
+        if (!TypeWrappers.TryGetValue(targetType, out Func<SpawnableStructure, Structure> handler))
+        {
+#if DEBUG
+            Logger.Warn($"Unable to find {nameof(Structure)} wrapper for {targetType.Name}, backup up to base constructor!");
+#endif
+            return new Structure(structure);
+        }
+
+        Structure? wrapper = handler?.Invoke(structure);
+        if (wrapper == null)
+        {
+            Logger.Error($"Failed to create structure wrapper. A handler returned null for type {structure.GetType()}");
+            return null!;
+        }
+
+        return wrapper!;
+    }
 
     /// <summary>
-    /// Contains all the cached structures, accessible through their <see cref="SpawnableStructure"/>.
+    /// Private method to handle the creation of new structures in the server.
     /// </summary>
-    public static Dictionary<SpawnableStructure, Structure> Dictionary { get; } = [];
+    /// <param name="structure">The <see cref="SpawnableStructure"/> that was created.</param>
+    private static void OnAdded(SpawnableStructure structure)
+    {
+        if (!Dictionary.ContainsKey(structure))
+        {
+            _ = CreateStructureWrapper(structure);
+        }
+    }
 
     /// <summary>
-    /// A reference to all <see cref="Structure"/> instances.
+    /// Private method to handle the removal of structures from the server.
     /// </summary>
-    public static IReadOnlyCollection<Structure> List => Dictionary.Values;
+    /// <param name="spawnableStructure">The <see cref="SpawnableStructure"/> that was removed.</param>
+    private static void OnRemoved(SpawnableStructure spawnableStructure)
+    {
+        if (Dictionary.TryGetValue(spawnableStructure, out Structure structure))
+        {
+            structure.OnRemove();
+        }
+    }
+
+    /// <summary>
+    /// A private method to handle the addition of wrapper handlers.
+    /// </summary>
+    /// <typeparam name="T">The derived base game type to handle.</typeparam>
+    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
+    private static void Register<T>(Func<T, Structure> constructor)
+        where T : SpawnableStructure
+    {
+        TypeWrappers.Add(typeof(T), x => constructor((T)x));
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -66,21 +155,10 @@ public class Structure
         StructurePositionSync = Base.gameObject.GetComponent<StructurePositionSync>();
 
         if (CanCache)
+        {
             Dictionary.Add(spawnableStructure, this);
+        }
     }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal virtual void OnRemove()
-    {
-        Dictionary.Remove(Base);
-    }
-
-    /// <summary>
-    /// Whether to cache the wrapper.
-    /// </summary>
-    protected internal bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
 
     /// <summary>
     /// The base <see cref="SpawnableStructure"/> object.
@@ -144,6 +222,11 @@ public class Structure
     /// </summary>
     public Room? Room => Room.Get(Base.ParentRoom);
 
+    /// <summary>
+    /// Whether to cache the wrapper.
+    /// </summary>
+    protected internal bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
     // TODO: implement structure spawning.
 
     /// <summary>
@@ -169,84 +252,10 @@ public class Structure
     }
 
     /// <summary>
-    /// Gets the structure wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="SpawnableStructure"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="spawnableStructure">The <see cref="Base"/> of the structure.</param>
-    /// <returns>The requested structure or null.</returns>
-    [return: NotNullIfNotNull(nameof(spawnableStructure))]
-    public static Structure? Get(SpawnableStructure? spawnableStructure)
+    internal virtual void OnRemove()
     {
-        if (spawnableStructure == null)
-            return null;
-
-        return Dictionary.TryGetValue(spawnableStructure, out Structure structure) ? structure : CreateStructureWrapper(spawnableStructure);
-    }
-
-    /// <summary>
-    /// Tries to get the structure wrapper from the <see cref="Dictionary"/>.
-    /// </summary>
-    /// <param name="spawnableStructure">The <see cref="Base"/> of the structure.</param>
-    /// <param name="structure">The requested structure.</param>
-    /// <returns>True of the structure exists, otherwise false.</returns>
-    public static bool TryGet(SpawnableStructure? spawnableStructure, [NotNullWhen(true)] out Structure? structure)
-    {
-        structure = Get(spawnableStructure);
-        return structure != null;
-    }
-
-    /// <summary>
-    /// Creates a new wrapper from the base game object.
-    /// </summary>
-    /// <param name="structure">The base game structure to wrap.</param>
-    /// <returns>The newly created wrapper.</returns>
-    protected static Structure CreateStructureWrapper(SpawnableStructure structure)
-    {
-        Type targetType = structure.GetType();
-        if (!typeWrappers.TryGetValue(targetType, out Func<SpawnableStructure, Structure> handler))
-        {
-#if DEBUG
-            Logger.Warn($"Unable to find {nameof(Structure)} wrapper for {targetType.Name}, backup up to base constructor!");
-#endif
-            return new Structure(structure);
-        }
-
-        Structure? wrapper = handler?.Invoke(structure);
-        if (wrapper == null)
-        {
-            Logger.Error($"Failed to create structure wrapper. A handler returned null for type {structure.GetType()}");
-            return null;
-        }
-
-        return wrapper!;
-    }
-
-    /// <summary>
-    /// Private method to handle the creation of new structures in the server.
-    /// </summary>
-    /// <param name="structure">The <see cref="SpawnableStructure"/> that was created.</param>
-    private static void OnAdded(SpawnableStructure structure)
-    {
-        if (!Dictionary.ContainsKey(structure))
-            _ = CreateStructureWrapper(structure);
-    }
-
-    /// <summary>
-    /// Private method to handle the removal of structures from the server.
-    /// </summary>
-    /// <param name="spawnableStructure">The <see cref="SpawnableStructure"/> that was removed.</param>
-    private static void OnRemoved(SpawnableStructure spawnableStructure)
-    {
-        if (Dictionary.TryGetValue(spawnableStructure, out Structure structure))
-            structure.OnRemove();
-    }
-
-    /// <summary>
-    /// A private method to handle the addition of wrapper handlers.
-    /// </summary>
-    /// <typeparam name="T">The derived base game type to handle.</typeparam>
-    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
-    private static void Register<T>(Func<T, Structure> constructor) where T : SpawnableStructure
-    {
-        typeWrappers.Add(typeof(T), x => constructor((T)x));
+        Dictionary.Remove(Base);
     }
 }

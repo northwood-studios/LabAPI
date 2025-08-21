@@ -18,7 +18,9 @@ public class CustomColor32Converter : IYamlTypeConverter
 
         string colorText = scalar.Value;
         if (!ColorUtility.TryParseHtmlString(colorText, out Color color))
+        {
             throw new ArgumentException($"Unable to parse {nameof(Color32)} value of {colorText}");
+        }
 
         return (Color32)color;
     }
@@ -26,8 +28,8 @@ public class CustomColor32Converter : IYamlTypeConverter
     /// <inheritdoc/>
     public void WriteYaml(IEmitter emitter, object? value, Type type)
     {
-        Color32 color = (Color32)value;
-        emitter.Emit(new Scalar(color.ToHex()));
+        Color32? color = (Color32?)value;
+        emitter.Emit(new Scalar(color?.ToHex() ?? Color.white.ToHex()));
     }
 
     /// <inheritdoc/>
@@ -36,4 +38,3 @@ public class CustomColor32Converter : IYamlTypeConverter
         return type == typeof(Color32);
     }
 }
-

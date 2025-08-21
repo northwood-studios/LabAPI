@@ -14,7 +14,7 @@ public class PlayerMovementStateChangedEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="PlayerMovementStateChangedEventArgs"/> class.
     /// </summary>
     /// <param name="hub">The player whose movement state has changed.</param>
-    /// <param name="oldState">Old movement state of the player./param>
+    /// <param name="oldState">Old movement state of the player.</param>
     /// <param name="newState">New movement state of the player.</param>
     public PlayerMovementStateChangedEventArgs(ReferenceHub hub, PlayerMovementState oldState, PlayerMovementState newState)
     {

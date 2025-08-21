@@ -21,15 +21,34 @@ public class ExplosiveGrenadeProjectile : TimedGrenadeProjectile
     public static new IReadOnlyCollection<ExplosiveGrenadeProjectile> List => Dictionary.Values;
 
     /// <summary>
+    /// Gets the explosion grenade from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ExplosionGrenade"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
+    /// <returns>The requested projectile or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(projectile))]
+    public static ExplosiveGrenadeProjectile? Get(ExplosionGrenade? projectile)
+    {
+        if (projectile == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(projectile, out ExplosiveGrenadeProjectile wrapper) ? wrapper : (ExplosiveGrenadeProjectile)CreateItemWrapper(projectile);
+    }
+
+    /// <summary>
     /// A protected constructor to prevent external instantiation.
     /// </summary>
     /// <param name="projectilePickup">The <see cref="ExplosionGrenade"/> of the pickup.</param>
-    internal ExplosiveGrenadeProjectile(ExplosionGrenade projectilePickup) : base(projectilePickup)
+    internal ExplosiveGrenadeProjectile(ExplosionGrenade projectilePickup)
+        : base(projectilePickup)
     {
         Base = projectilePickup;
 
         if (CanCache)
+        {
             Dictionary.Add(projectilePickup, this);
+        }
     }
 
     /// <summary>
@@ -71,19 +90,4 @@ public class ExplosiveGrenadeProjectile : TimedGrenadeProjectile
 
         Dictionary.Remove(Base);
     }
-
-    /// <summary>
-    /// Gets the explosion grenade from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="ExplosionGrenade"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="projectile">The <see cref="Base"/> of the projectile.</param>
-    /// <returns>The requested projectile or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(projectile))]
-    public static ExplosiveGrenadeProjectile? Get(ExplosionGrenade? projectile)
-    {
-        if (projectile == null)
-            return null;
-
-        return Dictionary.TryGetValue(projectile, out ExplosiveGrenadeProjectile wrapper) ? wrapper : (ExplosiveGrenadeProjectile)CreateItemWrapper(projectile);
-    }
 }
-

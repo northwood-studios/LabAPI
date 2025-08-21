@@ -1,12 +1,12 @@
-﻿using System;
+﻿using LabApi.Loader.Features.Yaml.Extensions;
+using System;
 using System.Collections.Generic;
-using YamlDotNet.Serialization;
-using UnityEngine;
 using System.Globalization;
+using UnityEngine;
 using UnityEngine.Pool;
-using YamlDotNet.Core.Events;
 using YamlDotNet.Core;
-using LabApi.Loader.Features.Yaml.Extensions;
+using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
 
 namespace LabApi.Loader.Features.Yaml.CustomConverters;
 
@@ -27,13 +27,18 @@ public class CustomQuaternionConverter : IYamlTypeConverter
             for (int i = 0; i <= 2; i++)
             {
                 if (!parser.TryReadMapping(out string key, out string val))
+                {
                     throw new ArgumentException($"Unable to parse {nameof(Quaternion)}, no component at index {i} provided");
+                }
 
                 if (!(key is "x" or "y" or "z"))
+                {
                     throw new ArgumentException($"Unable to parse {nameof(Quaternion)}, invalid component name {key}. Only 'x', 'y' and 'z' euler angles are allowed");
+                }
 
                 storedValues[key] = float.Parse(val, CultureInfo.InvariantCulture);
             }
+
             parser.Consume<MappingEnd>();
 
             Quaternion value = Quaternion.Euler(storedValues["x"], storedValues["y"], storedValues["z"]);
@@ -52,7 +57,7 @@ public class CustomQuaternionConverter : IYamlTypeConverter
     /// <inheritdoc/>
     public void WriteYaml(IEmitter emitter, object? value, Type type)
     {
-        Vector3 rotation = ((Quaternion)value).eulerAngles;
+        Vector3 rotation = ((Quaternion?)value)?.eulerAngles ?? Vector3.zero;
         emitter.Emit(new MappingStart(AnchorName.Empty, TagName.Empty, isImplicit: true, MappingStyle.Block));
 
         emitter.EmitMapping("x", rotation.x.ToString(CultureInfo.InvariantCulture));

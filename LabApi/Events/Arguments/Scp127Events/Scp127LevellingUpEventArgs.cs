@@ -29,7 +29,7 @@ public class Scp127LevellingUpEventArgs : EventArgs, IScp127ItemEvent, ICancella
     public Scp127Firearm Scp127Item { get; }
 
     /// <summary>
-    /// Gets the new tier of SCP-127.s
+    /// Gets the new tier of SCP-127.
     /// </summary>
     public Scp127Tier Tier { get; }
 

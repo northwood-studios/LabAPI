@@ -50,7 +50,7 @@ public class PlayerReceivingLoadoutEventArgs : EventArgs, IPlayerEvent, ICancell
     public bool IsAllowed { get; set; }
 
     /// <summary>
-    /// Adds item of specifc type to this loadout.
+    /// Adds item of specific type to this loadout.
     /// </summary>
     /// <param name="type">The type of item.</param>
     public void AddItem(ItemType type) => Items.Add(type);
@@ -63,9 +63,13 @@ public class PlayerReceivingLoadoutEventArgs : EventArgs, IPlayerEvent, ICancell
     public void AddAmmo(ItemType ammoType, ushort ammoAmount)
     {
         if (Ammo.ContainsKey(ammoType))
+        {
             Ammo[ammoType] += ammoAmount;
+        }
         else
+        {
             Ammo.Add(ammoType, ammoAmount);
+        }
     }
 
     /// <summary>
@@ -76,9 +80,13 @@ public class PlayerReceivingLoadoutEventArgs : EventArgs, IPlayerEvent, ICancell
     public void SetAmmo(ItemType ammoType, ushort ammoAmount)
     {
         if (Ammo.ContainsKey(ammoType))
+        {
             Ammo[ammoType] = ammoAmount;
+        }
         else
+        {
             Ammo.Add(ammoType, ammoAmount);
+        }
     }
 
     /// <summary>

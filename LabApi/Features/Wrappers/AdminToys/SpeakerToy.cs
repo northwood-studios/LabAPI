@@ -10,42 +10,149 @@ using BaseSpeakerToy = AdminToys.SpeakerToy;
 namespace LabApi.Features.Wrappers;
 
 /// <summary>
-/// Wrapper for the <see cref="BaseSpeakerToy"/> class
+/// Wrapper for the <see cref="BaseSpeakerToy"/> class.
 /// </summary>
 public class SpeakerToy : AdminToy
 {
+    private static readonly Dictionary<byte, AudioTransmitter> TransmitterByControllerId = [];
+
     /// <summary>
     /// Contains all the speaker toys, accessible through their <see cref="Base"/>.
     /// </summary>
-    public new static Dictionary<BaseSpeakerToy, SpeakerToy> Dictionary { get; } = [];
+    public static new Dictionary<BaseSpeakerToy, SpeakerToy> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="SpeakerToy"/>.
     /// </summary>
-    public new static IReadOnlyCollection<SpeakerToy> List => Dictionary.Values;
+    public static new IReadOnlyCollection<SpeakerToy> List => Dictionary.Values;
 
-    private static readonly Dictionary<byte, AudioTransmitter> TransmitterByControllerId = [];
+    /// <summary>
+    /// Plays the PCM samples on the current controller.
+    /// </summary>
+    /// <remarks>
+    /// Samples are played at a sample rate of <see cref="AudioTransmitter.SampleRate"/>, mono channel (non interleaved data) with ranges from -1.0f to 1.0f.
+    /// </remarks>
+    /// <param name="controllerId">The Id of the controller to play audio on.</param>
+    /// <param name="samples">The PCM samples.</param>
+    /// <param name="queue">Whether to queue the audio if audio is already playing, otherwise overrides the current audio.</param>
+    /// <param name="loop">
+    /// Whether to loop this clip.
+    /// Loop ends if another clip is played either immediately if not queued or at the end of the loop if next clip was queued.
+    /// </param>
+    public static void Play(byte controllerId, float[] samples, bool queue = true, bool loop = false)
+        => GetTransmitter(controllerId).Play(samples, queue, loop);
+
+    /// <inheritdoc cref="AudioTransmitter.Pause"/>
+    /// <param name="controllerId">The Id of the controller to play audio on.</param>
+    public static void Pause(byte controllerId) => GetTransmitter(controllerId).Pause();
+
+    /// <inheritdoc cref="AudioTransmitter.Resume"/>
+    /// <param name="controllerId">The Id of the controller to play audio on.</param>
+    public static void Resume(byte controllerId) => GetTransmitter(controllerId).Resume();
+
+    /// <summary>
+    /// Skips the current or queued clips.
+    /// Includes the current clip.
+    /// </summary>
+    /// <param name="controllerId">The Id of the controller to play audio on.</param>
+    /// <param name="count">The number of queued audios clips to skip.</param>
+    public static void Skip(byte controllerId, int count) => GetTransmitter(controllerId).Skip(count);
+
+    /// <inheritdoc cref="AudioTransmitter.Stop"/>
+    /// <param name="controllerId">The Id of the controller to play audio on.</param>
+    public static void Stop(byte controllerId) => GetTransmitter(controllerId).Stop();
+
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
+    public static SpeakerToy Create(Transform? parent = null, bool networkSpawn = true)
+        => Create(Vector3.zero, parent, networkSpawn);
+
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
+    public static SpeakerToy Create(Vector3 position, Transform? parent = null, bool networkSpawn = true)
+        => Create(position, Quaternion.identity, parent, networkSpawn);
+
+    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
+    public static SpeakerToy Create(Vector3 position, Quaternion rotation, Transform? parent = null, bool networkSpawn = true)
+        => Create(position, rotation, Vector3.one, parent, networkSpawn);
+
+    /// <summary>
+    /// Creates a new speaker toy.
+    /// </summary>
+    /// <param name="position">The initial local position.</param>
+    /// <param name="rotation">The initial local rotation.</param>
+    /// <param name="scale">The initial local scale.</param>
+    /// <param name="parent">The parent transform.</param>
+    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
+    /// <returns>The created speaker toy.</returns>
+    public static SpeakerToy Create(Vector3 position, Quaternion rotation, Vector3 scale, Transform? parent = null, bool networkSpawn = true)
+    {
+        SpeakerToy toy = Get(Create<BaseSpeakerToy>(position, rotation, scale, parent));
+
+        if (networkSpawn)
+        {
+            toy.Spawn();
+        }
+
+        return toy;
+    }
+
+    /// <summary>
+    /// Gets the speaker toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseSpeakerToy"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="baseSpeakerToy">The <see cref="Base"/> of the speaker toy.</param>
+    /// <returns>The requested speaker toy or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(baseSpeakerToy))]
+    public static SpeakerToy? Get(BaseSpeakerToy? baseSpeakerToy)
+    {
+        if (baseSpeakerToy == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseSpeakerToy, out SpeakerToy toy) ? toy : (SpeakerToy)CreateAdminToyWrapper(baseSpeakerToy);
+    }
+
+    /// <summary>
+    /// Tries to get the speaker toy wrapper from the <see cref="Dictionary"/>.
+    /// </summary>
+    /// <param name="baseSpeakerToy">The <see cref="Base"/> of the speaker toy.</param>
+    /// <param name="speakerToy">The requested speaker toy.</param>
+    /// <returns><see langword="True"/> if the speaker exists, otherwise <see langword="false"/>.</returns>
+    public static bool TryGet(BaseSpeakerToy? baseSpeakerToy, [NotNullWhen(true)] out SpeakerToy? speakerToy)
+    {
+        speakerToy = Get(baseSpeakerToy);
+        return speakerToy != null;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="AudioTransmitter"/> for the <see cref="ControllerId"/>.
+    /// If one does not exists, a new one is created for the id.
+    /// </summary>
+    /// <param name="controllerId">The <see cref="ControllerId"/> for the transmitter.</param>
+    /// <returns>Cached transmitter.</returns>
+    public static AudioTransmitter GetTransmitter(byte controllerId)
+    {
+        if (!TransmitterByControllerId.TryGetValue(controllerId, out AudioTransmitter transmitter))
+        {
+            transmitter = new(controllerId);
+            TransmitterByControllerId.Add(controllerId, transmitter);
+        }
+
+        return transmitter;
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseSpeakerToy">The base <see cref="BaseSpeakerToy"/> object.</param>
-    internal SpeakerToy(BaseSpeakerToy baseSpeakerToy) 
+    internal SpeakerToy(BaseSpeakerToy baseSpeakerToy)
         : base(baseSpeakerToy)
     {
         Base = baseSpeakerToy;
 
         if (CanCache)
+        {
             Dictionary.Add(baseSpeakerToy, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -180,7 +287,7 @@ public class SpeakerToy : AdminToy
     }
 
     /// <summary>
-    /// Gets the audio transmitter for this speakers <see cref="ControllerId"/>. 
+    /// Gets the audio transmitter for this speakers <see cref="ControllerId"/>.
     /// </summary>
     /// <remarks>
     /// Speakers can share <see cref="AudioTransmitter"/> instances if they have the same <see cref="ControllerId"/>.
@@ -210,112 +317,11 @@ public class SpeakerToy : AdminToy
     }
 
     /// <summary>
-    /// Plays the PCM samples on the current controller.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <remarks>
-    /// Samples are played at a sample rate of <see cref="AudioTransmitter.SampleRate"/>, mono channel (non interleaved data) with ranges from -1.0f to 1.0f.
-    /// </remarks>
-    /// <param name="controllerId">The Id of the controller to play audio on.</param>
-    /// <param name="samples">The PCM samples.</param>
-    /// <param name="queue">Whether to queue the audio if audio is already playing, otherwise overrides the current audio.</param>
-    /// <param name="loop">
-    /// Whether to loop this clip. 
-    /// Loop ends if another clip is played either immediately if not queued or at the end of the loop if next clip was queued.
-    /// </param>
-    public static void Play(byte controllerId, float[] samples, bool queue = true, bool loop = false)
-        => GetTransmitter(controllerId).Play(samples, queue, loop);
-
-    /// <inheritdoc cref="AudioTransmitter.Pause"/>
-    /// <param name="controllerId">The Id of the controller to play audio on.</param>
-    public static void Pause(byte controllerId) => GetTransmitter(controllerId).Pause();
-
-    /// <inheritdoc cref="AudioTransmitter.Resume"/>
-    /// <param name="controllerId">The Id of the controller to play audio on.</param>
-    public static void Resume(byte controllerId) => GetTransmitter(controllerId).Resume();
-
-    /// <summary>
-    /// Skips the current or queued clips.
-    /// Includes the current clip.
-    /// </summary>
-    /// <param name="controllerId">The Id of the controller to play audio on.</param>
-    /// <param name="count">The number of queued audios clips to skip.</param>
-    public static void Skip(byte controllerId, int count) => GetTransmitter(controllerId).Skip(count);
-
-    /// <inheritdoc cref="AudioTransmitter.Stop"/>
-    /// <param name="controllerId">The Id of the controller to play audio on.</param>
-    public static void Stop(byte controllerId) => GetTransmitter(controllerId).Stop();
-
-    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
-    public static SpeakerToy Create(Transform? parent = null, bool networkSpawn = true)
-        => Create(Vector3.zero, parent, networkSpawn);
-
-    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
-    public static SpeakerToy Create(Vector3 position, Transform? parent = null, bool networkSpawn = true)
-        => Create(position, Quaternion.identity, parent, networkSpawn);
-
-    /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
-    public static SpeakerToy Create(Vector3 position, Quaternion rotation, Transform? parent = null, bool networkSpawn = true)
-        => Create(position, rotation, Vector3.one, parent, networkSpawn);
-
-    /// <summary>
-    /// Creates a new speaker toy.
-    /// </summary>
-    /// <param name="position">The initial local position.</param>
-    /// <param name="rotation">The initial local rotation.</param>
-    /// <param name="scale">The initial local scale.</param>
-    /// <param name="parent">The parent transform.</param>
-    /// <param name="networkSpawn">Whether to spawn the toy on the client.</param>
-    /// <returns>The created speaker toy.</returns>
-    public static SpeakerToy Create(Vector3 position, Quaternion rotation, Vector3 scale, Transform? parent = null, bool networkSpawn = true)
+    internal override void OnRemove()
     {
-        SpeakerToy toy = Get(Create<BaseSpeakerToy>(position, rotation, scale, parent));
-
-        if (networkSpawn)
-            toy.Spawn();
-
-        return toy;
-    }
-
-    /// <summary>
-    /// Gets the speaker toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseSpeakerToy"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="baseSpeakerToy">The <see cref="Base"/> of the speaker toy.</param>
-    /// <returns>The requested speaker toy or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(baseSpeakerToy))]
-    public static SpeakerToy? Get(BaseSpeakerToy? baseSpeakerToy)
-    {
-        if (baseSpeakerToy == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseSpeakerToy, out SpeakerToy toy) ? toy : (SpeakerToy)CreateAdminToyWrapper(baseSpeakerToy);
-    }
-
-    /// <summary>
-    /// Tries to get the speaker toy wrapper from the <see cref="Dictionary"/>.
-    /// </summary>
-    /// <param name="baseSpeakerToy">The <see cref="Base"/> of the speaker toy.</param>
-    /// <param name="speakerToy">The requested speaker toy.</param>
-    /// <returns><see langword="True"/> if the speaker exists, otherwise <see langword="false"/>.</returns>
-    public static bool TryGet(BaseSpeakerToy? baseSpeakerToy, [NotNullWhen(true)] out SpeakerToy? speakerToy)
-    {
-        speakerToy = Get(baseSpeakerToy);
-        return speakerToy != null;
-    }
-
-    /// <summary>
-    /// Gets the <see cref="AudioTransmitter"/> for the <see cref="ControllerId"/>.
-    /// If one does not exists, a new one is created for the id.
-    /// </summary>
-    /// <param name="controllerId">The <see cref="ControllerId"/> for the transmitter.</param>
-    /// <returns>Cached transmitter.</returns>
-    public static AudioTransmitter GetTransmitter(byte controllerId)
-    {
-        if (!TransmitterByControllerId.TryGetValue(controllerId, out AudioTransmitter transmitter))
-        {
-            transmitter = new(controllerId);
-            TransmitterByControllerId.Add(controllerId, transmitter);
-        }
-
-        return transmitter;
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

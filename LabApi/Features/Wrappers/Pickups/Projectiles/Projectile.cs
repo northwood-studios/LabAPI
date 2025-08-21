@@ -22,30 +22,6 @@ public class Projectile : Pickup
     public static new IReadOnlyCollection<Projectile> List => Dictionary.Values;
 
     /// <summary>
-    /// A protected constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="projectilePickup">The <see cref="ThrownProjectile"/> of the pickup.</param>
-    protected Projectile(ThrownProjectile projectilePickup) : base(projectilePickup)
-    {
-        Base = projectilePickup;
-
-        if (CanCache)
-            Dictionary.Add(projectilePickup, this);
-    }
-
-    /// <summary>
-    /// The <see cref="ThrownProjectile"/> of the pickup.
-    /// </summary>
-    public new ThrownProjectile Base { get; }
-
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-
-        Dictionary.Remove(Base);
-    }
-
-    /// <summary>
     /// Gets the projectile wrapper from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="ThrownProjectile"/> was not <see langword="null"/>.
     /// </summary>
     /// <param name="projectile">The <see cref="Base"/> if the projectile.</param>
@@ -54,8 +30,38 @@ public class Projectile : Pickup
     public static Projectile? Get(ThrownProjectile? projectile)
     {
         if (projectile == null)
+        {
             return null;
+        }
 
         return Dictionary.TryGetValue(projectile, out Projectile wrapper) ? wrapper : (Projectile)CreateItemWrapper(projectile);
+    }
+
+    /// <summary>
+    /// A protected constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="projectilePickup">The <see cref="ThrownProjectile"/> of the pickup.</param>
+    protected Projectile(ThrownProjectile projectilePickup)
+        : base(projectilePickup)
+    {
+        Base = projectilePickup;
+
+        if (CanCache)
+        {
+            Dictionary.Add(projectilePickup, this);
+        }
+    }
+
+    /// <summary>
+    /// The <see cref="ThrownProjectile"/> of the pickup.
+    /// </summary>
+    public new ThrownProjectile Base { get; }
+
+    /// <inheritdoc />
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+
+        Dictionary.Remove(Base);
     }
 }

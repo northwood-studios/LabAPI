@@ -13,48 +13,12 @@ public class CapybaraToy : AdminToy
     /// <summary>
     /// Contains all the capybara toys, accessible through their <see cref="Base"/>.
     /// </summary>
-    public new static Dictionary<BaseCapybaraToy, CapybaraToy> Dictionary { get; } = [];
+    public static new Dictionary<BaseCapybaraToy, CapybaraToy> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="CapybaraToy"/>.
     /// </summary>
-    public new static IReadOnlyCollection<CapybaraToy> List => Dictionary.Values;
-
-    /// <summary>
-    /// An internal constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="baseCapybaraToy">The base <see cref="BaseCapybaraToy"/> object.</param>
-    internal CapybaraToy(BaseCapybaraToy baseCapybaraToy) 
-        : base(baseCapybaraToy)
-    {
-        Base = baseCapybaraToy;
-
-        if (CanCache)
-            Dictionary.Add(baseCapybaraToy, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
-    }
-
-    /// <summary>
-    /// The <see cref="BaseCapybaraToy"/> object.
-    /// </summary>
-    public new BaseCapybaraToy Base { get; }
-
-    /// <summary>
-    /// Gets or sets whether the capybara has enabled colliders.
-    /// </summary>
-    public bool CollidersEnabled
-    {
-        get => Base.CollisionsEnabled;
-        set => Base.CollisionsEnabled = value;
-    }
+    public static new IReadOnlyCollection<CapybaraToy> List => Dictionary.Values;
 
     /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     public static CapybaraToy Create(Transform? parent = null, bool networkSpawn = true)
@@ -82,7 +46,9 @@ public class CapybaraToy : AdminToy
         CapybaraToy toy = Get(Create<BaseCapybaraToy>(position, rotation, scale, parent));
 
         if (networkSpawn)
+        {
             toy.Spawn();
+        }
 
         return toy;
     }
@@ -96,8 +62,48 @@ public class CapybaraToy : AdminToy
     public static CapybaraToy? Get(BaseCapybaraToy? baseCapybaraToy)
     {
         if (baseCapybaraToy == null)
+        {
             return null;
+        }
 
         return Dictionary.TryGetValue(baseCapybaraToy, out CapybaraToy toy) ? toy : (CapybaraToy)CreateAdminToyWrapper(baseCapybaraToy);
+    }
+
+    /// <summary>
+    /// An internal constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="baseCapybaraToy">The base <see cref="BaseCapybaraToy"/> object.</param>
+    internal CapybaraToy(BaseCapybaraToy baseCapybaraToy)
+        : base(baseCapybaraToy)
+    {
+        Base = baseCapybaraToy;
+
+        if (CanCache)
+        {
+            Dictionary.Add(baseCapybaraToy, this);
+        }
+    }
+
+    /// <summary>
+    /// The <see cref="BaseCapybaraToy"/> object.
+    /// </summary>
+    public new BaseCapybaraToy Base { get; }
+
+    /// <summary>
+    /// Gets or sets whether the capybara has enabled colliders.
+    /// </summary>
+    public bool CollidersEnabled
+    {
+        get => Base.CollisionsEnabled;
+        set => Base.CollisionsEnabled = value;
+    }
+
+    /// <summary>
+    /// An internal method to remove itself from the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }
