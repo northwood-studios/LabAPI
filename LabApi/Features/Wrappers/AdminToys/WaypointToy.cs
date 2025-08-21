@@ -193,7 +193,7 @@ public class WaypointToy : AdminToy
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[WaypointToy: Position{Position}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
+        return $"[WaypointToy: Position{Position}, BoundsSize:{BoundsSize}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
     }
 
     /// <summary>
