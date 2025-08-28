@@ -811,16 +811,10 @@ public class Player
         {
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
                 return Vector3.zero;
-
-            return fpcRole.FpcModule.Motor.ScaleController.Scale;
-        }
-        set
-        {
-            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
-                return;
-
-            fpcRole.FpcModule.Motor.ScaleController.Scale = value;
-        }
+    public bool IsSpectatable
+    {
+        get => SpectatableVisibilityManager.IsHidden(ReferenceHub);
+        set => SpectatableVisibilityManager.SetHidden(ReferenceHub, value);
     }
 
     /// <summary>
