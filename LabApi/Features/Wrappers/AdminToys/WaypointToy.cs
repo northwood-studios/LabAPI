@@ -140,7 +140,7 @@ public class WaypointToy : AdminToy
 
             if (value != Vector3.one)
             {
-                Console.Logger.Warn("Setting scale on WaypointToy is not supported and may causes problems.");
+                Console.Logger.Warn("Setting scale on WaypointToy is not supported and may cause problems.");
             }
         }
     }
@@ -193,7 +193,7 @@ public class WaypointToy : AdminToy
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[WaypointToy: Position{Position}, BoundsSize:{BoundsSize}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
+        return $"[WaypointToy: Position:{Position}, BoundsSize:{BoundsSize}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
     }
 
     /// <summary>
