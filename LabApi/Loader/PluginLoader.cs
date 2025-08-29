@@ -194,7 +194,7 @@ public static partial class PluginLoader
             }
             catch (Exception e)
             {
-                Logger.Error($"{LoggerPrefix} Couldn't load the assembly inside '{path}'");
+                Logger.Error($"{LoggerPrefix} Failed to resolve embedded resources for assembly '{path}'");
                 LogMissingDependencies(assembly);
                 Logger.Error(e);
             }

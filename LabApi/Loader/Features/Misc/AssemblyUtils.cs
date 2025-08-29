@@ -120,6 +120,7 @@ public static class AssemblyUtils
     {
         if (!TryGetDataStream(target, name, out Stream? dataStream))
             return;
+
         string path = Path.GetTempFileName();
         using (FileStream file = File.Create(path))
         {
@@ -181,7 +182,6 @@ public static class AssemblyUtils
     }
 
     // Used for missing assembly comparisons.
-
     private static string FormatAssemblyName(AssemblyName assemblyName) => $"{assemblyName.Name} v{assemblyName.Version}";
 
     private static void LoadAssemblyIfMissing(string path)
