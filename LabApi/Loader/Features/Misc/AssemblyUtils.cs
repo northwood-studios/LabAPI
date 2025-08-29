@@ -192,7 +192,7 @@ public static class AssemblyUtils
             // only check name to avoid identity problems
             if (name != null && AppDomain.CurrentDomain.GetAssemblies().All(e => e.GetName().Name != name.Name))
             {
-                Assembly.Load(File.ReadAllBytes(path));
+                PluginLoader.Dependencies.Add(Assembly.Load(File.ReadAllBytes(path)));
             }
         }
         finally
