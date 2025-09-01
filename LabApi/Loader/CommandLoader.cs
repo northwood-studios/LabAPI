@@ -25,7 +25,7 @@ public static class CommandLoader
     public static Dictionary<Type, CommandHandler> CommandHandlers { get; } = new()
     {
         // The server console command handler.
-        [typeof(GameConsoleCommandHandler)] = GameCore.Console.singleton.ConsoleCommandHandler,
+        [typeof(GameConsoleCommandHandler)] = GameCore.Console.ConsoleCommandHandler,
 
         // The remote admin command handler.
         [typeof(RemoteAdminCommandHandler)] = CommandProcessor.RemoteAdminCommandHandler,
@@ -292,6 +292,6 @@ public static class CommandLoader
     {
         // We register all commands in the LabAPI assembly.
         // We convert it to an array since IEnumerable are lazy and need to be iterated through to be executed.
-         LabApiCommands = RegisterCommands(Assembly.GetExecutingAssembly(), "LabApi").ToArray();
+        LabApiCommands = RegisterCommands(Assembly.GetExecutingAssembly(), "LabApi").ToArray();
     }
 }
