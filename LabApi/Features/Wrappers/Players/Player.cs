@@ -17,6 +17,7 @@ using Mirror.LiteNetLib4Mirror;
 using NorthwoodLib.Pools;
 using PlayerRoles;
 using PlayerRoles.FirstPersonControl;
+using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using PlayerRoles.PlayableScps.HumeShield;
 using PlayerRoles.Spectating;
 using PlayerRoles.Voice;
@@ -40,7 +41,7 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Player
 {
-        /// <summary>
+    /// <summary>
     /// A cache of players by their User ID. Does not necessarily contain all players.
     /// </summary>
     private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
@@ -1279,6 +1280,15 @@ public class Player
     {
         get => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue;
         set => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the current player's emotion.
+    /// </summary>
+    public EmotionPresetType Emotion
+    {
+        get => EmotionSync.GetEmotionPreset(ReferenceHub);
+        set => EmotionSync.ServerSetEmotionPreset(ReferenceHub, value);
     }
 
     /// <summary>
