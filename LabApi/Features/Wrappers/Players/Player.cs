@@ -17,6 +17,7 @@ using Mirror.LiteNetLib4Mirror;
 using NorthwoodLib.Pools;
 using PlayerRoles;
 using PlayerRoles.FirstPersonControl;
+using PlayerRoles.FirstPersonControl.NetworkMessages;
 using PlayerRoles.PlayableScps.HumeShield;
 using PlayerRoles.Spectating;
 using PlayerRoles.Voice;
@@ -635,6 +636,11 @@ public class Player
     /// </summary>
     [Obsolete("Use !IsDestroyed instead.")]
     public bool IsOnline => !IsOffline;
+
+    /// <summary>
+    /// Gets whether the player was destroyed.
+    /// </summary>
+    public bool IsDestroyed => !ReferenceHub;
 
     /// <summary>
     /// Gets if the player is properly connected and authenticated.
@@ -1661,6 +1667,13 @@ public class Player
     /// <param name="reason">The <see cref="RoleChangeReason"/> of role change.</param>
     /// <param name="flags">The <see cref="RoleSpawnFlags"/> of role change.</param>
     public void SetRole(RoleTypeId newRole, RoleChangeReason reason = RoleChangeReason.RemoteAdmin, RoleSpawnFlags flags = RoleSpawnFlags.All) => ReferenceHub.roleManager.ServerSetRole(newRole, reason, flags);
+
+    /// <summary>
+    /// Determines if <paramref name="otherPlayer"/> is seen as spectator or their role based on visibility, permissions, and distance of this player.
+    /// </summary>
+    /// <param name="otherPlayer">The other player to check.</param>
+    /// <returns>The role this player sees for the other player.</returns>
+    public RoleTypeId GetRoleVisibilityFor(Player otherPlayer) => FpcServerPositionDistributor.GetVisibleRole(otherPlayer.ReferenceHub, ReferenceHub);
 
     /// <summary>
     /// Disconnects the player from the server.
