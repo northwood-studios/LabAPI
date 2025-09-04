@@ -56,4 +56,14 @@ public static partial class Scp173Events
     /// Gets called when SCP-173 has played a sound.
     /// </summary>
     public static event LabEventHandler<Scp173PlayedSoundEventArgs>? PlayedSound;
+
+    /// <summary>
+    /// Gets called when SCP-173 is teleporting.
+    /// </summary>
+    public static event LabEventHandler<Scp173TeleportingEventArgs>? Teleporting;
+
+    /// <summary>
+    /// Gets called when SCP-173 has teleported.
+    /// </summary>
+    public static event LabEventHandler<Scp173TeleportedEventArgs>? Teleported;
 }
