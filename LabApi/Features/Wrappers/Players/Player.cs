@@ -1069,12 +1069,12 @@ public class Player
     /// <summary>
     /// Gets a value indicating whether the player is muted.
     /// </summary>
-    public bool IsMuted => VoiceChatMutes.QueryLocalMute(UserId);
+    public bool IsMuted => VoiceChatMutes.IsMuted(ReferenceHub);
 
     /// <summary>
     /// Gets a value indicating whether the player is muted from the intercom.
     /// </summary>
-    public bool IsIntercomMuted => VoiceChatMutes.QueryLocalMute(UserId, true);
+    public bool IsIntercomMuted => VoiceChatMutes.IsMuted(ReferenceHub, true);
 
     /// <summary>
     /// Gets a value indicating whether the player is talking through a radio.
