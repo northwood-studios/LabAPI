@@ -11,6 +11,11 @@ namespace LabApi.Features.Wrappers;
 public class WaypointToy : AdminToy
 {
     /// <summary>
+    /// Max distance in meters a waypoint can encapsulate along any dimension.
+    /// </summary>
+    public const float MaxBounds = BaseWaypointToy.MaxBounds;
+
+    /// <summary>
     /// Contains all the waypoint toys, accessible through their <see cref="Base"/>.
     /// </summary>
     public static new Dictionary<BaseWaypointToy, WaypointToy> Dictionary { get; } = [];
@@ -97,6 +102,63 @@ public class WaypointToy : AdminToy
     /// </summary>
     public new BaseWaypointToy Base { get; }
 
+    /// <inheritdoc />
+    public override Vector3 Position
+    {
+        get => base.Position;
+        set
+        {
+            base.Position = value;
+            Base.UpdateWaypointChildren();
+        }
+    }
+
+    /// <inheritdoc />
+    public override Quaternion Rotation
+    {
+        get => base.Rotation;
+        set
+        {
+            base.Rotation = value;
+            Base.UpdateWaypointChildren();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the scale on the waypoint toy.
+    /// Does not effect the bounds of the waypoint, use <see cref="BoundsSize"/> instead.
+    /// </summary>
+    /// <remarks>
+    /// Scale can cause unindented side effects when used on a waypoint toy.
+    /// </remarks>
+    public override Vector3 Scale
+    {
+        get => base.Scale;
+        set
+        {
+            base.Scale = value;
+
+            if (value != Vector3.one)
+            {
+                Console.Logger.Warn("Setting scale on WaypointToy is not supported and may cause problems.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Bounds the waypoint encapsulates along each dimension in meters.
+    /// Bounds is effected by position and rotation of the GameObject but not its scale.
+    /// Must not exceed <c>Vector3.one * MaxBounds</c>.
+    /// </summary>
+    /// <remarks>
+    /// When <see cref="AdminToy.IsStatic"/> is <see langword="true"/> rotation and <see cref="BoundsSize"/> is not used, instead the bounds is axis aligned and its size is fixed at <see cref="MaxBounds"/>.
+    /// </remarks>
+    public Vector3 BoundsSize
+    {
+        get => Base.BoundsSize;
+        set => Base.NetworkBoundsSize = value;
+    }
+
     /// <summary>
     /// Gets or sets whether to visualize the waypoint's maximum bounds.
     /// </summary>
@@ -119,10 +181,19 @@ public class WaypointToy : AdminToy
         set => Base.NetworkPriority = value;
     }
 
+    /// <summary>
+    /// Force update all waypoint children to be up to date with the current position and rotation of the waypoint.
+    /// Call this when ever the waypoint is moved by a parent object or the waypoint is moved using base game APIs or external APIs.
+    /// </summary>
+    /// <remarks>
+    /// Does not work if the waypoint is <see cref="AdminToy.IsStatic"/>.
+    /// </remarks>
+    public void UpdateWaypointChildren() => Base.UpdateWaypointChildren();
+
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"[WaypointToy: Position{Position}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
+        return $"[WaypointToy: Position:{Position}, BoundsSize:{BoundsSize}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
     }
 
     /// <summary>
