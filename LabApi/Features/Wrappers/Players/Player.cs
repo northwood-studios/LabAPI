@@ -1261,15 +1261,12 @@ public class Player
     /// Adds a <see cref="Pickup"/> to the player's inventory.
     /// </summary>
     /// <param name="pickup">Pickup to add.</param>
-    /// <param name="destroyPickup">Whether the added pickup should be destroyed.</param>
     /// <param name="reason">The reason why is this item being added.</param>
     /// <returns>The <see cref="Item"/> added or <c>null</c> if item couldn't be added.</returns>
-    public Item? AddItem(Pickup pickup, bool destroyPickup = true, ItemAddReason reason = ItemAddReason.PickedUp)
+    public Item? AddItem(Pickup pickup, ItemAddReason reason)
     {
         Item item = Item.Get(Inventory.ServerAddItem(pickup.Type, reason, pickup: pickup.Base));
-        
-        if (destroyPickup)
-            pickup.Destroy();
+        pickup.Destroy();
 
         return item;
     }
@@ -1336,7 +1333,7 @@ public class Player
     {
         int amount = 0;
 
-        for (int i = 0; i < Items.Count; i++)
+        for (int i = 0; i < Items.Count(); i++)
         {
             Item item = Items.ElementAt(i);
             
@@ -1384,7 +1381,7 @@ public class Player
     {
         List<Pickup> pickups = ListPool<Pickup>.Shared.Rent();
 
-        for (int i = 0; i < Items.Count; i++)
+        for (int i = 0; i < Items.Count(); i++)
         {
             Item item = Items.ElementAt(i);
             
