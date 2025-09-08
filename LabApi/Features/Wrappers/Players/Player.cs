@@ -41,7 +41,7 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Player
 {
-        /// <summary>
+    /// <summary>
     /// A cache of players by their User ID. Does not necessarily contain all players.
     /// </summary>
     private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
@@ -927,14 +927,8 @@ public class Player
     /// </remarks>
     public bool IsSpectatable
     {
-        get
-        {
-            return SpectatableVisibilityManager.IsHidden(ReferenceHub);
-        }
-        set
-        {
-            SpectatableVisibilityManager.SetHidden(ReferenceHub, value);
-        }
+        get => SpectatableVisibilityManager.IsHidden(ReferenceHub);
+        set => SpectatableVisibilityManager.SetHidden(ReferenceHub, value);
     }
 
     /// <summary>
@@ -1280,10 +1274,20 @@ public class Player
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
             {
                 return Vector3.zero;
-    public bool IsSpectatable
-    {
-        get => SpectatableVisibilityManager.IsHidden(ReferenceHub);
-        set => SpectatableVisibilityManager.SetHidden(ReferenceHub, value);
+            }
+
+            return fpcRole.FpcModule.Motor.ScaleController.Scale;
+        }
+
+        set
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+            {
+                return;
+            }
+
+            fpcRole.FpcModule.Motor.ScaleController.Scale = value;
+        }
     }
 
     /// <summary>
