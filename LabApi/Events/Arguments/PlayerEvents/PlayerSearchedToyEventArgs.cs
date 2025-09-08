@@ -13,11 +13,11 @@ public class PlayerSearchedToyEventArgs : EventArgs, IPlayerEvent, IInteractable
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSearchedToyEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who searched the toy.</param>
+    /// <param name="hub">The player who searched the toy.</param>
     /// <param name="toy">The toy that was searched.</param>
-    public PlayerSearchedToyEventArgs(ReferenceHub player, InvisibleInteractableToy toy)
+    public PlayerSearchedToyEventArgs(ReferenceHub hub, InvisibleInteractableToy toy)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Interactable = InteractableToy.Get(toy);
     }
 

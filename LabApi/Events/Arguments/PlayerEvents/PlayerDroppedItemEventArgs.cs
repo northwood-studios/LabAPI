@@ -13,12 +13,14 @@ public class PlayerDroppedItemEventArgs : EventArgs, IPlayerEvent, IPickupEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDroppedItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who dropped the item.</param>
+    /// <param name="hub">The player who dropped the item.</param>
     /// <param name="pickup">The item pickup.</param>
-    public PlayerDroppedItemEventArgs(ReferenceHub player, ItemPickupBase pickup)
+    /// <param name="isThrowing">Whether the item will be thrown.</param>
+    public PlayerDroppedItemEventArgs(ReferenceHub hub, ItemPickupBase pickup, bool isThrowing)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Pickup = Pickup.Get(pickup);
+        Throw = isThrowing;
     }
 
     /// <summary>
@@ -30,4 +32,9 @@ public class PlayerDroppedItemEventArgs : EventArgs, IPlayerEvent, IPickupEvent
     /// Gets the item pickup.
     /// </summary>
     public Pickup Pickup { get; }
+
+    /// <summary>
+    /// Gets or sets whether the <see cref="Pickup"/> will be thrown by the <see cref="Player"/>.
+    /// </summary>
+    public bool Throw { get; set; }
 }

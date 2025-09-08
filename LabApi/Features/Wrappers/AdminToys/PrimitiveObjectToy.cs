@@ -25,11 +25,13 @@ public class PrimitiveObjectToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="basePrimitiveObjectToy">The base <see cref="BasePrimitiveObjectToy"/> object.</param>
-    internal PrimitiveObjectToy(BasePrimitiveObjectToy basePrimitiveObjectToy)
+    internal PrimitiveObjectToy(BasePrimitiveObjectToy basePrimitiveObjectToy) 
         : base(basePrimitiveObjectToy)
     {
-        Dictionary.Add(basePrimitiveObjectToy, this);
         Base = basePrimitiveObjectToy;
+
+        if (CanCache)
+            Dictionary.Add(basePrimitiveObjectToy, this);
     }
 
     /// <summary>

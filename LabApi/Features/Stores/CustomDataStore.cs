@@ -11,7 +11,7 @@ namespace LabApi.Features.Stores;
 /// </summary>
 public abstract class CustomDataStore
 {
-    private static readonly Dictionary<Type, Dictionary<Player, CustomDataStore>> StoreInstances = new ();
+    private static readonly Dictionary<Type, Dictionary<Player, CustomDataStore>> StoreInstances = new();
 
     /// <summary>
     /// Gets the <see cref="Player"/> that this instance is associated with.
@@ -90,8 +90,8 @@ public abstract class CustomDataStore
     /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
     internal static void DestroyAll<TStore>()
     {
-        List<CustomDataStore>? storesToRemove = ListPool<CustomDataStore>.Shared.Rent(StoreInstances.SelectMany(entry =>
-            entry.Value.Where(playerStore => playerStore.Value.GetType() == typeof(TStore)).Select(playerStore => playerStore.Value)));
+        List<CustomDataStore>? storesToRemove = ListPool<CustomDataStore>.Shared.Rent(StoreInstances.SelectMany(static entry =>
+            entry.Value.Where(static playerStore => playerStore.Value.GetType() == typeof(TStore)).Select(playerStore => playerStore.Value)));
 
         foreach (CustomDataStore? store in storesToRemove)
             store.Destroy();
@@ -105,7 +105,7 @@ public abstract class CustomDataStore
     internal void Destroy()
     {
         OnInstanceDestroyed();
-        StoreInstances[this.GetType()].Remove(Owner);
+        StoreInstances[GetType()].Remove(Owner);
     }
 
     private void InternalOnInstanceCreated() => OnInstanceCreated();

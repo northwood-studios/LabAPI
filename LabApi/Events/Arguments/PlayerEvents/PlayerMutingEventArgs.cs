@@ -12,13 +12,13 @@ public class PlayerMutingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerMutingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is being muted.</param>
+    /// <param name="hub">The player who is being muted.</param>
     /// <param name="issuer">The player who is issuing the mute.</param>
     /// <param name="isIntercom">Whenever mute is being applied to intercom.</param>
-    public PlayerMutingEventArgs(ReferenceHub player, ReferenceHub issuer, bool isIntercom)
+    public PlayerMutingEventArgs(ReferenceHub hub, ReferenceHub issuer, bool isIntercom)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Issuer = Player.Get(issuer);
         IsIntercom = isIntercom;
     }

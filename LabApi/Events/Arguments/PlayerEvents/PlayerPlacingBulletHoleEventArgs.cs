@@ -14,14 +14,14 @@ public class PlayerPlacingBulletHoleEventArgs : EventArgs, IPlayerEvent, ICancel
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPlacingBulletHoleEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who caused it.</param>
+    /// <param name="hub">The player who caused it.</param>
     /// <param name="type">Decal type to be spawned.</param>
     /// <param name="hitPosition">Position at which is bullet hole being placed.</param>
     /// <param name="startRaycast">Position where the bullet hole raycast will start for it to be properly attached to surface.</param>
-    public PlayerPlacingBulletHoleEventArgs(ReferenceHub player, DecalPoolType type, Vector3 hitPosition, Vector3 startRaycast)
+    public PlayerPlacingBulletHoleEventArgs(ReferenceHub hub, DecalPoolType type, Vector3 hitPosition, Vector3 startRaycast)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         DecalType = type;
         HitPosition = hitPosition;
         RaycastStart = startRaycast;

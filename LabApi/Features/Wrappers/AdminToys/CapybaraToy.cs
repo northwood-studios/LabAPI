@@ -24,10 +24,13 @@ public class CapybaraToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseCapybaraToy">The base <see cref="BaseCapybaraToy"/> object.</param>
-    internal CapybaraToy(BaseCapybaraToy baseCapybaraToy) : base(baseCapybaraToy)
+    internal CapybaraToy(BaseCapybaraToy baseCapybaraToy) 
+        : base(baseCapybaraToy)
     {
-        Dictionary.Add(baseCapybaraToy, this);
         Base = baseCapybaraToy;
+
+        if (CanCache)
+            Dictionary.Add(baseCapybaraToy, this);
     }
 
     /// <summary>

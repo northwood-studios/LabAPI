@@ -13,11 +13,11 @@ public class Scp079UnlockedDoorEventArgs : EventArgs, IPlayerEvent, IDoorEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079UnlockedDoorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="door">The affected door instance.</param>
-    public Scp079UnlockedDoorEventArgs(ReferenceHub player, DoorVariant door)
+    public Scp079UnlockedDoorEventArgs(ReferenceHub hub, DoorVariant door)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Door = Door.Get(door);
     }
 

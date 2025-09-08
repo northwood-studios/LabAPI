@@ -13,11 +13,11 @@ public class Scp079ChangedCameraEventArgs : EventArgs, IPlayerEvent, ICameraEven
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079ChangedCameraEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="camera">The affected camera instance.</param>
-    public Scp079ChangedCameraEventArgs(ReferenceHub player, Scp079Camera camera)
+    public Scp079ChangedCameraEventArgs(ReferenceHub hub, Scp079Camera camera)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Camera = Camera.Get(camera);
     }
 

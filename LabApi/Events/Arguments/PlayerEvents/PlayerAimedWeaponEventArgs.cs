@@ -13,12 +13,12 @@ public class PlayerAimedWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmItemE
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerAimedWeaponEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who aimed the weapon.</param>
+    /// <param name="hub">The player who aimed the weapon.</param>
     /// <param name="weapon">The weapon that the player aimed.</param>
     /// <param name="aiming">Whether the player was aiming or unaiming their weapon.</param>
-    public PlayerAimedWeaponEventArgs(ReferenceHub player, Firearm weapon, bool aiming)
+    public PlayerAimedWeaponEventArgs(ReferenceHub hub, Firearm weapon, bool aiming)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         FirearmItem = FirearmItem.Get(weapon);
         Aiming = aiming;
     }

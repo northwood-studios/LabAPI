@@ -1,6 +1,6 @@
-﻿using CommandSystem;
+﻿using Achievements;
+using CommandSystem;
 using CustomPlayerEffects;
-using Generators;
 using InventorySystem.Configs;
 using LabApi.Features.Permissions;
 using LabApi.Features.Permissions.Providers;
@@ -10,6 +10,8 @@ using RemoteAdmin;
 using RoundRestarting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using static BanHandler;
 
@@ -21,19 +23,9 @@ namespace LabApi.Features.Wrappers;
 public static class Server
 {
     /// <summary>
-    /// Initializes the <see cref="Server"/> class to subscribe to <see cref="ReferenceHub"/> events.
-    /// </summary>
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        ReferenceHub.OnPlayerAdded += AddHost;
-        ReferenceHub.OnPlayerRemoved += RemoveHost;
-    }
-
-    /// <summary>
     /// The <see cref="Server"/> Instance.
     /// </summary>
-    public static Player? Host { get; private set; }
+    public static Player? Host { get; internal set; }
 
     /// <summary>
     /// Gets the IP address of the server.
@@ -137,6 +129,23 @@ public static class Server
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether achievement granting is enabled.
+    /// </summary>
+    public static bool AchievementsEnabled
+    {
+        get => !AchievementManager.AchievementsDisabled;
+        set
+        {
+            if (AchievementManager.AchievementsDisabled != value)
+                return;
+
+            AchievementManager.AchievementsDisabled = !value;
+            ServerConfigSynchronizer.Singleton.RefreshMainBools();
+            ServerConfigSynchronizer.OnRefreshed?.Invoke();
+        }
+    }
+
+    /// <summary>
     /// Gets or sets the server name as seen on the server list.
     /// </summary>
     public static string ServerListName
@@ -164,6 +173,14 @@ public static class Server
         get => PlayerList.RefreshRate.Value;
         set => PlayerList.RefreshRate.Value = value;
     }
+
+    /// <summary>
+    /// Gets or sets whether the server has been marked as transparently modded.<br/>
+    /// For this status to be applied automatically, all installed plugins must have their
+    /// <see cref="LabApi.Loader.Features.Plugins.Plugin.IsTransparent"/> property set to <see langword="true"/>.<br/>
+    /// For more information, see article 5.2 in the official documentation: https://scpslgame.com/csg
+    /// </summary>
+    public static bool IsTransparentlyModded { get; internal set; }
 
     /// <summary>
     /// Gets the <see cref="ItemCategory">Category</see> <see cref="ILimit{ItemCategory, SByte}">limits</see>.
@@ -353,7 +370,7 @@ public static class Server
     /// <summary>
     /// Gets all banned players.
     /// </summary>
-    /// <returns>List of all banned players.</returns>
+    /// <returns>A pooled list of all banned players.</returns>
     public static List<BanDetails> GetAllBannedPlayers()
     {
         List<BanDetails> bans = ListPool<BanDetails>.Shared.Rent();
@@ -366,7 +383,7 @@ public static class Server
     /// Gets all banned players by ban type.
     /// </summary>
     /// <param name="banType">The type of ban.</param>
-    /// <returns>List of specified ban types.</returns>
+    /// <returns>A pooled list of specified ban types.</returns>
     public static List<BanDetails> GetAllBannedPlayers(BanType banType) => GetBans(banType);
 
     #endregion
@@ -439,6 +456,41 @@ public static class Server
     }
 
     /// <summary>
+    /// Sends the admin chat messages to all players with <see cref="PlayerPermissions.AdminChat"/> permissions.
+    /// </summary>
+    /// <param name="message">The message to send.</param>
+    /// <param name="isSilent">Whether the message should not appear in broadcast.</param>
+    public static void SendAdminChatMessage(string message, bool isSilent = false) => SendAdminChatMessage(Player.ReadyList.Where(static n => n.UserGroup != null && PermissionsHandler.IsPermitted(n.UserGroup.Permissions, PlayerPermissions.AdminChat)), message, isSilent);
+
+    /// <summary>
+    /// Sends admin chat message to all specified players.
+    /// </summary>
+    /// <param name="targetPlayers">The target players.</param>
+    /// <param name="message">The message to send.</param>
+    /// <param name="isSilent">Whether the message should not appear in broadcast.</param>
+    public static void SendAdminChatMessage(IEnumerable<Player> targetPlayers, string message, bool isSilent = false)
+    {
+        StringBuilder sb = StringBuilderPool.Shared.Rent();
+
+        sb.Append(Host.NetworkId);
+        sb.Append('!');
+
+        if (isSilent)
+            sb.Append("@@");
+
+        sb.Append(message);
+
+        string toSend = StringBuilderPool.Shared.ToStringReturn(sb);
+        foreach (Player player in targetPlayers)
+        {
+            if (!player.IsPlayer || !player.IsReady)
+                continue;
+
+            player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(toSend, EncryptedChannelManager.EncryptedChannel.AdminChat);
+        }
+    }
+
+    /// <summary>
     /// Clears broadcast's for all players.
     /// </summary>
     public static void ClearBroadcasts() => Broadcast.Singleton.RpcClearElements();
@@ -448,26 +500,6 @@ public static class Server
     /// </summary>
     /// <param name="player">The player to clear the broadcast's.</param>
     public static void ClearBroadcasts(Player player) => Broadcast.Singleton.TargetClearElements(player.Connection);
-
-    /// <summary>
-    /// Handles the creation of the host in the server.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub to add.</param>
-    private static void AddHost(ReferenceHub referenceHub)
-    {
-        if (referenceHub.isLocalPlayer)
-            Host = new Player(referenceHub);
-    }
-
-    /// <summary>
-    /// Handles the removal of the host from the server.
-    /// </summary>
-    /// <param name="referenceHub">The reference hub to remove.</param>
-    private static void RemoveHost(ReferenceHub referenceHub)
-    {
-        if (referenceHub.isLocalPlayer)
-            Host = null;
-    }
 
     /// <summary>
     /// Interface for getting and setting key value limits.

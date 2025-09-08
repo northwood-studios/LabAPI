@@ -13,12 +13,12 @@ public class PlayerDamagedWindowEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDamagedWindowEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who damaged the window.</param>
+    /// <param name="hub">The player who damaged the window.</param>
     /// <param name="window">The window.</param>
     /// <param name="damageHandler">The damage handler.</param>
-    public PlayerDamagedWindowEventArgs(ReferenceHub player, BreakableWindow window, DamageHandlerBase damageHandler)
+    public PlayerDamagedWindowEventArgs(ReferenceHub hub, BreakableWindow window, DamageHandlerBase damageHandler)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Window = window;
         DamageHandler = damageHandler;
     }

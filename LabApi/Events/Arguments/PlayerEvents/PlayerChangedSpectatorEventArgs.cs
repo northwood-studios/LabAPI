@@ -12,12 +12,12 @@ public class PlayerChangedSpectatorEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangedSpectatorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who changed spectator.</param>
+    /// <param name="hub">The player who changed spectator.</param>
     /// <param name="oldTarget">Old target that was spectated previously.</param>
     /// <param name="newTarget">New target that was spectating changed to.</param>
-    public PlayerChangedSpectatorEventArgs(ReferenceHub player, ReferenceHub oldTarget, ReferenceHub newTarget)
+    public PlayerChangedSpectatorEventArgs(ReferenceHub hub, ReferenceHub oldTarget, ReferenceHub newTarget)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldTarget = Player.Get(oldTarget);
         NewTarget = Player.Get(newTarget);
     }

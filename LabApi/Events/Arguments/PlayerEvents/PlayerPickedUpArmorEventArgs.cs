@@ -13,11 +13,11 @@ public class PlayerPickedUpArmorEventArgs : EventArgs, IPlayerEvent, IBodyArmorI
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickedUpArmorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who picked up armor.</param>
+    /// <param name="hub">The player who picked up armor.</param>
     /// <param name="armor">The armor that was picked up.</param>
-    public PlayerPickedUpArmorEventArgs(ReferenceHub player, BodyArmor? armor)
+    public PlayerPickedUpArmorEventArgs(ReferenceHub hub, BodyArmor? armor)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         BodyArmorItem = BodyArmorItem.Get(armor);
     }
 

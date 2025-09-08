@@ -9,19 +9,19 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.SpawningRagdoll"/> event.
 /// </summary>
-public class PlayerSpawningRagdollEventArgs : EventArgs, IPlayerEvent, IRagdollEvent, ICancellableEvent
+public class PlayerSpawningRagdollEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSpawningRagdollEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player from who is ragdoll from.</param>
+    /// <param name="hub">The player from who is ragdoll from.</param>
     /// <param name="ragdoll">The ragdoll which being spawned.</param>
     /// <param name="damageHandler">The damage handler that caused the death of the player.</param>
-    public PlayerSpawningRagdollEventArgs(ReferenceHub player, BasicRagdoll ragdoll, DamageHandlerBase damageHandler)
+    public PlayerSpawningRagdollEventArgs(ReferenceHub hub, BasicRagdoll ragdoll, DamageHandlerBase damageHandler)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
-        Ragdoll = Ragdoll.Get(ragdoll);
+        Player = Player.Get(hub);
+        RagdollPrefab = Ragdoll.Get(ragdoll);
         DamageHandler = damageHandler;
     }
 
@@ -31,9 +31,15 @@ public class PlayerSpawningRagdollEventArgs : EventArgs, IPlayerEvent, IRagdollE
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the ragdoll which being spawned.
+    /// Gets the ragdoll prefab which will be used to instantiate the ragdoll.
     /// </summary>
-    public Ragdoll Ragdoll { get; }
+    [Obsolete($"use {nameof(RagdollPrefab)} instead.")]
+    public Ragdoll Ragdoll => RagdollPrefab;
+
+    /// <summary>
+    /// Gets the ragdoll prefab which will be used to instantiate the ragdoll.
+    /// </summary>
+    public Ragdoll RagdollPrefab { get; }
 
     /// <summary>
     /// Gets the damage handler that caused the death of the player.

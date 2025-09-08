@@ -1,4 +1,5 @@
 ﻿using LabApi.Events.Arguments.PlayerEvents;
+using MapGeneration;
 
 namespace LabApi.Events.Handlers;
 
@@ -123,6 +124,64 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerToggledNoclipEventArgs>? ToggledNoclip;
 
+    /// <summary>
+    /// Gets called when the player is requesting the remote admin player list.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestingRaPlayerListEventArgs>? RequestingRaPlayerList;
+
+    /// <summary>
+    /// Gets called when the player had requested the remote admin player list.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedRaPlayerListEventArgs>? RequestedRaPlayerList;
+
+    /// <summary>
+    /// Gets called when adding a target player to the remote admin player list while processing the request for the player.
+    /// </summary>
+    public static event LabEventHandler<PlayerRaPlayerListAddingPlayerEventArgs>? RaPlayerListAddingPlayer;
+
+    /// <summary>
+    /// Gets called when a target player was added to the remote admin player list while processing the request for the player.
+    /// </summary>
+    public static event LabEventHandler<PlayerRaPlayerListAddedPlayerEventArgs>? RaPlayerListAddedPlayer;
+
+    /// <summary>
+    /// Gets called when a player requested info for an unknown target in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedCustomRaInfoEventArgs>? RequestedCustomRaInfo;
+
+    /// <summary>
+    /// Gets called when a player is requesting info for multiple players in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestingRaPlayersInfoEventArgs>? RequestingRaPlayersInfo;
+
+    /// <summary>
+    /// Gets called when a player had requested info for multiple players in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedRaPlayersInfoEventArgs>? RequestedRaPlayersInfo;
+
+    /// <summary>
+    /// Gets called when a player is requesting info for a target player in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestingRaPlayerInfoEventArgs>? RequestingRaPlayerInfo;
+
+    /// <summary>
+    /// Gets called when a player had requested info for a target player in the remote admin.
+    /// </summary>
+    public static event LabEventHandler<PlayerRequestedRaPlayerInfoEventArgs>? RequestedRaPlayerInfo;
+
+    #endregion
+
+    #region Badges
+
+    /// <summary>
+    /// Gets called when the player is changing their global or local badge visibility.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangingBadgeVisibilityEventArgs>? ChangingBadgeVisibility;
+
+    /// <summary>
+    /// Gets called when the player has changed their global or local badge visibility.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangedBadgeVisibilityEventArgs>? ChangedBadgeVisibility;
 
     #endregion
 
@@ -357,6 +416,31 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerThrewProjectileEventArgs>? ThrewProjectile;
 
+    /// <summary>
+    /// Gets called when the player wants to inspect any keycard item.
+    /// </summary>
+    public static event LabEventHandler<PlayerInspectingKeycardEventArgs>? InspectingKeycard;
+
+    /// <summary>
+    /// Gets called when the player inspected keycard item.
+    /// </summary>
+    public static event LabEventHandler<PlayerInspectedKeycardEventArgs>? InspectedKeycard;
+
+    /// <summary>
+    /// Gets called when the player requests to spin the revolver.
+    /// </summary>
+    public static event LabEventHandler<PlayerSpinningRevolverEventArgs>? SpinningRevolver;
+
+    /// <summary>
+    /// Gets called when the player spinned the revolver.
+    /// </summary>
+    public static event LabEventHandler<PlayerSpinnedRevolverEventArgs>? SpinnedRevolver;
+
+    /// <summary>
+    /// Gets called when the player toggled disruptor firing mode.
+    /// </summary>
+    public static event LabEventHandler<PlayerToggledDisruptorFiringModeEventArgs>? ToggledDisruptorFiringMode;
+
     #endregion
 
     #region Item Actions and Interactions
@@ -370,6 +454,11 @@ public static partial class PlayerEvents
     /// Gets called when the player has used an item.
     /// </summary>
     public static event LabEventHandler<PlayerUsedItemEventArgs>? UsedItem;
+
+    /// <summary>
+    /// Gets called when the player is about to complete using an item.
+    /// </summary>
+    public static event LabEventHandler<PlayerItemUsageEffectsApplyingEventArgs>? ItemUsageEffectsApplying;
 
     /// <summary>
     /// Gets called when the player is using the radio.
@@ -432,6 +521,26 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerShotWeaponEventArgs>? ShotWeapon;
 
     /// <summary>
+    /// Gets called when player is changing weapon attachments.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangingAttachmentsEventArgs>? ChangingAttachments;
+
+    /// <summary>
+    /// Gets called when player has changed weapon attachments.
+    /// </summary>
+    public static event LabEventHandler<PlayerChangedAttachmentsEventArgs>? ChangedAttachments;
+
+    /// <summary>
+    /// Gets called when player is changing weapon attachments preferences.
+    /// </summary>
+    public static event LabEventHandler<PlayerSendingAttachmentsPrefsEventArgs>? SendingAttachmentsPrefs;
+
+    /// <summary>
+    /// Gets called when player has changed weapon attachments preferences.
+    /// </summary>
+    public static event LabEventHandler<PlayerSentAttachmentsPrefsEventArgs>? SentAttachmentsPrefs;
+
+    /// <summary>
     /// Gets called when the player is cancelling the use of an item.
     /// </summary>
     public static event LabEventHandler<PlayerCancellingUsingItemEventArgs>? CancellingUsingItem;
@@ -450,6 +559,16 @@ public static partial class PlayerEvents
     /// Gets called when the player has changed range of their radio.
     /// </summary>
     public static event LabEventHandler<PlayerChangedRadioRangeEventArgs>? ChangedRadioRange;
+
+    /// <summary>
+    /// Gets called when processing a player's interaction with the jailbird item.
+    /// </summary>
+    public static event LabEventHandler<PlayerProcessingJailbirdMessageEventArgs>? ProcessingJailbirdMessage;
+
+    /// <summary>
+    /// Gets called when processed the player's interaction with the jailbird item.
+    /// </summary>
+    public static event LabEventHandler<PlayerProcessedJailbirdMessageEventArgs>? ProcessedJailbirdMessage;
 
     /// <summary>
     /// Gets called when the player is toggling a flashlight.
@@ -480,6 +599,16 @@ public static partial class PlayerEvents
     /// Gets called when the player has toggled a radio.
     /// </summary>
     public static event LabEventHandler<PlayerToggledRadioEventArgs>? ToggledRadio;
+
+    /// <summary>
+    /// Gets called when player successfully jumps. Not called when jumping is prevented by status effects.
+    /// </summary>
+    public static event LabEventHandler<PlayerJumpedEventArgs>? Jumped;
+
+    /// <summary>
+    /// Gets called when player's movement state change. Such as from walking to running, sneaking and opposite way around.
+    /// </summary>
+    public static event LabEventHandler<PlayerMovementStateChangedEventArgs>? MovementStateChanged;
 
     #endregion
 
@@ -730,6 +859,31 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerUnlockedWarheadButtonEventArgs>? UnlockedWarheadButton;
 
+    /// <summary>
+    /// Gets called when the player has meet the requirements of an achievement.
+    /// </summary>
+    public static event LabEventHandler<PlayerReceivedAchievementEventArgs>? ReceivedAchievement;
+
+    /// <summary>
+    /// Gets called when player's last known room changes.
+    /// </summary>
+    public static event LabEventHandler<PlayerRoomChangedEventArgs>? RoomChanged;
+
+    /// <summary>
+    /// Gets called when player's last known zone changes.
+    /// </summary>
+    public static event LabEventHandler<PlayerZoneChangedEventArgs>? ZoneChanged;
+
+    /// <summary>
+    /// Gets called when player interacts with warhead lever.
+    /// </summary>
+    public static event LabEventHandler<PlayerInteractingWarheadLeverEventArgs>? InteractingWarheadLever;
+
+    /// <summary>
+    /// Gets called when player interacted with warhead lever.
+    /// </summary>
+    public static event LabEventHandler<PlayerInteractedWarheadLeverEventArgs>? InteractedWarheadLever;
+
     #endregion
 
     #region Spectating
@@ -772,5 +926,15 @@ public static partial class PlayerEvents
     /// Gets called when a player has validated the visibility of a target player.
     /// </summary>
     public static event LabEventHandler<PlayerValidatedVisibilityEventArgs>? ValidatedVisibility;
+
+    #endregion
+
+    #region Scp1344
+
+    /// <summary>
+    /// Gets called when player detects enemy player using SCP-1344.
+    /// </summary>
+    public static event LabEventHandler<PlayerDetectedByScp1344EventArgs>? DetectedByScp1344;
+
     #endregion
 }

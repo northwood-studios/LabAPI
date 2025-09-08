@@ -20,7 +20,7 @@ public class Scp914 : Room
     /// Gets the current <see cref="Scp914"/> instance.
     /// </summary>
     /// <remarks>
-    /// May be null if the map has not been generated yet or was previously destroyed.
+    /// May be <see langword="null"/> if the map has not been generated yet or was previously destroyed.
     /// </remarks>
     public static Scp914? Instance { get; private set; }
 
@@ -195,7 +195,7 @@ public class Scp914 : Room
     /// Interact with the SCP-914 machine.
     /// </summary>
     /// <param name="interactCode">The type of interaction.</param>
-    /// <param name="player">The <see cref="Player"/> that triggered the interaction or null if not specified.</param>
+    /// <param name="player">The <see cref="Player"/> that triggered the interaction or <see langword="null"/> if not specified.</param>
     /// <remarks>
     /// Interacting will also trigger SCP-914 related events.
     /// If you would not like to trigger events use <see cref="KnobSetting"/> and <see cref="IsUpgrading"/> instead.
@@ -218,7 +218,7 @@ public class Scp914 : Room
     /// Gets the <see cref="IScp914ItemProcessor"/> for the specified type.
     /// </summary>
     /// <param name="type">The <see cref="ItemType"/> to get the associated <see cref="IScp914ItemProcessor"/>.</param>
-    /// <returns>The associated <see cref="IScp914ItemProcessor"/> for the <see cref="ItemType"/> if found, otherwise null.</returns>
+    /// <returns>The associated <see cref="IScp914ItemProcessor"/> for the <see cref="ItemType"/> if found, otherwise <see langword="null"/>.</returns>
     /// <remarks>
     /// If the item processor is a base game <see cref="Scp914ItemProcessor"/>, <see cref="IScp914ItemProcessor"/> will be a <see cref="BaseGameItemProcessor"/>.
     /// </remarks>

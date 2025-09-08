@@ -18,6 +18,11 @@ public static partial class ServerEvents
     public static event LabEventHandler? RoundRestarted;
 
     /// <summary>
+    /// Gets called when round end conditions are checked.
+    /// </summary>
+    public static event LabEventHandler<RoundEndingConditionsCheckEventArgs>? RoundEndingConditionsCheck;
+
+    /// <summary>
     /// Gets called when the round is ending.
     /// </summary>
     public static event LabEventHandler<RoundEndingEventArgs>? RoundEnding;
@@ -136,7 +141,7 @@ public static partial class ServerEvents
     /// Gets called when the server has created a new pickup.
     /// </summary>
     public static event LabEventHandler<PickupCreatedEventArgs>? PickupCreated;
-    
+
     /// <summary>
     /// Gets called when the server has destroyed a pickup.
     /// </summary>
@@ -146,7 +151,7 @@ public static partial class ServerEvents
     /// Gets called when the server is sending an Admin Chat message.
     /// </summary>
     public static event LabEventHandler<SendingAdminChatEventArgs>? SendingAdminChat;
-    
+
     /// <summary>
     /// Gets called when the server sent an Admin Chat message.
     /// </summary>
@@ -201,4 +206,9 @@ public static partial class ServerEvents
     /// Gets called when the server activated generator.
     /// </summary>
     public static event LabEventHandler<GeneratorActivatedEventArgs>? GeneratorActivated;
+
+    /// <summary>
+    /// Gets called when elevator's sequence has changed.
+    /// </summary>
+    public static event LabEventHandler<ElevatorSequenceChangedEventArgs>? ElevatorSequenceChanged;
 }

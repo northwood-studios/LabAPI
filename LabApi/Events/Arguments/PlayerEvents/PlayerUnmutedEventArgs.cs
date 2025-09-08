@@ -12,12 +12,12 @@ public class PlayerUnmutedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUnmutedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who was unmuted.</param>
+    /// <param name="hub">The player who was unmuted.</param>
     /// <param name="issuer">The player who issued the unmute.</param>
     /// <param name="isIntercom">Whenever the unmute was for intercom.</param>
-    public PlayerUnmutedEventArgs(ReferenceHub player, ReferenceHub issuer, bool isIntercom)
+    public PlayerUnmutedEventArgs(ReferenceHub hub, ReferenceHub issuer, bool isIntercom)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Issuer = Player.Get(issuer);
         IsIntercom = isIntercom;
     }

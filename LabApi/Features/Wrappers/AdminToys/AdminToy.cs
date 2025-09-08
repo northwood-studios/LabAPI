@@ -1,5 +1,6 @@
 ﻿using AdminToys;
 using Generators;
+using MapGeneration;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ public class AdminToy
         Register<Scp079CameraToy>(static x => new CameraToy(x));
         Register<AdminToys.CapybaraToy>(static x => new CapybaraToy(x));
         Register<AdminToys.TextToy>(static x => new TextToy(x));
+        Register<AdminToys.WaypointToy>(static x => new WaypointToy(x));
     }
 
     /// <summary>
@@ -53,8 +55,10 @@ public class AdminToy
     /// <param name="adminToyBase">The base object.</param>
     protected AdminToy(AdminToyBase adminToyBase)
     {
-        Dictionary.Add(adminToyBase, this);
         Base = adminToyBase;
+
+        if (CanCache)
+            Dictionary.Add(adminToyBase, this);
     }
 
     /// <summary>
@@ -63,6 +67,11 @@ public class AdminToy
     internal virtual void OnRemove()
     {
     }
+
+    /// <summary>
+    /// Whether to cache this wrapper.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
 
     /// <summary>
     /// The <see cref="AdminToyBase">base</see> object.
@@ -92,7 +101,7 @@ public class AdminToy
     /// Position is relative to its parent if it has one, otherwise its the world position.
     /// </summary>
     /// <remarks>
-    /// If <see cref="IsStatic"/> is true client wont update its position.
+    /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its position.
     /// </remarks>
     public Vector3 Position
     {
@@ -105,7 +114,7 @@ public class AdminToy
     /// Rotation is relative to its parent if it has one, otherwise its the world rotation.
     /// </summary>
     /// <remarks>
-    /// If <see cref="IsStatic"/> is true client wont update its rotation.
+    /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its rotation.
     /// </remarks>
     public Quaternion Rotation
     {
@@ -118,7 +127,7 @@ public class AdminToy
     /// Scale is relative to its parent if it has one, otherwise its the world scale.
     /// </summary>
     /// <remarks>
-    /// If <see cref="IsStatic"/> is true client wont update its scale.
+    /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its scale.
     /// </remarks>
     public Vector3 Scale
     {
@@ -132,7 +141,7 @@ public class AdminToy
     /// <remarks>
     /// If the parent object contains a <see cref="NetworkIdentity"/> component and has been <see cref="NetworkServer.Spawn(GameObject, GameObject)"/> the parent is synced with the client.
     /// <para>
-    /// Can be used even if <see cref="IsStatic"/> is true.
+    /// Can be used even if <see cref="IsStatic"/> is <see langword="true"/>.
     /// When changing parent the toys relative <see cref="Position"/>, <see cref="Rotation"/> and <see cref="Scale"/> are retained.
     /// Note that if the parent has <see cref="NetworkServer.Destroy"/> called on it this object automatically has <see cref="NetworkServer.Destroy"/> called on itself. 
     /// To prevent destruction make sure you unparent it before that happens.
@@ -166,7 +175,7 @@ public class AdminToy
     /// </summary>
     /// <remarks>
     /// A static admin toy will not process <see cref="Position"/>, <see cref="Rotation"/> or <see cref="Scale"/> on both server and client drastically increasing performance.
-    /// <see cref="Parent"/> can still be used even if static is true.
+    /// <see cref="Parent"/> can still be used even if static is <see langword="true"/>.
     /// </remarks>
     public bool IsStatic
     {
@@ -331,7 +340,10 @@ public class AdminToy
         typeWrappers.Add(typeof(T), x => constructor((T)x));
     }
 
-    private static class PrefabCache<T> where T : AdminToyBase
+    /// <summary>
+    /// Static prefab cache used to speed up prefab search.
+    /// </summary>
+    internal static class PrefabCache<T> where T : NetworkBehaviour
     {
         /// <summary>
         /// Cached prefab instance for type T.

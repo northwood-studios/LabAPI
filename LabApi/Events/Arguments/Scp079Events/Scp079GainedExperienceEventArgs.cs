@@ -1,7 +1,9 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
+using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp079;
 using System;
+using UnityEngine;
 
 namespace LabApi.Events.Arguments.Scp079Events;
 
@@ -13,14 +15,16 @@ public class Scp079GainedExperienceEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079GainedExperienceEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="amount">The amount of experience gained.</param>
     /// <param name="reason">The reason of experience gain shown in HUD.</param>
-    public Scp079GainedExperienceEventArgs(ReferenceHub player, float amount, Scp079HudTranslation reason)
+    /// <param name = "subject" > The optional subject of the notification, used as replacement to display which class has been terminated</param>
+    public Scp079GainedExperienceEventArgs(ReferenceHub hub, float amount, Scp079HudTranslation reason, RoleTypeId subject)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Amount = amount;
         Reason = reason;
+        Subject = subject;
     }
 
     /// <summary>
@@ -37,4 +41,9 @@ public class Scp079GainedExperienceEventArgs : EventArgs, IPlayerEvent
     /// The reason of experience gain shown in HUD.
     /// </summary>
     public Scp079HudTranslation Reason { get; }
+
+    /// <summary>
+    /// Gets optional subject of the notification, used as replacement to display which class has been terminated.
+    /// </summary>
+    public RoleTypeId Subject { get; }
 }

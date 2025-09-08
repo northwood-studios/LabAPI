@@ -12,13 +12,13 @@ public class PlayerReportingCheaterEventArgs : EventArgs, IPlayerEvent, ITargetE
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReportingCheaterEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is reporting.</param>
+    /// <param name="hub">The player who is reporting.</param>
     /// <param name="target">The reported player.</param>
     /// <param name="reason">The reason why is the player being reported.</param>
-    public PlayerReportingCheaterEventArgs(ReferenceHub player, ReferenceHub target, string reason)
+    public PlayerReportingCheaterEventArgs(ReferenceHub hub, ReferenceHub target, string reason)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         Reason = reason;
     }

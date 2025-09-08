@@ -25,7 +25,8 @@ public class StandardLocker : Locker
     internal StandardLocker(BaseLocker baseLocker)
         : base(baseLocker)
     {
-        Dictionary.Add(baseLocker, this);
+        if (CanCache)
+            Dictionary.Add(baseLocker, this);
     }
 
     /// <summary>

@@ -26,9 +26,13 @@ public class TextToy : AdminToy
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="baseToy">The base <see cref="BaseTextToy"/> object.</param>
-    internal TextToy(BaseTextToy baseToy) : base(baseToy)
+    internal TextToy(BaseTextToy baseToy) 
+        : base(baseToy)
     {
         Base = baseToy;
+
+        if (CanCache)
+            Dictionary.Add(baseToy, this);
     }
 
     /// <summary>

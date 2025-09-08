@@ -16,13 +16,13 @@ public class Scp914ProcessingPlayerEventArgs : EventArgs, IScp914Event, IPlayerE
     /// </summary>
     /// <param name="newPosition">The new position that the player will be processed into.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
-    /// <param name="player">The player that is being processed by SCP-914.</param>
-    public Scp914ProcessingPlayerEventArgs(Vector3 newPosition, Scp914KnobSetting knobSetting, ReferenceHub player)
+    /// <param name="hub">The player that is being processed by SCP-914.</param>
+    public Scp914ProcessingPlayerEventArgs(Vector3 newPosition, Scp914KnobSetting knobSetting, ReferenceHub hub)
     {
         IsAllowed = true;
         NewPosition = newPosition;
         KnobSetting = knobSetting;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

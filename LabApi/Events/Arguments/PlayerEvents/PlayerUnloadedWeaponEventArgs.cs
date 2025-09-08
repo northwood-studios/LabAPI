@@ -13,11 +13,11 @@ public class PlayerUnloadedWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmIt
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerUnloadedWeaponEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who unloaded the weapon.</param>
+    /// <param name="hub">The player who unloaded the weapon.</param>
     /// <param name="weapon">The weapon that was unloaded.</param>
-    public PlayerUnloadedWeaponEventArgs(ReferenceHub player, Firearm weapon)
+    public PlayerUnloadedWeaponEventArgs(ReferenceHub hub, Firearm weapon)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         FirearmItem = FirearmItem.Get(weapon);
     }
 

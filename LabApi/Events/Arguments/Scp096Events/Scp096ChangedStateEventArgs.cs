@@ -13,11 +13,11 @@ public class Scp096ChangedStateEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096ChangedStateEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
+    /// <param name="hub">The SCP-096 player instance.</param>
     /// <param name="state">The SCP-096's new rage state.</param>
-    public Scp096ChangedStateEventArgs(ReferenceHub player, Scp096RageState state)
+    public Scp096ChangedStateEventArgs(ReferenceHub hub, Scp096RageState state)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         State = state;
     }
 
