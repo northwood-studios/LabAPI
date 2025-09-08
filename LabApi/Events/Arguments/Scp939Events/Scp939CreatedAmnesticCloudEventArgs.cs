@@ -8,17 +8,17 @@ namespace LabApi.Events.Arguments.Scp939Events;
 /// <summary>
 /// Represents the event arguments for when SCP-939 has created an amnestic cloud.
 /// </summary>
-public class Scp939CreatedAmnesticCloudEventArgs : EventArgs, IPlayerEvent
+public class Scp939CreatedAmnesticCloudEventArgs : EventArgs, IPlayerEvent, IAmnesticCloudEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp939CreatedAmnesticCloudEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-939 player instance.</param>
+    /// <param name="hub">The SCP-939 player instance.</param>
     /// <param name="amnesticCloudInstance">The created amnestic cloud instance.</param>
-    public Scp939CreatedAmnesticCloudEventArgs(ReferenceHub player, Scp939AmnesticCloudInstance amnesticCloudInstance)
+    public Scp939CreatedAmnesticCloudEventArgs(ReferenceHub hub, Scp939AmnesticCloudInstance amnesticCloudInstance)
     {
-        Player = Player.Get(player);
-        AmnesticCloudInstance = amnesticCloudInstance;
+        Player = Player.Get(hub);
+        AmnesticCloud = AmnesticCloudHazard.Get(amnesticCloudInstance);
     }
 
     /// <summary>
@@ -29,5 +29,9 @@ public class Scp939CreatedAmnesticCloudEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the created amnestic cloud instance.
     /// </summary>
-    public Scp939AmnesticCloudInstance AmnesticCloudInstance { get; }
+    public AmnesticCloudHazard AmnesticCloud { get; }
+
+    /// <inheritdoc cref="AmnesticCloud"/>
+    [Obsolete($"Use {nameof(AmnesticCloud)} instead")]
+    public AmnesticCloudHazard AmnesticCloudInstance => AmnesticCloud;
 }

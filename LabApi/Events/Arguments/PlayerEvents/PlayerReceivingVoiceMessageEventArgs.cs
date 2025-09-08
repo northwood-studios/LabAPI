@@ -15,11 +15,11 @@ public class PlayerReceivingVoiceMessageEventArgs : EventArgs, ICancellableEvent
     /// </summary>
     /// <param name="listener">The <see cref="ReferenceHub" /> who is going to receive the voice message.</param>
     /// <param name="message">The <see cref="VoiceMessage" /> being received.</param>
-    public PlayerReceivingVoiceMessageEventArgs(ReferenceHub listener, VoiceMessage message)
+    public PlayerReceivingVoiceMessageEventArgs(ReferenceHub listener, ref VoiceMessage message)
     {
         IsAllowed = true;
         Player = Player.Get(listener);
-        Message = message;
+        _message = message;
     }
 
     /// <summary>
@@ -28,9 +28,14 @@ public class PlayerReceivingVoiceMessageEventArgs : EventArgs, ICancellableEvent
     public Player Player { get; }
 
     /// <summary>
+    /// Gets the player that is sending the voice message.
+    /// </summary>
+    public Player Sender => Player.Get(Message.Speaker);
+
+    /// <summary>
     /// Gets the <see cref="VoiceMessage" /> being received.
     /// </summary>
-    public VoiceMessage Message { get; }
+    public ref VoiceMessage Message => ref _message;
 
     /// <summary>
     /// Gets or sets a value indicating whether the voice message is allowed to be received.
@@ -40,4 +45,6 @@ public class PlayerReceivingVoiceMessageEventArgs : EventArgs, ICancellableEvent
     /// <see cref="VoiceChat.VoiceChatChannel.None" /> this will be ignored.
     /// </remarks>
     public bool IsAllowed { get; set; }
+
+    private VoiceMessage _message;
 }

@@ -12,13 +12,13 @@ public class PlayerLeavingPocketDimensionEventArgs : EventArgs, IPlayerEvent, IC
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerLeavingPocketDimensionEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is trying to leave from pocket dimension.</param>
+    /// <param name="hub">The player who is trying to leave from pocket dimension.</param>
     /// <param name="teleport">The teleport the player collided with.</param>
     /// <param name="isSuccessful">Whether it is gonna be success.</param>
-    public PlayerLeavingPocketDimensionEventArgs(ReferenceHub player, PocketDimensionTeleport teleport, bool isSuccessful)
+    public PlayerLeavingPocketDimensionEventArgs(ReferenceHub hub, PocketDimensionTeleport teleport, bool isSuccessful)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Teleport = PocketTeleport.Get(teleport);
         IsSuccessful = isSuccessful;
     }
@@ -37,7 +37,7 @@ public class PlayerLeavingPocketDimensionEventArgs : EventArgs, IPlayerEvent, IC
     public PocketTeleport? Teleport { get; }
 
     /// <summary>
-    /// Gets whether it is gonna be success.
+    /// Gets or sets whether it is going to be success.
     /// </summary>
     public bool IsSuccessful { get; set; }
 

@@ -9,18 +9,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractingGenerator"/> event.
 /// </summary>
-public class PlayerInteractingGeneratorEventArgs : EventArgs, ICancellableEvent
+public class PlayerInteractingGeneratorEventArgs : EventArgs, IPlayerEvent, IGeneratorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingGeneratorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is interacting with the generator.</param>
+    /// <param name="hub">The player who is interacting with the generator.</param>
     /// <param name="generator">The generator object.</param>
     /// <param name="colliderId">The collider ID.</param>
-    public PlayerInteractingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator, GeneratorColliderId colliderId)
+    public PlayerInteractingGeneratorEventArgs(ReferenceHub hub, Scp079Generator generator, GeneratorColliderId colliderId)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Generator = Generator.Get(generator);
         ColliderId = colliderId;
     }

@@ -7,18 +7,18 @@ namespace LabApi.Events.Arguments.Scp939Events;
 /// <summary>
 /// Represents the event arguments for when SCP-939 is attacking a player.
 /// </summary>
-public class Scp939AttackingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp939AttackingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp939AttackingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-939 player instance.</param>
+    /// <param name="hub">The SCP-939 player instance.</param>
     /// <param name="target">The destructible that is being attacked.</param>
     /// <param name="damage">The damage dealt.</param>
-    public Scp939AttackingEventArgs(ReferenceHub player, ReferenceHub target, float damage)
+    public Scp939AttackingEventArgs(ReferenceHub hub, ReferenceHub target, float damage)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         Damage = damage;
     }

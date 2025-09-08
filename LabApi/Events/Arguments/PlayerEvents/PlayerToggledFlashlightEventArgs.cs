@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items;
+﻿using InventorySystem.Items.ToggleableLights;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
@@ -8,18 +8,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ToggledFlashlight"/> event.
 /// </summary>
-public class PlayerToggledFlashlightEventArgs : EventArgs, IPlayerEvent, IItemEvent
+public class PlayerToggledFlashlightEventArgs : EventArgs, IPlayerEvent, ILightItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerToggledFlashlightEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who toggled the flashlight.</param>
+    /// <param name="hub">The player who toggled the flashlight.</param>
     /// <param name="item">The flashlight item.</param>
     /// <param name="newState">New state of the flashlight.</param>
-    public PlayerToggledFlashlightEventArgs(ReferenceHub player, ItemBase item, bool newState)
+    public PlayerToggledFlashlightEventArgs(ReferenceHub hub, ToggleableLightItemBase item, bool newState)
     {
-        Player = Player.Get(player);
-        Item = Item.Get(item);
+        Player = Player.Get(hub);
+        LightItem = LightItem.Get(item);
         NewState = newState;
     }
 
@@ -31,10 +31,14 @@ public class PlayerToggledFlashlightEventArgs : EventArgs, IPlayerEvent, IItemEv
     /// <summary>
     /// Gets the flashlight item.
     /// </summary>
-    public Item Item { get; }
+    public LightItem LightItem { get; }
 
     /// <summary>
     /// Gets the new state of the flashlight.
     /// </summary>
     public bool NewState { get; }
+
+    /// <inheritdoc cref="LightItem"/>
+    [Obsolete($"Use {nameof(LightItem)} instead")]
+    public Item Item => LightItem;
 }

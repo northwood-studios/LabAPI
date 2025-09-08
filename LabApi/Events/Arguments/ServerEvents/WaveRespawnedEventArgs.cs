@@ -1,5 +1,5 @@
 using LabApi.Features.Wrappers;
-using PlayerRoles;
+using Respawning.Waves;
 using System;
 using System.Collections.Generic;
 
@@ -13,18 +13,18 @@ public class WaveRespawnedEventArgs : EventArgs
     /// <summary>
     /// Initializes a new instance of the <see cref="WaveRespawnedEventArgs"/> class.
     /// </summary>
-    /// <param name="team">The team that was respawned.</param>
+    /// <param name="wave">The wave that is respawning.</param>
     /// <param name="players">The players that were respawned.</param>
-    public WaveRespawnedEventArgs(Team team, List<Player> players)
+    public WaveRespawnedEventArgs(SpawnableWaveBase wave, List<Player> players)
     {
         Players = players;
-        Team = team;
+        Wave = RespawnWaves.Get(wave);
     }
 
     /// <summary>
-    /// The team that respawned.
+    /// Team wave is respawning.
     /// </summary>
-    public Team Team { get; }
+    public RespawnWave Wave { get; }
 
     /// <summary>
     /// The players that were respawned.<br/>

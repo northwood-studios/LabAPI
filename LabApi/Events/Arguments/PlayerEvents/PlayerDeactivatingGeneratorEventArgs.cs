@@ -8,17 +8,17 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DeactivatingGenerator"/> event.
 /// </summary>
-public class PlayerDeactivatingGeneratorEventArgs : EventArgs, ICancellableEvent
+public class PlayerDeactivatingGeneratorEventArgs : EventArgs, IGeneratorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDeactivatingGeneratorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is deactivating the generator.</param>
+    /// <param name="hub">The player who is deactivating the generator.</param>
     /// <param name="generator">The generator.</param>
-    public PlayerDeactivatingGeneratorEventArgs(ReferenceHub player, Scp079Generator generator)
+    public PlayerDeactivatingGeneratorEventArgs(ReferenceHub hub, Scp079Generator generator)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Generator = Generator.Get(generator);
     }
 

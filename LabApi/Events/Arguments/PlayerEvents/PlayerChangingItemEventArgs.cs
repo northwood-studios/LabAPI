@@ -8,18 +8,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ChangingItem"/> event.
 /// </summary>
-public class PlayerChangingItemEventArgs : EventArgs, ICancellableEvent
+public class PlayerChangingItemEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerChangingItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is changing item.</param>
+    /// <param name="hub">The player who is changing item.</param>
     /// <param name="oldItem">The old item.</param>
     /// <param name="newItem">The new item that is being equipped.</param>
-    public PlayerChangingItemEventArgs(ReferenceHub player, ItemBase? oldItem, ItemBase? newItem)
+    public PlayerChangingItemEventArgs(ReferenceHub hub, ItemBase? oldItem, ItemBase? newItem)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         OldItem = Item.Get(oldItem);
         NewItem = Item.Get(newItem);
     }

@@ -1,7 +1,10 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using MapGeneration.Distributors;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using BaseExperimentalWeaponLocler = MapGeneration.Distributors.ExperimentalWeaponLocker;
+using System.Security;
+using BaseExperimentalWeaponLocker = MapGeneration.Distributors.ExperimentalWeaponLocker;
 
 namespace LabApi.Features.Wrappers;
 
@@ -13,7 +16,7 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// Contains all the cached experimental weapon lockers, accessible through their <see cref="BaseExperimentalWeaponLocler"/>.
     /// </summary>
-    public new static Dictionary<BaseExperimentalWeaponLocler, ExperimentalWeaponLocker> Dictionary { get; } = [];
+    public new static Dictionary<BaseExperimentalWeaponLocker, ExperimentalWeaponLocker> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="ExperimentalWeaponLocker"/> instances.
@@ -23,12 +26,14 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
-    /// <param name="baseExperimentalWeaponLocler">The base <see cref="baseExperimentalWeaponLocler"/> object.</param>
-    internal ExperimentalWeaponLocker(BaseExperimentalWeaponLocler baseExperimentalWeaponLocler)
-        : base(baseExperimentalWeaponLocler)
+    /// <param name="baseExperimentalWeaponLocker">The base <see cref="BaseExperimentalWeaponLocker"/> object.</param>
+    internal ExperimentalWeaponLocker(BaseExperimentalWeaponLocker baseExperimentalWeaponLocker)
+        : base(baseExperimentalWeaponLocker)
     {
-        Base = baseExperimentalWeaponLocler;
-        Dictionary.Add(baseExperimentalWeaponLocler, this);
+        Base = baseExperimentalWeaponLocker;
+
+        if (CanCache)
+            Dictionary.Add(baseExperimentalWeaponLocker, this);
     }
 
     /// <summary>
@@ -41,10 +46,9 @@ public class ExperimentalWeaponLocker : Locker
     }
 
     /// <summary>
-    /// The base <see cref="BaseExperimentalWeaponLocler"/> object.
+    /// The base <see cref="BaseExperimentalWeaponLocker"/> object.
     /// </summary>
-    public new BaseExperimentalWeaponLocler Base { get; }
-
+    public new BaseExperimentalWeaponLocker Base { get; }
 
     /// <summary>
     /// The experimental weapon's chamber.
@@ -52,7 +56,7 @@ public class ExperimentalWeaponLocker : Locker
     public LockerChamber Chamber => Chambers.First();
 
     /// <summary>
-    /// Gets or sets whether or not the experimental weapon locker is open.
+    /// Gets or sets whether the experimental weapon locker is open.
     /// </summary>
     public bool IsOpen
     {
@@ -61,14 +65,14 @@ public class ExperimentalWeaponLocker : Locker
     }
 
     /// <summary>
-    /// Gets whether or not the experimental weapon locker can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the experimental weapon locker can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Chamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the <see cref="Player"/> to open/close the experimental weapon locker.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the <see cref="Player"/> to open/close the experimental weapon locker.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Chamber.RequiredPermissions;
         set => Chamber.RequiredPermissions = value;
@@ -133,5 +137,20 @@ public class ExperimentalWeaponLocker : Locker
     /// <summary>
     /// Plays the Access Denied sound for the experimental weapon locker.
     /// </summary>
-    public void PlayDeniedSound() => Chamber.PlayDeniedSound();
+    /// <param name="flags">The <see cref="DoorPermissionFlags"/> that will be shown on the keycard reader.</param>
+    public void PlayDeniedSound(DoorPermissionFlags flags = DoorPermissionFlags.None) => Chamber.PlayDeniedSound(flags);
+
+    /// <summary>
+    /// Gets the experimental weapon locker wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="BaseExperimentalWeaponLocker"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="baseLocker">The <see cref="Base"/> of the experimental weapon locker.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(baseLocker))]
+    public static ExperimentalWeaponLocker? Get(BaseExperimentalWeaponLocker? baseLocker)
+    {
+        if (baseLocker == null)
+            return null;
+
+        return Dictionary.TryGetValue(baseLocker, out ExperimentalWeaponLocker found) ? found : (ExperimentalWeaponLocker)CreateStructureWrapper(baseLocker);
+    }
 }

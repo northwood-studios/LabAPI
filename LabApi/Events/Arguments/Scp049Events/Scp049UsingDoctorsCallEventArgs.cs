@@ -1,20 +1,21 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp049Events.UsingDoctorsCall"/> event.
 /// </summary>
-public class Scp049UsingDoctorsCallEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp049UsingDoctorsCallEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp049UsingDoctorsCallEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-049 player instance.</param>
-    public Scp049UsingDoctorsCallEventArgs(ReferenceHub player)
+    /// <param name="hub">The SCP-049 player instance.</param>
+    public Scp049UsingDoctorsCallEventArgs(ReferenceHub hub)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         IsAllowed = true;
     }
 

@@ -1,6 +1,6 @@
 ﻿using GameCore;
 using Generators;
-using MapGeneration;
+using LabApi.Events.Handlers;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ public static class Warhead
     [InitializeWrapper]
     internal static void Initialize()
     {
-        SeedSynchronizer.OnGenerationFinished += OnMapGenerated;
+        ServerEvents.WaitingForPlayers += OnWaitingForPlayers;
         // TODO: Might want to handle this a different way as we are missing on destroy
     }
 
@@ -24,13 +24,13 @@ public static class Warhead
     /// The base <see cref="AlphaWarheadController"/>.
     /// Null if they have not been created yet, see <see cref="Exists"/>.
     /// </summary>
-    public static AlphaWarheadController? BaseController { get; private set; }
+    public static AlphaWarheadController? BaseController => AlphaWarheadController.Singleton;
 
     /// <summary>
     /// The base <see cref="AlphaWarheadNukesitePanel"/>.
     /// Null if they have not been created yet, see <see cref="Exists"/>.
     /// </summary>
-    public static AlphaWarheadNukesitePanel? BaseNukesitePanel { get; private set; }
+    public static AlphaWarheadNukesitePanel? BaseNukesitePanel => AlphaWarheadNukesitePanel.Singleton;
 
     /// <summary>
     /// The base <see cref="AlphaWarheadOutsitePanel"/>.
@@ -65,16 +65,12 @@ public static class Warhead
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="AlphaWarheadOutsitePanel"/> has had a keycard unlock the button.
+    /// Gets or sets a value indicating whether the surface panel has had a keycard unlock the button.
     /// </summary>
     public static bool IsAuthorized
     {
-        get => BaseOutsidePanel?.keycardEntered ?? false;
-        set
-        {
-            if (BaseOutsidePanel != null)
-                BaseOutsidePanel.NetworkkeycardEntered = value;
-        }
+        get => AlphaWarheadActivationPanel.IsUnlocked;
+        set => AlphaWarheadActivationPanel.IsUnlocked = value;
     }
 
     /// <summary>
@@ -127,6 +123,34 @@ public static class Warhead
     }
 
     /// <summary>
+    /// Forces DMS sequence to count down even if conditions are not met.
+    /// </summary>
+    public static bool ForceCountdownToggle
+    {
+        get => DeadmanSwitch.ForceCountdownToggle;
+        set => DeadmanSwitch.ForceCountdownToggle = value;
+    }
+
+    /// <summary>
+	/// Indicates how much time is left for the DMS to activate.
+	/// Value is capped by <see cref="DeadManSwitchMaxTime"/>.
+    /// </summary>
+    public static float DeadManSwitchRemaining
+    {
+        get => DeadmanSwitch.CountdownTimeLeft;
+        set => DeadmanSwitch.CountdownTimeLeft = value;
+    }
+
+    /// <summary>
+    /// Indicates the amount of time it takes for the DMS to activate.
+    /// </summary>
+    public static float DeadManSwitchMaxTime
+    {
+        get => DeadmanSwitch.CountdownMaxTime;
+        set => DeadmanSwitch.CountdownMaxTime = value;
+    }
+
+    /// <summary>
     /// Gets or sets the value for which <see cref="DetonationScenario"/> to use.
     /// </summary>
     /// <remarks>
@@ -137,7 +161,7 @@ public static class Warhead
     {
         get
         {
-            if (BaseController == null) 
+            if (BaseController == null)
                 return new DetonationScenario();
 
             return ScenarioType switch
@@ -150,7 +174,7 @@ public static class Warhead
         }
         set
         {
-            if (BaseController == null) 
+            if (BaseController == null)
                 return;
 
             if (value.Equals(default))
@@ -236,7 +260,7 @@ public static class Warhead
     /// </summary>
     public static void OpenBlastDoors()
     {
-        foreach (var door in BlastDoor.Instances)
+        foreach (BlastDoor door in BlastDoor.Instances)
             door.ServerSetTargetState(true);
     }
 
@@ -245,25 +269,20 @@ public static class Warhead
     /// </summary>
     public static void CloseBlastDoors()
     {
-        foreach (var door in BlastDoor.Instances)
+        foreach (BlastDoor door in BlastDoor.Instances)
             door.ServerSetTargetState(false);
     }
 
     /// <summary>
     /// Plays the warhead detonation effect on all clients in the facility.
     /// </summary>
-    public static void Shake()
-    {
-        BaseController?.RpcShake(false);
-    }
+    public static void Shake() => BaseController?.RpcShake(false);
 
     /// <summary>
     /// Handles the creation of the warhead components.
     /// </summary>
-    private static void OnMapGenerated()
+    private static void OnWaitingForPlayers()
     {
-        BaseController = UnityEngine.Object.FindObjectOfType<AlphaWarheadController>();
-        BaseNukesitePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
         BaseOutsidePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
 
         StartScenarios = BaseController.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
@@ -276,8 +295,6 @@ public static class Warhead
     /// </summary>
     private static void OnMapDestroyed()
     {
-        BaseController = null;
-        BaseNukesitePanel = null;
         BaseOutsidePanel = null;
     }
 
@@ -289,8 +306,9 @@ public static class Warhead
         /// <summary>
         /// Internal constructor to prevent external instantiation.
         /// </summary>
-        /// <param name="timeToDetonate"></param>
-        /// <param name="additionalTime"></param>
+        /// <param name="detonationScenario">The <see cref="DetonationScenario"/>.</param>
+        /// <param name="id">The <see cref="byte"/> id of the scenario.</param>
+        /// <param name="type">The <see cref="WarheadScenarioType"/>.</param>
         internal DetonationScenario(AlphaWarheadController.DetonationScenario detonationScenario, byte id, WarheadScenarioType type)
         {
             TimeToDetonate = detonationScenario.TimeToDetonate;

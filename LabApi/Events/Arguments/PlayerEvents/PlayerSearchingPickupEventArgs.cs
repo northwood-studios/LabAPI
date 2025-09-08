@@ -13,12 +13,12 @@ public class PlayerSearchingPickupEventArgs : EventArgs, IPlayerEvent, IPickupEv
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSearchingPickupEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is searching for the pickup.</param>
+    /// <param name="hub">The player who is searching for the pickup.</param>
     /// <param name="pickup">The pickup being searched.</param>
-    public PlayerSearchingPickupEventArgs(ReferenceHub player, ItemPickupBase pickup)
+    public PlayerSearchingPickupEventArgs(ReferenceHub hub, ItemPickupBase pickup)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Pickup = Pickup.Get(pickup);
     }
 

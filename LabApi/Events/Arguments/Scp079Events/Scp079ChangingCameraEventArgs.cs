@@ -8,17 +8,17 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.ChangingCamera"/> event.
 /// </summary>
-public class Scp079ChangingCameraEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp079ChangingCameraEventArgs : EventArgs, IPlayerEvent, ICameraEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079ChangingCameraEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="camera">The affected camera instance.</param>
-    public Scp079ChangingCameraEventArgs(ReferenceHub player, Scp079Camera camera)
+    public Scp079ChangingCameraEventArgs(ReferenceHub hub, Scp079Camera camera)
     {
-        Player = Player.Get(player);
-        Camera = camera;
+        Player = Player.Get(hub);
+        Camera = Camera.Get(camera);
         IsAllowed = true;
     }
 
@@ -30,7 +30,7 @@ public class Scp079ChangingCameraEventArgs : EventArgs, ICancellableEvent, IPlay
     /// <summary>
     /// The affected camera instance.
     /// </summary>
-    public Scp079Camera Camera { get; set; }
+    public Camera Camera { get; set; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

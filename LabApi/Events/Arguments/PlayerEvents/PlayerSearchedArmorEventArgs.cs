@@ -1,24 +1,24 @@
-﻿using InventorySystem.Items.Pickups;
-using LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using BaseBodyArmorPickup = InventorySystem.Items.Armor.BodyArmorPickup;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.SearchedArmor"/> event.
 /// </summary>
-public class PlayerSearchedArmorEventArgs : EventArgs, IPlayerEvent, IPickupEvent
+public class PlayerSearchedArmorEventArgs : EventArgs, IPlayerEvent, IBodyArmorPickupEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSearchedArmorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who searched for armor pickup.</param>
+    /// <param name="hub">The player who searched for armor pickup.</param>
     /// <param name="pickup">The armor pickup.</param>
-    public PlayerSearchedArmorEventArgs(ReferenceHub player, ItemPickupBase pickup)
+    public PlayerSearchedArmorEventArgs(ReferenceHub hub, BaseBodyArmorPickup pickup)
     {
-        Player = Player.Get(player);
-        Pickup = Pickup.Get(pickup);
+        Player = Player.Get(hub);
+        BodyArmorPickup = BodyArmorPickup.Get(pickup);
     }
 
     /// <summary>
@@ -29,5 +29,9 @@ public class PlayerSearchedArmorEventArgs : EventArgs, IPlayerEvent, IPickupEven
     /// <summary>
     /// Gets the armor pickup.
     /// </summary>
-    public Pickup Pickup { get; }
+    public BodyArmorPickup BodyArmorPickup { get; }
+
+    /// <inheritdoc cref="BodyArmorPickup"/>
+    [Obsolete($"Use {nameof(BodyArmorPickup)} instead")]
+    public Pickup Pickup => BodyArmorPickup;
 }

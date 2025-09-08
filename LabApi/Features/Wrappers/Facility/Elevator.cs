@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Generators;
+using BaseElevatorDoor = Interactables.Interobjects.ElevatorDoor;
 
 namespace LabApi.Features.Wrappers;
 
@@ -49,6 +50,16 @@ public class Elevator
         ElevatorChamber.OnElevatorSpawned += (chamber) => _ = new Elevator(chamber);
         ElevatorChamber.OnElevatorRemoved += (chamber) => Dictionary.Remove(chamber);
     }
+
+    /// <summary>
+    /// Gets all the doors associated with this elevator.
+    /// </summary>
+    public IEnumerable<ElevatorDoor> Doors => BaseElevatorDoor.GetDoorsForGroup(Group).Select(ElevatorDoor.Get)!;
+
+    /// <summary>
+    /// Gets all the rooms associated with this elevator.
+    /// </summary>
+    public IEnumerable<Room> Rooms => Doors.SelectMany(static x => x.Rooms);
 
     /// <summary>
     /// Gets the current destination / location of the elevator.
@@ -120,6 +131,11 @@ public class Elevator
         set => Base.DynamicAdminLock = value;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Elevator: Group={Group}, IsReady={IsReady}, GoingUp={GoingUp}, CurrentSequence={CurrentSequence}]";
+    }
 
     /// <summary>
     /// Locks every door of every elevator on map.
@@ -180,5 +196,5 @@ public class Elevator
     /// </summary>
     /// <param name="group">The specified elevator group.</param>
     /// <returns>Enumerable where the group is equal to the one specified.</returns>
-    public static IEnumerable<Elevator>? GetByGroup(ElevatorGroup group) => List.Where(n => n.Group == group);
+    public static IEnumerable<Elevator> GetByGroup(ElevatorGroup group) => List.Where(n => n.Group == group);
 }

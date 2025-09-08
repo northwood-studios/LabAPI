@@ -1,4 +1,5 @@
 using LabApi.Features.Console;
+using LabApi.Loader.Features.Plugins.Configuration;
 using NorthwoodLib.Pools;
 using System;
 using System.Reflection;
@@ -102,9 +103,25 @@ public static class EventManager
         StringBuilder stringBuilder = StringBuilderPool.Shared.Rent(eventHandler.Method.Name + ":");
 
         // We iterate through all the properties of the EventArgs and append them to the StringBuilder.
-        foreach (PropertyInfo property in typeof(TEventArgs).GetProperties())
+        PropertyInfo[] properties = typeof(TEventArgs).GetProperties();
+        if (properties.Length > 0)
+            stringBuilder.Append("\n");
+
+        foreach (PropertyInfo property in properties)
         {
-            stringBuilder.AppendLine("\t- " + property.Name + ": " + property.GetValue(args));
+            try
+            {
+                object value = property.GetValue(args);
+                stringBuilder.AppendLine("\t- " + property.Name + ": " + value.ToString());
+            }
+            catch (NotSupportedException)
+            {
+                stringBuilder.AppendLine("\t- " + property.Name + ": <Value get by reflection not supported>");
+            }
+            catch (Exception ex)
+            {
+                stringBuilder.AppendLine("\t- " + property.Name + ": <Exception: " + ex.GetType().Name + ">");
+            }
         }
 
         // As this one has parameters, we can return the method name and the parameters' types.
@@ -118,5 +135,10 @@ public static class EventManager
     /// <param name="exception">The <see cref="Exception"/> that occurred.</param>
     /// <returns></returns>
     public static string FormatErrorMessage(Delegate eventHandler, Exception exception)
-        => $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
+    {
+        if (eventHandler.Target == null) // Static methods
+            return $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Method.DeclaringType}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
+
+        return $"'{exception.GetType().Name}' occured while invoking '{eventHandler.Method.Name}' on '{eventHandler.Target.GetType().FullName}': '{exception.Message}', stack trace:\n{exception.StackTrace}";
+    }
 }

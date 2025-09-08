@@ -7,18 +7,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReportingPlayer"/> event.
 /// </summary>
-public class PlayerReportingPlayerEventArgs : EventArgs, ICancellableEvent
+public class PlayerReportingPlayerEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReportingPlayerEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is reporting.</param>
+    /// <param name="hub">The player who is reporting.</param>
     /// <param name="target">The player who is being reported.</param>
     /// <param name="reason">The reason why was player reported.</param>
-    public PlayerReportingPlayerEventArgs(ReferenceHub player, ReferenceHub target, string reason)
+    public PlayerReportingPlayerEventArgs(ReferenceHub hub, ReferenceHub target, string reason)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         Reason = reason;
     }

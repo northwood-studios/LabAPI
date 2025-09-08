@@ -1,20 +1,21 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp096Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp096Events.StartCrying"/> event.
 /// </summary>
-public class Scp096StartCryingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp096StartCryingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096StartCryingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
-    public Scp096StartCryingEventArgs(ReferenceHub player)
+    /// <param name="hub">The SCP-096 player instance.</param>
+    public Scp096StartCryingEventArgs(ReferenceHub hub)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         IsAllowed = true;
     }
 

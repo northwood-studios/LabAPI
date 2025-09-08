@@ -1,22 +1,23 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp096Events;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp096Events.AddingTarget"/> event.
 /// </summary>
-public class Scp096AddingTargetEventArgs : EventArgs, ICancellableEvent, IPlayerEvent, ITargetEvent
+public class Scp096AddingTargetEventArgs : EventArgs, IPlayerEvent, ITargetEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096AddingTargetEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
+    /// <param name="hub">The SCP-096 player instance.</param>
     /// <param name="target">The target player instance.</param>
     /// <param name="wasLooking">Whether the target looked at SCP-096.</param>
-    public Scp096AddingTargetEventArgs(ReferenceHub player, ReferenceHub target, bool wasLooking)
+    public Scp096AddingTargetEventArgs(ReferenceHub hub, ReferenceHub target, bool wasLooking)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         WasLooking = wasLooking;
         IsAllowed = true;

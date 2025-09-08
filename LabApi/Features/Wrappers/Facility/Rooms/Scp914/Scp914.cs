@@ -1,6 +1,5 @@
 ﻿using InventorySystem;
 using InventorySystem.Items;
-using InventorySystem.Items.Pickups;
 using LabApi.Features.Interfaces;
 using MapGeneration;
 using Scp914;
@@ -21,7 +20,7 @@ public class Scp914 : Room
     /// Gets the current <see cref="Scp914"/> instance.
     /// </summary>
     /// <remarks>
-    /// May be null if the map has not been generated yet or was previously destroyed.
+    /// May be <see langword="null"/> if the map has not been generated yet or was previously destroyed.
     /// </remarks>
     public static Scp914? Instance { get; private set; }
 
@@ -35,9 +34,10 @@ public class Scp914 : Room
     /// </summary>
     /// <param name="roomIdentifier">The room identifier for the pocket dimension.</param>
     internal Scp914(RoomIdentifier roomIdentifier)
-        :base(roomIdentifier)
+        : base(roomIdentifier)
     {
-        Instance = this;
+        if (CanCache)
+            Instance = this;
     }
 
     /// <summary>
@@ -92,11 +92,11 @@ public class Scp914 : Room
             if (value)
                 Scp914Controller.Singleton.Upgrade();
             else
-            { 
+            {
                 Scp914Controller.Singleton.IsUpgrading = value;
                 SequenceCooldown = 0.0f;
+            }
         }
-    }
     }
 
     /// <summary>
@@ -195,15 +195,14 @@ public class Scp914 : Room
     /// Interact with the SCP-914 machine.
     /// </summary>
     /// <param name="interactCode">The type of interaction.</param>
-    /// <param name="player">The <see cref="Player"/> that triggered the interaction or null if not specified.</param>
+    /// <param name="player">The <see cref="Player"/> that triggered the interaction or <see langword="null"/> if not specified.</param>
     /// <remarks>
     /// Interacting will also trigger SCP-914 related events.
     /// If you would not like to trigger events use <see cref="KnobSetting"/> and <see cref="IsUpgrading"/> instead.
     /// </remarks>
     public static void Interact(Scp914InteractCode interactCode, Player? player = null)
     {
-        if (player == null)
-            player = Server.Host;
+        player ??= Server.Host;
 
         Scp914Controller.Singleton.ServerInteract(player.ReferenceHub, (byte)interactCode);
     }
@@ -213,15 +212,13 @@ public class Scp914 : Room
     /// </summary>
     /// <param name="sound">The sound to play.</param>
     public static void PlaySound(Scp914Sound sound)
-    {
-        Scp914Controller.Singleton.RpcPlaySound((byte)sound);
-    }
+        => Scp914Controller.Singleton.RpcPlaySound((byte)sound);
 
     /// <summary>
     /// Gets the <see cref="IScp914ItemProcessor"/> for the specified type.
     /// </summary>
     /// <param name="type">The <see cref="ItemType"/> to get the associated <see cref="IScp914ItemProcessor"/>.</param>
-    /// <returns>The associated <see cref="IScp914ItemProcessor"/> for the <see cref="ItemType"/> if found, otherwise null.</returns>
+    /// <returns>The associated <see cref="IScp914ItemProcessor"/> for the <see cref="ItemType"/> if found, otherwise <see langword="null"/>.</returns>
     /// <remarks>
     /// If the item processor is a base game <see cref="Scp914ItemProcessor"/>, <see cref="IScp914ItemProcessor"/> will be a <see cref="BaseGameItemProcessor"/>.
     /// </remarks>
@@ -232,17 +229,16 @@ public class Scp914 : Room
 
         if (ItemProcessorCache.TryGetValue(item, out var processor))
             return processor;
-        else if(item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
-        {
-            if (baseProcessor is ItemProcessorAdapter adaptor)
-                ItemProcessorCache[item] = adaptor.Processor;
-            else
-                ItemProcessorCache[item] = new BaseGameItemProcessor(baseProcessor);
 
-            return ItemProcessorCache[item];
-        }
-        else
+        if (!item.TryGetComponent(out Scp914ItemProcessor baseProcessor))
             return null;
+
+        if (baseProcessor is ItemProcessorAdapter adaptor)
+            ItemProcessorCache[item] = adaptor.Processor;
+        else
+            ItemProcessorCache[item] = new BaseGameItemProcessor(baseProcessor);
+
+        return ItemProcessorCache[item];
     }
 
     /// <summary>
@@ -331,7 +327,7 @@ public class Scp914 : Room
     /// </remarks>
     public static void SetItemProcessor<T>(Func<Item, bool> predicate) where T : Scp914ItemProcessor, new()
     {
-        foreach(ItemType type in Enum.GetValues(typeof(ItemType)))
+        foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
         {
             if (!InventoryItemLoader.TryGetItem(type, out ItemBase item) || !predicate(Item.Get(item)))
                 continue;

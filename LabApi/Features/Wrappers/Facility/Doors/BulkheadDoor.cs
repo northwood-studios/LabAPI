@@ -27,11 +27,13 @@ public class BulkheadDoor : Gate
     internal BulkheadDoor(PryableDoor pryableDoor)
         : base(pryableDoor)
     {
-        Dictionary.Add(pryableDoor, this);
         Base = pryableDoor;
         DoorCrusherExtension extension = pryableDoor.gameObject.GetComponent<DoorCrusherExtension>();
-        if(extension != null)
+        if (extension != null)
             Crusher = new DoorCrusher(extension);
+
+        if (CanCache)
+            Dictionary.Add(pryableDoor, this);
     }
 
     /// <summary>
@@ -62,7 +64,7 @@ public class BulkheadDoor : Gate
     /// <param name="pryableDoor">The <see cref="PryableDoor"/> of the door.</param>
     /// <returns>The requested door wrapper or null if the input was null.</returns>
     [return: NotNullIfNotNull(nameof(pryableDoor))]
-    public static BulkheadDoor? Get(PryableDoor? pryableDoor)
+    public new static BulkheadDoor? Get(PryableDoor? pryableDoor)
     {
         if (pryableDoor == null)
             return null;

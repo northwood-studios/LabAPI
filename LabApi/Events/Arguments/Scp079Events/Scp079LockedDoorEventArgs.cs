@@ -8,16 +8,16 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.LockedDoor"/> event.
 /// </summary>
-public class Scp079LockedDoorEventArgs : EventArgs, IPlayerEvent
+public class Scp079LockedDoorEventArgs : EventArgs, IPlayerEvent, IDoorEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079LockedDoorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="door">The affected door instance.</param>
-    public Scp079LockedDoorEventArgs(ReferenceHub player, DoorVariant door)
+    public Scp079LockedDoorEventArgs(ReferenceHub hub, DoorVariant door)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Door = Door.Get(door);
     }
 

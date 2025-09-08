@@ -24,10 +24,12 @@ public class Gate : Door
     /// </summary>
     /// <param name="pryableDoor">The base <see cref="PryableDoor"/> object.</param>
     internal Gate(PryableDoor pryableDoor)
-        :base(pryableDoor)
+        : base(pryableDoor)
     {
-        Dictionary.Add(pryableDoor, this);
         Base = pryableDoor;
+
+        if (CanCache)
+            Dictionary.Add(pryableDoor, this);
     }
 
     /// <summary>
@@ -45,7 +47,7 @@ public class Gate : Door
     public new PryableDoor Base { get; }
 
     /// <summary>
-    /// Gets or sets whether or not SCP-106 can pass through the door when its not closed and locked.
+    /// Gets or sets whether SCP-106 can pass through the door when its not closed and locked.
     /// </summary>
     public bool Is106Passable
     {
@@ -58,18 +60,12 @@ public class Gate : Door
     /// </summary>
     /// <param name="player">The player to pry the gate.</param>
     /// <returns>True if the player can pry the gate, otherwise false.</returns>
-    public bool TryPry(Player player)
-    {
-        return Base.TryPryGate(player.ReferenceHub);
-    }
+    public bool TryPry(Player player) => Base.TryPryGate(player.ReferenceHub);
 
     /// <summary>
     /// Play the Pry animation.
     /// </summary>
-    public void Pry()
-    {
-        Base.RpcPryGate();
-    }
+    public void Pry() => Base.RpcPryGate();
 
     /// <summary>
     /// Gets the <see cref="Gate"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.

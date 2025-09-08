@@ -26,7 +26,8 @@ public class RifleRackLocker : Locker
     internal RifleRackLocker(BaseLocker baseLocker)
         :base(baseLocker)
     {
-        Dictionary.Add(baseLocker, this);
+        if (CanCache)
+            Dictionary.Add(baseLocker, this);
     }
 
     /// <summary>
@@ -39,7 +40,7 @@ public class RifleRackLocker : Locker
     }
 
     /// <summary>
-    /// Gets or sets whether or not the rifle rack is open.
+    /// Gets or sets whether the rifle rack is open.
     /// </summary>
     public bool IsOpen
     {
@@ -48,14 +49,14 @@ public class RifleRackLocker : Locker
     }
     
     /// <summary>
-    /// Gets whether or not the rifle rack can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the rifle rack can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => MainChamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the player to open/close the rifle rack.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the player to open/close the rifle rack.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => MainChamber.RequiredPermissions;
         set => MainChamber.RequiredPermissions = value;

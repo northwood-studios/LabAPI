@@ -1,28 +1,28 @@
-﻿using InventorySystem.Items.Pickups;
-using LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+using BaseAmmoPickup = InventorySystem.Items.Firearms.Ammo.AmmoPickup;
 
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.PickedUpAmmo"/> event.
 /// </summary>
-public class PlayerPickedUpAmmoEventArgs : EventArgs, IPickupEvent
+public class PlayerPickedUpAmmoEventArgs : EventArgs, IPlayerEvent, IAmmoPickupEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPickedUpAmmoEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player that picked up the ammo.</param>
+    /// <param name="hub">The player that picked up the ammo.</param>
     /// <param name="ammoType">Type of the ammo.</param>
     /// <param name="ammoAmount">The amount that is was picked up.</param>
     /// <param name="pickup">The pickup object.</param>
-    public PlayerPickedUpAmmoEventArgs(ReferenceHub player, ItemType ammoType, ushort ammoAmount, ItemPickupBase pickup)
+    public PlayerPickedUpAmmoEventArgs(ReferenceHub hub, ItemType ammoType, ushort ammoAmount, BaseAmmoPickup pickup)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         AmmoType = ammoType;
         AmmoAmount = ammoAmount;
-        Pickup = Pickup.Get(pickup);
+        AmmoPickup = AmmoPickup.Get(pickup);
     }
 
     /// <summary>
@@ -41,7 +41,11 @@ public class PlayerPickedUpAmmoEventArgs : EventArgs, IPickupEvent
     public ushort AmmoAmount { get; }
 
     /// <summary>
-    /// Gets the pickup object.
+    /// Gets the ammo pickup object.
     /// </summary>
-    public Pickup? Pickup { get; }
+    public AmmoPickup? AmmoPickup { get; }
+
+    /// <inheritdoc cref="AmmoPickup"/>
+    [Obsolete($"Use {nameof(AmmoPickup)} instead")]
+    public Pickup? Pickup => AmmoPickup;
 }

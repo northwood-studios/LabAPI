@@ -18,6 +18,11 @@ public static partial class ServerEvents
     public static event LabEventHandler? RoundRestarted;
 
     /// <summary>
+    /// Gets called when round end conditions are checked.
+    /// </summary>
+    public static event LabEventHandler<RoundEndingConditionsCheckEventArgs>? RoundEndingConditionsCheck;
+
+    /// <summary>
     /// Gets called when the round is ending.
     /// </summary>
     public static event LabEventHandler<RoundEndingEventArgs>? RoundEnding;
@@ -78,6 +83,16 @@ public static partial class ServerEvents
     public static event LabEventHandler<CommandExecutedEventArgs>? CommandExecuted;
 
     /// <summary>
+    /// Gets called when the server is queuing a C.A.S.S.I.E SCP termination announcement.
+    /// </summary>
+    public static event LabEventHandler<CassieQueuingScpTerminationEventArgs>? CassieQueuingScpTermination;
+
+    /// <summary>
+    /// Gets called when the server has queued a C.A.S.S.I.E SCP termination announcement.
+    /// </summary>
+    public static event LabEventHandler<CassieQueuedScpTerminationEventArgs>? CassieQueuedScpTermination;
+
+    /// <summary>
     /// Gets called when the server is respawning a wave.
     /// </summary>
     public static event LabEventHandler<WaveRespawningEventArgs>? WaveRespawning;
@@ -123,6 +138,26 @@ public static partial class ServerEvents
     public static event LabEventHandler<MapGeneratedEventArgs>? MapGenerated;
 
     /// <summary>
+    /// Gets called when the server has created a new pickup.
+    /// </summary>
+    public static event LabEventHandler<PickupCreatedEventArgs>? PickupCreated;
+
+    /// <summary>
+    /// Gets called when the server has destroyed a pickup.
+    /// </summary>
+    public static event LabEventHandler<PickupDestroyedEventArgs>? PickupDestroyed;
+
+    /// <summary>
+    /// Gets called when the server is sending an Admin Chat message.
+    /// </summary>
+    public static event LabEventHandler<SendingAdminChatEventArgs>? SendingAdminChat;
+
+    /// <summary>
+    /// Gets called when the server sent an Admin Chat message.
+    /// </summary>
+    public static event LabEventHandler<SentAdminChatEventArgs>? SentAdminChat;
+
+    /// <summary>
     /// Gets called when the server is spawning item on map.
     /// </summary>
     public static event LabEventHandler<ItemSpawningEventArgs>? ItemSpawning;
@@ -143,14 +178,24 @@ public static partial class ServerEvents
     public static event LabEventHandler<CassieAnnouncedEventArgs>? CassieAnnounced;
 
     /// <summary>
-    /// Gets called when the server will explode grenade.
+    /// Gets called when the server will explode projectile.
     /// </summary>
-    public static event LabEventHandler<GrenadeExplodingEventArgs>? GrenadeExploding;
+    public static event LabEventHandler<ProjectileExplodingEventArgs>? ProjectileExploding;
 
     /// <summary>
-    /// Gets called when the server exploded grenade.
+    /// Gets called when the server exploded projectile.
     /// </summary>
-    public static event LabEventHandler<GrenadeExplodedEventArgs>? GrenadeExploded;
+    public static event LabEventHandler<ProjectileExplodedEventArgs>? ProjectileExploded;
+
+    /// <summary>
+    /// Gets called when harmable explosion is spawning.
+    /// </summary>
+    public static event LabEventHandler<ExplosionSpawningEventArgs>? ExplosionSpawning;
+
+    /// <summary>
+    /// Gets called when explosion has spawned.
+    /// </summary>
+    public static event LabEventHandler<ExplosionSpawnedEventArgs>? ExplosionSpawned;
 
     /// <summary>
     /// Gets called when the server will activate generator.
@@ -161,4 +206,9 @@ public static partial class ServerEvents
     /// Gets called when the server activated generator.
     /// </summary>
     public static event LabEventHandler<GeneratorActivatedEventArgs>? GeneratorActivated;
+
+    /// <summary>
+    /// Gets called when elevator's sequence has changed.
+    /// </summary>
+    public static event LabEventHandler<ElevatorSequenceChangedEventArgs>? ElevatorSequenceChanged;
 }

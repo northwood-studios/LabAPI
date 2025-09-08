@@ -9,19 +9,19 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractedLocker"/> event.
 /// </summary>
-public class PlayerInteractedLockerEventArgs : EventArgs, IPlayerEvent
+public class PlayerInteractedLockerEventArgs : EventArgs, IPlayerEvent, ILockerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedLockerEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is interacted with the locker.</param>
+    /// <param name="hub">The player who is interacted with the locker.</param>
     /// <param name="locker">The locker that was interacted with.</param>
     /// <param name="chamber">The chamber that was targeted.</param>
     /// <param name="canOpen">Whether the player was allowed to open it.</param>
-    public PlayerInteractedLockerEventArgs(ReferenceHub player, BaseLocker locker, BaseLockerChamber chamber, bool canOpen)
+    public PlayerInteractedLockerEventArgs(ReferenceHub hub, BaseLocker locker, BaseLockerChamber chamber, bool canOpen)
     {
-        Player = Player.Get(player);
-        Locker = (Locker)Structure.Get(locker);
+        Player = Player.Get(hub);
+        Locker = Locker.Get(locker);
         Chamber = LockerChamber.Get(chamber);
         CanOpen = canOpen;
     }

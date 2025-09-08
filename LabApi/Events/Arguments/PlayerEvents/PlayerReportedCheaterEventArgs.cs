@@ -7,17 +7,17 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReportedCheater"/> event.
 /// </summary>
-public class PlayerReportedCheaterEventArgs : EventArgs, IPlayerEvent
+public class PlayerReportedCheaterEventArgs : EventArgs, IPlayerEvent, ITargetEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReportedCheaterEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who sent the report.</param>
+    /// <param name="hub">The player who sent the report.</param>
     /// <param name="target">The reported player.</param>
     /// <param name="reason">The reason why is the player being reported.</param>
-    public PlayerReportedCheaterEventArgs(ReferenceHub player, ReferenceHub target, string reason)
+    public PlayerReportedCheaterEventArgs(ReferenceHub hub, ReferenceHub target, string reason)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         Reason = reason;
     }

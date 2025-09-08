@@ -26,13 +26,15 @@ public class LockerChamber
     /// </summary>
     /// <param name="baseLockerChamber">The base <see cref="BaseLockerChamber"/> object.</param>
     /// <param name="locker">The <see cref="Wrappers.Locker"/> that has this chamber.</param>
-    /// <param name="id">The Id of the chamber inside the locker.</param>
+    /// <param name="id">The id of the chamber inside the locker.</param>
     internal LockerChamber(BaseLockerChamber baseLockerChamber, Locker locker, byte id)
     {
-        Dictionary.Add(baseLockerChamber, this);
         Base = baseLockerChamber;
         Locker = locker;
         Id = id;
+
+        if (locker.CanCache)
+            Dictionary.Add(baseLockerChamber, this);
     }
 
     /// <summary>
@@ -59,7 +61,7 @@ public class LockerChamber
     public byte Id { get; }
 
     /// <summary>
-    /// Gets or sets whether or not the chamber door is open.
+    /// Gets or sets whether the chamber door is open.
     /// </summary>
     public bool IsOpen
     {
@@ -72,19 +74,19 @@ public class LockerChamber
     }
 
     /// <summary>
-    /// Gets whether or not the chamber can be interacted by a <see cref="Player"/>.
+    /// Gets whether  the chamber can be interacted by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Base.CanInteract;
 
     /// <summary>
-    /// Gets whether or not the chamber contains no items.
+    /// Gets whether the chamber contains no items.
     /// </summary>
     public bool IsEmpty => Base.Content.All(x => x == null);
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the <see cref="Player"/> to open/close the chamber.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the <see cref="Player"/> to open/close the chamber.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Base.RequiredPermissions;
         set => Base.RequiredPermissions = value;
@@ -103,7 +105,7 @@ public class LockerChamber
     }
 
     /// <summary>
-    /// Gets whether or not <see cref="Pickup"/> instances are spawned on the client only when the chamber is first opened.
+    /// Gets whether <see cref="Pickup"/> instances are spawned on the client only when the chamber is first opened.
     /// </summary>
     public bool SpawnOnFirstOpening => Base.SpawnOnFirstChamberOpening;
 
@@ -125,7 +127,7 @@ public class LockerChamber
     public void Fill()
     {
         Locker.Base.FillChamber(Base);
-        foreach(ItemPickupBase pickupBase in Base.Content)
+        foreach (ItemPickupBase pickupBase in Base.Content)
         {
             if (!pickupBase.TryGetComponent(out Rigidbody rigidbody))
                 continue;
@@ -221,10 +223,8 @@ public class LockerChamber
     /// <summary>
     /// Plays the Access Denied sound for this chamber.
     /// </summary>
-    public void PlayDeniedSound()
-    {
-        Locker.Base.RpcPlayDenied(Id);
-    }
+    /// <param name="permissionUsed">The permissions used to attempt opening the door. Used to animate the door panel.</param>
+    public void PlayDeniedSound(DoorPermissionFlags permissionUsed) => Locker.Base.RpcPlayDenied(Id, permissionUsed);
 
     /// <summary>
     /// Gets the locker chamber wrapper from the <see cref="Dictionary"/> or creates a new if it doesn't exist and the provided <see cref="BaseLockerChamber"/> was not null.

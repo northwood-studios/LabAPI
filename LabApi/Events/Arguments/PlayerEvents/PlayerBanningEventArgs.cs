@@ -7,20 +7,20 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.Banning"/> event.
 /// </summary>
-public class PlayerBanningEventArgs : EventArgs, ICancellableEvent
+public class PlayerBanningEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerBanningEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is getting the ban.</param>
+    /// <param name="hub">The player who is getting the ban.</param>
     /// <param name="playerId">The ID of the player who is getting the ban.</param>
     /// <param name="issuer">The player who issued the ban.</param>
     /// <param name="reason">The reason of the ban.</param>
     /// <param name="duration">The duration of the ban.</param>
-    public PlayerBanningEventArgs(ReferenceHub? player, string playerId, ReferenceHub issuer, string reason, long duration)
+    public PlayerBanningEventArgs(ReferenceHub? hub, string playerId, ReferenceHub issuer, string reason, long duration)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         PlayerId = playerId;
         Issuer = Player.Get(issuer);
         Reason = reason;

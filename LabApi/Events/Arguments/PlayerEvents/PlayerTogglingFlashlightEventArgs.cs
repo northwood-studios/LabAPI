@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items;
+﻿using InventorySystem.Items.ToggleableLights;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
@@ -8,19 +8,19 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.TogglingFlashlight"/> event.
 /// </summary>
-public class PlayerTogglingFlashlightEventArgs : EventArgs, IPlayerEvent, IItemEvent, ICancellableEvent
+public class PlayerTogglingFlashlightEventArgs : EventArgs, IPlayerEvent, ILightItemEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerTogglingFlashlightEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is toggling the flashlight.</param>
+    /// <param name="hub">The player who is toggling the flashlight.</param>
     /// <param name="item">The flashlight that is being toggled.</param>
     /// <param name="newState">Whenever the flashlight is being toggled to on or off state.</param>
-    public PlayerTogglingFlashlightEventArgs(ReferenceHub player, ItemBase item, bool newState)
+    public PlayerTogglingFlashlightEventArgs(ReferenceHub hub, ToggleableLightItemBase item, bool newState)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
-        Item = Item.Get(item);
+        Player = Player.Get(hub);
+        LightItem = LightItem.Get(item);
         NewState = newState;
     }
 
@@ -32,7 +32,7 @@ public class PlayerTogglingFlashlightEventArgs : EventArgs, IPlayerEvent, IItemE
     /// <summary>
     /// Gets the flashlight that is being toggled.
     /// </summary>
-    public Item Item { get; }
+    public LightItem LightItem { get; }
 
     /// <summary>
     /// Gets whether the flashlight is being toggled to on or off state.
@@ -41,4 +41,8 @@ public class PlayerTogglingFlashlightEventArgs : EventArgs, IPlayerEvent, IItemE
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+
+    /// <inheritdoc cref="LightItem"/>
+    [Obsolete($"Use {nameof(LightItem)} instead")]
+    public Item Item => LightItem;
 }

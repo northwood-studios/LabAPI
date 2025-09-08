@@ -8,18 +8,20 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DroppingItem"/> event.
 /// </summary>
-public class PlayerDroppingItemEventArgs : EventArgs, ICancellableEvent
+public class PlayerDroppingItemEventArgs : EventArgs, ICancellableEvent, IItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDroppingItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is dropping the item.</param>
+    /// <param name="hub">The player who is dropping the item.</param>
     /// <param name="item">The item being dropped.</param>
-    public PlayerDroppingItemEventArgs(ReferenceHub player, ItemBase item)
+    /// <param name="isThrowing">Whether the item will be thrown.</param>
+    public PlayerDroppingItemEventArgs(ReferenceHub hub, ItemBase item, bool isThrowing)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Item = Item.Get(item);
+        Throw = isThrowing;
     }
 
     /// <summary>
@@ -31,6 +33,11 @@ public class PlayerDroppingItemEventArgs : EventArgs, ICancellableEvent
     /// Gets the item being dropped.
     /// </summary>
     public Item Item { get; }
+
+    /// <summary>
+    /// Gets or sets whether the <see cref="Pickup"/> will be thrown by the <see cref="Player"/>.
+    /// </summary>
+    public bool Throw { get; set; }
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }

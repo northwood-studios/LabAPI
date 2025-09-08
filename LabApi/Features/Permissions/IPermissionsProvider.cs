@@ -43,4 +43,11 @@ public interface IPermissionsProvider
     /// <param name="player">The player to remove the permissions from.</param>
     /// <param name="permissions">The permissions to remove.</param>
     public void RemovePermissions(Player player, params string[] permissions);
+
+    /// <summary>
+    /// Reloads the permissions.
+    /// </summary>
+    public void ReloadPermissions()
+    {
+    }
 }

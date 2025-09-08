@@ -8,17 +8,17 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractedShootingTarget"/> event.
 /// </summary>
-public class PlayerInteractedShootingTargetEventArgs : EventArgs, IPlayerEvent
+public class PlayerInteractedShootingTargetEventArgs : EventArgs, IPlayerEvent, IShootingTargetEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractedShootingTargetEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who interacted with the target.</param>
+    /// <param name="hub">The player who interacted with the target.</param>
     /// <param name="target">The shooting target.</param>
-    public PlayerInteractedShootingTargetEventArgs(ReferenceHub player, ShootingTarget target)
+    public PlayerInteractedShootingTargetEventArgs(ReferenceHub hub, ShootingTarget target)
     {
-        Player = Player.Get(player);
-        Target = target;
+        Player = Player.Get(hub);
+        ShootingTarget = ShootingTargetToy.Get(target);
     }
 
     /// <summary>
@@ -29,5 +29,9 @@ public class PlayerInteractedShootingTargetEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Gets the shooting target.
     /// </summary>
-    public ShootingTarget Target { get; }
+    public ShootingTargetToy ShootingTarget { get; }
+
+    /// <inheritdoc cref="ShootingTarget"/>
+    [Obsolete($"Use {nameof(ShootingTarget)} instead")]
+    public ShootingTarget Target => ShootingTarget.Base;
 }

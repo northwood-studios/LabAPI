@@ -1,10 +1,12 @@
 ﻿using Generators;
+using InventorySystem.Items.MicroHID;
 using MapGeneration.Distributors;
 using Mirror;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using Logger = LabApi.Features.Console.Logger;
 
 namespace LabApi.Features.Wrappers;
 
@@ -22,13 +24,7 @@ public class Structure
         SpawnableStructure.OnAdded += OnAdded;
         SpawnableStructure.OnRemoved += OnRemoved;
 
-        Register<SpawnableStructure>(x =>
-        {
-            if (x.StructureType == StructureType.Workstation)
-                return new Workstation(x);
-
-            return null!;
-        });
+        Register<SpawnableStructure>(x => x.StructureType == StructureType.Workstation ? new Workstation(x) : null!);
         Register<Scp079Generator>(x => new Generator(x));
         Register<MapGeneration.Distributors.Locker>(x =>
         {
@@ -42,6 +38,7 @@ public class Structure
         });
         Register<PedestalScpLocker>(x => new PedestalLocker(x));
         Register<MapGeneration.Distributors.ExperimentalWeaponLocker>(x => new ExperimentalWeaponLocker(x));
+        Register<MicroHIDPedestal>(x => new MicroPedestal(x));
     }
 
     /// <summary>
@@ -65,9 +62,11 @@ public class Structure
     /// <param name="spawnableStructure">The base <see cref="SpawnableStructure"/> object.</param>
     internal Structure(SpawnableStructure spawnableStructure)
     {
-        Dictionary.Add(spawnableStructure, this);
         Base = spawnableStructure;
         StructurePositionSync = Base.gameObject.GetComponent<StructurePositionSync>();
+
+        if (CanCache)
+            Dictionary.Add(spawnableStructure, this);
     }
 
     /// <summary>
@@ -77,6 +76,11 @@ public class Structure
     {
         Dictionary.Remove(Base);
     }
+
+    /// <summary>
+    /// Whether to cache the wrapper.
+    /// </summary>
+    protected internal bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
 
     /// <summary>
     /// The base <see cref="SpawnableStructure"/> object.
@@ -133,12 +137,12 @@ public class Structure
     /// <summary>
     /// Gets whether the structure was destroyed.
     /// </summary>
-    public bool IsDestroyed => GameObject == null;
+    public bool IsDestroyed => Base == null || GameObject == null;
 
     /// <summary>
     /// Gets the <see cref="Room"/> based on the structures <see cref="Position"/>.
     /// </summary>
-    public Room? Room => Room.GetRoomAtPosition(Position);
+    public Room? Room => Room.Get(Base.ParentRoom);
 
     // TODO: implement structure spawning.
 
@@ -156,6 +160,12 @@ public class Structure
     public void Destroy()
     {
         NetworkServer.Destroy(GameObject);
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[{GetType().Name}: Position={Position}, RotationY={RotationY}, IsDestroyed={IsDestroyed}]";
     }
 
     /// <summary>
@@ -191,12 +201,21 @@ public class Structure
     /// <returns>The newly created wrapper.</returns>
     protected static Structure CreateStructureWrapper(SpawnableStructure structure)
     {
-        if (!typeWrappers.TryGetValue(structure.GetType(), out Func<SpawnableStructure, Structure> handler))
-            Console.Logger.Error($"Failed to create structure wrapper. Missing constructor handler for type {structure.GetType()}");
+        Type targetType = structure.GetType();
+        if (!typeWrappers.TryGetValue(targetType, out Func<SpawnableStructure, Structure> handler))
+        {
+#if DEBUG
+            Logger.Warn($"Unable to find {nameof(Structure)} wrapper for {targetType.Name}, backup up to base constructor!");
+#endif
+            return new Structure(structure);
+        }
 
-        Structure wrapper = handler.Invoke(structure);
+        Structure? wrapper = handler?.Invoke(structure);
         if (wrapper == null)
-            Console.Logger.Error($"Failed to create structure wrapper. A handler returned null for type {structure.GetType()}");
+        {
+            Logger.Error($"Failed to create structure wrapper. A handler returned null for type {structure.GetType()}");
+            return null;
+        }
 
         return wrapper!;
     }

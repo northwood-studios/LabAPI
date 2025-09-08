@@ -8,18 +8,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractingDoor"/> event.
 /// </summary>
-public class PlayerInteractingDoorEventArgs : EventArgs, ICancellableEvent
+public class PlayerInteractingDoorEventArgs : EventArgs, IDoorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingDoorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is interacting with the door.</param>
+    /// <param name="hub">The player who is interacting with the door.</param>
     /// <param name="door">The door that is being interacted with.</param>
     /// <param name="canOpen">Whenever player can open the door.</param>
-    public PlayerInteractingDoorEventArgs(ReferenceHub player, DoorVariant door, bool canOpen)
+    public PlayerInteractingDoorEventArgs(ReferenceHub hub, DoorVariant door, bool canOpen)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Door = Door.Get(door);
         CanOpen = canOpen;
     }

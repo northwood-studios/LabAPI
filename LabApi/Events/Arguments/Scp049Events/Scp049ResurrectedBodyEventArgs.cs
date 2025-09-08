@@ -1,6 +1,7 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp049Events;
 
 /// <summary>
@@ -12,11 +13,11 @@ public class Scp049ResurrectedBodyEventArgs : EventArgs, IPlayerEvent, ITargetEv
     /// Initializes a new instance of the <see cref="Scp049ResurrectedBodyEventArgs"/> class.
     /// </summary>
     /// <param name="target">The player that SCP-049 has resurrected.</param>
-    /// <param name="player">The SCP-049 player instance.</param>
-    public Scp049ResurrectedBodyEventArgs(ReferenceHub target, ReferenceHub player)
+    /// <param name="hub">The SCP-049 player instance.</param>
+    public Scp049ResurrectedBodyEventArgs(ReferenceHub target, ReferenceHub hub)
     {
         Target = Player.Get(target);
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

@@ -87,6 +87,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     {
         PermissionGroup group = GetPlayerGroup(player);
         group.Permissions = group.Permissions.Concat(permissions).ToArray();
+        ReloadPermissions();
         SavePermissions();
     }
 
@@ -95,6 +96,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     {
         PermissionGroup group = GetPlayerGroup(player);
         group.Permissions = group.Permissions.Except(permissions).ToArray();
+        ReloadPermissions();
         SavePermissions();
     }
 
@@ -120,9 +122,21 @@ public class DefaultPermissionsProvider : IPermissionsProvider
 
     private bool HasPermission(PermissionGroup group, string permission)
     {
-        // We do first check if the group has the permission.
-        if (group.Permissions.Contains(permission) || group.SpecialPermissionsSuperset.Contains(permission))
+        if (group.IsRoot)
             return true;
+    
+        // We do first check if the group has the permission.
+        if (group.Permissions.Contains(permission))
+            return true;
+
+        if (permission.Contains("."))
+        {
+            int index = permission.LastIndexOf(".", StringComparison.Ordinal);
+            string perm = permission[..index];
+
+            if (group.SpecialPermissionsSuperset.Contains(perm + ".*"))
+                return true;
+        }
 
         // Then we check if the group has the permission from the inherited groups.
         foreach (string inheritedGroup in group.InheritedGroups)
@@ -143,6 +157,8 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         ReloadPermissions();
     }
 
+    void IPermissionsProvider.ReloadPermissions() => ReloadPermissions();
+
     private void ReloadPermissions()
     {
         // We clear the special permissions and fill them again.
@@ -151,7 +167,14 @@ public class DefaultPermissionsProvider : IPermissionsProvider
             permissionsGroup.SpecialPermissionsSuperset.Clear();
             foreach (string permission in permissionsGroup.Permissions)
             {
-                if (!permission.Contains("."))
+                if (permission == ".*")
+                {
+                    permissionsGroup.IsRoot = true;
+                    // We don't have to continue.
+                    break;
+                }
+            
+                if (!permission.Contains(".*"))
                     continue;
 
                 int index = permission.LastIndexOf(".", StringComparison.Ordinal);

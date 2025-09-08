@@ -1,6 +1,5 @@
-﻿using InventorySystem.Items;
+﻿using InventorySystem.Items.Firearms;
 using LabApi.Events.Arguments.Interfaces;
-
 using LabApi.Features.Wrappers;
 using System;
 
@@ -9,18 +8,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.AimedWeapon"/> event.
 /// </summary>
-public class PlayerAimedWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent
+public class PlayerAimedWeaponEventArgs : EventArgs, IPlayerEvent, IFirearmItemEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerAimedWeaponEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who aimed the weapon.</param>
+    /// <param name="hub">The player who aimed the weapon.</param>
     /// <param name="weapon">The weapon that the player aimed.</param>
-    /// <param name="aiming">Whether or not the player was aiming or unaiming their weapon.</param>
-    public PlayerAimedWeaponEventArgs(ReferenceHub player, ItemBase weapon, bool aiming)
+    /// <param name="aiming">Whether the player was aiming or unaiming their weapon.</param>
+    public PlayerAimedWeaponEventArgs(ReferenceHub hub, Firearm weapon, bool aiming)
     {
-        Player = Player.Get(player);
-        Weapon = Item.Get(weapon);
+        Player = Player.Get(hub);
+        FirearmItem = FirearmItem.Get(weapon);
         Aiming = aiming;
     }
 
@@ -30,10 +29,16 @@ public class PlayerAimedWeaponEventArgs : EventArgs, IPlayerEvent, IWeaponEvent
     public Player Player { get; }
 
     /// <summary>
-    /// Whether or not the player is aiming or unaiming.
+    /// Whether the player is aiming or unaiming.
     /// </summary>
     public bool Aiming { get; }
 
-    /// <inheritdoc />
-    public Item Weapon { get; }
+    /// <summary>
+    /// Gets the weapon being aimed.
+    /// </summary>
+    public FirearmItem FirearmItem { get; }
+
+    /// <inheritdoc cref="FirearmItem"/>
+    [Obsolete($"Use {nameof(FirearmItem)} instead")]
+    public Item Weapon => FirearmItem;
 }

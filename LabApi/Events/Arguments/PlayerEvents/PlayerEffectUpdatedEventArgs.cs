@@ -6,20 +6,20 @@ using System;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.PlayerEvents.ReceviedEffect"/> event.
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.UpdatedEffect"/> event.
 /// </summary>
 public class PlayerEffectUpdatedEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerReceivingLoadoutEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player whose effect has been updated.</param>
+    /// <param name="hub">The player whose effect has been updated.</param>
     /// <param name="effect">The effect that is being updated.</param>
-    /// <param name="intensity">Intesity of the effect.</param>
+    /// <param name="intensity">Intensity of the effect.</param>
     /// <param name="duration">Duration of the effect in seconds.</param>
-    public PlayerEffectUpdatedEventArgs(ReferenceHub player, StatusEffectBase effect, byte intensity, float duration)
+    public PlayerEffectUpdatedEventArgs(ReferenceHub hub, StatusEffectBase effect, byte intensity, float duration)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Effect = effect;
         Intensity = intensity;
         Duration = duration;
@@ -36,7 +36,7 @@ public class PlayerEffectUpdatedEventArgs : EventArgs, IPlayerEvent
     public StatusEffectBase Effect { get; }
 
     /// <summary>
-    /// Gets the new intesity of the effect.
+    /// Gets the new intensity of the effect.
     /// </summary>
     public byte Intensity { get; }
 

@@ -8,19 +8,20 @@ namespace LabApi.Events.Arguments.Scp079Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp079Events.BlackingOutZone"/> event.
 /// </summary>
-public class Scp079BlackingOutZoneEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp079BlackingOutZoneEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp079BlackingOutZoneEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-079 player instance.</param>
+    /// <param name="hub">The SCP-079 player instance.</param>
     /// <param name="zone">The affected zone instance.</param>
-    public Scp079BlackingOutZoneEventArgs(ReferenceHub player, FacilityZone zone)
+    public Scp079BlackingOutZoneEventArgs(ReferenceHub hub, FacilityZone zone)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Zone = zone;
         IsAllowed = true;
     }
+
     /// <summary>
     /// The SCP-079 player instance.
     /// </summary>

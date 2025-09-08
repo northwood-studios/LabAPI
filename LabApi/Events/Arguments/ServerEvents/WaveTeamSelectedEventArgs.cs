@@ -1,3 +1,4 @@
+using LabApi.Features.Wrappers;
 using Respawning.Waves;
 using System;
 
@@ -14,11 +15,11 @@ public class WaveTeamSelectedEventArgs : EventArgs
     /// <param name="wave">The wave that was selected.</param>
     public WaveTeamSelectedEventArgs(SpawnableWaveBase wave)
     {
-        Wave = wave;
+        Wave = RespawnWaves.Get(wave);
     }
 
     /// <summary>
     /// Gets the spawnable wave. See <see cref="SpawnableWaveBase"/> and its subclasses for more info. 
     /// </summary>
-    public SpawnableWaveBase Wave { get; }
+    public RespawnWave Wave { get; }
 }

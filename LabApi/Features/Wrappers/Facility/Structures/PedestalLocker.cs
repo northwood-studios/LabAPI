@@ -1,7 +1,10 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using InventorySystem.Items.MicroHID;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+
 namespace LabApi.Features.Wrappers;
 
 /// <summary>
@@ -24,10 +27,12 @@ public class PedestalLocker : Locker
     /// </summary>
     /// <param name="pedestalScpLocker">The base <see cref="PedestalScpLocker"/> object.</param>
     internal PedestalLocker(PedestalScpLocker pedestalScpLocker)
-        :base(pedestalScpLocker)
+        : base(pedestalScpLocker)
     {
         Base = pedestalScpLocker;
-        Dictionary.Add(pedestalScpLocker, this);
+
+        if (CanCache)
+            Dictionary.Add(pedestalScpLocker, this);
     }
 
     /// <summary>
@@ -50,7 +55,7 @@ public class PedestalLocker : Locker
     public LockerChamber Chamber => Chambers.First();
 
     /// <summary>
-    /// Gets or sets whether or not the pedestal is open.
+    /// Gets or sets whether the pedestal is open.
     /// </summary>
     public bool IsOpen
     {
@@ -59,14 +64,14 @@ public class PedestalLocker : Locker
     }
 
     /// <summary>
-    /// Gets whether or not the pedestal can be interacted with by a <see cref="Player"/>.
+    /// Gets whether the pedestal can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => Chamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by the <see cref="Player"/> to open/close the pedestal.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by the <see cref="Player"/> to open/close the pedestal.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => Chamber.RequiredPermissions;
         set => Chamber.RequiredPermissions = value;
@@ -131,5 +136,20 @@ public class PedestalLocker : Locker
     /// <summary>
     /// Plays the Access Denied sound for the pedestal.
     /// </summary>
-    public void PlayDeniedSound() => Chamber.PlayDeniedSound();
+    /// <param name="flags">The <see cref="DoorPermissionFlags"/> that will be shown on the keycard reader.</param>
+    public void PlayDeniedSound(DoorPermissionFlags flags = DoorPermissionFlags.None) => Chamber.PlayDeniedSound(flags);
+
+    /// <summary>
+    /// Gets the pedestal wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist and the provided <see cref="PedestalScpLocker"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="basePedestal">The <see cref="Base"/> of the pedestal locker.</param>
+    /// <returns>The requested wrapper or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(basePedestal))]
+    public static PedestalLocker? Get(PedestalScpLocker? basePedestal)
+    {
+        if (basePedestal == null)
+            return null;
+
+        return Dictionary.TryGetValue(basePedestal, out PedestalLocker found) ? found : (PedestalLocker)CreateStructureWrapper(basePedestal);
+    }
 }

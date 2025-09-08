@@ -1,6 +1,7 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp096Events;
 
 /// <summary>
@@ -11,12 +12,12 @@ public class Scp096AddedTargetEventArgs : EventArgs, IPlayerEvent, ITargetEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096AddedTargetEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
+    /// <param name="hub">The SCP-096 player instance.</param>
     /// <param name="target">The target player instance.</param>
     /// <param name="wasLooking">Whether the target looked at SCP-096.</param>
-    public Scp096AddedTargetEventArgs(ReferenceHub player, ReferenceHub target, bool wasLooking)
+    public Scp096AddedTargetEventArgs(ReferenceHub hub, ReferenceHub target, bool wasLooking)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Target = Player.Get(target);
         WasLooking = wasLooking;
     }

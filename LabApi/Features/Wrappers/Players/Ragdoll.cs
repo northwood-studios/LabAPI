@@ -32,13 +32,20 @@ public class Ragdoll
     private Ragdoll(BasicRagdoll ragdoll)
     {
         Base = ragdoll;
-        Dictionary.TryAdd(ragdoll, this);
+
+        if (CanCache)
+            Dictionary.TryAdd(ragdoll, this);
     }
 
     /// <summary>
     /// Gets the <see cref="BasicRagdoll"/> of the ragdoll.
     /// </summary>
     public BasicRagdoll Base { get; private set; }
+
+    /// <summary>
+    /// Gets whether the base room instance was destroyed.
+    /// </summary>
+    public bool IsDestroyed => Base == null;
 
     /// <summary>
     /// Gets or sets the role info of the ragdoll.
@@ -96,7 +103,8 @@ public class Ragdoll
     }
 
     /// <summary>
-    /// Gets or sets the player scale.
+    /// Gets or sets the ragdoll's scale.
+    /// Scale is set relative to the ragdoll's gameobject size.
     /// </summary>
     public Vector3 Scale
     {
@@ -104,7 +112,7 @@ public class Ragdoll
         set
         {
             Base.transform.localScale = value;
-            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, value, Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
+            Base.NetworkInfo = new RagdollData(Base.NetworkInfo.OwnerHub, Base.NetworkInfo.Handler, Base.NetworkInfo.RoleType, Base.NetworkInfo.StartPosition, Base.NetworkInfo.StartRotation, Vector3.Scale(value, RagdollManager.GetDefaultScale(Role)), Base.NetworkInfo.Nickname, Base.NetworkInfo.CreationTime);
         }
     }
 
@@ -125,6 +133,12 @@ public class Ragdoll
             ZombieConsumeAbility.ConsumedRagdolls.Remove(Base);
         }
     }
+
+    /// <summary>
+    /// Whether to cache this wrapper.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
 
     /// <summary>
     /// Gets whether the ragdoll is revivable by SCP-049 player.
@@ -153,10 +167,7 @@ public class Ragdoll
     /// <summary>
     /// Forcefully freezes this ragdoll for all clients.
     /// </summary>
-    public void Freeze()
-    {
-        Base.ClientFreezeRpc();
-    }
+    public void Freeze() => Base.ClientFreezeRpc();
 
     /// <summary>
     /// Unfreezes this ragdoll by spawning a copy of it and destroying the original. Reference to the <see cref="Base"/> changes, but no other action is required if you are referencing this object. <br/>
@@ -172,10 +183,18 @@ public class Ragdoll
         RagdollManager.OnRagdollRemoved -= RagdollRemoved;
 
         Destroy();
+        Dictionary.Remove(Base);
         Base = RagdollManager.ServerCreateRagdoll(data.RoleType, data.StartPosition, data.StartRotation, data.Handler, data.Nickname, data.Scale, data.Serial);
+        Dictionary.TryAdd(Base, this);
 
         RagdollManager.OnRagdollSpawned += RagdollSpawned;
         RagdollManager.OnRagdollRemoved += RagdollRemoved;
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Ragdoll: Nickname={Nickname}, Role={Role}, DamageHandler={DamageHandler}, Position={Position}, Rotation={Rotation}, Scale={Scale}, IsConsumed={IsConsumed}]";
     }
 
     /// <summary>
@@ -192,10 +211,10 @@ public class Ragdoll
     /// <param name="role">Target role type.</param>
     /// <param name="position">Spawn position.</param>
     /// <param name="rotation">Spawn rotation.</param>
-    /// <param name="scale">Spawn scale. Converted to <see cref="Vector3.one"></see> if null.</param>
+    /// <param name="scale">Spawn scale. Converted to base ragdoll scale if <see langword="null"/>.</param>
     /// <param name="handler">Damage handler of the death cause.</param>
     /// <param name="nickname">Nickname that is visible when hovering over.</param>
-    /// <returns>Ragdoll object or null.</returns>
+    /// <returns>Ragdoll object or <see langword="null"/>.</returns>
     public static Ragdoll? SpawnRagdoll(RoleTypeId role, Vector3 position, Quaternion rotation, DamageHandlerBase handler, string nickname, Vector3? scale = null)
     {
         BasicRagdoll ragdoll = RagdollManager.ServerCreateRagdoll(role, position, rotation, handler, nickname, scale);
@@ -223,7 +242,7 @@ public class Ragdoll
     /// <summary>
     /// Event method for <see cref="RagdollManager.OnRagdollRemoved"/>.
     /// </summary>
-    /// <param name="ragdoll">Destoyed ragdoll.</param>
+    /// <param name="ragdoll">Destroyed ragdoll.</param>
     private static void RagdollRemoved(BasicRagdoll ragdoll) => Dictionary.Remove(ragdoll);
 
     /// <summary>

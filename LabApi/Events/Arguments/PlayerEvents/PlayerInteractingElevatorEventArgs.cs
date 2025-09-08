@@ -8,18 +8,18 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.InteractingElevator"/> event.
 /// </summary>
-public class PlayerInteractingElevatorEventArgs : EventArgs, ICancellableEvent
+public class PlayerInteractingElevatorEventArgs : EventArgs, IPlayerEvent, IElevatorEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerInteractingElevatorEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is interacting with the elevator.</param>
+    /// <param name="hub">The player who is interacting with the elevator.</param>
     /// <param name="elevator">The elevator.</param>
     /// <param name="panel">The elevator panel.</param>
-    public PlayerInteractingElevatorEventArgs(ReferenceHub player, ElevatorChamber elevator, ElevatorPanel panel)
+    public PlayerInteractingElevatorEventArgs(ReferenceHub hub, ElevatorChamber elevator, ElevatorPanel panel)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Elevator = Elevator.Get(elevator);
         Panel = panel;
     }

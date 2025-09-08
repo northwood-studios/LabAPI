@@ -13,25 +13,25 @@ public class PlayerHurtEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerHurtEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who attacked.</param>
-    /// <param name="target">The player who was attacked.</param>
+    /// <param name="attacker">The player who attacked.</param>
+    /// <param name="victim">The player who was hurt.</param>
     /// <param name="damageHandler">The damage handler.</param>
-    public PlayerHurtEventArgs(ReferenceHub? player, ReferenceHub target, DamageHandlerBase damageHandler)
+    public PlayerHurtEventArgs(ReferenceHub? attacker, ReferenceHub victim, DamageHandlerBase damageHandler)
     {
-        Player = Player.Get(player);
-        Target = Player.Get(target);
+        Player = Player.Get(victim);
+        Attacker = Player.Get(attacker);
         DamageHandler = damageHandler;
     }
 
     /// <summary>
-    /// Gets the player who attacked.
+    /// Gets the player who was hurt.
     /// </summary>
-    public Player? Player { get; }
+    public Player Player { get; }
 
     /// <summary>
-    /// Gets the player who was attacked.
+    /// Gets the player who attacked.
     /// </summary>
-    public Player Target { get; }
+    public Player? Attacker { get; }
 
     /// <summary>
     /// Gets the damage handler.

@@ -1,24 +1,25 @@
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.WarheadEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.WarheadEvents.Starting"/> event.
 /// </summary>
-public class WarheadStartingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class WarheadStartingEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WarheadStartingEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is starting the warhead.</param>
+    /// <param name="hub">The player who is starting the warhead.</param>
     /// <param name="isAutomatic">Whether the warhead is starting automatically.</param>
     /// <param name="suppressSubtitles">Whether subtitles should be suppressed.</param>
     /// <param name="warheadState">The current state of the alpha warhead.</param>
-    public WarheadStartingEventArgs(ReferenceHub player, bool isAutomatic, bool suppressSubtitles, AlphaWarheadSyncInfo warheadState)
+    public WarheadStartingEventArgs(ReferenceHub hub, bool isAutomatic, bool suppressSubtitles, AlphaWarheadSyncInfo warheadState)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         IsAutomatic = isAutomatic;
         SuppressSubtitles = suppressSubtitles;
         WarheadState = warheadState;

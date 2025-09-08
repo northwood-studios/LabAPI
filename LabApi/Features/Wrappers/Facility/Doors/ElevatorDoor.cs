@@ -26,10 +26,12 @@ public class ElevatorDoor : Door
     /// </summary>
     /// <param name="baseElevatorDoor">The base <see cref="BaseElevatorDoor"/> object.</param>
     internal ElevatorDoor(BaseElevatorDoor baseElevatorDoor)
-        :base(baseElevatorDoor)
+        : base(baseElevatorDoor)
     {
-        Dictionary.Add(baseElevatorDoor, this);
         Base = baseElevatorDoor;
+
+        if (CanCache)
+            Dictionary.Add(baseElevatorDoor, this);
     }
 
     /// <summary>
@@ -52,7 +54,7 @@ public class ElevatorDoor : Door
     public Elevator? Elevator => Elevator.GetByGroup(Base.Group).FirstOrDefault();
 
     /// <summary>
-    /// Gets the <see cref="ElevatorManager.ElevatorGroup"/> this door belongs to.
+    /// Gets the <see cref="ElevatorGroup"/> this door belongs to.
     /// </summary>
     public ElevatorGroup Group => Base.Group;
 

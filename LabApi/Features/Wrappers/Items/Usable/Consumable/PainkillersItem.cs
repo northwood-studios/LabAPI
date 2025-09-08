@@ -26,8 +26,10 @@ public class PainkillersItem : ConsumableItem
     internal PainkillersItem(Painkillers painkillers)
         : base(painkillers)
     {
-        Dictionary.Add(painkillers, this);
         Base = painkillers;
+
+        if (CanCache)
+            Dictionary.Add(painkillers, this);
     }
 
     /// <summary>

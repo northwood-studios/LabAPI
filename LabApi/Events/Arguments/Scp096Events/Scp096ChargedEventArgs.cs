@@ -1,6 +1,7 @@
 ﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
+
 namespace LabApi.Events.Arguments.Scp096Events;
 
 /// <summary>
@@ -11,10 +12,10 @@ public class Scp096ChargedEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096ChargedEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
-    public Scp096ChargedEventArgs(ReferenceHub player)
+    /// <param name="hub">The SCP-096 player instance.</param>
+    public Scp096ChargedEventArgs(ReferenceHub hub)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>

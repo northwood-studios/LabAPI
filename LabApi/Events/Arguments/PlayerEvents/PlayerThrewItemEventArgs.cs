@@ -1,5 +1,4 @@
-﻿using InventorySystem.Items;
-using InventorySystem.Items.Pickups;
+﻿using InventorySystem.Items.Pickups;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
@@ -15,12 +14,12 @@ public class PlayerThrewItemEventArgs : EventArgs, IPlayerEvent, IPickupEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerThrewItemEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who threw the item.</param>
+    /// <param name="hub">The player who threw the item.</param>
     /// <param name="item">The item that was thrown.</param>
     /// <param name="rigidbody">The rigidbody of the item.</param>
-    public PlayerThrewItemEventArgs(ReferenceHub player, ItemPickupBase item, Rigidbody rigidbody)
+    public PlayerThrewItemEventArgs(ReferenceHub hub, ItemPickupBase item, Rigidbody rigidbody)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         Pickup = Pickup.Get(item);
         Rigidbody = rigidbody;
     }

@@ -7,8 +7,9 @@ using Hints;
 using InventorySystem;
 using InventorySystem.Disarming;
 using InventorySystem.Items;
-using InventorySystem.Items.Firearms.Ammo;
 using InventorySystem.Items.Pickups;
+using LabApi.Features.Enums;
+using LabApi.Features.Stores;
 using MapGeneration;
 using Mirror;
 using Mirror.LiteNetLib4Mirror;
@@ -24,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using InventorySystem.Items.Usables.Scp330;
 using UnityEngine;
 using Utils.Networking;
 using Utils.NonAllocLINQ;
@@ -51,7 +53,42 @@ public class Player
     /// <summary>
     /// A reference to all <see cref="Player"/> instances currently in the game.
     /// </summary>
+    /// <remarks>
+    /// This list includes the host player, NPCs and unauthenticated players.
+    /// <para>
+    /// Unauthenticated players you must be especially careful with as interacting with them incorrectly will cause them to softlock while joining the game.
+    /// Use <see cref="ReadyList"/> to get connected players that you can send network messages to.
+    /// </para>
+    /// </remarks>
     public static IReadOnlyCollection<Player> List => Dictionary.Values;
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are authenticated or dummy players.
+    /// </summary>
+    public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are NPCs.
+    /// </summary>
+    /// <remarks>
+    /// The host player is not counted as an NPC.
+    /// </remarks>
+    public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instance that are real players but are not authenticated yet.
+    /// </summary>
+    public static IEnumerable<Player> UnauthenticatedList => List.Where(x => x.IsPlayer && !x.IsReady);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instances that are dummy NPCs.
+    /// </summary>
+    public static IEnumerable<Player> DummyList => List.Where(x => x.IsDummy);
+
+    /// <summary>
+    /// A reference to all <see cref="Player"/> instance that are NPCs but are not dummies.
+    /// </summary>
+    public static IEnumerable<Player> RegularNpcList => List.Where(x => x.IsNpc && !x.IsDummy);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
@@ -59,14 +96,14 @@ public class Player
     public static Player? Host => Server.Host;
 
     /// <summary>
-    /// Gets the amount of online players.
+    /// Gets the amount of ready players or dummies.
     /// </summary>
-    public static int Count => ReferenceHub.AllHubs.Count(x => !x.isLocalPlayer && x.Mode == ClientInstanceMode.ReadyClient && !string.IsNullOrEmpty(x.authManager.UserId));
+    public static int Count => ReadyList.Count();
 
     /// <summary>
     /// Gets the amount of non-verified players
     /// </summary>
-    public static int NonVerifiedCount => ConnectionsCount - Count;
+    public static int NonVerifiedCount => UnauthenticatedList.Count();
 
     /// <summary>
     /// Gets the amount of connected players. Regardless of their authentication status.
@@ -87,13 +124,15 @@ public class Player
     }
 
     /// <summary>
-    /// A internal constructor to prevent external instantiation.
+    /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
     internal Player(ReferenceHub referenceHub)
     {
         Dictionary.Add(referenceHub, this);
+
         ReferenceHub = referenceHub;
+        CustomDataStoreManager.AddPlayer(this);
     }
 
     /// <summary>
@@ -109,22 +148,31 @@ public class Player
     /// <summary>
     /// Gets whether the player is the host or server.
     /// </summary>
-    public bool IsHost => ReferenceHub.connectionToClient is LocalConnectionToClient;
+    public bool IsHost => ReferenceHub.isLocalPlayer;
 
     /// <summary>
     /// Gets whether the player is the dedicated server.
     /// </summary>
+    [Obsolete($"Use {nameof(IsHost)} instead")]
     public bool IsServer => ReferenceHub.isLocalPlayer;
 
     /// <summary>
     /// Gets whether this <see cref="Player"/> instance is not controlled by a real human being.
     /// </summary>
+    /// <remarks>
+    /// This list includes dummy players.
+    /// </remarks>
     public bool IsNpc => !IsHost && ReferenceHub.connectionToClient.GetType() != typeof(NetworkConnectionToClient);
 
     /// <summary>
     /// Gets whether the player is a real player and not the host or an Npc.
     /// </summary>
     public bool IsPlayer => Connection.GetType() == typeof(NetworkConnectionToClient);
+
+    /// <summary>
+    /// Gets whether the player is a dummy instance.
+    /// </summary>
+    public bool IsDummy => ReferenceHub.authManager.InstanceMode == ClientInstanceMode.Dummy;
 
     /// <summary>
     /// Gets the Player's User ID.
@@ -139,7 +187,12 @@ public class Player
     /// <summary>
     /// Gets the player's <see cref="NetworkConnection"/>.
     /// </summary>
-    public NetworkConnection Connection => IsServer ? ReferenceHub.networkIdentity.connectionToServer : ReferenceHub.networkIdentity.connectionToClient;
+    public NetworkConnection Connection => IsHost ? ReferenceHub.networkIdentity.connectionToServer : ReferenceHub.networkIdentity.connectionToClient;
+
+    /// <summary>
+    /// Gets the player's <see cref="NetworkConnectionToClient"/>.
+    /// </summary>
+    public NetworkConnectionToClient ConnectionToClient => ReferenceHub.networkIdentity.connectionToClient;
 
     /// <summary>
     /// Gets the player's <see cref="RecyclablePlayerId"/> value.
@@ -149,11 +202,13 @@ public class Player
     /// <summary>
     /// Gets if the player is currently offline.
     /// </summary>
+    [Obsolete("Use IsDestroyed instead.")]
     public bool IsOffline => GameObject == null;
 
     /// <summary>
     /// Gets if the player is currently online.
     /// </summary>
+    [Obsolete("Use !IsDestroyed instead.")]
     public bool IsOnline => !IsOffline;
 
     /// <summary>
@@ -181,6 +236,11 @@ public class Player
     public PlayerRoleBase RoleBase => ReferenceHub.roleManager.CurrentRole;
 
     /// <summary>
+    /// Get's the player's current role unique identifier.
+    /// </summary>
+    public int LifeId => RoleBase.UniqueLifeIdentifier;
+
+    /// <summary>
     /// Gets the Player's Nickname.
     /// </summary>
     public string Nickname => ReferenceHub.nicknameSync.MyNick;
@@ -197,7 +257,7 @@ public class Player
     /// <summary>
     /// Gets the log name needed for command senders.
     /// </summary>
-    public string LogName => IsServer ? "SERVER CONSOLE" : $"{Nickname} ({UserId})";
+    public string LogName => IsHost ? "SERVER CONSOLE" : $"{Nickname} ({UserId})";
 
     /// <summary>
     /// Gets or sets the player's custom info.<br/>
@@ -208,6 +268,16 @@ public class Player
     {
         get => ReferenceHub.nicknameSync.CustomPlayerInfo;
         set => ReferenceHub.nicknameSync.CustomPlayerInfo = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the player's info area flags.
+    /// Flags determine what info is displayed to other players when they hover their crosshair over.
+    /// </summary>
+    public PlayerInfoArea InfoArea
+    {
+        get => ReferenceHub.nicknameSync.Network_playerInfoToShow;
+        set => ReferenceHub.nicknameSync.Network_playerInfoToShow = value;
     }
 
     /// <summary>
@@ -230,7 +300,7 @@ public class Player
 
     /// <summary>
     /// Gets or sets the player's current artificial health.<br/>
-    /// Setting the value will clear all of the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
+    /// Setting the value will clear all the current "processes" (each process is responsible for decaying AHP value separately. Eg 2 processes blue candy AHP, which doesn't decay and adrenaline proccess, where AHP does decay).<br/>
     /// Note: This value cannot be greater than <see cref="MaxArtificialHealth"/>. Set it to your desired value first if its over <see cref="AhpStat.DefaultMax"/> and then set this one.
     /// </summary>
     public float ArtificialHealth
@@ -373,7 +443,7 @@ public class Player
             if (!ReferenceHub.TryGetHubNetID(sr.SyncedSpectatedNetId, out ReferenceHub hub))
                 return null;
 
-            return Player.Get(hub);
+            return Get(hub);
         }
     }
 
@@ -398,7 +468,7 @@ public class Player
     /// <summary>
     /// Gets or sets the player's current <see cref="Item">item</see>.
     /// </summary>
-    public Item CurrentItem
+    public Item? CurrentItem
     {
         get => Item.Get(Inventory.CurInstance);
         set
@@ -416,9 +486,20 @@ public class Player
     public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(x => x.Intensity > 0);
 
     /// <summary>
-    /// Gets the <see cref="RoomIdentifier"/> at the player's current position.
+    /// Gets the <see cref="LabApi.Features.Wrappers.Room"/> at the player's current position.
+    /// May be <see langword="null"/> if the player is in the void.
+    /// <para>
+    /// Player inside of the elevator is consider to be in the said room until the elevator teleports to the next door.
+    /// </para>
     /// </summary>
-    public Room? Room => Room.GetRoomAtPosition(Position);
+    public Room? Room => Room.TryGetRoomAtPosition(Position, out Room room) ? room : null;
+
+    /// <summary>
+    /// Gets the cached room of the player. Cached room is revalidated once every frame or when player teleports.<br/>
+    /// It is not guarantee that the <see cref="Position"/> will match the exact same room it should be in due to the caching.<br/>
+    /// May be <see langword="null"/> if the player is in the void.
+    /// </summary>
+    public Room? CachedRoom => ReferenceHub.TryGetCurrentRoom(out RoomIdentifier rid) ? Room.Get(rid) : null;
 
     /// <summary>
     /// Gets the <see cref="FacilityZone"/> for the player's current room. Returns <see cref="FacilityZone.None"/> if the room is null.
@@ -428,7 +509,7 @@ public class Player
     /// <summary>
     /// Gets the <see cref="Item">items</see> in the player's inventory.
     /// </summary>
-    public IReadOnlyCollection<Item> Items => (IReadOnlyCollection<Item>)Inventory.UserInventory.Items.Values.Select(Item.Get);
+    public IEnumerable<Item> Items => Inventory.UserInventory.Items.Values.Select(Item.Get)!;
 
     /// <summary>
     /// Gets the player's Reserve Ammo.
@@ -445,7 +526,7 @@ public class Player
     }
 
     /// <summary>
-    /// Gets or sets the player's group name.
+    /// Gets or sets what is displayed for the player's group.
     /// </summary>
     public string GroupName
     {
@@ -621,6 +702,11 @@ public class Player
     public Team Team => RoleBase.Team;
 
     /// <summary>
+    /// Gets the player's current <see cref="Faction"/>.
+    /// </summary>
+    public Faction Faction => Team.GetFaction();
+
+    /// <summary>
     /// Gets whether the player is currently Alive.
     /// </summary>
     public bool IsAlive => Team != Team.Dead;
@@ -663,17 +749,12 @@ public class Player
     {
         get
         {
-            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
-            {
+            if (RoleBase is not IFpcRole fpcRole)
                 return Vector3.zero;
-            }
 
             return fpcRole.FpcModule.Position;
         }
-        set
-        {
-            ReferenceHub.TryOverridePosition(value);
-        }
+        set => ReferenceHub.TryOverridePosition(value);
     }
 
     /// <summary>
@@ -694,16 +775,33 @@ public class Player
         get
         {
             if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
-            {
                 return Vector2.zero;
-            }
 
             FpcMouseLook mouseLook = fpcRole.FpcModule.MouseLook;
             return new Vector2(mouseLook.CurrentVertical, mouseLook.CurrentHorizontal);
         }
+        set => ReferenceHub.TryOverrideRotation(value);
+    }
+
+    /// <summary>
+    /// Gets or sets player's scale. Player's role must be <see cref="IFpcRole"/> for it to take effect.<br/>
+    /// Vertical scale is not linear as the model's origin and scaling is done from player's feet.
+    /// </summary>
+    public Vector3 Scale
+    {
+        get
+        {
+            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+                return Vector3.zero;
+
+            return fpcRole.FpcModule.Motor.ScaleController.Scale;
+        }
         set
         {
-            ReferenceHub.TryOverrideRotation(value);
+            if (ReferenceHub.roleManager.CurrentRole is not IFpcRole fpcRole)
+                return;
+
+            fpcRole.FpcModule.Motor.ScaleController.Scale = value;
         }
     }
 
@@ -732,6 +830,36 @@ public class Player
     /// <returns>Whether is the info parameter valid.</returns>
     public static bool ValidateCustomInfo(string text, out string rejectionReason) => NicknameSync.ValidateCustomInfo(text, out rejectionReason);
 
+    /// <summary>
+    /// Gets a all players matching the criteria specified by the <see cref="PlayerSearchFlags"/>.
+    /// </summary>
+    /// <param name="flags">The <see cref="PlayerSearchFlags"/> of the players to include.</param>
+    /// <returns>The set of players that match the criteria.</returns>
+    /// <remarks>
+    /// By default this returns the same set of players as <see cref="ReadyList"/>.
+    /// </remarks>
+    public static IEnumerable<Player> GetAll(PlayerSearchFlags flags = PlayerSearchFlags.AuthenticatedAndDummy)
+    {
+        bool authenticated = (flags & PlayerSearchFlags.AuthenticatedPlayers) > 0;
+        bool unauthenticated = (flags & PlayerSearchFlags.UnauthenticatedPlayers) > 0;
+        bool dummyNpcs = (flags & PlayerSearchFlags.DummyNpcs) > 0;
+        bool regularNpcs = (flags & PlayerSearchFlags.RegularNpcs) > 0;
+        bool host = (flags & PlayerSearchFlags.Host) > 0;
+
+        bool includePlayers = authenticated || unauthenticated;
+        bool allPlayers = authenticated && unauthenticated;
+        bool includeNpcs = dummyNpcs || regularNpcs;
+        bool allNpcs = dummyNpcs && regularNpcs;
+
+        foreach (Player player in List)
+        {
+            if ((includePlayers && player.IsPlayer && (allPlayers || player.IsReady == authenticated)) ||
+                (includeNpcs && player.IsNpc) && (allNpcs || player.IsDummy == dummyNpcs) ||
+                (host && player.IsHost))
+                yield return player;
+        }
+    }
+
     #region Player Getters
 
     /// <summary>
@@ -745,7 +873,7 @@ public class Player
         if (referenceHub == null)
             return null;
 
-        return Dictionary.TryGetValue(referenceHub, out Player player) ? player : new Player(referenceHub);
+        return Dictionary.TryGetValue(referenceHub, out Player player) ? player : CreatePlayerWrapper(referenceHub);
     }
 
     /// <summary>
@@ -950,6 +1078,53 @@ public class Player
     #region Get Player from a Name
 
     /// <summary>
+    /// Get closest player by lexicographical order.
+    /// Players are compared by their <see cref="DisplayName"/>.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByDisplayName(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.DisplayName);
+
+    /// <summary>
+    /// Gets the closest player by lexicographical order.
+    /// Players are compared by their <see cref="Nickname"/>.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByNickname(string input, bool requireFullMatch = false) => GetByName(input, requireFullMatch, static p => p.Nickname);
+
+    /// <summary>
+    /// Gets the closest player by lexicographical order.
+    /// Base function to allow to select by <see langword="string"/> player property.
+    /// </summary>
+    /// <param name="input">The input to search the player by.</param>
+    /// <param name="requireFullMatch">Whether the full match is required.</param>
+    /// <param name="propertySelector">Function to select player property.</param>
+    /// <returns>Player or <see langword="null"/> if no close player found.</returns>
+    public static Player? GetByName(string input, bool requireFullMatch, Func<Player, string> propertySelector)
+    {
+        IOrderedEnumerable<Player> sortedPlayers = List.OrderBy(propertySelector);
+
+        foreach (Player player in sortedPlayers)
+        {
+            string toCheck = propertySelector(player);
+            if (requireFullMatch)
+            {
+                if (toCheck.Equals(input, StringComparison.OrdinalIgnoreCase))
+                    return player;
+            }
+            else if (toCheck.StartsWith(input, StringComparison.OrdinalIgnoreCase))
+            {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Tries to get players by name by seeing if their name starts with the input.
     /// </summary>
     /// <param name="input">The input to search for.</param>
@@ -978,6 +1153,24 @@ public class Player
     /// </summary>
     /// <param name="delta">Rotation to add to the current one. X is vertical and Y is horizontal rotation.</param>
     public void Rotate(Vector2 delta) => ReferenceHub.TryOverrideRotation(LookRotation + delta);
+
+    /// <summary>
+    /// Forces <see cref="IFpcRole"/> to jump.
+    /// <para>Jumping can be also adjusted via <see cref="HeavyFooted"/> and <see cref="Lightweight"/> status effects.</para>
+    /// </summary>
+    /// <param name="jumpStrength">Strength that the player will jump with.</param>
+    public void Jump(float jumpStrength)
+    {
+        if (ReferenceHub.roleManager.CurrentRole is IFpcRole fpcRole)
+            fpcRole.FpcModule.Motor.JumpController.ForceJump(jumpStrength);
+    }
+
+    /// <inheritdoc cref="Jump(float)"/>
+    public void Jump()
+    {
+        if (ReferenceHub.roleManager.CurrentRole is IFpcRole fpcRole)
+            Jump(fpcRole.FpcModule.JumpSpeed);
+    }
 
     /// <summary>
     /// Clears displayed broadcast(s).
@@ -1082,6 +1275,14 @@ public class Player
     }
 
     /// <summary>
+    /// Adds an item by picking it up.
+    /// </summary>
+    /// <param name="pickup">The <see cref="Pickup"/> to pickup.</param>
+    /// <returns>The <see cref="Item"/> added or null if it could not be added.</returns>
+    public Item? AddItem(Pickup pickup)
+        => Item.Get(Inventory.ServerAddItem(pickup.Type, ItemAddReason.PickedUp, pickup.Serial, pickup.Base));
+
+    /// <summary>
     /// Removes a specific <see cref="Item"/> from the player's inventory.
     /// </summary>
     /// <param name="item">The item to remove.</param>
@@ -1113,7 +1314,7 @@ public class Player
     public void RemoveItem(ItemType item, int maxAmount = 1)
     {
         int count = 0;
-        for (int i = 0; i < Items.Count; i++)
+        for (int i = 0; i < Items.Count(); i++)
         {
             ItemBase? itemBase = Items.ElementAt(i).Base;
             if (itemBase.ItemTypeId != item)
@@ -1207,7 +1408,7 @@ public class Player
     public List<Pickup> DropAllItems()
     {
         List<Pickup> items = ListPool<Pickup>.Shared.Rent();
-        foreach (Item item in Items)
+        foreach (Item item in Items.ToArray())
             items.Add(DropItem(item));
 
         return items;
@@ -1233,8 +1434,8 @@ public class Player
     /// <param name="item">The type of ammo.</param>
     /// <param name="amount">The amount to drop.</param>
     /// <param name="checkMinimals">Will prevent dropping small amounts of ammo.</param>
-    /// <returns>The list of dropped ammo.</returns>
-    public List<AmmoPickup> DropAmmo(ItemType item, ushort amount, bool checkMinimals = true) => Inventory.ServerDropAmmo(item, amount, checkMinimals);
+    /// <returns>The dropped ammo.</returns>
+    public IEnumerable<AmmoPickup> DropAmmo(ItemType item, ushort amount, bool checkMinimals = true) => Inventory.ServerDropAmmo(item, amount, checkMinimals).Select(x => AmmoPickup.Get(x));
 
     /// <summary>
     /// Drops all ammo from the player's inventory.
@@ -1243,7 +1444,8 @@ public class Player
     public List<AmmoPickup> DropAllAmmo()
     {
         List<AmmoPickup> ammo = ListPool<AmmoPickup>.Shared.Rent();
-        foreach (KeyValuePair<ItemType, ushort> pair in Ammo)
+
+        foreach (KeyValuePair<ItemType, ushort> pair in Ammo.ToDictionary(e => e.Key, e => e.Value))
             ammo.AddRange(DropAmmo(pair.Key, pair.Value));
 
         return ammo;
@@ -1259,7 +1461,7 @@ public class Player
     /// </summary>
     public void ClearItems()
     {
-        foreach (Item item in Items)
+        foreach (Item item in Items.ToArray())
             RemoveItem(item);
     }
 
@@ -1287,6 +1489,41 @@ public class Player
         if (clearItems)
             ClearItems();
     }
+    
+    /// <summary>
+    /// Gives a candy to the player.
+    /// </summary>
+    /// <param name="candy">The candy to give the player.</param>
+    /// <param name="reason">The reason to grant the candy bag.</param>
+    public void GiveCandy(CandyKindID candy, ItemAddReason reason)
+        => ReferenceHub.GrantCandy(candy, reason);
+
+    /// <summary>
+    /// Gives a random candy to the player.
+    /// </summary>
+    /// <param name="reason">The reason to grant the candy bag.</param>
+    /// <remarks>This will use <see cref="Scp330Candies.GetRandom"/>, meaning it will use <see cref="ICandy.SpawnChanceWeight"/> to choose the candy.</remarks>
+    public void GiveRandomCandy(ItemAddReason reason = ItemAddReason.AdminCommand)
+        => GiveCandy(Scp330Candies.GetRandom(), reason);
+
+    /// <summary>
+    /// Checks if a player has the specified <see cref="PlayerPermissions"/>.
+    /// </summary>
+    /// <param name="permission">The permission to check the player for.</param>
+    /// <returns>Whether the permission check was successful.</returns>
+    public bool HasPermission(PlayerPermissions permission)
+    {
+        PlayerPermissions currentPerms = (PlayerPermissions)ReferenceHub.serverRoles.Permissions;
+        return currentPerms.HasFlag(permission);
+    }
+
+    /// <summary>
+    /// Adds regeneration to the player.
+    /// </summary>
+    /// <param name="rate">The rate to heal per second.</param>
+    /// <param name="duration">How long the regeneration should last.</param>
+    public void AddRegeneration(float rate, float duration)
+        => Scp330Bag.AddSimpleRegeneration(ReferenceHub, rate, duration);
 
     /// <summary>
     /// Heals the player by the specified amount.
@@ -1295,7 +1532,7 @@ public class Player
     public void Heal(float amount) => ReferenceHub.playerStats.GetModule<HealthStat>().ServerHeal(amount);
 
     /// <summary>
-    /// Creates and run a new AHP proccess.
+    /// Creates and run a new AHP process.
     /// </summary>
     /// <param name="amount">Amount of AHP to be added.</param>
     /// <param name="limit">Adds limit to the AHP.</param>
@@ -1303,7 +1540,7 @@ public class Player
     /// <param name="efficacy">Value between 0 and 1. Defines what % of damage will be absorbed.</param>
     /// <param name="sustain">Pauses decay for specified amount of seconds.</param>
     /// <param name="persistant">If true, it won't be automatically removed when reaches 0.</param>
-    /// <returns>Returns process in case it needs to be removed. Use <see cref="ServerKillProcess(AhpProcess)"/> to kill it.</returns>
+    /// <returns>Process in case it needs to be removed. Use <see cref="ServerKillProcess(AhpProcess)"/> to kill it.</returns>
     public AhpProcess CreateAhpProcess(float amount, float limit, float decay, float efficacy, float sustain, bool persistant) => ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
 
     /// <summary>
@@ -1327,20 +1564,35 @@ public class Player
     public void Disconnect(string? reason = null) => ServerConsole.Disconnect(GameObject, reason ?? string.Empty);
 
     /// <summary>
-    /// Sends the player a hint text.
+    /// Sends the player a text hint.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
-    public void SendHint(string text, float duration = 3f) => ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(text)], null, duration));
+    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
+    public void SendHint(string text, float duration = 3f) =>
+        SendHint(text, [new StringHintParameter(string.Empty)], null, duration);
 
     /// <summary>
-    /// Sends the player a hint text with effects.
+    /// Sends the player a text hint with effects.
     /// </summary>
     /// <param name="text">The text which will be displayed.</param>
     /// <param name="effects">The effects of text.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
+    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
     public void SendHint(string text, HintEffect[] effects, float duration = 3f) =>
-        ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(text)], effects, duration));
+        ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], effects, duration));
+
+    /// <summary>
+    /// Sends the player a text hint with parameters.
+    /// </summary>
+    /// <param name="text">The text which will be displayed.</param>
+    /// <param name="parameters">The parameters to interpolate into the text.</param>
+    /// <param name="duration">The duration of which the text will be visible.</param>
+    /// <param name="effects">The effects used for hint animations. See <see cref="HintEffect"/>.</param>
+    /// <remarks>
+    /// Parameters are interpolated into the string on the client.
+    /// E.g. <c>"Test param1: {0} param2: {1}"</c>
+    /// </remarks>
+    public void SendHint(string text, HintParameter[] parameters, HintEffect[]? effects = null, float duration = 3f) =>
+        ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, effects, duration));
 
     /// <summary>
     /// Sends the player a hit marker.
@@ -1411,6 +1663,15 @@ public class Player
     /// <returns>Whether the <see cref="StatusEffectBase">status effect</see> was successfully retrieved. (And was cast successfully)</returns>
     public bool TryGetEffect<T>([NotNullWhen(true)] out T? effect)
         where T : StatusEffectBase => ReferenceHub.playerEffectsController.TryGetEffect(out effect) && effect != null;
+
+    /// <summary>
+    /// Tries to get a specific <see cref="StatusEffectBase"/> based on its name.
+    /// </summary>
+    /// <param name="effectName">The name of the effect to get.</param>
+    /// <param name="effect">The effect found.</param>
+    /// <returns>Whether the <see cref="StatusEffectBase"/> was successfully found.</returns>
+    public bool TryGetEffect(string effectName, [NotNullWhen(true)] out StatusEffectBase? effect)
+        => ReferenceHub.playerEffectsController.TryGetEffect(effectName, out effect) && effect != null;
 
     /// <summary>
     /// Gets a specific <see cref="StatusEffectBase">status effect</see>.
@@ -1510,13 +1771,54 @@ public class Player
     // DamageManager seems to have been unused previously. Also relies on DataStorage/SharedStorage
 
     /// <summary>
+    /// Gets the <see cref="CustomDataStore"/> associated with the player, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
+    /// <returns>The <see cref="CustomDataStore"/> associated with the player.</returns>
+    public TStore GetDataStore<TStore>()
+        where TStore : CustomDataStore
+    {
+        return CustomDataStore.GetOrAdd<TStore>(this);
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[Player: DisplayName={DisplayName}, PlayerId={PlayerId}, NetworkId={NetworkId}, UserId={UserId}, IpAddress={IpAddress}, Role={Role}, IsServer={IsServer}, IsReady={IsReady}]";
+    }
+
+    /// <summary>
+    /// Creates a new wrapper for the player using the player's <see cref="global::ReferenceHub"/>.
+    /// </summary>
+    /// <param name="referenceHub">The <see cref="global::ReferenceHub"/> of the player.</param>
+    /// <returns>The created player wrapper.</returns>
+    private static Player CreatePlayerWrapper(ReferenceHub referenceHub)
+    {
+        Player player = new(referenceHub);
+
+        if (referenceHub.isLocalPlayer)
+            Server.Host = player;
+
+        return player;
+    }
+
+    /// <summary>
     /// Handles the creation of a player in the server.
     /// </summary>
     /// <param name="referenceHub">The reference hub of the player.</param>
     private static void AddPlayer(ReferenceHub referenceHub)
     {
-        if (!referenceHub.isLocalPlayer)
-            _ = new Player(referenceHub);
+        try
+        {
+            if (Dictionary.ContainsKey(referenceHub))
+                return;
+
+            CreatePlayerWrapper(referenceHub);
+        }
+        catch (Exception ex)
+        {
+            Console.Logger.InternalError($"Failed to handle player addition with exception: {ex}");
+        }
     }
 
     /// <summary>
@@ -1525,9 +1827,22 @@ public class Player
     /// <param name="referenceHub">The reference hub of the player.</param>
     private static void RemovePlayer(ReferenceHub referenceHub)
     {
-        if (referenceHub.authManager.UserId != null)
-            UserIdCache.Remove(referenceHub.authManager.UserId);
+        try
+        {
+            if (referenceHub.authManager.UserId != null)
+                UserIdCache.Remove(referenceHub.authManager.UserId);
 
-        Dictionary.Remove(referenceHub);
+            if (TryGet(referenceHub.gameObject, out Player? player))
+                CustomDataStoreManager.RemovePlayer(player);
+
+            if (referenceHub.isLocalPlayer)
+                Server.Host = null;
+
+            Dictionary.Remove(referenceHub);
+        }
+        catch (Exception ex)
+        {
+            Console.Logger.InternalError($"Failed to handle player removal with exception: {ex}");
+        }
     }
 }

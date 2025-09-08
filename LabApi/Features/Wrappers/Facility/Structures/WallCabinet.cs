@@ -1,4 +1,5 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using MapGeneration.Distributors;
 using System.Collections.Generic;
 using BaseLocker = MapGeneration.Distributors.Locker;
 
@@ -26,7 +27,8 @@ public class WallCabinet : Locker
     internal WallCabinet(BaseLocker baseLocker)
         : base(baseLocker)
     {
-        Dictionary.Add(baseLocker, this);
+        if (CanCache)
+            Dictionary.Add(baseLocker, this);
     }
 
     /// <summary>
@@ -48,14 +50,14 @@ public class WallCabinet : Locker
     }
 
     /// <summary>
-    /// Gets or sets whether the or not the wall cabinet can be interacted with by a <see cref="Player"/>.
+    /// Gets or sets whether the wall cabinet can be interacted with by a <see cref="Player"/>.
     /// </summary>
     public bool CanInteract => MainChamber.CanInteract;
 
     /// <summary>
-    /// Gets or sets the <see cref="KeycardPermissions"/> required by a the <see cref="Player"/> to open/close the wall cabinet.
+    /// Gets or sets the <see cref="DoorPermissionFlags"/> required by a the <see cref="Player"/> to open/close the wall cabinet.
     /// </summary>
-    public KeycardPermissions RequiredPermissions
+    public DoorPermissionFlags RequiredPermissions
     {
         get => MainChamber.RequiredPermissions;
         set => MainChamber.RequiredPermissions = value;

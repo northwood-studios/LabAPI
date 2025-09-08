@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items;
+﻿using InventorySystem.Items.Firearms;
 using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using System;
@@ -8,19 +8,19 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.TogglingWeaponFlashlight"/> event.
 /// </summary>
-public class PlayerTogglingWeaponFlashlightEventArgs : EventArgs, ICancellableEvent
+public class PlayerTogglingWeaponFlashlightEventArgs : EventArgs, IPlayerEvent, IFirearmItemEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerTogglingWeaponFlashlightEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The player who is toggling the flashlight.</param>
+    /// <param name="hub">The player who is toggling the flashlight.</param>
     /// <param name="item">The flashlight item.</param>
     /// <param name="newState">The new state of the flashlight.</param>
-    public PlayerTogglingWeaponFlashlightEventArgs(ReferenceHub player, ItemBase item, bool newState)
+    public PlayerTogglingWeaponFlashlightEventArgs(ReferenceHub hub, Firearm item, bool newState)
     {
         IsAllowed = true;
-        Player = Player.Get(player);
-        Item = Item.Get(item);
+        Player = Player.Get(hub);
+        FirearmItem = FirearmItem.Get(item);
         NewState = newState;
     }
 
@@ -32,7 +32,7 @@ public class PlayerTogglingWeaponFlashlightEventArgs : EventArgs, ICancellableEv
     /// <summary>
     /// Gets the flashlight item.
     /// </summary>
-    public Item Item { get; }
+    public FirearmItem FirearmItem { get; }
 
     /// <summary>
     /// Gets the new state of the flashlight.
@@ -41,4 +41,8 @@ public class PlayerTogglingWeaponFlashlightEventArgs : EventArgs, ICancellableEv
 
     /// <inheritdoc />
     public bool IsAllowed { get; set; }
+
+    /// <inheritdoc cref="FirearmItem"/>
+    [Obsolete($"Use {nameof(FirearmItem)} instead")]
+    public Item Item => FirearmItem;
 }

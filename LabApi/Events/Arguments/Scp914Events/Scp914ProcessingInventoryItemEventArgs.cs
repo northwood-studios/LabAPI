@@ -9,20 +9,20 @@ namespace LabApi.Events.Arguments.Scp914Events;
 /// <summary>
 /// Represents the event arguments for when an item is being processed by SCP-914.
 /// </summary>
-public class Scp914ProcessingInventoryItemEventArgs : EventArgs, ICancellableEvent, IScp914Event, IItemEvent, IPlayerEvent
+public class Scp914ProcessingInventoryItemEventArgs : EventArgs, IScp914Event, IItemEvent, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp914ProcessingInventoryItemEventArgs"/> class.
     /// </summary>
     /// <param name="item">The item that is being processed by SCP-914.</param>
     /// <param name="knobSetting">The knob setting of SCP-914.</param>
-    /// <param name="player">The owner of the item.</param>
-    public Scp914ProcessingInventoryItemEventArgs(ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub player)
+    /// <param name="hub">The owner of the item.</param>
+    public Scp914ProcessingInventoryItemEventArgs(ItemBase item, Scp914KnobSetting knobSetting, ReferenceHub hub)
     {
         IsAllowed = true;
         Item = Item.Get(item);
         KnobSetting = knobSetting;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <inheritdoc />

@@ -8,16 +8,16 @@ namespace LabApi.Events.Arguments.Scp096Events;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.Scp096Events.ChangingState"/> event.
 /// </summary>
-public class Scp096ChangingStateEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
+public class Scp096ChangingStateEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp096ChangingStateEventArgs"/> class.
     /// </summary>
-    /// <param name="player">The SCP-096 player instance.</param>
+    /// <param name="hub">The SCP-096 player instance.</param>
     /// <param name="state">The SCP-096's new rage state.</param>
-    public Scp096ChangingStateEventArgs(ReferenceHub player, Scp096RageState state)
+    public Scp096ChangingStateEventArgs(ReferenceHub hub, Scp096RageState state)
     {
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
         State = state;
         IsAllowed = true;
     }

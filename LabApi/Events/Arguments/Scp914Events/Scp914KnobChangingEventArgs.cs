@@ -8,20 +8,20 @@ namespace LabApi.Events.Arguments.Scp914Events;
 /// <summary>
 /// Represents the event arguments for when the knob of SCP-914 is changing.
 /// </summary>
-public class Scp914KnobChangingEventArgs : EventArgs, ICancellableEvent, IScp914Event, IPlayerEvent
+public class Scp914KnobChangingEventArgs : EventArgs, IScp914Event, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Scp914KnobChangingEventArgs"/> class.
     /// </summary>
     /// <param name="oldKnobSetting">The old knob setting of SCP-914.</param>
     /// <param name="knobSetting">The new knob setting of SCP-914.</param>
-    /// <param name="player">The player that is changing the knob.</param>
-    public Scp914KnobChangingEventArgs(Scp914KnobSetting oldKnobSetting, Scp914KnobSetting knobSetting, ReferenceHub player)
+    /// <param name="hub">The player that is changing the knob.</param>
+    public Scp914KnobChangingEventArgs(Scp914KnobSetting oldKnobSetting, Scp914KnobSetting knobSetting, ReferenceHub hub)
     {
         IsAllowed = true;
         OldKnobSetting = oldKnobSetting;
         KnobSetting = knobSetting;
-        Player = Player.Get(player);
+        Player = Player.Get(hub);
     }
 
     /// <summary>
