@@ -8,8 +8,9 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class MtfWave : RespawnWave
 {
-    /// <inheritdoc/>
-    internal MtfWave(NtfSpawnWave wave) : base(wave)
+    /// <inheritdoc cref="RespawnWave(TimeBasedWave)"/>
+    internal MtfWave(NtfSpawnWave wave)
+        : base(wave)
     {
         Base = wave;
     }
@@ -45,7 +46,9 @@ public class MtfWave : RespawnWave
         {
             float percentageValue = (float)value / ReferenceHub.AllHubs.Count;
             if (Base.Configuration is PrimaryWaveConfig<NtfSpawnWave> config)
+            {
                 config.SizePercentage = percentageValue;
+            }
         }
     }
 }

@@ -36,8 +36,10 @@ public static class Round
     {
         get
         {
-            if (IsLocked || KeepRoundOnOne && ReferenceHub.AllHubs.Count(x => x.authManager.InstanceMode != ClientInstanceMode.DedicatedServer) < 2 || !IsRoundStarted)
+            if (IsLocked || (KeepRoundOnOne && (ReferenceHub.AllHubs.Count(x => x.authManager.InstanceMode != ClientInstanceMode.DedicatedServer) < 2)) || !IsRoundStarted)
+            {
                 return false;
+            }
 
             return IsRoundStarted && !IsLocked;
         }
@@ -133,7 +135,9 @@ public static class Round
     public static void Restart(bool fastRestart = false, bool overrideRestartAction = false, NextRoundAction restartAction = NextRoundAction.DoNothing)
     {
         if (overrideRestartAction)
+        {
             StopNextRound = restartAction;
+        }
 
         bool prevValue = CustomNetworkManager.EnableFastRestart;
         CustomNetworkManager.EnableFastRestart = fastRestart;
@@ -160,7 +164,9 @@ public static class Round
         }
 
         if (!CanRoundEnd)
+        {
             return false;
+        }
 
         RoundSummary.singleton.ForceEnd();
         return true;

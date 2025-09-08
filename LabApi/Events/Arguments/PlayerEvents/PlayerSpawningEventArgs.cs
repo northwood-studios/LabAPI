@@ -11,8 +11,8 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// </summary>
 public class PlayerSpawningEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
-    Vector3 _spawnLocation;
-    float _horizontalRotation;
+    private Vector3 _spawnLocation;
+    private float _horizontalRotation;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSpawningEventArgs"/> class.

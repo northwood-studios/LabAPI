@@ -1,5 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using BaseWaypointToy = AdminToys.WaypointToy;
@@ -12,67 +11,19 @@ namespace LabApi.Features.Wrappers;
 public class WaypointToy : AdminToy
 {
     /// <summary>
+    /// Max distance in meters a waypoint can encapsulate along any dimension.
+    /// </summary>
+    public const float MaxBounds = BaseWaypointToy.MaxBounds;
+
+    /// <summary>
     /// Contains all the waypoint toys, accessible through their <see cref="Base"/>.
     /// </summary>
-    public new static Dictionary<BaseWaypointToy, WaypointToy> Dictionary { get; } = [];
+    public static new Dictionary<BaseWaypointToy, WaypointToy> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="WaypointToy"/>.
     /// </summary>
-    public new static IReadOnlyCollection<WaypointToy> List => Dictionary.Values;
-
-    /// <summary>
-    /// The <see cref="BaseWaypointToy"/> object.
-    /// </summary>
-    public new BaseWaypointToy Base { get; }
-
-    /// <summary>
-    /// Gets or sets whether to visualize the waypoint's maximum bounds.
-    /// </summary>
-    public bool VisualizeBounds
-    {
-        get => Base.VisualizeBounds;
-        set => Base.NetworkVisualizeBounds = value;
-    }
-
-    /// <summary>
-    /// Gets or sets how many meters to bias towards this waypoint.
-    /// </summary>
-    /// <remarks>
-    /// The closest waypoint is determined by its square distance.
-    /// When set this takes away <c>(Priority * Priority)</c> from the sqr distance.
-    /// </remarks>
-    public float PriorityBias
-    {
-        get => Base.Priority;
-        set => Base.NetworkPriority = value;
-    }
-
-    /// <summary>
-    /// An internal constructor to prevent external instantiation.
-    /// </summary>
-    /// <param name="baseWaypointToy">The base <see cref="BaseWaypointToy"/> object.</param>
-    internal WaypointToy(BaseWaypointToy baseWaypointToy)
-        : base(baseWaypointToy)
-    {
-        Dictionary.Add(baseWaypointToy, this);
-        Base = baseWaypointToy;
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
-    }
-
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        return $"[WaypointToy: Position{Position}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
-    }
+    public static new IReadOnlyCollection<WaypointToy> List => Dictionary.Values;
 
     /// <inheritdoc cref="Create(Vector3, Quaternion, Vector3, Transform?, bool)"/>
     public static WaypointToy Create(Transform? parent = null, bool networkSpawn = true)
@@ -100,7 +51,9 @@ public class WaypointToy : AdminToy
         WaypointToy toy = Get(Create<BaseWaypointToy>(position, rotation, scale, parent));
 
         if (networkSpawn)
+        {
             toy.Spawn();
+        }
 
         return toy;
     }
@@ -114,7 +67,9 @@ public class WaypointToy : AdminToy
     public static WaypointToy? Get(BaseWaypointToy? baseWaypointToy)
     {
         if (baseWaypointToy == null)
+        {
             return null;
+        }
 
         return Dictionary.TryGetValue(baseWaypointToy, out WaypointToy item) ? item : (WaypointToy)CreateAdminToyWrapper(baseWaypointToy);
     }
@@ -129,5 +84,124 @@ public class WaypointToy : AdminToy
     {
         waypointToy = Get(baseWaypointToy);
         return waypointToy != null;
+    }
+
+    /// <summary>
+    /// An internal constructor to prevent external instantiation.
+    /// </summary>
+    /// <param name="baseWaypointToy">The base <see cref="BaseWaypointToy"/> object.</param>
+    internal WaypointToy(BaseWaypointToy baseWaypointToy)
+        : base(baseWaypointToy)
+    {
+        Dictionary.Add(baseWaypointToy, this);
+        Base = baseWaypointToy;
+    }
+
+    /// <summary>
+    /// The <see cref="BaseWaypointToy"/> object.
+    /// </summary>
+    public new BaseWaypointToy Base { get; }
+
+    /// <inheritdoc />
+    public override Vector3 Position
+    {
+        get => base.Position;
+        set
+        {
+            base.Position = value;
+            Base.UpdateWaypointChildren();
+        }
+    }
+
+    /// <inheritdoc />
+    public override Quaternion Rotation
+    {
+        get => base.Rotation;
+        set
+        {
+            base.Rotation = value;
+            Base.UpdateWaypointChildren();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the scale on the waypoint toy.
+    /// Does not effect the bounds of the waypoint, use <see cref="BoundsSize"/> instead.
+    /// </summary>
+    /// <remarks>
+    /// Scale can cause unindented side effects when used on a waypoint toy.
+    /// </remarks>
+    public override Vector3 Scale
+    {
+        get => base.Scale;
+        set
+        {
+            base.Scale = value;
+
+            if (value != Vector3.one)
+            {
+                Console.Logger.Warn("Setting scale on WaypointToy is not supported and may cause problems.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Bounds the waypoint encapsulates along each dimension in meters.
+    /// Bounds is effected by position and rotation of the GameObject but not its scale.
+    /// Must not exceed <c>Vector3.one * MaxBounds</c>.
+    /// </summary>
+    /// <remarks>
+    /// When <see cref="AdminToy.IsStatic"/> is <see langword="true"/> rotation and <see cref="BoundsSize"/> is not used, instead the bounds is axis aligned and its size is fixed at <see cref="MaxBounds"/>.
+    /// </remarks>
+    public Vector3 BoundsSize
+    {
+        get => Base.BoundsSize;
+        set => Base.NetworkBoundsSize = value;
+    }
+
+    /// <summary>
+    /// Gets or sets whether to visualize the waypoint's maximum bounds.
+    /// </summary>
+    public bool VisualizeBounds
+    {
+        get => Base.VisualizeBounds;
+        set => Base.NetworkVisualizeBounds = value;
+    }
+
+    /// <summary>
+    /// Gets or sets how many meters to bias towards this waypoint.
+    /// </summary>
+    /// <remarks>
+    /// The closest waypoint is determined by its square distance.
+    /// When set this takes away <c>(Priority * Priority)</c> from the sqr distance.
+    /// </remarks>
+    public float PriorityBias
+    {
+        get => Base.Priority;
+        set => Base.NetworkPriority = value;
+    }
+
+    /// <summary>
+    /// Force update all waypoint children to be up to date with the current position and rotation of the waypoint.
+    /// Call this when ever the waypoint is moved by a parent object or the waypoint is moved using base game APIs or external APIs.
+    /// </summary>
+    /// <remarks>
+    /// Does not work if the waypoint is <see cref="AdminToy.IsStatic"/>.
+    /// </remarks>
+    public void UpdateWaypointChildren() => Base.UpdateWaypointChildren();
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"[WaypointToy: Position:{Position}, BoundsSize:{BoundsSize}, VisualizeBounds:{VisualizeBounds}, PriorityBias:{PriorityBias}]";
+    }
+
+    /// <summary>
+    /// An internal method to remove itself from the cache when the base object is destroyed.
+    /// </summary>
+    internal override void OnRemove()
+    {
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

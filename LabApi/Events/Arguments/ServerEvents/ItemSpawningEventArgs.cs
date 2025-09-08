@@ -11,7 +11,7 @@ public class ItemSpawningEventArgs : EventArgs, ICancellableEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="ItemSpawningEventArgs"/> class.
     /// </summary>
-    /// <param name="type">The type of item which will spawn on map</param>
+    /// <param name="type">The type of item which will spawn on map.</param>
     public ItemSpawningEventArgs(ItemType type)
     {
         IsAllowed = true;

@@ -12,6 +12,37 @@ namespace LabApi.Features.Wrappers;
 public class PocketTeleport
 {
     /// <summary>
+    /// A reference to all <see cref="PocketTeleport"/> instances currently in the game.
+    /// </summary>
+    public static IReadOnlyCollection<PocketTeleport> List => Dictionary.Values;
+
+    /// <summary>
+    /// Contains all the cached teleports in the game, accessible through their <see cref="PocketDimensionTeleport"/>.
+    /// </summary>
+    private static Dictionary<PocketDimensionTeleport, PocketTeleport> Dictionary { get; } = [];
+
+    /// <summary>
+    /// Gets the wrapper given the base game <see cref="PocketDimensionTeleport"/> instance.
+    /// </summary>
+    /// <param name="pocketTeleport">The base game object.</param>
+    /// <returns>The associated wrapper.</returns>
+    [return: NotNullIfNotNull(nameof(pocketTeleport))]
+    public static PocketTeleport? Get(PocketDimensionTeleport? pocketTeleport)
+    {
+        if (pocketTeleport == null)
+        {
+            return null;
+        }
+
+        if (Dictionary.TryGetValue(pocketTeleport, out PocketTeleport pt))
+        {
+            return pt;
+        }
+
+        return new PocketTeleport(pocketTeleport);
+    }
+
+    /// <summary>
     /// Initializes the Teleport wrapper by subscribing to the PocketDimensionTeleport events.
     /// </summary>
     [InitializeWrapper]
@@ -22,14 +53,25 @@ public class PocketTeleport
     }
 
     /// <summary>
-    /// Contains all the cached teleports in the game, accessible through their <see cref="PocketDimensionTeleport"/>.
+    /// A private method to handle the addition of <see cref="PocketDimensionTeleport"/> instances.
     /// </summary>
-    private static Dictionary<PocketDimensionTeleport, PocketTeleport> Dictionary { get; } = [];
+    /// <param name="pocketTeleport">The base game instance.</param>
+    private static void OnAdded(PocketDimensionTeleport pocketTeleport)
+    {
+        if (!Dictionary.ContainsKey(pocketTeleport))
+        {
+            _ = new PocketTeleport(pocketTeleport);
+        }
+    }
 
     /// <summary>
-    /// A reference to all <see cref="PocketTeleport"/> instances currently in the game.
+    /// A private method to handle the removal of <see cref="PocketDimensionTeleport"/> instances.
     /// </summary>
-    public static IReadOnlyCollection<PocketTeleport> List => Dictionary.Values;
+    /// <param name="pocketTeleport">The base game instance.</param>
+    private static void OnRemoved(PocketDimensionTeleport pocketTeleport)
+    {
+        Dictionary.Remove(pocketTeleport);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -113,6 +155,8 @@ public class PocketTeleport
     /// <summary>
     /// Spawns a new pocket teleport.
     /// </summary>
+    /// <param name="localPosition">The position relative to the pocket dimension.</param>
+    /// <returns>The created <see cref="PocketTeleport"/>.</returns>
     public PocketTeleport Spawn(Vector3 localPosition)
     {
         GameObject obj = new("Teleport", typeof(PocketDimensionTeleport), typeof(SphereCollider), typeof(NetworkIdentity));
@@ -125,41 +169,4 @@ public class PocketTeleport
     /// Destroys the <see cref="PocketTeleport"/> removing it from the server.
     /// </summary>
     public void Destroy() => Object.Destroy(Base);
-
-    /// <summary>
-    /// Gets the wrapper given the base game <see cref="PocketDimensionTeleport"/> instance.
-    /// </summary>
-    /// <param name="pocketTeleport">The base game object.</param>
-    /// <returns>The associated wrapper.</returns>
-    [return: NotNullIfNotNull(nameof(pocketTeleport))]
-    public static PocketTeleport? Get(PocketDimensionTeleport? pocketTeleport)
-    {
-        if(pocketTeleport == null) 
-            return null;
-
-        if (Dictionary.TryGetValue(pocketTeleport, out PocketTeleport pt))
-            return pt;
-
-        return new PocketTeleport(pocketTeleport);
-    }
-
-    /// <summary>
-    /// A private method to handle the addition of <see cref="PocketDimensionTeleport"/> instances.
-    /// </summary>
-    /// <param name="pocketTeleport">The base game instance.</param>
-    private static void OnAdded(PocketDimensionTeleport pocketTeleport)
-    {
-        if (!Dictionary.ContainsKey(pocketTeleport))
-            _ = new PocketTeleport(pocketTeleport);
-    }
-
-    /// <summary>
-    /// A private method to handle the removal of <see cref="PocketDimensionTeleport"/> instances.
-    /// </summary>
-    /// <param name="pocketTeleport">The base game instance.</param>
-    private static void OnRemoved(PocketDimensionTeleport pocketTeleport)
-    {
-        Dictionary.Remove(pocketTeleport);
-    }
 }
-

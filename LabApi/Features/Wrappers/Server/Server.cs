@@ -120,7 +120,9 @@ public static class Server
         set
         {
             if (FriendlyFire == value)
+            {
                 return;
+            }
 
             ServerConsole.FriendlyFire = value;
             ServerConfigSynchronizer.Singleton.RefreshMainBools();
@@ -137,7 +139,9 @@ public static class Server
         set
         {
             if (AchievementManager.AchievementsDisabled != value)
+            {
                 return;
+            }
 
             AchievementManager.AchievementsDisabled = !value;
             ServerConfigSynchronizer.Singleton.RefreshMainBools();
@@ -157,7 +161,7 @@ public static class Server
     /// <summary>
     /// Gets or sets the server name as seen on the player list.
     /// </summary>
-    // TODO: maybe move to a playerlist wrapper?
+    // TODO: maybe move to a player list wrapper?
     public static string PlayerListName
     {
         get => PlayerList.Title.Value;
@@ -167,7 +171,7 @@ public static class Server
     /// <summary>
     /// Gets or sets the refresh rate for the player list name.
     /// </summary>
-    // TODO: maybe move to a playerlist wrapper?
+    // TODO: maybe move to a player list wrapper?
     public static float PlayerListNameRefreshRate
     {
         get => PlayerList.RefreshRate.Value;
@@ -178,7 +182,7 @@ public static class Server
     /// Gets or sets whether the server has been marked as transparently modded.<br/>
     /// For this status to be applied automatically, all installed plugins must have their
     /// <see cref="LabApi.Loader.Features.Plugins.Plugin.IsTransparent"/> property set to <see langword="true"/>.<br/>
-    /// For more information, see article 5.2 in the official documentation: https://scpslgame.com/csg
+    /// For more information, see article 5.2 in the official documentation: https://scpslgame.com/csg.
     /// </summary>
     public static bool IsTransparentlyModded { get; internal set; }
 
@@ -277,17 +281,21 @@ public static class Server
     public static bool BanUserId(string userId, Player? issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
     {
         if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(reason) || issuer == null)
-            return false;
-
-        return IssueBan(new BanDetails()
         {
-            Id = userId,
-            IssuanceTime = TimeBehaviour.CurrentTimestamp(),
-            Expires = TimeBehaviour.GetBanExpirationTime((uint)duration),
-            Issuer = issuer.LogName,
-            OriginalName = bannedPlayerNickname,
-            Reason = reason,
-        }, BanType.UserId);
+            return false;
+        }
+
+        return IssueBan(
+            new BanDetails()
+            {
+                Id = userId,
+                IssuanceTime = TimeBehaviour.CurrentTimestamp(),
+                Expires = TimeBehaviour.GetBanExpirationTime((uint)duration),
+                Issuer = issuer.LogName,
+                OriginalName = bannedPlayerNickname,
+                Reason = reason,
+            },
+            BanType.UserId);
     }
 
     /// <summary>
@@ -313,17 +321,21 @@ public static class Server
     public static bool BanIpAddress(string ipAddress, Player? issuer, string reason, long duration, string bannedPlayerNickname = "UnknownName")
     {
         if (string.IsNullOrEmpty(ipAddress) || string.IsNullOrEmpty(reason) || issuer == null)
-            return false;
-
-        return IssueBan(new BanDetails()
         {
-            Id = ipAddress,
-            IssuanceTime = TimeBehaviour.CurrentTimestamp(),
-            Expires = TimeBehaviour.GetBanExpirationTime((uint)duration),
-            Issuer = issuer.LogName,
-            OriginalName = bannedPlayerNickname,
-            Reason = reason,
-        }, BanType.IP);
+            return false;
+        }
+
+        return IssueBan(
+            new BanDetails()
+            {
+                Id = ipAddress,
+                IssuanceTime = TimeBehaviour.CurrentTimestamp(),
+                Expires = TimeBehaviour.GetBanExpirationTime((uint)duration),
+                Issuer = issuer.LogName,
+                OriginalName = bannedPlayerNickname,
+                Reason = reason,
+            },
+            BanType.IP);
     }
 
     /// <summary>
@@ -334,7 +346,9 @@ public static class Server
     public static bool UnbanUserId(string userId)
     {
         if (string.IsNullOrEmpty(userId) || !IsPlayerBanned(userId))
+        {
             return false;
+        }
 
         RemoveBan(userId, BanType.UserId);
         return true;
@@ -348,7 +362,9 @@ public static class Server
     public static bool UnbanIpAddress(string ipAddress)
     {
         if (string.IsNullOrEmpty(ipAddress) || !IsPlayerBanned(ipAddress))
+        {
             return false;
+        }
 
         RemoveBan(ipAddress, BanType.IP);
         return true;
@@ -362,7 +378,9 @@ public static class Server
     public static bool IsPlayerBanned(string value)
     {
         if (string.IsNullOrEmpty(value))
+        {
             return false;
+        }
 
         return (value.Contains("@") ? GetBan(value, BanType.UserId) : GetBan(value, BanType.IP)) != null;
     }
@@ -396,6 +414,7 @@ public static class Server
     /// <summary>
     /// Restarts the server and reconnects all players to target server port.
     /// </summary>
+    /// <param name="redirectPort">The port number of the server to send all the players too.</param>
     public static void Restart(ushort redirectPort)
     {
         NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.1f, redirectPort, true, false));
@@ -410,6 +429,7 @@ public static class Server
     /// <summary>
     /// Shutdowns the server and reconnects all players to target server port.
     /// </summary>
+    /// <param name="redirectPort">The port number of the server to send all the players too.</param>
     public static void Shutdown(ushort redirectPort)
     {
         NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.1f, redirectPort, true, false));
@@ -421,6 +441,7 @@ public static class Server
     /// </summary>
     /// <param name="command">The command name.</param>
     /// <param name="sender">The <see cref="CommandSender"/> running the command.</param>
+    /// <returns>The commands response.</returns>
     public static string RunCommand(string command, CommandSender? sender = null) =>
         ServerConsole.EnterCommand(command, sender);
 
@@ -434,7 +455,9 @@ public static class Server
     public static void SendBroadcast(string message, ushort duration, Broadcast.BroadcastFlags type = Broadcast.BroadcastFlags.Normal, bool shouldClearPrevious = false)
     {
         if (shouldClearPrevious)
+        {
             ClearBroadcasts();
+        }
 
         Broadcast.Singleton.RpcAddElement(message, duration, type);
     }
@@ -450,7 +473,9 @@ public static class Server
     public static void SendBroadcast(Player player, string message, ushort duration, Broadcast.BroadcastFlags type = Broadcast.BroadcastFlags.Normal, bool shouldClearPrevious = false)
     {
         if (shouldClearPrevious)
+        {
             ClearBroadcasts(player);
+        }
 
         Broadcast.Singleton.TargetAddElement(player.Connection, message, duration, type);
     }
@@ -472,11 +497,13 @@ public static class Server
     {
         StringBuilder sb = StringBuilderPool.Shared.Rent();
 
-        sb.Append(Host.NetworkId);
+        sb.Append(Host!.NetworkId);
         sb.Append('!');
 
         if (isSilent)
+        {
             sb.Append("@@");
+        }
 
         sb.Append(message);
 
@@ -484,7 +511,9 @@ public static class Server
         foreach (Player player in targetPlayers)
         {
             if (!player.IsPlayer || !player.IsReady)
+            {
                 continue;
+            }
 
             player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(toSend, EncryptedChannelManager.EncryptedChannel.AdminChat);
         }
@@ -522,7 +551,7 @@ public static class Server
     }
 
     /// <summary>
-    /// Private implementation class for synchronizing ItemCategory limits
+    /// Private implementation class for synchronizing ItemCategory limits.
     /// </summary>
     private class CategoryLimitsSynchronizer : ILimit<ItemCategory, sbyte>
     {
@@ -533,7 +562,9 @@ public static class Server
             set
             {
                 if (!InventoryLimits.StandardCategoryLimits.ContainsKey(category))
+                {
                     throw new IndexOutOfRangeException($"Index {category} was not a valid ItemCategory type");
+                }
 
                 InventoryLimits.StandardCategoryLimits[category] = value;
                 ServerConfigSynchronizer.Singleton.RefreshCategoryLimits();
@@ -553,7 +584,9 @@ public static class Server
             set
             {
                 if (!InventoryLimits.StandardAmmoLimits.ContainsKey(ammo))
+                {
                     throw new IndexOutOfRangeException($"Index {ammo} was not a valid Ammo type");
+                }
 
                 InventoryLimits.StandardAmmoLimits[ammo] = value;
                 ServerConfigSynchronizer.Singleton.RefreshAmmoLimits();
@@ -561,4 +594,3 @@ public static class Server
         }
     }
 }
-

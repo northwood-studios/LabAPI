@@ -1,0 +1,27 @@
+name: Task Template
+description: Template for tasks regarding new improvements for programmers.
+title: "[TASK] <title>"
+labels: ["task"]
+body: 
+  - type: textarea
+    id: desc
+    attributes:
+      label: Description
+      description: A description of the task, and a brief overview of what must be done to accomplish it.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: These should serve as a guide of different ideas or concerns you may have regarding the task, providing some insight of your vision to the programmer working on it.
+  - type: textarea
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Everything that needs to be completed for the task to be considered complete and ready to be closed.
+      value: |
+        - [ ] Example 1.
+        - [ ] Example 2.
+
+    

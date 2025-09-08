@@ -1,8 +1,8 @@
-﻿using System;
-using LabApi.Events.Arguments.Interfaces;
+﻿using LabApi.Events.Arguments.Interfaces;
 using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp049.Zombies;
 using PlayerRoles.Ragdolls;
+using System;
 
 namespace LabApi.Events.Arguments.Scp0492Events;
 

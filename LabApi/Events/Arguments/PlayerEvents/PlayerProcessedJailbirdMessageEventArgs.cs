@@ -35,7 +35,6 @@ public class PlayerProcessedJailbirdMessageEventArgs : EventArgs, IPlayerEvent, 
     /// </summary>
     public JailbirdItem JailbirdItem { get; }
 
-
     /// <summary>
     /// The <see cref="JailbirdMessageType"/> processed.
     /// </summary>

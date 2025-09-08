@@ -15,7 +15,7 @@ public class PlayerRoomChangedEventArgs : EventArgs, IPlayerEvent
     /// </summary>
     /// <param name="player">The player whose room changed.</param>
     /// <param name="oldRoom">The old room.</param>
-    /// <param name="newRoom">The new room</param>
+    /// <param name="newRoom">The new room.</param>
     public PlayerRoomChangedEventArgs(ReferenceHub player, RoomIdentifier oldRoom, RoomIdentifier newRoom)
     {
         Player = Player.Get(player);
@@ -34,7 +34,7 @@ public class PlayerRoomChangedEventArgs : EventArgs, IPlayerEvent
     public Room? OldRoom { get; }
 
     /// <summary>
-    /// Gets the new rom. May be null if the player went into void, died and such.
+    /// Gets the new room. May be null if the player went into void, died and such.
     /// </summary>
     public Room? NewRoom { get; }
 }

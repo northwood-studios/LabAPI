@@ -14,12 +14,28 @@ public class AmmoItem : Item
     /// <summary>
     /// Contains all the cached ammo items, accessible through their <see cref="BaseAmmoItem"/>.
     /// </summary>
-    public new static Dictionary<BaseAmmoItem, AmmoItem> Dictionary { get; } = [];
+    public static new Dictionary<BaseAmmoItem, AmmoItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="AmmoItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<AmmoItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<AmmoItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the ammo item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseAmmoItem"/> was not null.
+    /// </summary>
+    /// <param name="baseAmmoItem">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(baseAmmoItem))]
+    public static AmmoItem? Get(BaseAmmoItem? baseAmmoItem)
+    {
+        if (baseAmmoItem == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(baseAmmoItem, out AmmoItem item) ? item : (AmmoItem)CreateItemWrapper(baseAmmoItem);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -31,16 +47,9 @@ public class AmmoItem : Item
         Base = baseAmmoItem;
 
         if (CanCache)
+        {
             Dictionary.Add(baseAmmoItem, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -49,16 +58,11 @@ public class AmmoItem : Item
     public new BaseAmmoItem Base { get; }
 
     /// <summary>
-    /// Gets the ammo item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="BaseAmmoItem"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="baseAmmoItem">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(baseAmmoItem))]
-    public static AmmoItem? Get(BaseAmmoItem? baseAmmoItem)
+    internal override void OnRemove()
     {
-        if (baseAmmoItem == null)
-            return null;
-
-        return Dictionary.TryGetValue(baseAmmoItem, out AmmoItem item) ? item : (AmmoItem)CreateItemWrapper(baseAmmoItem);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AdminToys;
 using Generators;
-using MapGeneration;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,49 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class AdminToy
 {
+    /// <summary>
+    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// </summary>
+    private static readonly Dictionary<Type, Func<AdminToyBase, AdminToy?>> _typeWrappers = [];
+
+    /// <summary>
+    /// Contains all the cached admin toys, accessible through their <see cref="Base"/>.
+    /// </summary>
+    public static Dictionary<AdminToyBase, AdminToy> Dictionary { get; } = [];
+
+    /// <summary>
+    /// A reference to all instances of <see cref="AdminToy"/>.
+    /// </summary>
+    public static IReadOnlyCollection<AdminToy> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the admin toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="AdminToyBase"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="adminToyBase">The <see cref="Base"/> of the admin toy.</param>
+    /// <returns>The requested admin toy or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(adminToyBase))]
+    public static AdminToy? Get(AdminToyBase? adminToyBase)
+    {
+        if (adminToyBase == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(adminToyBase, out AdminToy item) ? item : CreateAdminToyWrapper(adminToyBase);
+    }
+
+    /// <summary>
+    /// Tries to get the admin toy wrapper from the <see cref="Dictionary"/>.
+    /// </summary>
+    /// <param name="adminToyBase">The <see cref="Base"/> of the admin toy.</param>
+    /// <param name="adminToy">The requested admin toy.</param>
+    /// <returns>True if the admin toy exists, otherwise <see langword="false"/>.</returns>
+    public static bool TryGet(AdminToyBase? adminToyBase, [NotNullWhen(true)] out AdminToy? adminToy)
+    {
+        adminToy = Get(adminToyBase);
+        return adminToy != null;
+    }
+
     /// <summary>
     /// Initializes the <see cref="AdminToy"/> class.
     /// </summary>
@@ -35,19 +77,115 @@ public class AdminToy
     }
 
     /// <summary>
-    /// Contains all the handlers for constructing wrappers for the associated base game types.
+    /// Instantiates a new base game admin toy object.
     /// </summary>
-    private static readonly Dictionary<Type, Func<AdminToyBase, AdminToy?>> typeWrappers = [];
+    /// <typeparam name="T">The base game admin toy type.</typeparam>
+    /// <param name="position">The initial local position.</param>
+    /// <param name="rotation">The initial local rotation.</param>
+    /// <param name="scale">The initial local scale.</param>
+    /// <param name="parent">The parent transform.</param>
+    /// <returns>The instantiated admin toy.</returns>
+    protected static T Create<T>(Vector3 position, Quaternion rotation, Vector3 scale, Transform? parent)
+        where T : AdminToyBase
+    {
+        if (PrefabCache<T>.Prefab == null)
+        {
+            T? found = null;
+            foreach (GameObject prefab in NetworkClient.prefabs.Values)
+            {
+                if (prefab.TryGetComponent(out found))
+                {
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                throw new InvalidOperationException($"No prefab in NetworkClient.prefabs has component type {typeof(T)}");
+            }
+
+            PrefabCache<T>.Prefab = found;
+        }
+
+        T instance = UnityEngine.Object.Instantiate(PrefabCache<T>.Prefab, parent);
+        instance.transform.localPosition = position;
+        instance.transform.localRotation = rotation;
+        instance.transform.localScale = scale;
+        return instance;
+    }
 
     /// <summary>
-    /// Contains all the cached admin toys, accessible through their <see cref="Base"/>.
+    /// Creates a new wrapper from the base admin toy object.
     /// </summary>
-    public static Dictionary<AdminToyBase, AdminToy> Dictionary { get; } = [];
+    /// <param name="adminToyBase">The base object.</param>
+    /// <returns>The newly created wrapper.</returns>
+    protected static AdminToy CreateAdminToyWrapper(AdminToyBase adminToyBase)
+    {
+        if (!_typeWrappers.TryGetValue(adminToyBase.GetType(), out Func<AdminToyBase, AdminToy?> handler))
+        {
+            Console.Logger.InternalWarn($"Backing up to the default AdminToy constructor. Missing constructor handler for type {adminToyBase.GetType()}");
+            return new AdminToy(adminToyBase);
+        }
+
+        AdminToy? wrapper = handler.Invoke(adminToyBase);
+        if (wrapper == null)
+        {
+            Console.Logger.InternalWarn($"Backing up to the default AdminToy constructor. A handler returned null for type {adminToyBase.GetType()}");
+            return new AdminToy(adminToyBase);
+        }
+
+        return wrapper ?? new AdminToy(adminToyBase);
+    }
 
     /// <summary>
-    /// A reference to all instances of <see cref="AdminToy"/>.
+    /// A private method to handle the creation of new admin toys in the server.
     /// </summary>
-    public static IReadOnlyCollection<AdminToy> List => Dictionary.Values;
+    /// <param name="adminToyBase">The created <see cref="AdminToyBase"/> instance.</param>
+    private static void AddAdminToy(AdminToyBase adminToyBase)
+    {
+        try
+        {
+            if (!Dictionary.ContainsKey(adminToyBase))
+            {
+                _ = CreateAdminToyWrapper(adminToyBase);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle admin toy creation with error: {e}");
+        }
+    }
+
+    /// <summary>
+    /// A private method to handle the removal of admin toys from the server.
+    /// </summary>
+    /// <param name="adminToyBase">The to be destroyed <see cref="AdminToyBase"/> instance.</param>
+    private static void RemoveAdminToy(AdminToyBase adminToyBase)
+    {
+        try
+        {
+            if (Dictionary.TryGetValue(adminToyBase, out AdminToy adminToy))
+            {
+                Dictionary.Remove(adminToyBase);
+                adminToy.OnRemove();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.Logger.InternalError($"Failed to handle admin toy destruction with error: {e}");
+        }
+    }
+
+    /// <summary>
+    /// A private method to handle the addition of wrapper handlers.
+    /// </summary>
+    /// <typeparam name="T">The derived base game type to handle.</typeparam>
+    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
+    private static void Register<T>(Func<T, AdminToy?> constructor)
+        where T : AdminToyBase
+    {
+        _typeWrappers.Add(typeof(T), x => constructor((T)x));
+    }
 
     /// <summary>
     /// A protected constructor to prevent external instantiation.
@@ -58,20 +196,10 @@ public class AdminToy
         Base = adminToyBase;
 
         if (CanCache)
+        {
             Dictionary.Add(adminToyBase, this);
+        }
     }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal virtual void OnRemove()
-    {
-    }
-
-    /// <summary>
-    /// Whether to cache this wrapper.
-    /// </summary>
-    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
 
     /// <summary>
     /// The <see cref="AdminToyBase">base</see> object.
@@ -103,7 +231,7 @@ public class AdminToy
     /// <remarks>
     /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its position.
     /// </remarks>
-    public Vector3 Position
+    public virtual Vector3 Position
     {
         get => Transform.localPosition;
         set => Transform.localPosition = value;
@@ -116,7 +244,7 @@ public class AdminToy
     /// <remarks>
     /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its rotation.
     /// </remarks>
-    public Quaternion Rotation
+    public virtual Quaternion Rotation
     {
         get => Transform.localRotation;
         set => Transform.localRotation = value;
@@ -129,7 +257,7 @@ public class AdminToy
     /// <remarks>
     /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its scale.
     /// </remarks>
-    public Vector3 Scale
+    public virtual Vector3 Scale
     {
         get => Transform.localScale;
         set => Transform.localScale = value;
@@ -143,7 +271,7 @@ public class AdminToy
     /// <para>
     /// Can be used even if <see cref="IsStatic"/> is <see langword="true"/>.
     /// When changing parent the toys relative <see cref="Position"/>, <see cref="Rotation"/> and <see cref="Scale"/> are retained.
-    /// Note that if the parent has <see cref="NetworkServer.Destroy"/> called on it this object automatically has <see cref="NetworkServer.Destroy"/> called on itself. 
+    /// Note that if the parent has <see cref="NetworkServer.Destroy"/> called on it this object automatically has <see cref="NetworkServer.Destroy"/> called on itself.
     /// To prevent destruction make sure you unparent it before that happens.
     /// </para>
     /// </remarks>
@@ -171,7 +299,7 @@ public class AdminToy
     /// <summary>
     /// Gets or sets whether the admin toy is static.
     /// This should be enabled on as many toys possible to increase performance.
-    /// Static is only applies to the local transformations so parenting to something that moves will still causes it to move while retaining the performance boost. 
+    /// Static is only applies to the local transformations so parenting to something that moves will still causes it to move while retaining the performance boost.
     /// </summary>
     /// <remarks>
     /// A static admin toy will not process <see cref="Position"/>, <see cref="Rotation"/> or <see cref="Scale"/> on both server and client drastically increasing performance.
@@ -195,6 +323,11 @@ public class AdminToy
     }
 
     /// <summary>
+    /// Whether to cache this wrapper.
+    /// </summary>
+    protected bool CanCache => !IsDestroyed && Base.isActiveAndEnabled;
+
+    /// <summary>
     /// Spawns the toy on the client.
     /// </summary>
     /// <remarks>
@@ -211,143 +344,24 @@ public class AdminToy
     public void Destroy() => NetworkServer.Destroy(GameObject);
 
     /// <summary>
-    /// Instantiates a new base game admin toy object.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <typeparam name="T">The base game admin toy type.</typeparam>
-    /// <param name="position">The initial local position.</param>
-    /// <param name="rotation">The initial local rotation.</param>
-    /// <param name="scale">The initial local scale.</param>
-    /// <param name="parent">The parent transform.</param>
-    /// <returns>The instantiated admin toy.</returns>
-    protected static T Create<T>(Vector3 position, Quaternion rotation, Vector3 scale, Transform? parent) where T : AdminToyBase
+    internal virtual void OnRemove()
     {
-        if (PrefabCache<T>.prefab == null)
-        {
-            T? found = null;
-            foreach (GameObject prefab in NetworkClient.prefabs.Values)
-            {
-                if (prefab.TryGetComponent(out found))
-                    break;
-            }
-
-            if (found == null)
-                throw new InvalidOperationException($"No prefab in NetworkClient.prefabs has component type {typeof(T)}");
-
-            PrefabCache<T>.prefab = found;
-        }
-
-        T instance = UnityEngine.Object.Instantiate(PrefabCache<T>.prefab, parent);
-        instance.transform.localPosition = position;
-        instance.transform.localRotation = rotation;
-        instance.transform.localScale = scale;
-        return instance;
     }
 
-    /// <summary>
-    /// Gets the admin toy wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="AdminToyBase"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="adminToyBase">The <see cref="Base"/> of the admin toy.</param>
-    /// <returns>The requested admin toy or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(adminToyBase))]
-    public static AdminToy? Get(AdminToyBase? adminToyBase)
-    {
-        if (adminToyBase == null)
-            return null;
-
-        return Dictionary.TryGetValue(adminToyBase, out AdminToy item) ? item : CreateAdminToyWrapper(adminToyBase);
-    }
-
-    /// <summary>
-    /// Tries to get the admin toy wrapper from the <see cref="Dictionary"/>.
-    /// </summary>
-    /// <param name="adminToyBase">The <see cref="Base"/> of the admin toy.</param>
-    /// <param name="adminToy">The requested admin toy.</param>
-    /// <returns>True if the admin toy exists, otherwise <see langword="false"/>.</returns>
-    public static bool TryGet(AdminToyBase? adminToyBase, [NotNullWhen(true)] out AdminToy? adminToy)
-    {
-        adminToy = Get(adminToyBase);
-        return adminToy != null;
-    }
-
-    /// <summary>
-    /// Creates a new wrapper from the base admin toy object.
-    /// </summary>
-    /// <param name="adminToyBase">The base object.</param>
-    /// <returns>The newly created wrapper.</returns>
-    protected static AdminToy CreateAdminToyWrapper(AdminToyBase adminToyBase)
-    {
-        if (!typeWrappers.TryGetValue(adminToyBase.GetType(), out Func<AdminToyBase, AdminToy?> handler))
-        {
-            Console.Logger.InternalWarn($"Backing up to the default AdminToy constructor. Missing constructor handler for type {adminToyBase.GetType()}");
-            return new AdminToy(adminToyBase);
-        }
-
-        AdminToy? wrapper = handler.Invoke(adminToyBase);
-        if (wrapper == null)
-        {
-            Console.Logger.InternalWarn($"Backing up to the default AdminToy constructor. A handler returned null for type {adminToyBase.GetType()}");
-            return new AdminToy(adminToyBase);
-        }
-
-        return wrapper ?? new AdminToy(adminToyBase);
-    }
-
-    /// <summary>
-    /// A private method to handle the creation of new admin toys in the server.
-    /// </summary>
-    /// <param name="adminToyBase">The created <see cref="AdminToyBase"/> instance.</param>
-    private static void AddAdminToy(AdminToyBase adminToyBase)
-    {
-        try
-        {
-            if (!Dictionary.ContainsKey(adminToyBase))
-                _ = CreateAdminToyWrapper(adminToyBase);
-        }
-        catch (Exception e)
-        {
-            Console.Logger.InternalError($"Failed to handle admin toy creation with error: {e}");
-        }
-    }
-
-    /// <summary>
-    /// A private method to handle the removal of admin toys from the server.
-    /// </summary>
-    /// <param name="adminToyBase">The to be destroyed <see cref="AdminToyBase"/> instance.</param>
-    private static void RemoveAdminToy(AdminToyBase adminToyBase)
-    {
-        try
-        {
-
-            if (Dictionary.TryGetValue(adminToyBase, out AdminToy adminToy))
-            {
-                Dictionary.Remove(adminToyBase);
-                adminToy.OnRemove();
-            }
-        }
-        catch (Exception e)
-        {
-            Console.Logger.InternalError($"Failed to handle admin toy destruction with error: {e}");
-        }
-    }
-
-    /// <summary>
-    /// A private method to handle the addition of wrapper handlers.
-    /// </summary>
-    /// <typeparam name="T">The derived base game type to handle.</typeparam>
-    /// <param name="constructor">A handler to construct the wrapper with the base game instance.</param>
-    private static void Register<T>(Func<T, AdminToy?> constructor) where T : AdminToyBase
-    {
-        typeWrappers.Add(typeof(T), x => constructor((T)x));
-    }
-
+#pragma warning disable SA1204 // Static elements should appear before instance elements
     /// <summary>
     /// Static prefab cache used to speed up prefab search.
     /// </summary>
-    internal static class PrefabCache<T> where T : NetworkBehaviour
+    /// <typeparam name="T">The base game component type of the prefab.</typeparam>
+    internal static class PrefabCache<T>
+        where T : NetworkBehaviour
     {
         /// <summary>
         /// Cached prefab instance for type T.
         /// </summary>
-        public static T? prefab = null;
+        public static T? Prefab { get; set; } = null;
     }
+#pragma warning restore SA1204 // Static elements should appear before instance elements
 }

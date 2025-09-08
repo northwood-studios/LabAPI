@@ -15,4 +15,3 @@ public interface IKeycardItemEvent : IItemEvent
     /// </summary>
     public KeycardItem KeycardItem { get; }
 }
-

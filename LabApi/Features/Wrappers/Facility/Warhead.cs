@@ -13,13 +13,6 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public static class Warhead
 {
-    [InitializeWrapper]
-    internal static void Initialize()
-    {
-        ServerEvents.WaitingForPlayers += OnWaitingForPlayers;
-        // TODO: Might want to handle this a different way as we are missing on destroy
-    }
-
     /// <summary>
     /// The base <see cref="AlphaWarheadController"/>.
     /// Null if they have not been created yet, see <see cref="Exists"/>.
@@ -60,7 +53,9 @@ public static class Warhead
         set
         {
             if (BaseNukesitePanel != null)
+            {
                 BaseNukesitePanel.Networkenabled = value;
+            }
         }
     }
 
@@ -82,7 +77,9 @@ public static class Warhead
         set
         {
             if (BaseController != null)
+            {
                 BaseController.IsLocked = value;
+            }
         }
     }
 
@@ -102,11 +99,7 @@ public static class Warhead
     public static float DetonationTime
     {
         get => AlphaWarheadController.TimeUntilDetonation;
-        set
-        {
-            if (BaseController != null)
-                BaseController.ForceTime(value);
-        }
+        set => BaseController?.ForceTime(value);
     }
 
     /// <summary>
@@ -118,7 +111,9 @@ public static class Warhead
         set
         {
             if (BaseController != null)
+            {
                 BaseController.NetworkCooldownEndTime = NetworkTime.time + value;
+            }
         }
     }
 
@@ -132,8 +127,8 @@ public static class Warhead
     }
 
     /// <summary>
-	/// Indicates how much time is left for the DMS to activate.
-	/// Value is capped by <see cref="DeadManSwitchMaxTime"/>.
+    /// Indicates how much time is left for the DMS to activate.
+    /// Value is capped by <see cref="DeadManSwitchMaxTime"/>.
     /// </summary>
     public static float DeadManSwitchRemaining
     {
@@ -162,20 +157,25 @@ public static class Warhead
         get
         {
             if (BaseController == null)
-                return new DetonationScenario();
+            {
+                return default;
+            }
 
             return ScenarioType switch
             {
                 WarheadScenarioType.Start => StartScenarios[BaseController.Info.ScenarioId],
                 WarheadScenarioType.Resume => ResumeScenarios[BaseController.Info.ScenarioId],
                 WarheadScenarioType.DeadmanSwitch => DeadmanSwitchScenario,
-                _ => new DetonationScenario()
+                _ => default,
             };
         }
+
         set
         {
             if (BaseController == null)
+            {
                 return;
+            }
 
             if (value.Equals(default))
             {
@@ -224,7 +224,7 @@ public static class Warhead
     /// <summary>
     /// Gets the deadman switch scenario.
     /// </summary>
-    public static DetonationScenario DeadmanSwitchScenario { get; private set; } = new DetonationScenario();
+    public static DetonationScenario DeadmanSwitchScenario { get; private set; } = default;
 
     /// <summary>
     /// Starts the detonation countdown.
@@ -261,7 +261,9 @@ public static class Warhead
     public static void OpenBlastDoors()
     {
         foreach (BlastDoor door in BlastDoor.Instances)
+        {
             door.ServerSetTargetState(true);
+        }
     }
 
     /// <summary>
@@ -270,7 +272,9 @@ public static class Warhead
     public static void CloseBlastDoors()
     {
         foreach (BlastDoor door in BlastDoor.Instances)
+        {
             door.ServerSetTargetState(false);
+        }
     }
 
     /// <summary>
@@ -279,13 +283,24 @@ public static class Warhead
     public static void Shake() => BaseController?.RpcShake(false);
 
     /// <summary>
+    /// Initializes the warhead class.
+    /// </summary>
+    [InitializeWrapper]
+    internal static void Initialize()
+    {
+        ServerEvents.WaitingForPlayers += OnWaitingForPlayers;
+
+        // TODO: Might want to handle this a different way as we are missing on destroy
+    }
+
+    /// <summary>
     /// Handles the creation of the warhead components.
     /// </summary>
     private static void OnWaitingForPlayers()
     {
         BaseOutsidePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
 
-        StartScenarios = BaseController.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
+        StartScenarios = BaseController!.StartScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Start)).ToArray();
         ResumeScenarios = BaseController.ResumeScenarios.Select((x, i) => new DetonationScenario(x, (byte)i, WarheadScenarioType.Resume)).ToArray();
         DeadmanSwitchScenario = new DetonationScenario(BaseController.DeadmanSwitchScenario, 0, WarheadScenarioType.DeadmanSwitch);
     }
@@ -303,20 +318,6 @@ public static class Warhead
     /// </summary>
     public readonly struct DetonationScenario
     {
-        /// <summary>
-        /// Internal constructor to prevent external instantiation.
-        /// </summary>
-        /// <param name="detonationScenario">The <see cref="DetonationScenario"/>.</param>
-        /// <param name="id">The <see cref="byte"/> id of the scenario.</param>
-        /// <param name="type">The <see cref="WarheadScenarioType"/>.</param>
-        internal DetonationScenario(AlphaWarheadController.DetonationScenario detonationScenario, byte id, WarheadScenarioType type)
-        {
-            TimeToDetonate = detonationScenario.TimeToDetonate;
-            AdditionalTime = detonationScenario.AdditionalTime;
-            Type = type;
-            Id = id;
-        }
-
         /// <summary>
         /// The countdown time announced.
         /// </summary>
@@ -336,6 +337,20 @@ public static class Warhead
         /// The index of the scenario for its associated <see cref="Type"/>.
         /// </summary>
         public readonly byte Id;
+
+        /// <summary>
+        /// Internal constructor to prevent external instantiation.
+        /// </summary>
+        /// <param name="detonationScenario">The <see cref="DetonationScenario"/>.</param>
+        /// <param name="id">The <see cref="byte"/> id of the scenario.</param>
+        /// <param name="type">The <see cref="WarheadScenarioType"/>.</param>
+        internal DetonationScenario(AlphaWarheadController.DetonationScenario detonationScenario, byte id, WarheadScenarioType type)
+        {
+            TimeToDetonate = detonationScenario.TimeToDetonate;
+            AdditionalTime = detonationScenario.AdditionalTime;
+            Type = type;
+            Id = id;
+        }
 
         /// <summary>
         /// The actual time it takes for the warhead to detonate.

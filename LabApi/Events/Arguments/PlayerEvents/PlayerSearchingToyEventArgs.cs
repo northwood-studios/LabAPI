@@ -6,7 +6,7 @@ using System;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.PlayerEvents.SearchingToy"/>
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.SearchingToy"/>.
 /// </summary>
 public class PlayerSearchingToyEventArgs : EventArgs, IPlayerEvent, IInteractableEvent, ICancellableEvent
 {

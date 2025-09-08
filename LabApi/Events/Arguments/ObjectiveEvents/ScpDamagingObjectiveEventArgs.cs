@@ -16,7 +16,8 @@ public class ScpDamagingObjectiveEventArgs : ObjectiveCompletingBaseEventArgs
     /// <param name="influenceToGrant">The influence points to grant to the <paramref name="faction"/>.</param>
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="targetHub">The hub of the player SCP that has been damaged.</param>
-    public ScpDamagingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, ReferenceHub targetHub) : base(hub, faction, influenceToGrant, timeToGrant)
+    public ScpDamagingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, ReferenceHub targetHub)
+        : base(hub, faction, influenceToGrant, timeToGrant)
     {
         Target = Player.Get(targetHub);
     }

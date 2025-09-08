@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using YamlDotNet.Serialization;
 
@@ -9,20 +8,6 @@ namespace LabApi.Features.Permissions.Providers;
 /// </summary>
 public class PermissionGroup
 {
-    /// <summary>
-    /// Constructor for deserialization.
-    /// </summary>
-    public PermissionGroup() : this([], []) {}
-
-    /// <summary>
-    /// Represents a group of permissions. They are linked to RA user groups.
-    /// </summary>
-    public PermissionGroup(string[] inheritedGroups, string[] permissions)
-    {
-        InheritedGroups = inheritedGroups;
-        Permissions = permissions;
-    }
-
     /// <summary>
     /// Gets the default permission group.
     /// </summary>
@@ -37,11 +22,30 @@ public class PermissionGroup
         {
             Dictionary<string, PermissionGroup> groups = new()
             {
-                ["default"] = Default
+                ["default"] = Default,
             };
 
             return groups;
         }
+    }
+
+    /// <summary>
+    /// Constructor for deserialization.
+    /// </summary>
+    public PermissionGroup()
+        : this([], [])
+    {
+    }
+
+    /// <summary>
+    /// Represents a group of permissions. They are linked to RA user groups.
+    /// </summary>
+    /// <param name="inheritedGroups">Array of groups that should be inherited.</param>
+    /// <param name="permissions">Array of permissions this group should have.</param>
+    public PermissionGroup(string[] inheritedGroups, string[] permissions)
+    {
+        InheritedGroups = inheritedGroups;
+        Permissions = permissions;
     }
 
     /// <summary>

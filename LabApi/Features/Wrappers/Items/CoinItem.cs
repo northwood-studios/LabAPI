@@ -17,12 +17,28 @@ public class CoinItem : Item
     /// <summary>
     /// Contains all the cached coin items, accessible through their <see cref="Coin"/>.
     /// </summary>
-    public new static Dictionary<Coin, CoinItem> Dictionary { get; } = [];
+    public static new Dictionary<Coin, CoinItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="CoinItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<CoinItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<CoinItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the coin item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Coin"/> was not null.
+    /// </summary>
+    /// <param name="coin">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(coin))]
+    public static CoinItem? Get(Coin? coin)
+    {
+        if (coin == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(coin, out CoinItem item) ? item : (CoinItem)CreateItemWrapper(coin);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -34,16 +50,9 @@ public class CoinItem : Item
         Base = coin;
 
         if (CanCache)
+        {
             Dictionary.Add(coin, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -64,16 +73,11 @@ public class CoinItem : Item
     public double? LastFlipTime => Coin.FlipTimes.TryGetValue(Serial, out double time) ? Math.Abs(time) : null;
 
     /// <summary>
-    /// Gets the coin item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Coin"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="coin">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(coin))]
-    public static CoinItem? Get(Coin? coin)
+    internal override void OnRemove()
     {
-        if (coin == null)
-            return null;
-
-        return Dictionary.TryGetValue(coin, out CoinItem item) ? item : (CoinItem)CreateItemWrapper(coin);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

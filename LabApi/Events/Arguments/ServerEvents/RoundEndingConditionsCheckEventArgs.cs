@@ -10,7 +10,7 @@ public class RoundEndingConditionsCheckEventArgs : EventArgs
     /// <summary>
     /// Initializes a new instance of the <see cref="RoundEndingConditionsCheckEventArgs"/> class.
     /// </summary>
-    /// <param name="canEnd">Whether the round end conditions are met</param>
+    /// <param name="canEnd">Whether the round end conditions are met.</param>
     public RoundEndingConditionsCheckEventArgs(bool canEnd)
     {
         CanEnd = canEnd;

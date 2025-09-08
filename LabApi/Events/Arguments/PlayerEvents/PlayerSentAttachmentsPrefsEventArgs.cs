@@ -5,7 +5,7 @@ using System;
 namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.PlayerEvents.ChangedAttachmentsPrefs"/> event.
+/// Represents the arguments for the <see cref="Handlers.PlayerEvents.SentAttachmentsPrefs"/> event.
 /// </summary>
 public class PlayerSentAttachmentsPrefsEventArgs : EventArgs, IPlayerEvent
 {
@@ -24,7 +24,7 @@ public class PlayerSentAttachmentsPrefsEventArgs : EventArgs, IPlayerEvent
         NewAttachments = newAttachments;
     }
 
-    /// <inheritdoc/ >
+    /// <inheritdoc />
     public Player Player { get; }
 
     /// <summary>
@@ -38,8 +38,7 @@ public class PlayerSentAttachmentsPrefsEventArgs : EventArgs, IPlayerEvent
     public uint OldAttachments { get; }
 
     /// <summary>
-    /// Gets the new attachments code stored on the server. 
+    /// Gets the new attachments code stored on the server.
     /// </summary>
     public uint NewAttachments { get; }
-
 }

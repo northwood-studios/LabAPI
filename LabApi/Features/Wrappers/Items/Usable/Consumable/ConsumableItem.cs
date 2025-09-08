@@ -12,12 +12,28 @@ public class ConsumableItem : UsableItem
     /// <summary>
     /// Contains all the cached consumable items, accessible through their <see cref="Consumable"/>.
     /// </summary>
-    public new static Dictionary<Consumable, ConsumableItem> Dictionary { get; } = [];
+    public static new Dictionary<Consumable, ConsumableItem> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all instances of <see cref="ConsumableItem"/>.
     /// </summary>
-    public new static IReadOnlyCollection<ConsumableItem> List => Dictionary.Values;
+    public static new IReadOnlyCollection<ConsumableItem> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the consumable item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Consumable"/> was not null.
+    /// </summary>
+    /// <param name="consumable">The <see cref="Base"/> of the item.</param>
+    /// <returns>The requested item or null.</returns>
+    [return: NotNullIfNotNull(nameof(consumable))]
+    public static ConsumableItem? Get(Consumable? consumable)
+    {
+        if (consumable == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(consumable, out ConsumableItem item) ? item : (ConsumableItem)CreateItemWrapper(consumable);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -29,16 +45,9 @@ public class ConsumableItem : UsableItem
         Base = consumable;
 
         if (CanCache)
+        {
             Dictionary.Add(consumable, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -47,16 +56,11 @@ public class ConsumableItem : UsableItem
     public new Consumable Base { get; }
 
     /// <summary>
-    /// Gets the consumable item wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="Consumable"/> was not null.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="consumable">The <see cref="Base"/> of the item.</param>
-    /// <returns>The requested item or null.</returns>
-    [return: NotNullIfNotNull(nameof(consumable))]
-    public static ConsumableItem? Get(Consumable? consumable)
+    internal override void OnRemove()
     {
-        if (consumable == null)
-            return null;
-
-        return Dictionary.TryGetValue(consumable, out ConsumableItem item) ? item : (ConsumableItem)CreateItemWrapper(consumable);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

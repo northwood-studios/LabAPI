@@ -21,8 +21,15 @@ public class PlayerRequestedRaPlayerInfoEventArgs : EventArgs, IPlayerEvent, ITa
     /// <param name="idBuilder">The <see cref="StringBuilder"/> used to construct the clipboard text of the targets player id.</param>
     /// <param name="ipBuilder">The <see cref="StringBuilder"/> used to construct the clipboard text of the targets ip address.</param>
     /// <param name="userIdBuilder">The <see cref="StringBuilder"/> used to construct the clipboard text of the targets user id.</param>
-    public PlayerRequestedRaPlayerInfoEventArgs(CommandSender commandSender, ReferenceHub targetHub, bool isSensitiveInfo,
-        bool hasUserIdPerms, StringBuilder infoBuilder, StringBuilder idBuilder, StringBuilder ipBuilder, StringBuilder userIdBuilder)
+    public PlayerRequestedRaPlayerInfoEventArgs(
+        CommandSender commandSender,
+        ReferenceHub targetHub,
+        bool isSensitiveInfo,
+        bool hasUserIdPerms,
+        StringBuilder infoBuilder,
+        StringBuilder idBuilder,
+        StringBuilder ipBuilder,
+        StringBuilder userIdBuilder)
     {
         Player = Player.Get(commandSender)!;
         Target = Player.Get(targetHub);

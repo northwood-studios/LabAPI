@@ -13,12 +13,33 @@ public class BulkheadDoor : Gate
     /// <summary>
     /// Contains all the cached <see cref="BulkheadDoor"/> instances, accessible through their <see cref="PryableDoor"/>.
     /// </summary>
-    public new static Dictionary<PryableDoor, BulkheadDoor> Dictionary { get; } = [];
+    public static new Dictionary<PryableDoor, BulkheadDoor> Dictionary { get; } = [];
 
     /// <summary>
     /// A reference to all <see cref="BulkheadDoor"/> instances currently in the game.
     /// </summary>
-    public new static IReadOnlyCollection<BulkheadDoor> List => Dictionary.Values;
+    public static new IReadOnlyCollection<BulkheadDoor> List => Dictionary.Values;
+
+    /// <summary>
+    /// Gets the <see cref="BulkheadDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// </summary>
+    /// <param name="pryableDoor">The <see cref="PryableDoor"/> of the door.</param>
+    /// <returns>The requested door wrapper or null if the input was null.</returns>
+    [return: NotNullIfNotNull(nameof(pryableDoor))]
+    public static new BulkheadDoor? Get(PryableDoor? pryableDoor)
+    {
+        if (pryableDoor == null)
+        {
+            return null;
+        }
+
+        if (Dictionary.TryGetValue(pryableDoor, out BulkheadDoor door))
+        {
+            return door;
+        }
+
+        return (BulkheadDoor)CreateDoorWrapper(pryableDoor);
+    }
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -30,19 +51,14 @@ public class BulkheadDoor : Gate
         Base = pryableDoor;
         DoorCrusherExtension extension = pryableDoor.gameObject.GetComponent<DoorCrusherExtension>();
         if (extension != null)
+        {
             Crusher = new DoorCrusher(extension);
+        }
 
         if (CanCache)
+        {
             Dictionary.Add(pryableDoor, this);
-    }
-
-    /// <summary>
-    /// An internal method to remove itself from the cache when the base object is destroyed.
-    /// </summary>
-    internal override void OnRemove()
-    {
-        base.OnRemove();
-        Dictionary.Remove(Base);
+        }
     }
 
     /// <summary>
@@ -59,19 +75,11 @@ public class BulkheadDoor : Gate
     public DoorCrusher? Crusher { get; }
 
     /// <summary>
-    /// Gets the <see cref="BulkheadDoor"/> wrapper from the <see cref="Dictionary"/>, or creates a new one if it doesn't exist.
+    /// An internal method to remove itself from the cache when the base object is destroyed.
     /// </summary>
-    /// <param name="pryableDoor">The <see cref="PryableDoor"/> of the door.</param>
-    /// <returns>The requested door wrapper or null if the input was null.</returns>
-    [return: NotNullIfNotNull(nameof(pryableDoor))]
-    public new static BulkheadDoor? Get(PryableDoor? pryableDoor)
+    internal override void OnRemove()
     {
-        if (pryableDoor == null)
-            return null;
-
-        if (Dictionary.TryGetValue(pryableDoor, out BulkheadDoor door))
-            return door;
-
-        return (BulkheadDoor)CreateDoorWrapper(pryableDoor);
+        base.OnRemove();
+        Dictionary.Remove(Base);
     }
 }

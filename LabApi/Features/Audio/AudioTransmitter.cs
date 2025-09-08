@@ -17,19 +17,11 @@ namespace LabApi.Features.Audio;
 /// Encodes and sends audio to certain players which plays on speakers with the specified controller id.
 /// </summary>
 /// <remarks>
-/// Its possible to create multiple transmitters with the same controller id, but you must filter the receiving players such that no one player receives audio from multiple transmitters. 
+/// Its possible to create multiple transmitters with the same controller id, but you must filter the receiving players such that no one player receives audio from multiple transmitters.
 /// This is done to allow you to send different audio to certain players using the same speakers.
 /// </remarks>
 public class AudioTransmitter
 {
-    private const float GainCorrectionFactor = 1.41421356237f;
-
-    private static readonly float[] EmptyData = new float[FrameSize];
-
-    private static readonly float[] TempSampleData = new float[FrameSize];
-
-    private static readonly byte[] TempEncodedData = new byte[MaxEncodedSize];
-
     /// <summary>
     /// The sample rate in samples per second.
     /// </summary>
@@ -50,61 +42,17 @@ public class AudioTransmitter
     /// </summary>
     public const int MaxEncodedSize = VoiceChatSettings.MaxEncodedSize;
 
-    /// <summary>
-    /// The <see cref="SpeakerToy.ControllerId"/> of the speakers to play the audio on.
-    /// </summary>
-    public readonly byte ControllerId;
+    private const float GainCorrectionFactor = 1.41421356237f;
 
-    /// <summary>
-    /// The queued audio clips.
-    /// Includes the current playing clip.
-    /// </summary>
-    public readonly Queue<float[]> AudioClipSamples = [];
+    private static readonly float[] EmptyData = new float[FrameSize];
+    private static readonly float[] TempSampleData = new float[FrameSize];
+    private static readonly byte[] TempEncodedData = new byte[MaxEncodedSize];
 
-    /// <summary>
-    /// The predicate for determining which players receive audio.
-    /// </summary>
-    /// <remarks>
-    /// If <see langword="null"/>, all authenticated players will receive audio packets.
-    /// </remarks>
-    public Func<Player, bool>? ValidPlayers = null;
-
-    /// <summary>
-    /// Whether the last queued clip will loop.
-    /// </summary>
-    public bool Looping = false;
-
-    /// <summary>
-    /// The position in samples of the current clip. 
-    /// </summary>
-    public int CurrentPosition = 0;
-
-    /// <summary>
-    /// Number of samples in the current clip.
-    /// </summary>
-    public int CurrentSampleCount => currentSamples == EmptyData ? 0 : currentSamples.Length;
-
-    /// <summary>
-    /// Whether playback is active and can be stopped or paused.
-    /// </summary>
-    public bool IsPlaying => update.IsRunning && !IsPaused;
-
-    /// <summary>
-    /// Whether playback is paused and can be resumed.
-    /// </summary>
-    public bool IsPaused => update.IsAliveAndPaused;
-
-    private readonly OpusEncoder opusEncoder;
-
-    private CoroutineHandle update;
-
-    private double targetTime = 0.0;
-
-    private bool breakCurrent = false;
-
-    private float[] currentSamples = EmptyData;
-
-    private bool CanLoop => AudioClipSamples.Count == 0 && Looping;
+    private readonly OpusEncoder _opusEncoder;
+    private CoroutineHandle _update;
+    private double _targetTime = 0.0;
+    private bool _breakCurrent = false;
+    private float[] _currentSamples = EmptyData;
 
     /// <summary>
     /// Creates a new audio transmitter for the specified controller.
@@ -114,8 +62,54 @@ public class AudioTransmitter
     public AudioTransmitter(byte controllerId, OpusApplicationType type = OpusApplicationType.Audio)
     {
         ControllerId = controllerId;
-        opusEncoder = new OpusEncoder(type);
+        _opusEncoder = new OpusEncoder(type);
     }
+
+    /// <summary>
+    /// The <see cref="SpeakerToy.ControllerId"/> of the speakers to play the audio on.
+    /// </summary>
+    public byte ControllerId { get; }
+
+    /// <summary>
+    /// The queued audio clips.
+    /// Includes the current playing clip.
+    /// </summary>
+    public Queue<float[]> AudioClipSamples { get; } = [];
+
+    /// <summary>
+    /// The predicate for determining which players receive audio.
+    /// </summary>
+    /// <remarks>
+    /// If <see langword="null"/>, all authenticated players will receive audio packets.
+    /// </remarks>
+    public Func<Player, bool>? ValidPlayers { get; set; } = null;
+
+    /// <summary>
+    /// Whether the last queued clip will loop.
+    /// </summary>
+    public bool Looping { get; set; } = false;
+
+    /// <summary>
+    /// The position in samples of the current clip.
+    /// </summary>
+    public int CurrentPosition { get; set; } = 0;
+
+    /// <summary>
+    /// Number of samples in the current clip.
+    /// </summary>
+    public int CurrentSampleCount => _currentSamples == EmptyData ? 0 : _currentSamples.Length;
+
+    /// <summary>
+    /// Whether playback is active and can be stopped or paused.
+    /// </summary>
+    public bool IsPlaying => _update.IsRunning && !IsPaused;
+
+    /// <summary>
+    /// Whether playback is paused and can be resumed.
+    /// </summary>
+    public bool IsPaused => _update.IsAliveAndPaused;
+
+    private bool CanLoop => AudioClipSamples.Count == 0 && Looping;
 
     /// <summary>
     /// Plays the PCM samples on the current controller.
@@ -126,17 +120,19 @@ public class AudioTransmitter
     /// <param name="samples">The PCM samples.</param>
     /// <param name="queue">Whether to queue the audio if audio is already playing, otherwise overrides the current audio.</param>
     /// <param name="loop">
-    /// Whether to loop this clip. 
+    /// Whether to loop this clip.
     /// Loop ends if another clip is played either immediately if not queued or at the end of the loop if next clip was queued.
     /// </param>
     public void Play(float[] samples, bool queue, bool loop)
     {
         if (samples.IsEmpty())
+        {
             throw new InvalidOperationException($"Audio clip samples must not be empty");
+        }
 
         if (!queue)
         {
-            breakCurrent = true;
+            _breakCurrent = true;
             AudioClipSamples.Clear();
             CurrentPosition = 0;
         }
@@ -144,8 +140,10 @@ public class AudioTransmitter
         AudioClipSamples.Enqueue(samples);
         Looping = loop;
 
-        if (!update.IsRunning)
-            update = Timing.RunCoroutine(Transmit(), Segment.Update);
+        if (!_update.IsRunning)
+        {
+            _update = Timing.RunCoroutine(Transmit(), Segment.Update);
+        }
     }
 
     /// <summary>
@@ -153,7 +151,7 @@ public class AudioTransmitter
     /// </summary>
     public void Pause()
     {
-        update.IsAliveAndPaused = true;
+        _update.IsAliveAndPaused = true;
     }
 
     /// <summary>
@@ -161,8 +159,8 @@ public class AudioTransmitter
     /// </summary>
     public void Resume()
     {
-        update.IsAliveAndPaused = false;
-        targetTime = NetworkTime.time;
+        _update.IsAliveAndPaused = false;
+        _targetTime = NetworkTime.time;
     }
 
     /// <summary>
@@ -173,12 +171,16 @@ public class AudioTransmitter
     public void Skip(int count)
     {
         if (count == 0)
+        {
             return;
+        }
 
-        breakCurrent = true;
+        _breakCurrent = true;
         CurrentPosition = 0;
         for (int i = 1; i < count; i++)
+        {
             AudioClipSamples.Dequeue();
+        }
     }
 
     /// <summary>
@@ -186,39 +188,43 @@ public class AudioTransmitter
     /// </summary>
     public void Stop()
     {
-        Timing.KillCoroutines(update);
+        Timing.KillCoroutines(_update);
         AudioClipSamples.Clear();
         CurrentPosition = 0;
     }
 
     private IEnumerator<float> Transmit()
     {
-        targetTime = NetworkTime.time;
+        _targetTime = NetworkTime.time;
         while (!AudioClipSamples.IsEmpty())
         {
-            currentSamples = AudioClipSamples.Dequeue();
+            _currentSamples = AudioClipSamples.Dequeue();
 
-            breakCurrent = false;
-            while (!breakCurrent && (CanLoop || CurrentPosition < currentSamples.Length))
+            _breakCurrent = false;
+            while (!_breakCurrent && (CanLoop || CurrentPosition < _currentSamples.Length))
             {
                 try
                 {
-                    while (targetTime < NetworkTime.time)
+                    while (_targetTime < NetworkTime.time)
                     {
                         int read = 0;
                         while (read != FrameSize)
                         {
                             int remaining = FrameSize - read;
-                            int count = Mathf.Max(Mathf.Min(CurrentPosition + remaining, currentSamples.Length) - CurrentPosition, 0);
-                            Array.Copy(currentSamples, CurrentPosition, TempSampleData, read, count);
+                            int count = Mathf.Max(Mathf.Min(CurrentPosition + remaining, _currentSamples.Length) - CurrentPosition, 0);
+                            Array.Copy(_currentSamples, CurrentPosition, TempSampleData, read, count);
 
                             if (remaining == count)
+                            {
                                 CurrentPosition += count;
+                            }
                             else
                             {
                                 CurrentPosition = 0;
                                 if (!CanLoop)
-                                    currentSamples = AudioClipSamples.IsEmpty() ? EmptyData : AudioClipSamples.Dequeue();
+                                {
+                                    _currentSamples = AudioClipSamples.IsEmpty() ? EmptyData : AudioClipSamples.Dequeue();
+                                }
                             }
 
                             read += count;
@@ -227,9 +233,11 @@ public class AudioTransmitter
                         // Client sided bug causes output to be 3db quieter than expected
                         // so we correct for that here
                         for (int i = 0; i < TempSampleData.Length; i++)
+                        {
                             TempSampleData[i] *= GainCorrectionFactor;
+                        }
 
-                        int length = opusEncoder.Encode(TempSampleData, TempEncodedData, FrameSize);
+                        int length = _opusEncoder.Encode(TempSampleData, TempEncodedData, FrameSize);
                         if (length > 2)
                         {
                             AudioMessage msg = new()
@@ -240,12 +248,16 @@ public class AudioTransmitter
                             };
 
                             if (ValidPlayers != null)
+                            {
                                 msg.SendToHubsConditionally(x => x.Mode != ClientInstanceMode.Unverified && ValidPlayers.Invoke(Player.Get(x)));
+                            }
                             else
+                            {
                                 msg.SendToAuthenticated();
+                            }
                         }
 
-                        targetTime += FramePeriod;
+                        _targetTime += FramePeriod;
                     }
                 }
                 catch (Exception ex)

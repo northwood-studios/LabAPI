@@ -15,7 +15,6 @@ namespace LabApi.Loader.Features.Yaml.CustomConverters;
 /// </summary>
 public class CustomColorConverter : IYamlTypeConverter
 {
-
     /// <inheritdoc/>
     public object? ReadYaml(IParser parser, Type type)
     {
@@ -28,13 +27,18 @@ public class CustomColorConverter : IYamlTypeConverter
             for (int i = 0; i <= 3; i++)
             {
                 if (!parser.TryReadMapping(out string key, out string val))
+                {
                     throw new ArgumentException($"Unable to parse {nameof(Color)}, no component at index {i} provided");
+                }
 
                 if (key is not ("r" or "g" or "b" or "a"))
+                {
                     throw new ArgumentException($"Unable to parse {nameof(Color)}, invalid component name {key}. Only 'r', 'g', 'b' and 'a' are allowed");
+                }
 
                 storedValues[key] = float.Parse(val, CultureInfo.InvariantCulture);
             }
+
             parser.Consume<MappingEnd>();
 
             Color value = new(storedValues["r"], storedValues["g"], storedValues["b"], storedValues["a"]);
@@ -49,7 +53,7 @@ public class CustomColorConverter : IYamlTypeConverter
     /// <inheritdoc/>
     public void WriteYaml(IEmitter emitter, object? value, Type type)
     {
-        Color color = (Color)value;
+        Color color = (Color?)value ?? Color.white;
         emitter.Emit(new MappingStart(AnchorName.Empty, TagName.Empty, isImplicit: true, MappingStyle.Block));
 
         emitter.EmitMapping("r", color.r.ToString(CultureInfo.InvariantCulture));

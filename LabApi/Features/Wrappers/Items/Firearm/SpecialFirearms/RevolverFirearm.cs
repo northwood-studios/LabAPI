@@ -11,11 +11,14 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class RevolverFirearm : FirearmItem
 {
+    private RevolverRouletteModule _rouletteModule = null!;
+
     /// <summary>
     /// An internal constructor to prevent external instantiation.
     /// </summary>
     /// <param name="firearm">The base <see cref="Firearm"/> object.</param>
-    internal RevolverFirearm(Firearm firearm) : base(firearm)
+    internal RevolverFirearm(Firearm firearm)
+        : base(firearm)
     {
     }
 
@@ -31,10 +34,12 @@ public class RevolverFirearm : FirearmItem
     {
         get
         {
-            if (_ammoContainerModule is CylinderAmmoModule)
+            if (AmmoContainerModule is CylinderAmmoModule)
+            {
                 return GetChambersArrayForSerial(Serial, MaxAmmo);
+            }
 
-            return null;
+            return [];
         }
     }
 
@@ -43,14 +48,17 @@ public class RevolverFirearm : FirearmItem
     {
         get
         {
-            if (_actionModule is DoubleActionModule actionModule)
+            if (ActionModule is DoubleActionModule actionModule)
+            {
                 return actionModule.Cocked;
+            }
 
             return false;
         }
+
         set
         {
-            if (_actionModule is not DoubleActionModule actionModule)
+            if (ActionModule is not DoubleActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(Cocked)} as the {nameof(DoubleActionModule)} is null.");
                 return;
@@ -70,14 +78,17 @@ public class RevolverFirearm : FirearmItem
     {
         get
         {
-            if (_ammoContainerModule is CylinderAmmoModule ammoModule)
+            if (AmmoContainerModule is CylinderAmmoModule ammoModule)
+            {
                 return ammoModule.AmmoStored;
+            }
 
             return 0;
         }
+
         set
         {
-            if (_ammoContainerModule is not CylinderAmmoModule ammoModule)
+            if (AmmoContainerModule is not CylinderAmmoModule ammoModule)
             {
                 Logger.Error($"Unable to set {nameof(StoredAmmo)} as the {nameof(CylinderAmmoModule)} is null.");
                 return;
@@ -103,9 +114,10 @@ public class RevolverFirearm : FirearmItem
         {
             return GetChambersArrayForSerial(Serial, MaxAmmo)[0].ServerSyncState == ChamberState.Live ? 1 : 0;
         }
+
         set
         {
-            if (_actionModule is not DoubleActionModule actionModule)
+            if (ActionModule is not DoubleActionModule actionModule)
             {
                 Logger.Error($"Unable to set {nameof(ChamberedAmmo)} as the {nameof(DoubleActionModule)} is null.");
                 return;
@@ -115,8 +127,6 @@ public class RevolverFirearm : FirearmItem
         }
     }
 
-    private RevolverRouletteModule _rouletteModule;
-
     /// <summary>
     /// Sets the status of the chamber at <paramref name="index"/>. 0th element is the one currently aligned with the barrel.<para/>
     /// <b>Indexes of each round are clockwise.</b>
@@ -125,7 +135,7 @@ public class RevolverFirearm : FirearmItem
     /// <param name="state">Target state of the chamber.</param>
     public void SetChamberStatus(int index, ChamberState state)
     {
-        if (_ammoContainerModule is not CylinderAmmoModule ammoModule)
+        if (AmmoContainerModule is not CylinderAmmoModule ammoModule)
         {
             Logger.Error($"Unable to set chamber status, this firearm doesn't have {nameof(CylinderAmmoModule)}!");
             return;
@@ -144,7 +154,7 @@ public class RevolverFirearm : FirearmItem
     /// <param name="amount">The amount of times to rotate this cylinder.</param>
     public void Rotate(int amount)
     {
-        if (_ammoContainerModule is not CylinderAmmoModule ammoModule)
+        if (AmmoContainerModule is not CylinderAmmoModule ammoModule)
         {
             Logger.Error($"Unable to rotate this cylinder, this firearm doesn't have {nameof(CylinderAmmoModule)}!");
             return;
@@ -154,7 +164,7 @@ public class RevolverFirearm : FirearmItem
     }
 
     /// <summary>
-    /// Attempts to spin the revolver if the firearm is't busy doing something else.
+    /// Attempts to spin the revolver if the firearm isn't busy doing something else.
     /// </summary>
     /// <returns>Whether the spin request was successful.</returns>
     public bool TrySpin()

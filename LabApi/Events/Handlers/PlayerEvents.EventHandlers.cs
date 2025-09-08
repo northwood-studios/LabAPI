@@ -1,5 +1,4 @@
 ﻿using LabApi.Events.Arguments.PlayerEvents;
-using MapGeneration;
 
 namespace LabApi.Events.Handlers;
 
@@ -50,7 +49,7 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerUsedIntercomEventArgs>? UsedIntercom;
 
-    #endregion 
+    #endregion
 
     #region Moderation
 
@@ -473,7 +472,7 @@ public static partial class PlayerEvents
     ///// <summary>
     ///// Gets called when the player is aiming the weapon.
     ///// </summary>
-    //public static event LabEventHandler<PlayerAimingWeaponEventArgs>? AimingWeapon;
+    // public static event LabEventHandler<PlayerAimingWeaponEventArgs>? AimingWeapon;
 
     /// <summary>
     /// Gets called when the player aimed the weapon.

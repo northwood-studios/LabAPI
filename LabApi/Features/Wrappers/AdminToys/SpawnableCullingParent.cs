@@ -1,11 +1,11 @@
-﻿using static LabApi.Features.Wrappers.AdminToy;
-using AdminToys;
+﻿using AdminToys;
+using Generators;
 using Mirror;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using Generators;
+using static LabApi.Features.Wrappers.AdminToy;
 using BaseCullingParent = AdminToys.SpawnableCullingParent;
 using Logger = LabApi.Features.Console.Logger;
 
@@ -22,6 +22,84 @@ namespace LabApi.Features.Wrappers;
 public class SpawnableCullingParent
 {
     /// <summary>
+    /// Contains all the cached spawnable culling parents, accessible through their <see cref="Base"/>.
+    /// </summary>
+    public static Dictionary<BaseCullingParent, SpawnableCullingParent> Dictionary { get; } = [];
+
+    /// <summary>
+    /// A reference to all instances of <see cref="SpawnableCullingParent"/>.
+    /// </summary>
+    public static IReadOnlyCollection<SpawnableCullingParent> List => Dictionary.Values;
+
+    /// <summary>
+    /// Instantiates a new culling parent object.
+    /// </summary>
+    /// <param name="position">The initial position.</param>
+    /// <param name="size">The bounds size.</param>
+    /// <param name="networkSpawn">Whether should the game object spawn over network.</param>
+    /// <returns>The instantiated culling parent.</returns>
+    public static SpawnableCullingParent Create(Vector3 position, Vector3 size, bool networkSpawn = true)
+    {
+        if (PrefabCache<BaseCullingParent>.Prefab == null)
+        {
+            BaseCullingParent? found = null;
+            foreach (GameObject prefab in NetworkClient.prefabs.Values)
+            {
+                if (prefab.TryGetComponent(out found))
+                {
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                throw new InvalidOperationException($"No prefab in NetworkClient.prefabs has component type {typeof(BaseCullingParent)}");
+            }
+
+            PrefabCache<BaseCullingParent>.Prefab = found;
+        }
+
+        BaseCullingParent instance = UnityEngine.Object.Instantiate(PrefabCache<BaseCullingParent>.Prefab, position, Quaternion.identity);
+        instance.NetworkBoundsPosition = position;
+        instance.NetworkBoundsSize = size;
+
+        if (networkSpawn)
+        {
+            NetworkServer.Spawn(instance.gameObject);
+        }
+
+        return Get(instance);
+    }
+
+    /// <summary>
+    /// Gets the cullable parent wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="AdminToyBase"/> was not <see langword="null"/>.
+    /// </summary>
+    /// <param name="cullingBase">The <see cref="Base"/> of the cullable parent.</param>
+    /// <returns>The requested culling parent or <see langword="null"/>.</returns>
+    [return: NotNullIfNotNull(nameof(cullingBase))]
+    public static SpawnableCullingParent? Get(BaseCullingParent? cullingBase)
+    {
+        if (cullingBase == null)
+        {
+            return null;
+        }
+
+        return Dictionary.TryGetValue(cullingBase, out SpawnableCullingParent item) ? item : new SpawnableCullingParent(cullingBase);
+    }
+
+    /// <summary>
+    /// Tries to get the culling parent wrapper from the <see cref="Dictionary"/>.
+    /// </summary>
+    /// <param name="adminToyBase">The <see cref="Base"/> of the cullable parent.</param>
+    /// <param name="adminToy">The requested culling parent.</param>
+    /// <returns><see langword="True"/> if the culling parent exists, otherwise <see langword="false"/>.</returns>
+    public static bool TryGet(BaseCullingParent? adminToyBase, [NotNullWhen(true)] out SpawnableCullingParent? adminToy)
+    {
+        adminToy = Get(adminToyBase);
+        return adminToy != null;
+    }
+
+    /// <summary>
     /// Initializes the <see cref="SpawnableCullingParent"/> class.
     /// </summary>
     [InitializeWrapper]
@@ -32,14 +110,39 @@ public class SpawnableCullingParent
     }
 
     /// <summary>
-    /// Contains all the cached spawnable culling parents, accessible through their <see cref="Base"/>.
+    /// A private method to handle the creation of new cullable parents on the server.
     /// </summary>
-    public static Dictionary<BaseCullingParent, SpawnableCullingParent> Dictionary { get; } = [];
+    /// <param name="cullableParent">The created <see cref="BaseCullingParent"/> instance.</param>
+    private static void AddCullableParent(BaseCullingParent cullableParent)
+    {
+        try
+        {
+            if (!Dictionary.ContainsKey(cullableParent))
+            {
+                _ = new SpawnableCullingParent(cullableParent);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.InternalError($"Failed to handle cullable parent creation with error: {e}");
+        }
+    }
 
     /// <summary>
-    /// A reference to all instances of <see cref="SpawnableCullingParent"/>.
+    /// A private method to handle the removal of cullable parents from the server.
     /// </summary>
-    public static IReadOnlyCollection<SpawnableCullingParent> List => Dictionary.Values;
+    /// <param name="cullableParent">The to be destroyed <see cref="BaseCullingParent"/> instance.</param>
+    private static void RemoveCullableParent(BaseCullingParent cullableParent)
+    {
+        try
+        {
+            Dictionary.Remove(cullableParent);
+        }
+        catch (Exception e)
+        {
+            Logger.InternalError($"Failed to handle cullable parent destruction with error: {e}");
+        }
+    }
 
     /// <summary>
     /// A protected constructor to prevent external instantiation.
@@ -79,8 +182,8 @@ public class SpawnableCullingParent
     /// </summary>
     public Vector3 Position
     {
-        get => Base.BoundsPosition;
-        set => Base.BoundsPosition = value;
+        get => Base.NetworkBoundsPosition;
+        set => Base.NetworkBoundsPosition = value;
     }
 
     /// <summary>
@@ -88,8 +191,8 @@ public class SpawnableCullingParent
     /// </summary>
     public Vector3 Size
     {
-        get => Base.BoundsSize;
-        set => Base.BoundsSize = value;
+        get => Base.NetworkBoundsSize;
+        set => Base.NetworkBoundsSize = value;
     }
 
     /// <summary>
@@ -101,97 +204,4 @@ public class SpawnableCullingParent
     /// Destroys the culling parent on server and client.
     /// </summary>
     public void Destroy() => NetworkServer.Destroy(GameObject);
-
-    /// <summary>
-    /// Instantiates a new culling parent object.
-    /// </summary>
-    /// <param name="position">The initial position.</param>
-    /// <param name="size">The bounds size.</param>
-    /// <param name="networkSpawn">Whether should the game object spawn over network.</param>
-    /// <returns>The instantiated culling parent.</returns>
-    public static SpawnableCullingParent Create(Vector3 position, Vector3 size, bool networkSpawn = true)
-    {
-        if (PrefabCache<BaseCullingParent>.prefab == null)
-        {
-            BaseCullingParent? found = null;
-            foreach (GameObject prefab in NetworkClient.prefabs.Values)
-            {
-                if (prefab.TryGetComponent(out found))
-                    break;
-            }
-
-            if (found == null)
-                throw new InvalidOperationException($"No prefab in NetworkClient.prefabs has component type {typeof(BaseCullingParent)}");
-
-            PrefabCache<BaseCullingParent>.prefab = found;
-        }
-
-        BaseCullingParent instance = UnityEngine.Object.Instantiate(PrefabCache<BaseCullingParent>.prefab);
-        instance.BoundsPosition = position;
-        instance.BoundsSize = size;
-
-        if (networkSpawn)
-            NetworkServer.Spawn(instance.gameObject);
-
-        return Get(instance);
-    }
-
-    /// <summary>
-    /// Gets the cullable parent wrapper from the <see cref="Dictionary"/> or creates a new one if it doesn't exist and the provided <see cref="AdminToyBase"/> was not <see langword="null"/>.
-    /// </summary>
-    /// <param name="cullingBase">The <see cref="Base"/> of the cullable parent.</param>
-    /// <returns>The requested culling parent or <see langword="null"/>.</returns>
-    [return: NotNullIfNotNull(nameof(cullingBase))]
-    public static SpawnableCullingParent? Get(BaseCullingParent? cullingBase)
-    {
-        if (cullingBase == null)
-            return null;
-
-        return Dictionary.TryGetValue(cullingBase, out SpawnableCullingParent item) ? item : new SpawnableCullingParent(cullingBase);
-    }
-
-    /// <summary>
-    /// Tries to get the culling parent wrapper from the <see cref="Dictionary"/>.
-    /// </summary>
-    /// <param name="adminToyBase">The <see cref="Base"/> of the cullable parent.</param>
-    /// <param name="adminToy">The requested culling parent.</param>
-    /// <returns><see langword="True"/> if the culling parent exists, otherwise <see langword="false"/>.</returns>
-    public static bool TryGet(BaseCullingParent? adminToyBase, [NotNullWhen(true)] out SpawnableCullingParent? adminToy)
-    {
-        adminToy = Get(adminToyBase);
-        return adminToy != null;
-    }
-
-    /// <summary>
-    /// A private method to handle the creation of new cullable parents on the server.
-    /// </summary>
-    /// <param name="cullableParent">The created <see cref="BaseCullingParent"/> instance.</param>
-    private static void AddCullableParent(BaseCullingParent cullableParent)
-    {
-        try
-        {
-            if (!Dictionary.ContainsKey(cullableParent))
-                _ = new SpawnableCullingParent(cullableParent);
-        }
-        catch (Exception e)
-        {
-            Logger.InternalError($"Failed to handle admin toy creation with error: {e}");
-        }
-    }
-
-    /// <summary>
-    /// A private method to handle the removal of cullable parents from the server.
-    /// </summary>
-    /// <param name="cullableParent">The to be destroyed <see cref="BaseCullingParent"/> instance.</param>
-    private static void RemoveCullableParent(BaseCullingParent cullableParent)
-    {
-        try
-        {
-            Dictionary.Remove(cullableParent);
-        }
-        catch (Exception e)
-        {
-            Logger.InternalError($"Failed to handle cullable parent destruction with error: {e}");
-        }
-    }
 }
