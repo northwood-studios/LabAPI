@@ -137,7 +137,7 @@ public class Door
     public DoorVariant Base { get; }
 
     /// <summary>
-    /// Gets the <see cref="Enums.DoorName"/> of the door.s
+    /// Gets the <see cref="Enums.DoorName"/> of the door.
     /// </summary>
     /// <remarks>
     /// Is the enum version of <see cref="NameTag"/>.

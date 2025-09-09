@@ -91,10 +91,10 @@ public static class Map
     public static void RemoveEscapeZone(Bounds escapeZone) => EscapeZones.Remove(escapeZone);
 
     #region Get Random
-        /// <summary>
-        /// Gets a random <see cref="Room"/>.
-        /// </summary>
-        /// <returns>The random room if there were any rooms otherwise null.</returns>
+    /// <summary>
+    /// Gets a random <see cref="Room"/>.
+    /// </summary>
+    /// <returns>The random room if there were any rooms otherwise <see langword="null"/>.</returns>
     public static Room? GetRandomRoom()
     {
         return Rooms.Count != 0 ? Rooms.ElementAt(UnityEngine.Random.Range(0, Rooms.Count)) : null;

@@ -132,8 +132,8 @@ public static class Warhead
     }
 
     /// <summary>
-	/// Indicates how much time is left for the DMS to activate.
-	/// Value is capped by <see cref="DeadManSwitchMaxTime"/>.
+    /// Indicates how much time is left for the DMS to activate.
+    /// Value is capped by <see cref="DeadManSwitchMaxTime"/>.
     /// </summary>
     public static float DeadManSwitchRemaining
     {
