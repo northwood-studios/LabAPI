@@ -166,7 +166,7 @@ public static partial class PluginLoader
     /// <param name="files">The collection of assemblies to load.</param>
     public static void LoadPlugins(IEnumerable<FileInfo> files)
     {
-        List<(FileInfo File, Assembly Assembly)> plugins = [];
+        List<(string Path, Assembly Assembly)> plugins = [];
 
         foreach (FileInfo file in files)
         {
@@ -181,8 +181,7 @@ public static partial class PluginLoader
                     ? Assembly.Load(File.ReadAllBytes(file.FullName), File.ReadAllBytes(pdb.FullName))
                     // Otherwise, we load the assembly without any debug information.
                     : Assembly.Load(File.ReadAllBytes(file.FullName));
-
-                plugins.Add((file, pluginAssembly));
+                plugins.Add((file.FullName, pluginAssembly));
             }
             catch (Exception e)
             {
@@ -191,42 +190,32 @@ public static partial class PluginLoader
             }
         }
 
-        foreach ((FileInfo file, Assembly assembly) in plugins)
+        foreach ((string path, Assembly assembly) in plugins)
         {
             try
             {
-                // If the assembly has missing dependencies, we skip it.
-                if (AssemblyUtils.HasMissingDependencies(assembly, file.FullName, out Type[]? types))
-                    continue;
-
-                InstantiatePlugins(types, assembly, file.FullName);
+                AssemblyUtils.ResolveEmbeddedResources(assembly);
             }
             catch (Exception e)
             {
-                Logger.Error($"{LoggerPrefix} Couldn't load the plugin inside '{file.FullName}'");
+                Logger.Error($"{LoggerPrefix} Failed to resolve embedded resources for assembly '{path}'");
+                LogMissingDependencies(assembly);
                 Logger.Error(e);
             }
         }
-    }
 
-    private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
-    {
-        foreach (Type type in types)
+        foreach ((string path, Assembly assembly) in plugins)
         {
-            // We check if the type is derived from Plugin.
-            if (!type.IsSubclassOf(typeof(Plugin)))
-                continue;
-
-            // We create an instance of the type and check if it was successfully created.
-            if (Activator.CreateInstance(type) is not Plugin plugin)
-                continue;
-
-            // Set the file path
-            plugin.FilePath = filePath;
-
-            // In that case, we add the plugin to the plugins list and log that it has been loaded.
-            Plugins.Add(plugin, assembly);
-            Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
+            try
+            {
+                InstantiatePlugins(assembly.GetTypes(), assembly, path);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"{LoggerPrefix} Couldn't load the plugin inside '{path}'");
+                LogMissingDependencies(assembly);
+                Logger.Error(e);
+            }
         }
     }
 
@@ -345,5 +334,35 @@ public static partial class PluginLoader
     private static string ResolvePath(string path)
     {
         return path.Replace("$port", Server.Port.ToString());
+    }
+
+    private static void LogMissingDependencies(Assembly assembly)
+    {
+        IEnumerable<string> missing = AssemblyUtils.GetMissingDependencies(assembly);
+        if (missing.Any())
+        {
+            Logger.Error($"{LoggerPrefix} Missing dependencies:\n{string.Join("\n", missing.Select(static x => $"-\t {x}"))}");
+        }
+    }
+
+    private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
+    {
+        foreach (Type type in types)
+        {
+            // We check if the type is derived from Plugin.
+            if (!type.IsSubclassOf(typeof(Plugin)) || type.IsAbstract)
+                continue;
+
+            // We create an instance of the type and check if it was successfully created.
+            if (Activator.CreateInstance(type) is not Plugin plugin)
+                continue;
+
+            // Set the file path
+            plugin.FilePath = filePath;
+
+            // In that case, we add the plugin to the plugins list and log that it has been loaded.
+            Plugins.Add(plugin, assembly);
+            Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
+        }
     }
 }
