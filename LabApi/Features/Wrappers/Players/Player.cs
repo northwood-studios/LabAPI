@@ -41,7 +41,7 @@ namespace LabApi.Features.Wrappers;
 /// </summary>
 public class Player
 {
-        /// <summary>
+    /// <summary>
     /// A cache of players by their User ID. Does not necessarily contain all players.
     /// </summary>
     private static readonly Dictionary<string, Player> UserIdCache = new(CustomNetworkManager.slots, StringComparer.OrdinalIgnoreCase);
@@ -920,6 +920,18 @@ public class Player
     }
 
     /// <summary>
+    /// Gets or sets whether this player can be spectated by other players.
+    /// </summary>
+    /// <remarks>
+    /// This property is reset when player leaves.
+    /// </remarks>
+    public bool IsSpectatable
+    {
+        get => SpectatableVisibilityManager.IsHidden(ReferenceHub);
+        set => SpectatableVisibilityManager.SetHidden(ReferenceHub, value);
+    }
+
+    /// <summary>
     /// Gets or sets the player's current <see cref="Item">item</see>.
     /// </summary>
     public Item? CurrentItem
@@ -941,7 +953,7 @@ public class Player
     /// <summary>
     /// Gets the player's currently active <see cref="StatusEffectBase">status effects</see>.
     /// </summary>
-    public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(x => x.Intensity > 0);
+    public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(static x => x.Intensity > 0);
 
     /// <summary>
     /// Gets the <see cref="LabApi.Features.Wrappers.Room"/> at the player's current position.
