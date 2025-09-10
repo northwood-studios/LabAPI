@@ -1263,25 +1263,11 @@ public class Player
     public Item? AddItem(ItemType item, ItemAddReason reason = ItemAddReason.AdminCommand) => Item.Get(Inventory.ServerAddItem(item, reason));
 
     /// <summary>
-    /// Adds a <see cref="Pickup"/> to the player's inventory.
-    /// </summary>
-    /// <param name="pickup">Pickup to add.</param>
-    /// <param name="reason">The reason why is this item being added.</param>
-    /// <returns>The added <see cref="Item"/> or <see langword="null"/> if it couldn't be added.</returns>
-    public Item? AddItem(Pickup pickup, ItemAddReason reason)
-    {
-        Item item = Item.Get(Inventory.ServerAddItem(pickup.Type, reason, pickup: pickup.Base));
-        pickup.Destroy();
-
-        return item;
-    }
-
-    /// <summary>
     /// Adds an item by picking it up.
     /// </summary>
     /// <param name="pickup">The <see cref="Pickup"/> to pickup.</param>
     /// <param name="reason">The reason why is this item being added.</param>
-    /// <returns>The <see cref="Item"/> added or null if it could not be added.</returns>
+    /// <returns>The added <see cref="Item"/> or <see langword="null"/> if it could not be added.</returns>
     public Item? AddItem(Pickup pickup, ItemAddReason reason = ItemAddReason.PickedUp)
         => Item.Get(Inventory.ServerAddItem(pickup.Type, reason, pickup.Serial, pickup.Base));
 
