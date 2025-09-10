@@ -41,6 +41,11 @@ namespace LabApi.Features.Wrappers;
 public class Player
 {
     /// <summary>
+    /// Limit of items in player's inventory.
+    /// </summary>
+    public const int InventoryLimit = 8;
+    
+    /// <summary>
     /// Contains all the cached players in the game, accessible through their <see cref="ReferenceHub"/>.
     /// </summary>
     public static Dictionary<ReferenceHub, Player> Dictionary { get; } = [];
@@ -1258,26 +1263,13 @@ public class Player
     public Item? AddItem(ItemType item, ItemAddReason reason = ItemAddReason.AdminCommand) => Item.Get(Inventory.ServerAddItem(item, reason));
 
     /// <summary>
-    /// Adds a <see cref="Pickup"/> to the player's inventory.
-    /// </summary>
-    /// <param name="pickup">Pickup to add.</param>
-    /// <param name="reason">The reason why is this item being added.</param>
-    /// <returns>The <see cref="Item"/> added or <c>null</c> if item couldn't be added.</returns>
-    public Item? AddItem(Pickup pickup, ItemAddReason reason)
-    {
-        Item item = Item.Get(Inventory.ServerAddItem(pickup.Type, reason, pickup: pickup.Base));
-        pickup.Destroy();
-
-        return item;
-    }
-
-    /// <summary>
     /// Adds an item by picking it up.
     /// </summary>
     /// <param name="pickup">The <see cref="Pickup"/> to pickup.</param>
+    /// <param name="reason">The reason why is this item being added.</param>
     /// <returns>The <see cref="Item"/> added or null if it could not be added.</returns>
-    public Item? AddItem(Pickup pickup)
-        => Item.Get(Inventory.ServerAddItem(pickup.Type, ItemAddReason.PickedUp, pickup.Serial, pickup.Base));
+    public Item? AddItem(Pickup pickup, ItemAddReason reason = ItemAddReason.PickedUp)
+        => Item.Get(Inventory.ServerAddItem(pickup.Type, reason, pickup.Serial, pickup.Base));
 
     /// <summary>
     /// Removes a specific <see cref="Item"/> from the player's inventory.
@@ -1329,18 +1321,21 @@ public class Player
     /// <param name="predicate">Condition to satisfy.</param>
     /// <param name="maxAmount">The maximum amount of items that could be removed.</param>
     /// <returns>The actual amount of items that got removed.</returns>
-    public int RemoveItems(Func<Item, bool> predicate, int maxAmount = 8)
+    public int RemoveItems(Func<Item, bool> predicate, int maxAmount = InventoryLimit)
     {
         int amount = 0;
+        int current = 0;
 
-        for (int i = 0; i < Items.Count(); i++)
+        while (Items.Any())
         {
-            Item item = Items.ElementAt(i);
+            Item item = Items.ElementAt(current);
             
             if (!predicate(item))
+            {
+                current++;
                 continue;
+            }
 
-            i--;
             RemoveItem(item);
             if (++amount >= maxAmount)
                 break;
@@ -1377,19 +1372,22 @@ public class Player
     /// <param name="limit">Maximum amount of items that could be dropped.</param>
     /// <returns>A collection of pickups that have been dropped.</returns>
     /// <remarks>Returned collection is pooled. Please return it when you're done with it.</remarks>
-    public List<Pickup> DropItems(Func<Item, bool> predicate, int limit = 8)
+    public List<Pickup> DropItems(Func<Item, bool> predicate, int limit = InventoryLimit)
     {
+        int current = 0;
         List<Pickup> pickups = ListPool<Pickup>.Shared.Rent();
 
-        for (int i = 0; i < Items.Count(); i++)
+        while (Items.Any())
         {
-            Item item = Items.ElementAt(i);
-            
+            Item item = Items.ElementAt(current);
+
             if (!predicate(item))
+            {
+                current++;
                 continue;
+            }
             
             pickups.Add(DropItem(item));
-            i--;
             
             if (pickups.Count >= limit)
                 break;
