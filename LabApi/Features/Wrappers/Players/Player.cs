@@ -1262,7 +1262,7 @@ public class Player
     /// </summary>
     /// <param name="pickup">Pickup to add.</param>
     /// <param name="reason">The reason why is this item being added.</param>
-    /// <returns>The <see cref="Item"/> added or <c>null</c> if item couldn't be added.</returns>
+    /// <returns>The added <see cref="Item"/> or <see langword="null"/> if it couldn't be added.</returns>
     public Item? AddItem(Pickup pickup, ItemAddReason reason)
     {
         Item item = Item.Get(Inventory.ServerAddItem(pickup.Type, reason, pickup: pickup.Base));
