@@ -56,7 +56,7 @@ public class Scp244Pickup : Pickup
     }
 
     /// <summary>
-    /// Gets or set the size of the SCP-244 cloud.
+    /// Gets the size of the SCP-244 cloud.
     /// </summary>
     public float SizePercent => Base.CurrentSizePercent;
 
