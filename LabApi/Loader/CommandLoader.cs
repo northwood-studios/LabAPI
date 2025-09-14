@@ -149,8 +149,6 @@ public static class CommandLoader
     {
         command = null;
 
-        Logger.Info(CommandHandlers.ContainsKey(commandType));
-
         // We try to get the command handler from the dictionary of command handlers.
         if (!CommandHandlers.TryGetValue(commandHandlerType, out List<CommandHandler> commandHandlers))
         {
