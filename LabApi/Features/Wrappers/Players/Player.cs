@@ -927,8 +927,8 @@ public class Player
     /// </remarks>
     public bool IsSpectatable
     {
-        get => SpectatableVisibilityManager.IsHidden(ReferenceHub);
-        set => SpectatableVisibilityManager.SetHidden(ReferenceHub, value);
+        get => !SpectatableVisibilityManager.IsHidden(ReferenceHub);
+        set => SpectatableVisibilityManager.SetHidden(ReferenceHub, !value);
     }
 
     /// <summary>
