@@ -95,7 +95,7 @@ public static class Map
     /// <summary>
     /// Gets a random <see cref="Room"/>.
     /// </summary>
-    /// <returns>The random room if there were any rooms otherwise null.</returns>
+    /// <returns>The random room if there were any rooms otherwise see langword="null"/>.</returns>
     public static Room? GetRandomRoom()
     {
         return Rooms.Count != 0 ? Rooms.ElementAt(UnityEngine.Random.Range(0, Rooms.Count)) : null;
@@ -404,10 +404,12 @@ public static class Map
     /// <param name="zones">The zones to turn off the lights.</param>
     public static void TurnOffLights(IEnumerable<FacilityZone> zones)
     {
+        IEnumerable<FacilityZone> facilityZones = zones as FacilityZone[] ?? zones.ToArray();
+
         // TODO: use zone wrapper.
         foreach (LightsController lc in LightsController.List)
         {
-            if (!zones.Contains(lc.Room.Zone))
+            if (!facilityZones.Contains(lc.Room.Zone))
             {
                 continue;
             }

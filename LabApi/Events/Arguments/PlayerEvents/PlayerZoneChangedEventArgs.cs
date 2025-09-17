@@ -34,7 +34,7 @@ public class PlayerZoneChangedEventArgs : EventArgs, IPlayerEvent
     public FacilityZone OldZone { get; }
 
     /// <summary>
-    /// Gets the new room. May be <see cref="FacilityZone.None"/> if the player went into void, died and such.
+    /// Gets the new zone. May be <see cref="FacilityZone.None"/> if the player went into void, died and such.
     /// </summary>
     public FacilityZone NewZone { get; }
 }

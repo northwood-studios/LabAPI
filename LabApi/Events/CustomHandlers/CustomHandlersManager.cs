@@ -55,11 +55,20 @@ public static partial class CustomHandlersManager
     public static void CheckEvent<T>(T handler, Type handlerType, string methodDelegate, Type eventType, string eventName)
         where T : CustomEventsHandler
     {
-        // We first get the method from the handler.
-        MethodInfo? method = handlerType.GetMethod(methodDelegate, BindingFlags.Public | BindingFlags.Instance);
+        // We first get the method from the handler, there can be custom methods names as the original events but with different overloads, so we filter them.
+        MethodInfo[] candidates = handlerType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
-        // If the method is null or not an override, we return.
-        if (method == null || !IsOverride(method))
+        MethodInfo? method = null;
+        foreach (MethodInfo candidate in candidates)
+        {
+            if (candidate.Name == methodDelegate && IsOverride(candidate))
+            {
+                method = candidate;
+                break;
+            }
+        }
+
+        if (method == null)
         {
             return;
         }
