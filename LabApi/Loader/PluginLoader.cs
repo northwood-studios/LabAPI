@@ -283,6 +283,11 @@ public static partial class PluginLoader
         }
     }
 
+    internal static string ResolvePath(string path)
+    {
+        return path.Replace("$port", Server.Port.ToString());
+    }
+
     /// <summary>
     /// Loads or creates the LabAPI configuration file.
     /// </summary>
@@ -343,11 +348,6 @@ public static partial class PluginLoader
             Logger.Raw($"{LoggerPrefix} This server has been flagged as transparently modded by one or more installed plugins. If you believe this is a mistake, please review your installed plugins and contact the plugin developers.", ConsoleColor.Red);
             ServerConsole.Update = true;
         }
-    }
-
-    private static string ResolvePath(string path)
-    {
-        return path.Replace("$port", Server.Port.ToString());
     }
 
     private static void LogMissingDependencies(Assembly assembly)
