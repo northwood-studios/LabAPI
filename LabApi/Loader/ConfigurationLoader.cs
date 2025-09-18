@@ -201,7 +201,7 @@ public static class ConfigurationLoader
     public static DirectoryInfo GetConfigDirectory(this Plugin plugin, bool isGlobal = false)
     {
         DirectoryInfo baseDir = PathManager.Configs;
-        baseDir = baseDir.CreateSubdirectory(isGlobal ? "global" : Server.Port.ToString());
+        baseDir = baseDir.CreateSubdirectory(isGlobal ? "global" : PluginLoader.ResolvePath(PluginLoader.Config.ConfigPath));
         return baseDir.CreateSubdirectory(plugin.Name);
     }
 
