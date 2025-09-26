@@ -151,4 +151,15 @@ public abstract class RespawnWave
             wave.Announcement.PlayAnnouncement();
         }
     }
+
+    /// <summary>
+    /// Plays the respawn animation without spawning the wave.
+    /// </summary>
+    public void PlayRespawnEffect()
+    {
+        if (Base is not IAnimatedWave)
+            return;
+
+        WaveUpdateMessage.ServerSendUpdate(Base, UpdateMessageFlags.Trigger);
+    }
 }

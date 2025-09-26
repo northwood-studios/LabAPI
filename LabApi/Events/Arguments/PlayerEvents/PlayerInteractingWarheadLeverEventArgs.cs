@@ -28,7 +28,7 @@ public class PlayerInteractingWarheadLeverEventArgs : EventArgs, IPlayerEvent, I
     /// <summary>
     /// Gets or sets whether the warhead should be enabled.
     /// </summary>
-    public bool Enabled { get; }
+    public bool Enabled { get; set; }
 
     /// <inheritdoc/>
     public bool IsAllowed { get; set; }

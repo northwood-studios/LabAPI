@@ -231,7 +231,7 @@ public class AdminToy
     /// <remarks>
     /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its position.
     /// </remarks>
-    public Vector3 Position
+    public virtual Vector3 Position
     {
         get => Transform.localPosition;
         set => Transform.localPosition = value;
@@ -244,7 +244,7 @@ public class AdminToy
     /// <remarks>
     /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its rotation.
     /// </remarks>
-    public Quaternion Rotation
+    public virtual Quaternion Rotation
     {
         get => Transform.localRotation;
         set => Transform.localRotation = value;
@@ -257,7 +257,7 @@ public class AdminToy
     /// <remarks>
     /// If <see cref="IsStatic"/> is <see langword="true"/> client wont update its scale.
     /// </remarks>
-    public Vector3 Scale
+    public virtual Vector3 Scale
     {
         get => Transform.localScale;
         set => Transform.localScale = value;

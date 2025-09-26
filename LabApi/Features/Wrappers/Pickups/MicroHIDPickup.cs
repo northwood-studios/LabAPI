@@ -1,4 +1,6 @@
-﻿using InventorySystem.Items.MicroHID.Modules;
+﻿using InventorySystem;
+using InventorySystem.Items.MicroHID.Modules;
+using LabApi.Features.Console;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using BaseMicroHIDPickup = InventorySystem.Items.MicroHID.MicroHIDPickup;
@@ -78,6 +80,28 @@ public class MicroHIDPickup : Pickup
     {
         get => BaseCycleController.LastFiringMode;
         set => BaseCycleController.LastFiringMode = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the energy amount in this Micro-HID pickup.<para/>
+    /// The energy value, automatically clamped, ranges from 0f to 1f.
+    /// </summary>
+    public float Energy
+    {
+        get
+        {
+            return EnergyManagerModule.GetEnergy(Serial);
+        }
+        set
+        {
+            if (!InventoryItemLoader.TryGetItem(ItemType.MicroHID, out InventorySystem.Items.MicroHID.MicroHIDItem item))
+            {
+                Logger.Error("Unable to get the base microhid item!");
+                return;
+            }
+
+            item.EnergyManager.ServerSetEnergy(Serial, value);
+        }
     }
 
     /// <summary>

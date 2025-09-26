@@ -17,6 +17,7 @@ using Mirror.LiteNetLib4Mirror;
 using NorthwoodLib.Pools;
 using PlayerRoles;
 using PlayerRoles.FirstPersonControl;
+using PlayerRoles.FirstPersonControl.NetworkMessages;
 using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using PlayerRoles.PlayableScps.HumeShield;
 using PlayerRoles.Spectating;
@@ -569,7 +570,7 @@ public class Player
     /// <summary>
     /// Gets the player's <see cref="GameObject"/>.
     /// </summary>
-    public GameObject GameObject => ReferenceHub.gameObject;
+    public GameObject? GameObject => ReferenceHub ? ReferenceHub.gameObject : null;
 
     /// <summary>
     /// Gets whether the player is the host or server.
@@ -636,6 +637,11 @@ public class Player
     /// </summary>
     [Obsolete("Use !IsDestroyed instead.")]
     public bool IsOnline => !IsOffline;
+
+    /// <summary>
+    /// Gets whether the player was destroyed.
+    /// </summary>
+    public bool IsDestroyed => !ReferenceHub;
 
     /// <summary>
     /// Gets if the player is properly connected and authenticated.
@@ -915,6 +921,18 @@ public class Player
     }
 
     /// <summary>
+    /// Gets or sets whether this player can be spectated by other players.
+    /// </summary>
+    /// <remarks>
+    /// This property is reset when player leaves.
+    /// </remarks>
+    public bool IsSpectatable
+    {
+        get => !SpectatableVisibilityManager.IsHidden(ReferenceHub);
+        set => SpectatableVisibilityManager.SetHidden(ReferenceHub, !value);
+    }
+
+    /// <summary>
     /// Gets or sets the player's current <see cref="Item">item</see>.
     /// </summary>
     public Item? CurrentItem
@@ -936,7 +954,7 @@ public class Player
     /// <summary>
     /// Gets the player's currently active <see cref="StatusEffectBase">status effects</see>.
     /// </summary>
-    public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(x => x.Intensity > 0);
+    public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(static x => x.Intensity > 0);
 
     /// <summary>
     /// Gets the <see cref="LabApi.Features.Wrappers.Room"/> at the player's current position.
@@ -1070,12 +1088,12 @@ public class Player
     /// <summary>
     /// Gets a value indicating whether the player is muted.
     /// </summary>
-    public bool IsMuted => VoiceChatMutes.QueryLocalMute(UserId);
+    public bool IsMuted => VoiceChatMutes.IsMuted(ReferenceHub);
 
     /// <summary>
     /// Gets a value indicating whether the player is muted from the intercom.
     /// </summary>
-    public bool IsIntercomMuted => VoiceChatMutes.QueryLocalMute(UserId, true);
+    public bool IsIntercomMuted => VoiceChatMutes.IsMuted(ReferenceHub, true);
 
     /// <summary>
     /// Gets a value indicating whether the player is talking through a radio.
@@ -1671,6 +1689,13 @@ public class Player
     /// <param name="reason">The <see cref="RoleChangeReason"/> of role change.</param>
     /// <param name="flags">The <see cref="RoleSpawnFlags"/> of role change.</param>
     public void SetRole(RoleTypeId newRole, RoleChangeReason reason = RoleChangeReason.RemoteAdmin, RoleSpawnFlags flags = RoleSpawnFlags.All) => ReferenceHub.roleManager.ServerSetRole(newRole, reason, flags);
+
+    /// <summary>
+    /// Determines if <paramref name="otherPlayer"/> is seen as spectator or their role based on visibility, permissions, and distance of this player.
+    /// </summary>
+    /// <param name="otherPlayer">The other player to check.</param>
+    /// <returns>The role this player sees for the other player.</returns>
+    public RoleTypeId GetRoleVisibilityFor(Player otherPlayer) => FpcServerPositionDistributor.GetVisibleRole(otherPlayer.ReferenceHub, ReferenceHub);
 
     /// <summary>
     /// Disconnects the player from the server.
