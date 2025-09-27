@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using InventorySystem.Items.Jailbird;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using BaseJailbirdItem = InventorySystem.Items.Jailbird.JailbirdItem;
 
@@ -56,6 +57,11 @@ public class JailbirdItem : Item
     public new BaseJailbirdItem Base { get; }
 
     /// <summary>
+    /// Gets the current <see cref="JailbirdWearState"/>.
+    /// </summary>
+    public JailbirdWearState WearState => JailbirdDeteriorationTracker.ReceivedStates.GetValueOrDefault(Serial, JailbirdWearState.Healthy);
+
+    /// <summary>
     /// Gets the number of charges performed.
     /// </summary>
     public int TotalChargesPerformed => Base.TotalChargesPerformed;
@@ -64,6 +70,11 @@ public class JailbirdItem : Item
     /// Gets whether the <see cref="Item.CurrentOwner"/> is currently charging with the jailbird.
     /// </summary>
     public bool IsCharging => Base.MovementOverrideActive;
+
+    /// <summary>
+    /// Resets charges and damage dealt.
+    /// </summary>
+    public void Reset() => Base.ServerReset();
 
     /// <summary>
     /// An internal method to remove itself from the cache when the base object is destroyed.
