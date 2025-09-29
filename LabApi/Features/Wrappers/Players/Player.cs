@@ -18,6 +18,7 @@ using NorthwoodLib.Pools;
 using PlayerRoles;
 using PlayerRoles.FirstPersonControl;
 using PlayerRoles.FirstPersonControl.NetworkMessages;
+using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using PlayerRoles.PlayableScps.HumeShield;
 using PlayerRoles.Spectating;
 using PlayerRoles.Voice;
@@ -1297,6 +1298,15 @@ public class Player
     {
         get => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue;
         set => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the current player's emotion.
+    /// </summary>
+    public EmotionPresetType Emotion
+    {
+        get => EmotionSync.GetEmotionPreset(ReferenceHub);
+        set => EmotionSync.ServerSetEmotionPreset(ReferenceHub, value);
     }
 
     /// <summary>
