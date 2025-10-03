@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.ServerEvents;
 /// </summary>
 public class DeadmanSequenceActivatingEventArgs : EventArgs, ICancellableEvent
 {
-    /// <inheritdoc/>
-    /// <remarks>Will reset Deadman Sequence timer back to 0 if false.</remarks>
+    /// <inheritdoc />
+    /// <remarks>Will reset Deadman Sequence timer back to 0 if <see langword="false"/>.</remarks>
     public bool IsAllowed { get; set; } = true;
 }
