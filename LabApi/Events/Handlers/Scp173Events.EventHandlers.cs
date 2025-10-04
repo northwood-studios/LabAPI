@@ -66,4 +66,14 @@ public static partial class Scp173Events
     /// Gets called when SCP-173 has teleported.
     /// </summary>
     public static event LabEventHandler<Scp173TeleportedEventArgs>? Teleported;
+
+    /// <summary>
+    /// Gets called when SCP-173 is attempting to snap a target.
+    /// </summary>
+    public static event LabEventHandler<Scp173SnappingEventArgs>? Snapping;
+
+    /// <summary>
+    /// Gets called when SCP-173 has snapped a target.
+    /// </summary>
+    public static event LabEventHandler<Scp173SnappedEventArgs>? Snapped;
 }
