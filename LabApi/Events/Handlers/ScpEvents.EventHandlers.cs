@@ -10,5 +10,5 @@ public static partial class ScpEvents
     /// <summary>
     /// Gets called when an SCP has their hume shield broken.
     /// </summary>
-    public static event LabEventHandler<ScpHumeShieldBroken>? HumeShieldBroken;
+    public static event LabEventHandler<ScpHumeShieldBrokenEventArgs>? HumeShieldBroken;
 }

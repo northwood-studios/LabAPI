@@ -7,13 +7,13 @@ namespace LabApi.Events.Arguments.ScpEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.ScpEvents.ScpHumeShieldBroken"/> event.
 /// </summary>
-public class ScpHumeShieldBroken : EventArgs, IPlayerEvent
+public class ScpHumeShieldBrokenEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ScpHumeShieldBroken"/> class.
+    /// Initializes a new instance of the <see cref="ScpHumeShieldBrokenEventArgs"/> class.
     /// </summary>
     /// <param name="player">The player SCP whom hume shield broke.</param>
-    public ScpHumeShieldBroken(ReferenceHub player)
+    public ScpHumeShieldBrokenEventArgs(ReferenceHub player)
     {
         Player = Player.Get(player);
     }
