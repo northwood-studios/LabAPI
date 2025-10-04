@@ -23,12 +23,12 @@ public static partial class ServerEvents
     public static event LabEventHandler? Shutdown;
 
     /// <summary>
-    /// Gets called when Deadman Sequence is activated
+    /// Gets called when Deadman Sequence is activated.
     /// </summary>
     public static event LabEventHandler? DeadmanSequenceActivated;
 
     /// <summary>
-    /// Gets called when Deadman sequence is activating.
+    /// Gets called when Deadman Sequence is activating.
     /// </summary>
     public static event LabEventHandler<DeadmanSequenceActivatingEventArgs>? DeadmanSequenceActivating;
 
