@@ -27,7 +27,7 @@ public class Scp173SnappingEventArgs : EventArgs, IPlayerEvent, ITargetEvent
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the player to snap.
+    /// Gets or sets the player to snap.
     /// </summary>
     public Player Target { get; set; }
 
