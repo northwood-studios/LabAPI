@@ -1654,6 +1654,21 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     {
         Logger.Info($"{nameof(OnScp127Talked)} triggered by {ev.Scp127Item.CurrentOwner}");
     }
+    
+    public override void OnPlayerCheckedHitmarker(PlayerCheckedHitmarkerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerCheckedHitmarker)} triggered by {ev.Player} {ev.Victim}");
+    }
+
+    public override void OnPlayerSendHitmarker(PlayerSendHitmarkerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSendHitmarker)} triggered by {ev.Player} {ev.Size} {ev.PlayAudio}");
+    }
+
+    public override void OnPlayerSendingHitmarker(PlayerSendingHitmarkerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSendingHitmarker)} triggered by  {ev.Player} {ev.Size} {ev.PlayAudio}");
+    }
 
     #region Excluded Events
 
