@@ -10,9 +10,9 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 public class PlayerSendingHitmarkerEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
-    /// Initializes a new instance for the <see cref="PlayerSendHitmarkerEventArgs"/> class.
+    /// Initializes a new instance for the <see cref="PlayerSentHitmarkerEventArgs"/> class.
     /// </summary>
-    /// <param name="hub">The player that canceled the search on the toy.</param>
+    /// <param name="hub">The player that sending the hitmark.</param>
     /// <param name="size">The target size multiplier.</param>
     /// <param name="playAudio">The hitmarker sound effect play.</param>
     public PlayerSendingHitmarkerEventArgs(ReferenceHub hub, float size, bool playAudio)
@@ -25,7 +25,7 @@ public class PlayerSendingHitmarkerEventArgs : EventArgs, IPlayerEvent, ICancell
     }
 
     /// <summary>
-    /// Gets or sets the player that canceled the search on the toy.
+    /// Gets or sets the player that sending the hitmark.
     /// </summary>
     public Player Player { get; set; }
 

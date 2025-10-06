@@ -11,7 +11,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 public class PlayerCheckedHitmarkerEventArgs : EventArgs, IPlayerEvent
 {
     /// <summary>
-    /// Initializes a new instance for the <see cref="PlayerSendHitmarkerEventArgs"/> class.
+    /// Initializes a new instance for the <see cref="PlayerSentHitmarkerEventArgs"/> class.
     /// </summary>
     /// <param name="hub">The player that hitmarker should send.</param>
     /// <param name="adh">The damage dealth to the <paramref name="victim"/>.</param>
@@ -26,12 +26,12 @@ public class PlayerCheckedHitmarkerEventArgs : EventArgs, IPlayerEvent
     }
 
     /// <summary>
-    /// Gets the player that canceled the search on the toy.
+    /// Gets the player that sending the hitmarker.
     /// </summary>
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the player that canceled the search on the toy.
+    /// Gets the player that provides the hitmarker.
     /// </summary>
     public Player Victim { get; }
 

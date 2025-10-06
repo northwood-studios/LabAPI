@@ -891,7 +891,7 @@ public static partial class PlayerEvents
     /// <summary>
     /// Gets called when player sent a hitmarker.
     /// </summary>
-    public static event LabEventHandler<PlayerSendHitmarkerEventArgs>? SendHitmarker;
+    public static event LabEventHandler<PlayerSentHitmarkerEventArgs>? SentHitmarker;
 
     /// <summary>
     /// Gets called when player checked a hitmarker permission.
