@@ -36,12 +36,12 @@ public class Scp049AttackingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, I
     public Player Target { get; }
 
     /// <summary>
-    /// Gets or sets the attack is instant kill.
+    /// Gets or sets whether the attack is an instant kill.
     /// </summary>
     public bool InstantKill { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="Target"/> is a sense target.
+    /// Gets or sets whether the <see cref="Target"/> is a sense target.
     /// </summary>
     public bool IsSenseTarget { get; set; }
 
