@@ -1668,7 +1668,7 @@ internal class MyCustomEventsHandler : CustomEventsHandler
 
     public override void OnPlayerSendingHitmarker(PlayerSendingHitmarkerEventArgs ev)
     {
-        Logger.Info($"{nameof(OnPlayerSendingHitmarker)} triggered by  {ev.Player} {ev.Size} {ev.PlayAudio}");
+        Logger.Info($"{nameof(OnPlayerSendingHitmarker)} triggered by {ev.Player} {ev.Size} {ev.PlayAudio}");
         if (ev.Player.Role is PlayerRoles.RoleTypeId.Scp939)
         {
             ev.IsAllowed = false;

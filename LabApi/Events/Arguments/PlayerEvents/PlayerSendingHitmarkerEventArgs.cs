@@ -14,7 +14,7 @@ public class PlayerSendingHitmarkerEventArgs : EventArgs, IPlayerEvent, ICancell
     /// </summary>
     /// <param name="hub">The player that sending the hitmark.</param>
     /// <param name="size">The target size multiplier.</param>
-    /// <param name="playAudio">The hitmarker sound effect play.</param>
+    /// <param name="playAudio">Whether the hitmarker sound effect play.</param>
     public PlayerSendingHitmarkerEventArgs(ReferenceHub hub, float size, bool playAudio)
     {
         Player = Player.Get(hub);
@@ -25,7 +25,7 @@ public class PlayerSendingHitmarkerEventArgs : EventArgs, IPlayerEvent, ICancell
     }
 
     /// <summary>
-    /// Gets or sets the player that sending the hitmark.
+    /// Gets or sets the player that the hitmark is being sent to.
     /// </summary>
     public Player Player { get; set; }
 

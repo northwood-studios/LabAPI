@@ -884,17 +884,17 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerInteractedWarheadLeverEventArgs>? InteractedWarheadLever;
 
     /// <summary>
-    /// Gets called when player sending a hitmarker.
+    /// Gets called when a hitmarker is being sent to a player.
     /// </summary>
     public static event LabEventHandler<PlayerSendingHitmarkerEventArgs>? SendingHitmarker;
 
     /// <summary>
-    /// Gets called when player sent a hitmarker.
+    /// Gets called when a hitmarker is sent to a player.
     /// </summary>
     public static event LabEventHandler<PlayerSentHitmarkerEventArgs>? SentHitmarker;
 
     /// <summary>
-    /// Gets called when player checked a hitmarker permission.
+    /// Gets called when a hitmarker permission is checked for a player.
     /// </summary>
     public static event LabEventHandler<PlayerCheckedHitmarkerEventArgs>? CheckedHitmarker;
 

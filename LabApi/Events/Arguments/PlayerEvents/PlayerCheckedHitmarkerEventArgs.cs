@@ -16,7 +16,7 @@ public class PlayerCheckedHitmarkerEventArgs : EventArgs, IPlayerEvent
     /// <param name="hub">The player that hitmarker should send.</param>
     /// <param name="adh">The damage dealth to the <paramref name="victim"/>.</param>
     /// <param name="victim">The player who got hurt by <paramref name="hub"/>.</param>
-    /// <param name="result">The reuslt of the check.</param>
+    /// <param name="result">The result of the check.</param>
     public PlayerCheckedHitmarkerEventArgs(ReferenceHub hub, AttackerDamageHandler adh, ReferenceHub victim, bool result)
     {
         Player = Player.Get(hub);
@@ -26,7 +26,7 @@ public class PlayerCheckedHitmarkerEventArgs : EventArgs, IPlayerEvent
     }
 
     /// <summary>
-    /// Gets the player that sending the hitmarker.
+    /// Gets the player that the hitmarker is being sent to.
     /// </summary>
     public Player Player { get; }
 
