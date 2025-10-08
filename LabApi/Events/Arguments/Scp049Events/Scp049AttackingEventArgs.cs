@@ -23,6 +23,8 @@ public class Scp049AttackingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, I
         Target = Player.Get(target);
         InstantKill = instantKill;
         IsSenseTarget = isSenseTarget;
+
+        IsAllowed = true;
     }
 
     /// <summary>
