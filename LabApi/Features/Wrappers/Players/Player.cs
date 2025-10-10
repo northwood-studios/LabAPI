@@ -1568,352 +1568,120 @@ public class Player
     /// <summary>
     /// Drops all items and ammo from the player's inventory.
     /// </summary>
-    public void DropEverything() => Inventory.ServerDropEverything();
+public void DropEverything() => Inventory.ServerDropEverything();
 
-    /// <summary>
-    /// Clear Items from the player's inventory.
-    /// </summary>
-    public void ClearItems()
-    {
-        foreach (Item item in Items.ToArray())
-        {
-            RemoveItem(item);
-        }
-    }
+public void ClearItems()
+{
+    foreach (var item in Items.ToArray())
+        RemoveItem(item);
+}
 
-    /// <summary>
-    /// Clear Ammo from the player's inventory.
-    /// </summary>
-    public void ClearAmmo()
-    {
-        if (Ammo.Any(x => x.Value > 0))
-        {
-            Inventory.SendAmmoNextFrame = true;
-        }
+public void ClearAmmo()
+{
+    if (Ammo.Values.Any(amount => amount > 0))
+        Inventory.SendAmmoNextFrame = true;
 
-        Ammo.Clear();
-    }
+    Ammo.Clear();
+}
 
-    /// <summary>
-    /// Clears the player's inventory.
-    /// </summary>
-    /// <param name="clearAmmo">Whether to clear the player's ammo.</param>
-    /// <param name="clearItems">Whether to clear the player's items.</param>
-    public void ClearInventory(bool clearAmmo = true, bool clearItems = true)
-    {
-        if (clearAmmo)
-        {
-            ClearAmmo();
-        }
+public void ClearInventory(bool clearAmmo = true, bool clearItems = true)
+{
+    if (clearAmmo) ClearAmmo();
+    if (clearItems) ClearItems();
+}
 
-        if (clearItems)
-        {
-            ClearItems();
-        }
-    }
+public void GiveCandy(CandyKindID candy, ItemAddReason reason) => ReferenceHub.GrantCandy(candy, reason);
 
-    /// <summary>
-    /// Gives a candy to the player.
-    /// </summary>
-    /// <param name="candy">The candy to give the player.</param>
-    /// <param name="reason">The reason to grant the candy bag.</param>
-    public void GiveCandy(CandyKindID candy, ItemAddReason reason)
-        => ReferenceHub.GrantCandy(candy, reason);
+public void GiveRandomCandy(ItemAddReason reason = ItemAddReason.AdminCommand) => GiveCandy(Scp330Candies.GetRandom(), reason);
 
-    /// <summary>
-    /// Gives a random candy to the player.
-    /// </summary>
-    /// <param name="reason">The reason to grant the candy bag.</param>
-    /// <remarks>This will use <see cref="Scp330Candies.GetRandom"/>, meaning it will use <see cref="ICandy.SpawnChanceWeight"/> to choose the candy.</remarks>
-    public void GiveRandomCandy(ItemAddReason reason = ItemAddReason.AdminCommand)
-        => GiveCandy(Scp330Candies.GetRandom(), reason);
+public bool HasPermission(PlayerPermissions permission)
+{
+    var currentPerms = (PlayerPermissions)ReferenceHub.serverRoles.Permissions;
+    return currentPerms.HasFlag(permission);
+}
 
-    /// <summary>
-    /// Checks if a player has the specified <see cref="PlayerPermissions"/>.
-    /// </summary>
-    /// <param name="permission">The permission to check the player for.</param>
-    /// <returns>Whether the permission check was successful.</returns>
-    public bool HasPermission(PlayerPermissions permission)
-    {
-        PlayerPermissions currentPerms = (PlayerPermissions)ReferenceHub.serverRoles.Permissions;
-        return currentPerms.HasFlag(permission);
-    }
+public void AddRegeneration(float rate, float duration) => Scp330Bag.AddSimpleRegeneration(ReferenceHub, rate, duration);
 
-    /// <summary>
-    /// Adds regeneration to the player.
-    /// </summary>
-    /// <param name="rate">The rate to heal per second.</param>
-    /// <param name="duration">How long the regeneration should last.</param>
-    public void AddRegeneration(float rate, float duration)
-        => Scp330Bag.AddSimpleRegeneration(ReferenceHub, rate, duration);
+public void Heal(float amount) => ReferenceHub.playerStats.GetModule<HealthStat>().ServerHeal(amount);
 
-    /// <summary>
-    /// Heals the player by the specified amount.
-    /// </summary>
-    /// <param name="amount">The amount to heal.</param>
-    public void Heal(float amount) => ReferenceHub.playerStats.GetModule<HealthStat>().ServerHeal(amount);
+public AhpProcess CreateAhpProcess(float amount, float limit, float decay, float efficacy, float sustain, bool persistent) =>
+    ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistent);
 
-    /// <summary>
-    /// Creates and run a new AHP process.
-    /// </summary>
-    /// <param name="amount">Amount of AHP to be added.</param>
-    /// <param name="limit">Adds limit to the AHP.</param>
-    /// <param name="decay">Rate of AHP decay (per second).</param>
-    /// <param name="efficacy">Value between 0 and 1. Defines what % of damage will be absorbed.</param>
-    /// <param name="sustain">Pauses decay for specified amount of seconds.</param>
-    /// <param name="persistent">If true, it won't be automatically removed when reaches 0.</param>
-    /// <returns>Process in case it needs to be removed. Use <see cref="ServerKillProcess(AhpProcess)"/> to kill it.</returns>
-    public AhpProcess CreateAhpProcess(float amount, float limit, float decay, float efficacy, float sustain, bool persistent) =>
-        ReferenceHub.playerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistent);
+public void ServerKillProcess(AhpProcess process) => ReferenceHub.playerStats.GetModule<AhpStat>().ServerKillProcess(process.KillCode);
 
-    /// <summary>
-    /// Kills the AHP process.
-    /// </summary>
-    /// <param name="process">Process to be killed.</param>
-    public void ServerKillProcess(AhpProcess process) => ReferenceHub.playerStats.GetModule<AhpStat>().ServerKillProcess(process.KillCode);
+public void SetRole(RoleTypeId newRole, RoleChangeReason reason = RoleChangeReason.RemoteAdmin, RoleSpawnFlags flags = RoleSpawnFlags.All) =>
+    ReferenceHub.roleManager.ServerSetRole(newRole, reason, flags);
 
-    /// <summary>
-    /// Sets the player's role.
-    /// </summary>
-    /// <param name="newRole">The <see cref="RoleTypeId"/> which will be set.</param>
-    /// <param name="reason">The <see cref="RoleChangeReason"/> of role change.</param>
-    /// <param name="flags">The <see cref="RoleSpawnFlags"/> of role change.</param>
-    public void SetRole(RoleTypeId newRole, RoleChangeReason reason = RoleChangeReason.RemoteAdmin, RoleSpawnFlags flags = RoleSpawnFlags.All) => ReferenceHub.roleManager.ServerSetRole(newRole, reason, flags);
+public RoleTypeId GetRoleVisibilityFor(Player otherPlayer) =>
+    FpcServerPositionDistributor.GetVisibleRole(otherPlayer.ReferenceHub, ReferenceHub);
 
-    /// <summary>
-    /// Determines if <paramref name="otherPlayer"/> is seen as spectator or their role based on visibility, permissions, and distance of this player.
-    /// </summary>
-    /// <param name="otherPlayer">The other player to check.</param>
-    /// <returns>The role this player sees for the other player.</returns>
-    public RoleTypeId GetRoleVisibilityFor(Player otherPlayer) => FpcServerPositionDistributor.GetVisibleRole(otherPlayer.ReferenceHub, ReferenceHub);
+public void Disconnect(string? reason = null) => ServerConsole.Disconnect(GameObject, reason ?? string.Empty);
 
-    /// <summary>
-    /// Disconnects the player from the server.
-    /// </summary>
-    /// <param name="reason">The reason for the disconnection.</param>
-    public void Disconnect(string? reason = null) => ServerConsole.Disconnect(GameObject, reason ?? string.Empty);
+public void SendHint(string text, float duration = 3f) => SendHint(text, new[] { new StringHintParameter(string.Empty) }, null, duration);
 
-    /// <summary>
-    /// Sends the player a text hint.
-    /// </summary>
-    /// <param name="text">The text which will be displayed.</param>
-    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
-    public void SendHint(string text, float duration = 3f) =>
-        SendHint(text, [new StringHintParameter(string.Empty)], null, duration);
+public void SendHint(string text, HintEffect[] effects, float duration = 3f) =>
+    ReferenceHub.hints.Show(new TextHint(text, new[] { new StringHintParameter(string.Empty) }, effects, duration));
 
-    /// <summary>
-    /// Sends the player a text hint with effects.
-    /// </summary>
-    /// <param name="text">The text which will be displayed.</param>
-    /// <param name="effects">The effects of text.</param>
-    /// <param name="duration">The duration of which the text will be visible in seconds.</param>
-    public void SendHint(string text, HintEffect[] effects, float duration = 3f) =>
-        ReferenceHub.hints.Show(new TextHint(text, [new StringHintParameter(string.Empty)], effects, duration));
+public void SendHint(string text, HintParameter[] parameters, HintEffect[]? effects = null, float duration = 3f) =>
+    ReferenceHub.hints.Show(new TextHint(text, parameters.Length == 0 ? new[] { new StringHintParameter(string.Empty) } : parameters, effects, duration));
 
-    /// <summary>
-    /// Sends the player a text hint with parameters.
-    /// </summary>
-    /// <param name="text">The text which will be displayed.</param>
-    /// <param name="parameters">The parameters to interpolate into the text.</param>
-    /// <param name="effects">The effects used for hint animations. See <see cref="HintEffect"/>.</param>
-    /// <param name="duration">The duration of which the text will be visible.</param>
-    /// <remarks>
-    /// Parameters are interpolated into the string on the client.
-    /// E.g. <c>"Test param1: {0} param2: {1}"</c>.
-    /// </remarks>
-    public void SendHint(string text, HintParameter[] parameters, HintEffect[]? effects = null, float duration = 3f) =>
-        ReferenceHub.hints.Show(new TextHint(text, parameters.IsEmpty() ? [new StringHintParameter(string.Empty)] : parameters, effects, duration));
+public void SendHitMarker(float size = 1f) => Hitmarker.SendHitmarkerDirectly(Connection, size);
 
-    /// <summary>
-    /// Sends the player a hit marker.
-    /// </summary>
-    /// <param name="size">The size of hit marker.</param>
-    public void SendHitMarker(float size = 1f) => Hitmarker.SendHitmarkerDirectly(Connection, size);
+public T GetStatModule<T>() where T : StatBase => ReferenceHub.playerStats.GetModule<T>();
 
-    /// <summary>
-    /// Gets the stats module.
-    /// </summary>
-    /// <typeparam name="T">The type of the stat module.</typeparam>
-    /// <returns>The stat module.</returns>
-    public T GetStatModule<T>()
-        where T : StatBase => ReferenceHub.playerStats.GetModule<T>();
+public bool HasEffect<T>() where T : StatusEffectBase =>
+    ReferenceHub.playerEffectsController.TryGetEffect(out T? effect) && effect is { IsEnabled: true };
 
-    /// <summary>
-    /// Gets whether the player has a specific <see cref="StatusEffectBase">status effect</see>.
-    /// </summary>
-    /// <typeparam name="T">The type of the status effect to check.</typeparam>
-    /// <returns>Whether the player has the status effect.</returns>
-    public bool HasEffect<T>()
-        where T : StatusEffectBase => ReferenceHub.playerEffectsController.TryGetEffect(out T? effect) && effect != null && effect.IsEnabled;
+public void DisableAllEffects() => ReferenceHub.playerEffectsController.DisableAllEffects();
 
-    /// <summary>
-    /// Disables all active <see cref="StatusEffectBase">status effects</see>.
-    /// </summary>
-    public void DisableAllEffects() => ReferenceHub.playerEffectsController.DisableAllEffects();
+public void DisableEffect<T>() where T : StatusEffectBase => ReferenceHub.playerEffectsController.DisableEffect<T>();
 
-    /// <summary>
-    /// Disables a specific <see cref="StatusEffectBase">status effect</see>.
-    /// </summary>
-    /// <typeparam name="T">The type of the status effect to disable.</typeparam>
-    public void DisableEffect<T>()
-        where T : StatusEffectBase => ReferenceHub.playerEffectsController.DisableEffect<T>();
+public void DisableEffect(StatusEffectBase? effect) => effect?.ServerDisable();
 
-    /// <summary>
-    /// Disables a specific <see cref="StatusEffectBase">status effect</see>.
-    /// </summary>
-    /// <param name="effect">The status effect to disable.</param>
-    public void DisableEffect(StatusEffectBase? effect) => effect?.ServerDisable();
+public void EnableEffect<T>(byte intensity = 1, float duration = 0f, bool addDuration = false) where T : StatusEffectBase =>
+    ReferenceHub.playerEffectsController.ChangeState<T>(intensity, duration, addDuration);
 
-    /// <summary>
-    /// Enables a specific <see cref="StatusEffectBase">status effect</see>.
-    /// </summary>
-    /// <typeparam name="T">The type of the status effect to enable.</typeparam>
-    /// <param name="intensity">The intensity of the status effect.</param>
-    /// <param name="duration">The duration of the status effect.</param>
-    /// <param name="addDuration">Whether to add the duration to the current duration, if the effect is already active.</param>
-    /// <remarks>A duration of 0 means that it will not expire.</remarks>
-    public void EnableEffect<T>(byte intensity = 1, float duration = 0f, bool addDuration = false)
-        where T : StatusEffectBase => ReferenceHub.playerEffectsController.ChangeState<T>(intensity, duration, addDuration);
+public void EnableEffect(StatusEffectBase? effect, byte intensity = 1, float duration = 0f, bool addDuration = false) =>
+    effect?.ServerSetState(intensity, duration, addDuration);
 
-    /// <summary>
-    /// Enables a specific <see cref="StatusEffectBase">status effect</see>.
-    /// </summary>
-    /// <param name="effect">The status effect to enable.</param>
-    /// <param name="intensity">The intensity of the status effect.</param>
-    /// <param name="duration">The duration of the status effect.</param>
-    /// <param name="addDuration">Whether to add the duration to the current duration, if the effect is already active.</param>
-    /// <remarks>A duration of 0 means that it will not expire.</remarks>
-    public void EnableEffect(StatusEffectBase? effect, byte intensity = 1, float duration = 0f, bool addDuration = false) => effect?.ServerSetState(intensity, duration, addDuration);
+public bool TryGetEffect<T>([NotNullWhen(true)] out T? effect) where T : StatusEffectBase =>
+    ReferenceHub.playerEffectsController.TryGetEffect(out effect) && effect != null;
 
-    /// <summary>
-    /// Tries to get a specific <see cref="StatusEffectBase">status effect</see>.
-    /// </summary>
-    /// <typeparam name="T">The specified effect that will be looked for.</typeparam>
-    /// <param name="effect">The found player effect.</param>
-    /// <returns>Whether the <see cref="StatusEffectBase">status effect</see> was successfully retrieved (And was cast successfully).</returns>
-    public bool TryGetEffect<T>([NotNullWhen(true)] out T? effect)
-        where T : StatusEffectBase => ReferenceHub.playerEffectsController.TryGetEffect(out effect) && effect != null;
+public bool TryGetEffect(string effectName, [NotNullWhen(true)] out StatusEffectBase? effect) =>
+    ReferenceHub.playerEffectsController.TryGetEffect(effectName, out effect) && effect != null;
 
-    /// <summary>
-    /// Tries to get a specific <see cref="StatusEffectBase"/> based on its name.
-    /// </summary>
-    /// <param name="effectName">The name of the effect to get.</param>
-    /// <param name="effect">The effect found.</param>
-    /// <returns>Whether the <see cref="StatusEffectBase"/> was successfully found.</returns>
-    public bool TryGetEffect(string effectName, [NotNullWhen(true)] out StatusEffectBase? effect)
-        => ReferenceHub.playerEffectsController.TryGetEffect(effectName, out effect) && effect != null;
+public T? GetEffect<T>() where T : StatusEffectBase => ReferenceHub.playerEffectsController.GetEffect<T>();
 
-    /// <summary>
-    /// Gets a specific <see cref="StatusEffectBase">status effect</see>.
-    /// </summary>
-    /// <typeparam name="T">The specified effect that will be looked for.</typeparam>
-    /// <returns>The <see cref="StatusEffectBase"/> instance of <typeparamref name="T"/>, otherwise <see langword="null"/>.</returns>
-    public T? GetEffect<T>()
-        where T : StatusEffectBase => ReferenceHub.playerEffectsController.GetEffect<T>();
+public void RedirectToServer(ushort port) =>
+    Connection.Send(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.1f, port, true, false));
 
-    /// <summary>
-    /// Redirects player connection to a target server port.
-    /// </summary>
-    /// <param name="port">The port of the target server.</param>
-    public void RedirectToServer(ushort port) => Connection.Send(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.1f, port, true, false));
+public void Reconnect(float delay = 3f, bool isFastRestart = false) =>
+    Connection.Send(new RoundRestartMessage(isFastRestart ? RoundRestartType.FastRestart : RoundRestartType.FullRestart, delay, 0, true, false));
 
-    /// <summary>
-    /// Tells the player to reconnect to the server.
-    /// </summary>
-    /// <param name="delay">The delay before reconnecting.</param>
-    /// <param name="isFastRestart">Whether fast restart is enabled.</param>
-    public void Reconnect(float delay = 3f, bool isFastRestart = false) =>
-        Connection.Send(new RoundRestartMessage(isFastRestart ? RoundRestartType.FastRestart : RoundRestartType.FullRestart, delay, 0, true, false));
+public void Kill() => Damage(new UniversalDamageHandler(StandardDamageHandler.KillValue, DeathTranslations.Unknown));
 
-    /// <summary>
-    /// Kills the player.
-    /// </summary>
-    public void Kill() => Damage(new UniversalDamageHandler(StandardDamageHandler.KillValue, DeathTranslations.Unknown));
+public bool Kill(string reason, string cassieAnnouncement = "") =>
+    Damage(new CustomReasonDamageHandler(reason, StandardDamageHandler.KillValue, cassieAnnouncement));
 
-    /// <summary>
-    /// Kills the player.
-    /// </summary>
-    /// <param name="reason">The reason for the kill.</param>
-    /// <param name="cassieAnnouncement">The CASSIE announcement to make upon death.</param>
-    /// <returns>Whether the player was successfully killed.</returns>
-    public bool Kill(string reason, string cassieAnnouncement = "") => Damage(new CustomReasonDamageHandler(reason, StandardDamageHandler.KillValue, cassieAnnouncement));
+public bool Damage(float amount, string reason, string cassieAnnouncement = "") =>
+    Damage(new CustomReasonDamageHandler(reason, amount, cassieAnnouncement));
 
-    /// <summary>
-    /// Damages player with a custom reason.
-    /// </summary>
-    /// <param name="amount">The amount of damage.</param>
-    /// <param name="reason">The reason of damage.</param>
-    /// <param name="cassieAnnouncement">The CASSIE announcement send after death.</param>
-    /// <returns>Whether the player was successfully damaged.</returns>
-    public bool Damage(float amount, string reason, string cassieAnnouncement = "") => Damage(new CustomReasonDamageHandler(reason, amount, cassieAnnouncement));
+public bool Damage(float amount, Player attacker, Vector3 force = default, int armorPenetration = 0) =>
+    Damage(new ExplosionDamageHandler(new Footprint(attacker.ReferenceHub), force, amount, armorPenetration, ExplosionType.Grenade));
 
-    /// <summary>
-    /// Damages player with explosion force.
-    /// </summary>
-    /// <param name="amount">The amount of damage.</param>
-    /// <param name="attacker">The player which attacked.</param>
-    /// <param name="force">The force of explosion.</param>
-    /// <param name="armorPenetration">The amount of armor penetration.</param>
-    /// <returns>Whether the player was successfully damaged.</returns>
-    public bool Damage(float amount, Player attacker, Vector3 force = default, int armorPenetration = 0) =>
-        Damage(new ExplosionDamageHandler(new Footprint(attacker.ReferenceHub), force, amount, armorPenetration, ExplosionType.Grenade));
+public bool Damage(DamageHandlerBase damageHandlerBase) => ReferenceHub.playerStats.DealDamage(damageHandlerBase);
 
-    /// <summary>
-    /// Damages player.
-    /// </summary>
-    /// <param name="damageHandlerBase">The damage handler base.</param>
-    /// <returns>Whether the player was successfully damaged.</returns>
-    public bool Damage(DamageHandlerBase damageHandlerBase) => ReferenceHub.playerStats.DealDamage(damageHandlerBase);
+public bool Ban(Player issuer, string reason, long duration) => Server.BanPlayer(this, issuer, reason, duration);
 
-    /// <summary>
-    /// Bans the player from the server.
-    /// </summary>
-    /// <param name="issuer">The player that issued the ban.</param>
-    /// <param name="reason">The reason of the ban.</param>
-    /// <param name="duration">The duration of the ban in seconds.</param>
-    /// <returns>Whether the player was successfully banned.</returns>
-    public bool Ban(Player issuer, string reason, long duration) => Server.BanPlayer(this, issuer, reason, duration);
+public bool Ban(string reason, long duration) => Server.BanPlayer(this, reason, duration);
 
-    /// <summary>
-    /// Bans the player from the server.
-    /// </summary>
-    /// <param name="reason">The reason of the ban.</param>
-    /// <param name="duration">The duration of the ban in seconds.</param>
-    /// <returns>Whether the player was successfully banned.</returns>
-    public bool Ban(string reason, long duration) => Server.BanPlayer(this, reason, duration);
+public bool Kick(Player issuer, string reason) => Server.KickPlayer(this, issuer, reason);
 
-    /// <summary>
-    /// Kicks the player from the server.
-    /// </summary>
-    /// <param name="issuer">The player that issued the kick.</param>
-    /// <param name="reason">The reason of the kick.</param>
-    /// <returns>Whether the player was successfully kicked.</returns>
-    public bool Kick(Player issuer, string reason) => Server.KickPlayer(this, issuer, reason);
+public bool Kick(string reason) => Server.KickPlayer(this, reason);
 
-    /// <summary>
-    /// Kicks the player from the server.
-    /// </summary>
-    /// <param name="reason">The reason of the kick.</param>
-    /// <returns>Whether the player was successfully kicked.</returns>
-    public bool Kick(string reason) => Server.KickPlayer(this, reason);
+public TStore GetDataStore<TStore>() where TStore : CustomDataStore => CustomDataStore.GetOrAdd<TStore>(this);
 
-    // TODO: EffectsManager, DamageManager, DataStorage?
-    // DamageManager seems to have been unused previously. Also relies on DataStorage/SharedStorage
+public override string ToString() =>
+    $"[Player: DisplayName={DisplayName}, PlayerId={PlayerId}, NetworkId={NetworkId}, UserId={UserId}, IpAddress={IpAddress}, Role={Role}, IsHost={IsHost}, IsReady={IsReady}]";
 
-    /// <summary>
-    /// Gets the <see cref="CustomDataStore"/> associated with the player, or creates a new one if it doesn't exist.
-    /// </summary>
-    /// <typeparam name="TStore">The type of the <see cref="CustomDataStore"/>.</typeparam>
-    /// <returns>The <see cref="CustomDataStore"/> associated with the player.</returns>
-    public TStore GetDataStore<TStore>()
-        where TStore : CustomDataStore
-    {
-        return CustomDataStore.GetOrAdd<TStore>(this);
-    }
-
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        return $"[Player: DisplayName={DisplayName}, PlayerId={PlayerId}, NetworkId={NetworkId}, UserId={UserId}, IpAddress={IpAddress}, Role={Role}, IsHost={IsHost}, IsReady={IsReady}]";
-    }
 }
