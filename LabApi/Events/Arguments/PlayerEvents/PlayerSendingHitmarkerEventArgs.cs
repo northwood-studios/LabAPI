@@ -10,11 +10,11 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 public class PlayerSendingHitmarkerEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
-    /// Initializes a new instance for the <see cref="PlayerSentHitmarkerEventArgs"/> class.
+    /// Initializes a new instance for the <see cref="PlayerSendingHitmarkerEventArgs"/> class.
     /// </summary>
-    /// <param name="hub">The player that sending the hitmark.</param>
+    /// <param name="hub">The player that is sending the hitmarker.</param>
     /// <param name="size">The target size multiplier.</param>
-    /// <param name="playAudio">Whether the hitmarker sound effect play.</param>
+    /// <param name="playAudio">Whether the hitmarker sound effect should play.</param>
     public PlayerSendingHitmarkerEventArgs(ReferenceHub hub, float size, bool playAudio)
     {
         Player = Player.Get(hub);
@@ -25,7 +25,7 @@ public class PlayerSendingHitmarkerEventArgs : EventArgs, IPlayerEvent, ICancell
     }
 
     /// <summary>
-    /// Gets or sets the player that the hitmark is being sent to.
+    /// Gets or sets the player that the hitmarker is being sent to.
     /// </summary>
     public Player Player { get; set; }
 
@@ -35,7 +35,7 @@ public class PlayerSendingHitmarkerEventArgs : EventArgs, IPlayerEvent, ICancell
     public float Size { get; set; }
 
     /// <summary>
-    /// Gets or sets if the hitmarker sound effect play.
+    /// Gets or sets a value indicating whether the hitmarker sound effect should play.
     /// </summary>
     public bool PlayAudio { get; set; }
 

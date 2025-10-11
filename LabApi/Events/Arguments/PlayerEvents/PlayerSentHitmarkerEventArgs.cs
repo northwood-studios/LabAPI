@@ -12,9 +12,9 @@ public class PlayerSentHitmarkerEventArgs : EventArgs, IPlayerEvent
     /// <summary>
     /// Initializes a new instance for the <see cref="PlayerSentHitmarkerEventArgs"/> class.
     /// </summary>
-    /// <param name="hub">The player that sent the hitmark.</param>
+    /// <param name="hub">The player that sent the hitmarker.</param>
     /// <param name="size">The target size multiplier.</param>
-    /// <param name="playAudio">Whether the hitmarker sound effect play.</param>
+    /// <param name="playAudio">Whether the hitmarker sound effect was played.</param>
     public PlayerSentHitmarkerEventArgs(ReferenceHub hub, float size, bool playAudio)
     {
         Player = Player.Get(hub);
@@ -23,7 +23,7 @@ public class PlayerSentHitmarkerEventArgs : EventArgs, IPlayerEvent
     }
 
     /// <summary>
-    /// Gets the player that the hitmarker is being sent to.
+    /// Gets the player that the hitmarker was sent to.
     /// </summary>
     public Player Player { get; }
 
@@ -33,7 +33,7 @@ public class PlayerSentHitmarkerEventArgs : EventArgs, IPlayerEvent
     public float Size { get; }
 
     /// <summary>
-    /// Gets if the hitmarker sound effect play.
+    /// Gets a value indicating whether the hitmarker sound effect was played.
     /// </summary>
     public bool PlayAudio { get; }
 }
