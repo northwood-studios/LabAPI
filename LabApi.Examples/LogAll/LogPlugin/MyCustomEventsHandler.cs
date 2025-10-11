@@ -1655,6 +1655,26 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnScp127Talked)} triggered by {ev.Scp127Item.CurrentOwner}");
     }
 
+    public override void OnServerMilestoneAchieving(AchievingMilestoneEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerMilestoneAchieving)} triggered by {ev.Faction} {ev.Threshold} {ev.MilestoneIndex}");
+    }
+
+    public override void OnServerMilestoneAchieved(AchievedMilestoneEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerMilestoneAchieved)} triggered by {ev.Faction} {ev.Threshold} {ev.MilestoneIndex}");
+    }
+
+    public override void OnServerFactionInfluenceModifying(ModifyingFactionInfluenceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerFactionInfluenceModifying)} triggered by {ev.Faction} {ev.Influence}");
+    }
+
+    public override void OnServerFactionInfluenceModified(ModifiedFactionInfluenceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerFactionInfluenceModified)} triggered by {ev.Faction} {ev.Influence}");
+    }
+
     #region Excluded Events
 
     // The following events spam the console and are therefore excluded from this example:

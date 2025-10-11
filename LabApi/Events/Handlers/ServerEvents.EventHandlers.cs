@@ -226,4 +226,24 @@ public static partial class ServerEvents
     /// Gets called when elevator's sequence has changed.
     /// </summary>
     public static event LabEventHandler<ElevatorSequenceChangedEventArgs>? ElevatorSequenceChanged;
+
+    /// <summary>
+    /// Gets called when a faction's influence is changing.
+    /// </summary>
+    public static event LabEventHandler<ModifyingFactionInfluenceEventArgs>? ModifyingFactionInfluence;
+
+    /// <summary>
+    /// Gets called when a faction's influence has changed.
+    /// </summary>
+    public static event LabEventHandler<ModifiedFactionInfluenceEventArgs>? ModifiedFactionInfluence;
+
+    /// <summary>
+    /// Gets called when a faction is achieving a milestone.
+    /// </summary>
+    public static event LabEventHandler<AchievingMilestoneEventArgs>? AchievingMilestone;
+
+    /// <summary>
+    /// Gets called when a faction achieved a milestone.
+    /// </summary>
+    public static event LabEventHandler<AchievedMilestoneEventArgs>? AchievedMilestone;
 }
