@@ -18,6 +18,21 @@ public static partial class ServerEvents
     public static event LabEventHandler? RoundRestarted;
 
     /// <summary>
+    /// Gets called when the server shuts down.
+    /// </summary>
+    public static event LabEventHandler? Shutdown;
+
+    /// <summary>
+    /// Gets called when Deadman Sequence is activated.
+    /// </summary>
+    public static event LabEventHandler? DeadmanSequenceActivated;
+
+    /// <summary>
+    /// Gets called when Deadman Sequence is activating.
+    /// </summary>
+    public static event LabEventHandler<DeadmanSequenceActivatingEventArgs>? DeadmanSequenceActivating;
+
+    /// <summary>
     /// Gets called when round end conditions are checked.
     /// </summary>
     public static event LabEventHandler<RoundEndingConditionsCheckEventArgs>? RoundEndingConditionsCheck;
