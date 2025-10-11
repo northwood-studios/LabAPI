@@ -1150,6 +1150,16 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnScp173PlayedSound)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnScp173Snapped(Scp173SnappedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp173Snapped)} triggered by {ev.Player.UserId} targeting {ev.Target.UserId}");
+    }
+
+    public override void OnScp173Snapping(Scp173SnappingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp173Snapping)} triggered by {ev.Player.UserId} targeting {ev.Target.UserId}");
+    }
+
     public override void OnScp3114StrangleAborting(Scp3114StrangleAbortingEventArgs ev)
     {
         Logger.Info($"{nameof(OnScp3114StrangleAborting)} triggered by {ev.Player.UserId}");
