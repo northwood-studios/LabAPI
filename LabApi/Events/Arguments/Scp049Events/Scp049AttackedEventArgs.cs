@@ -14,7 +14,7 @@ public class Scp049AttackedEventArgs : EventArgs, IPlayerEvent, ITargetEvent
     /// </summary>
     /// <param name="hub">The SCP-049 player instance.</param>
     /// <param name="target">The player that SCP-049 has attacked.</param>
-    /// <param name="instantKill">The attack was insta kill.</param>
+    /// <param name="instantKill">The attack was an instant kill.</param>
     /// <param name="isSenseTarget">The <paramref name="target"/> was a sense target.</param>
     public Scp049AttackedEventArgs(ReferenceHub hub, ReferenceHub target, bool instantKill, bool isSenseTarget)
     {

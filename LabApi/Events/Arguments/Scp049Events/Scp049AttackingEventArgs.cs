@@ -13,8 +13,8 @@ public class Scp049AttackingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, I
     /// Initializes a new instance of the <see cref="Scp049AttackingEventArgs"/> class.
     /// </summary>
     /// <param name="hub">The SCP-049 player instance.</param>
-    /// <param name="target">The player that SCP-049 has attacked.</param>
-    /// <param name="instantKill">The attack is insta kill.</param>
+    /// <param name="target">The player that SCP-049 is attacking.</param>
+    /// <param name="instantKill">The attack is an instant kill.</param>
     /// <param name="isSenseTarget">The <paramref name="target"/> is a sense target.</param>
     /// <param name="cooldownTime">The attack cooldown.</param>
     public Scp049AttackingEventArgs(ReferenceHub hub, ReferenceHub target, bool instantKill, bool isSenseTarget, float cooldownTime)
@@ -23,6 +23,7 @@ public class Scp049AttackingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, I
         Target = Player.Get(target);
         InstantKill = instantKill;
         IsSenseTarget = isSenseTarget;
+        CooldownTime = cooldownTime;
 
         IsAllowed = true;
     }
@@ -33,7 +34,7 @@ public class Scp049AttackingEventArgs : EventArgs, IPlayerEvent, ITargetEvent, I
     public Player Player { get; }
 
     /// <summary>
-    /// The player that SCP-049 has attacked.
+    /// The player that SCP-049 is attacking.
     /// </summary>
     public Player Target { get; }
 
