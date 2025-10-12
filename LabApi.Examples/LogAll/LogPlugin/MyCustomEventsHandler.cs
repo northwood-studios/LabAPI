@@ -20,7 +20,6 @@ namespace LogPlugin;
 
 internal class MyCustomEventsHandler : CustomEventsHandler
 {
-    
     public override void OnPlayerActivatingGenerator(PlayerActivatingGeneratorEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerActivatingGenerator)} triggered by {ev.Player.UserId}");

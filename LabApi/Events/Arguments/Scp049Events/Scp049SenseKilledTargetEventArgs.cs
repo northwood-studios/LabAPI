@@ -28,5 +28,5 @@ public class Scp049SenseKilledTargetEventArgs : EventArgs, IPlayerEvent, ITarget
     /// <summary>
     /// The player that SCP-049 has killed.
     /// </summary>
-    public Player? Target { get; }
+    public Player Target { get; }
 }
