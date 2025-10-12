@@ -1,3 +1,4 @@
+using LabApi.Features;
 using LabApi.Features.Console;
 using LabApi.Features.Permissions;
 using LabApi.Features.Permissions.Providers;
@@ -6,12 +7,12 @@ using LabApi.Loader.Features.Configuration;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Yaml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using LabApi.Loader.Features.Yaml;
 
 namespace LabApi.Loader;
 
@@ -245,6 +246,12 @@ public static partial class PluginLoader
                 continue;
             }
 
+            // We check if the required version is compatible with the installed LabAPI version
+            if (!ValidateVersion(plugin))
+            {
+                continue;
+            }
+
             // We finally enable the plugin
             EnablePlugin(plugin);
         }
@@ -357,6 +364,36 @@ public static partial class PluginLoader
         {
             Logger.Error($"{LoggerPrefix} Missing dependencies:\n{string.Join("\n", missing.Select(static x => $"-\t {x}"))}");
         }
+    }
+
+    private static bool ValidateVersion(Plugin plugin)
+    {
+        Version required = plugin.RequiredApiVersion;
+        Version current = LabApiProperties.CurrentVersion;
+
+        if (required.Major != current.Major)
+        {
+            Logger.Error($"""
+                          {LoggerPrefix} Couldn't enable the plugin {plugin}
+                          It was built for a different major version of LabAPI, and would likely be unable to function at all.
+                          Current LabAPI version: {LabApiProperties.CompiledVersion}
+                          Required by plugin: {required}
+                          """);
+            return false;
+        }
+
+        if (required > current)
+        {
+            Logger.Warn($"""
+                         {LoggerPrefix} Potential issue with plugin {plugin}
+                         It was built for a newer minor/patch version of LabAPI, and might not be able to access some features it depends on.
+                         Are you running an older version of the server?
+                         Current LabAPI version: {LabApiProperties.CompiledVersion}
+                         Required by plugin: {required}
+                         """);
+        }
+
+        return true;
     }
 
     private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
