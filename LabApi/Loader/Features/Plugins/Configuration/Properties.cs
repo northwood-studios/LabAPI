@@ -18,4 +18,10 @@ public class Properties
     /// </summary>
     [Description("Whether or not the plugin is enabled.")]
     public bool IsEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
+    /// </summary>
+    [Description("Whether to allow loading the plugin even if it was built for a different major version of LabAPI.")]
+    public bool ForceUnsupportedMajorVersion { get; set; }
 }

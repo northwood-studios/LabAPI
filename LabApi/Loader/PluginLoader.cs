@@ -371,19 +371,13 @@ public static partial class PluginLoader
         Version required = plugin.RequiredApiVersion;
         Version current = LabApiProperties.CurrentVersion;
 
-        if (required.Major != current.Major)
+        if (required.Major == current.Major)
         {
-            Logger.Error($"""
-                          {LoggerPrefix} Couldn't enable the plugin {plugin}
-                          It was built for a different major version of LabAPI, and would likely be unable to function at all.
-                          Current LabAPI version: {LabApiProperties.CompiledVersion}
-                          Required by plugin: {required}
-                          """);
-            return false;
-        }
+            if (required <= current)
+            {
+                return true;
+            }
 
-        if (required > current)
-        {
             Logger.Warn($"""
                          {LoggerPrefix} Potential issue with plugin {plugin}
                          It was built for a newer minor/patch version of LabAPI, and might not be able to access some features it depends on.
@@ -391,9 +385,31 @@ public static partial class PluginLoader
                          Current LabAPI version: {LabApiProperties.CompiledVersion}
                          Required by plugin: {required}
                          """);
+
+            return true;
         }
 
-        return true;
+        string difference = required.Major < current.Major ? "an outdated major version" : "a newer major version";
+
+        if (plugin.Properties?.ForceUnsupportedMajorVersion == true)
+        {
+            Logger.Warn($"""
+                          {LoggerPrefix} Forcefully loading unsupported plugin {plugin}
+                          It was built for {difference} of LabAPI, and will likely have degraded functionality.
+                          Current LabAPI version: {LabApiProperties.CompiledVersion}
+                          Required by plugin: {required}
+                          """);
+            return true;
+        }
+
+        Logger.Error($"""
+                      {LoggerPrefix} Couldn't enable the plugin {plugin}
+                      It was built for {difference} of LabAPI, and would likely have degraded functionality.
+                      To forcefully load it, set the appropriate property in the plugins's properties.yml file.
+                      Current LabAPI version: {LabApiProperties.CompiledVersion}
+                      Required by plugin: {required}
+                      """);
+        return false;
     }
 
     private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
