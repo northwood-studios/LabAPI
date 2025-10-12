@@ -1,0 +1,32 @@
+using LabApi.Events.Arguments.Interfaces;
+using LabApi.Features.Wrappers;
+using System;
+
+namespace LabApi.Events.Arguments.Scp939Events;
+
+/// <summary>
+/// Represents the event arguments for when SCP-939 has mimiced enviroment.
+/// </summary>
+public class Scp939MimicedEnviromentEventArgs : EventArgs, IPlayerEvent
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Scp939MimicedEnviromentEventArgs"/> class.
+    /// </summary>
+    /// <param name="hub">The SCP-939 player instance.</param>
+    /// <param name="playedSequence">The played enviromental sequence.</param>
+    public Scp939MimicedEnviromentEventArgs(ReferenceHub hub, byte playedSequence)
+    {
+        Player = Player.Get(hub);
+        PlayedSequence = playedSequence;
+    }
+
+    /// <summary>
+    /// The 939 player instance.
+    /// </summary>
+    public Player Player { get; }
+
+    /// <summary>
+    /// Gets the played enviromental sequence.
+    /// </summary>
+    public byte PlayedSequence { get; }
+}
