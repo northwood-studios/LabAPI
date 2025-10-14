@@ -139,7 +139,7 @@ public class MicroHIDItem : Item
     /// </summary>
     /// <param name="range">The sounds range in meters.</param>
     /// <returns>Returns true if the micro is emitting sound, otherwise false.</returns>
-    public bool TryGetSoundEmissionRange(out float range) => Base.ServerTryGetSoundEmissionRange(out range);
+    public bool TryGetSoundEmissionRange(out float range) => Base.TryGetSoundEmissionRange(out range);
 
     /// <summary>
     /// An internal method to remove itself from the cache when the base object is destroyed.
