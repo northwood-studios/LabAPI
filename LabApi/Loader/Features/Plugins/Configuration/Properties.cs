@@ -23,5 +23,5 @@ public class Properties
     /// Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
     /// </summary>
     [Description("Whether to allow loading the plugin even if it was built for a different major version of LabAPI.")]
-    public bool ForceUnsupportedMajorVersion { get; set; }
+    public bool LoadIfUnsupported { get; set; }
 }

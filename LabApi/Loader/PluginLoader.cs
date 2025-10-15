@@ -391,7 +391,7 @@ public static partial class PluginLoader
 
         string difference = required.Major < current.Major ? "an outdated major version" : "a newer major version";
 
-        if (Config.LoadUnsupportedPlugins || plugin.Properties?.ForceUnsupportedMajorVersion == true)
+        if (Config.LoadUnsupportedPlugins || plugin.Properties?.LoadIfUnsupported == true)
         {
             Logger.Warn($"""
                           {LoggerPrefix} Forcefully loading unsupported plugin {plugin}
