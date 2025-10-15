@@ -20,4 +20,10 @@ public class LabApiConfig
     /// </summary>
     [Description("List of plugin paths relative to the Plugins folder to load from. Use $port to load from the server port's folder.")]
     public List<string> PluginPaths { get; set; } = ["global", "$port"];
+
+    /// <summary>
+    /// Whether to allow loading plugins even if they were built for a different major version of LabAPI.
+    /// </summary>
+    [Description("Whether to allow loading plugins even if they were built for a different major version of LabAPI.")]
+    public bool LoadUnsupportedPlugins { get; set; }
 }

@@ -391,7 +391,7 @@ public static partial class PluginLoader
 
         string difference = required.Major < current.Major ? "an outdated major version" : "a newer major version";
 
-        if (plugin.Properties?.ForceUnsupportedMajorVersion == true)
+        if (Config.LoadUnsupportedPlugins || plugin.Properties?.ForceUnsupportedMajorVersion == true)
         {
             Logger.Warn($"""
                           {LoggerPrefix} Forcefully loading unsupported plugin {plugin}
@@ -406,6 +406,7 @@ public static partial class PluginLoader
                       {LoggerPrefix} Couldn't enable the plugin {plugin}
                       It was built for {difference} of LabAPI, and would likely have degraded functionality.
                       To forcefully load it, set the appropriate property in the plugins's properties.yml file.
+                      To forcefully load all unsupported plugins, set the appropriate property in the LabAPI configuration for the current port (LabApi-{Server.Port}.yml).
                       Current LabAPI version: {LabApiProperties.CompiledVersion}
                       Required by plugin: {required}
                       """);
