@@ -1,3 +1,4 @@
+using LabApi.Loader.Features.Plugins.Enums;
 using System.ComponentModel;
 
 namespace LabApi.Loader.Features.Plugins.Configuration;
@@ -22,6 +23,11 @@ public class Properties
     /// <summary>
     /// Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
     /// </summary>
-    [Description("Whether to allow loading the plugin even if it was built for a different major version of LabAPI.")]
-    public bool LoadIfUnsupported { get; set; }
+    [Description("""
+                 Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
+                 Default = use port-specific config
+                 True/Enabled = load if unsupported
+                 False/Disabled = do not load if unsupported
+                 """)]
+    public OutdatedLoadingBehavior UnsupportedLoading { get; set; }
 }

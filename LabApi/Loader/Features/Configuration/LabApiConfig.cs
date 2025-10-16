@@ -24,6 +24,7 @@ public class LabApiConfig
     /// <summary>
     /// Whether to allow loading plugins even if they were built for a different major version of LabAPI.
     /// </summary>
+    /// <seealso cref="LabApi.Loader.Features.Plugins.Configuration.Properties.UnsupportedLoading"/>
     [Description("Whether to allow loading plugins even if they were built for a different major version of LabAPI.")]
     public bool LoadUnsupportedPlugins { get; set; }
 }

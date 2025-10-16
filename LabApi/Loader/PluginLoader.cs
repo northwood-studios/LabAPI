@@ -7,6 +7,7 @@ using LabApi.Loader.Features.Configuration;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Plugins.Enums;
 using LabApi.Loader.Features.Yaml;
 using System;
 using System.Collections.Generic;
@@ -391,7 +392,14 @@ public static partial class PluginLoader
 
         string difference = required.Major < current.Major ? "an outdated major version" : "a newer major version";
 
-        if (Config.LoadUnsupportedPlugins || plugin.Properties?.LoadIfUnsupported == true)
+        bool shouldLoad = plugin.Properties?.UnsupportedLoading switch
+        {
+            OutdatedLoadingBehavior.True => true,
+            OutdatedLoadingBehavior.False => false,
+            _ => Config.LoadUnsupportedPlugins,
+        };
+
+        if (shouldLoad)
         {
             Logger.Warn($"""
                           {LoggerPrefix} Forcefully loading unsupported plugin {plugin}
