@@ -29,5 +29,5 @@ public class Properties
                  True/Enabled = load if unsupported
                  False/Disabled = do not load if unsupported
                  """)]
-    public OutdatedLoadingBehavior UnsupportedLoading { get; set; }
+    public OptionalBoolean UnsupportedLoading { get; set; } = OptionalBoolean.Default;
 }

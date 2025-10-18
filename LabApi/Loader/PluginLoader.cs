@@ -394,19 +394,19 @@ public static partial class PluginLoader
 
         bool shouldLoad = plugin.Properties?.UnsupportedLoading switch
         {
-            OutdatedLoadingBehavior.True => true,
-            OutdatedLoadingBehavior.False => false,
+            OptionalBoolean.True => true,
+            OptionalBoolean.False => false,
             _ => Config.LoadUnsupportedPlugins,
         };
 
         if (shouldLoad)
         {
             Logger.Warn($"""
-                          {LoggerPrefix} Forcefully loading unsupported plugin {plugin}
-                          It was built for {difference} of LabAPI, and will likely have degraded functionality.
-                          Current LabAPI version: {LabApiProperties.CompiledVersion}
-                          Required by plugin: {required}
-                          """);
+                         {LoggerPrefix} Forcefully loading unsupported plugin {plugin}
+                         It was built for {difference} of LabAPI, and will likely have degraded functionality.
+                         Current LabAPI version: {LabApiProperties.CompiledVersion}
+                         Required by plugin: {required}
+                         """);
             return true;
         }
 
