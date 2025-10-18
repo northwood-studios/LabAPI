@@ -7,15 +7,15 @@ namespace LabApi.Events.Arguments.Scp939Events;
 /// <summary>
 /// Represents the event arguments for when SCP-939 is mimicking the environment.
 /// </summary>
-public class Scp939MimicingEnviromentEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
+public class Scp939MimickingEnvironmentEventArgs : EventArgs, IPlayerEvent, ICancellableEvent
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Scp939MimicingEnviromentEventArgs"/> class.
+    /// Initializes a new instance of the <see cref="Scp939MimickingEnvironmentEventArgs"/> class.
     /// </summary>
     /// <param name="hub">The SCP-939 player instance.</param>
     /// <param name="selectedSequence">The selected environmental sequence to play.</param>
     /// <param name="cooldownTime">The cooldown for mimicking the environment.</param>
-    public Scp939MimicingEnviromentEventArgs(ReferenceHub hub, byte selectedSequence, float cooldownTime)
+    public Scp939MimickingEnvironmentEventArgs(ReferenceHub hub, byte selectedSequence, float cooldownTime)
     {
         Player = Player.Get(hub);
         SelectedSequence = selectedSequence;
