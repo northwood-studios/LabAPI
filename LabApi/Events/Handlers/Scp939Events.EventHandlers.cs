@@ -43,12 +43,12 @@ public static partial class Scp939Events
     public static event LabEventHandler<Scp939FocusedEventArgs>? Focused;
 
     /// <summary>
-    /// Gets called when SCP-939 has focused.
+    /// Gets called when SCP-939 is mimicking the environment.
     /// </summary>
     public static event LabEventHandler<Scp939MimicingEnviromentEventArgs>? MimicingEnviroment;
 
     /// <summary>
-    /// Gets called when SCP-939 has focused.
+    /// Gets called when SCP-939 has mimicked the environment.
     /// </summary>
     public static event LabEventHandler<Scp939MimicedEnviromentEventArgs>? MimicedEnviroment;
 }

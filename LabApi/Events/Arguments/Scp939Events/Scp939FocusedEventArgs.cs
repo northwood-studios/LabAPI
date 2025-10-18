@@ -13,7 +13,7 @@ public class Scp939FocusedEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="Scp939FocusedEventArgs"/> class.
     /// </summary>
     /// <param name="hub">The SCP-939 player instance.</param>
-    /// <param name="focusState">The SCP-939 is in focus state.</param>
+    /// <param name="focusState">A value indicating whether SCP-939 is in the focus state.</param>
     public Scp939FocusedEventArgs(ReferenceHub hub, bool focusState)
     {
         Player = Player.Get(hub);
@@ -21,7 +21,7 @@ public class Scp939FocusedEventArgs : EventArgs, IPlayerEvent
     }
 
     /// <summary>
-    /// The 939 player instance.
+    /// Gets the 939 player instance.
     /// </summary>
     public Player Player { get; }
 

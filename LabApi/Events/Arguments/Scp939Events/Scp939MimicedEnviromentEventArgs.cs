@@ -5,7 +5,7 @@ using System;
 namespace LabApi.Events.Arguments.Scp939Events;
 
 /// <summary>
-/// Represents the event arguments for when SCP-939 has mimiced enviroment.
+/// Represents the event arguments for when SCP-939 has mimicked the environment.
 /// </summary>
 public class Scp939MimicedEnviromentEventArgs : EventArgs, IPlayerEvent
 {
@@ -13,7 +13,7 @@ public class Scp939MimicedEnviromentEventArgs : EventArgs, IPlayerEvent
     /// Initializes a new instance of the <see cref="Scp939MimicedEnviromentEventArgs"/> class.
     /// </summary>
     /// <param name="hub">The SCP-939 player instance.</param>
-    /// <param name="playedSequence">The played enviromental sequence.</param>
+    /// <param name="playedSequence">The played environmental sequence.</param>
     public Scp939MimicedEnviromentEventArgs(ReferenceHub hub, byte playedSequence)
     {
         Player = Player.Get(hub);
@@ -21,12 +21,12 @@ public class Scp939MimicedEnviromentEventArgs : EventArgs, IPlayerEvent
     }
 
     /// <summary>
-    /// The 939 player instance.
+    /// Gets the 939 player instance.
     /// </summary>
     public Player Player { get; }
 
     /// <summary>
-    /// Gets the played enviromental sequence.
+    /// Gets the played environmental sequence.
     /// </summary>
     public byte PlayedSequence { get; }
 }
