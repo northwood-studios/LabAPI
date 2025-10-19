@@ -1726,6 +1726,61 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnServerModifyingFactionInfluence)} triggered by {ev.Faction} {ev.Influence}");
     }
 
+    public override void OnServerBlastDoorChanged(BlastDoorChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerBlastDoorChanged)} triggered by {ev.BlastDoor} {ev.NewState}");
+    }
+
+    public override void OnServerBlastDoorChanging(BlastDoorChangingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerBlastDoorChanging)} triggered by {ev.BlastDoor} {ev.NewState}");
+    }
+
+    public override void OnServerDoorDamaged(DoorDamagedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorDamaged)} triggered by {ev.Door} {ev.Damage} {ev.DamageType}");
+    }
+
+    public override void OnServerDoorDamaging(DoorDamagingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorDamaging)} triggered by {ev.Door} {ev.Damage} {ev.DamageType}");
+    }
+
+    public override void OnServerDoorLockChanged(DoorLockChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorLockChanged)} triggered by {ev.Door} {ev.PrevLockReason} => {ev.LockReason}");
+    }
+
+    public override void OnServerDoorRepaired(DoorRepairedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorRepaired)} triggered by {ev.Door} {ev.RemainingHealth}");
+    }
+
+    public override void OnServerDoorRepairing(DoorRepairingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorRepairing)} triggered by {ev.Door} {ev.RemainingHealth}");
+    }
+
+    public override void OnServerCheckpointDoorSequenceChanged(CheckpointDoorSequenceChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerCheckpointDoorSequenceChanged)} triggered by {ev.CheckpointDoor} {ev.CurrentSequence}");
+    }
+
+    public override void OnServerCheckpointDoorSequenceChanging(CheckpointDoorSequenceChangingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerCheckpointDoorSequenceChanging)} triggered by {ev.CheckpointDoor} {ev.CurrentSequence} {ev.NewSequence}");
+    }
+
+    public override void OnServerRoomColorChanged(RoomColorChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerRoomColorChanged)} triggered by {ev.Room} {ev.NewState}");
+    }
+
+    public override void OnServerRoomLightChanged(RoomLightChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerRoomLightChanged)} triggered by {ev.Room} {ev.NewState}");
+    }
+
     #region Excluded Events
 
     // The following events spam the console and are therefore excluded from this example:

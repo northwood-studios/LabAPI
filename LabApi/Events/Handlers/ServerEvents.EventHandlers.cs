@@ -246,4 +246,59 @@ public static partial class ServerEvents
     /// Gets called when a faction achieved a milestone.
     /// </summary>
     public static event LabEventHandler<AchievedMilestoneEventArgs>? AchievedMilestone;
+
+    /// <summary>
+    /// Gets called when a blast door changes state.
+    /// </summary>
+    public static event LabEventHandler<BlastDoorChangingEventArgs>? BlastDoorChanging;
+
+    /// <summary>
+    /// Gets called when a blast door is changed state.
+    /// </summary>
+    public static event LabEventHandler<BlastDoorChangedEventArgs>? BlastDoorChanged;
+
+    /// <summary>
+    /// Gets called when a room's light is changed.
+    /// </summary>
+    public static event LabEventHandler<RoomLightChangedEventArgs>? RoomLightChanged;
+
+    /// <summary>
+    /// Gets called when a room's color is changed.
+    /// </summary>
+    public static event LabEventHandler<RoomColorChangedEventArgs>? RoomColorChanged;
+
+    /// <summary>
+    /// Gets called when a door's lock state is changed.
+    /// </summary>
+    public static event LabEventHandler<DoorLockChangedEventArgs>? DoorLockChanged;
+
+    /// <summary>
+    /// Gets called when a door is repairing.
+    /// </summary>
+    public static event LabEventHandler<DoorRepairingEventArgs>? DoorRepairing;
+
+    /// <summary>
+    /// Gets called when a door is repaired.
+    /// </summary>
+    public static event LabEventHandler<DoorRepairedEventArgs>? DoorRepaired;
+
+    /// <summary>
+    /// Gets called when a door is damaging.
+    /// </summary>
+    public static event LabEventHandler<DoorDamagingEventArgs>? DoorDamaging;
+
+    /// <summary>
+    /// Gets called when a door is damaged.
+    /// </summary>
+    public static event LabEventHandler<DoorDamagedEventArgs>? DoorDamaged;
+
+    /// <summary>
+    /// Gets called when a checkpoint door sequence is changing.
+    /// </summary>
+    public static event LabEventHandler<CheckpointDoorSequenceChangingEventArgs>? CheckpointDoorSequenceChanging;
+
+    /// <summary>
+    /// Gets called when a checkpoint door sequence is changed.
+    /// </summary>
+    public static event LabEventHandler<CheckpointDoorSequenceChangedEventArgs>? CheckpointDoorSequenceChanged;
 }
