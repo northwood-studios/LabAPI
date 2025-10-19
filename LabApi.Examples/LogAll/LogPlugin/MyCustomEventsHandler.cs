@@ -816,6 +816,26 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerLeftHazard)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnScp049Attacking(Scp049AttackingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049Attacking)} triggered by {ev.Player} {ev.Target} {ev.InstantKill} {ev.IsSenseTarget} {ev.CooldownTime}");
+    }
+
+    public override void OnScp049Attacked(Scp049AttackedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049Attacked)} triggered by {ev.Player} {ev.Target} {ev.InstantKill} {ev.IsSenseTarget}");
+    }
+
+    public override void OnScp049SenseKilledTarget(Scp049SenseKilledTargetEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049SenseKilledTarget)} triggered by {ev.Player} {ev.Target}");
+    }
+
+    public override void OnScp049SenseLostTarget(Scp049SenseLostTargetEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049SenseLostTarget)} triggered by {ev.Player} {ev.Target}");
+    }
+
     public override void OnScp049StartingResurrection(Scp049StartingResurrectionEventArgs ev)
     {
         Logger.Info($"{nameof(OnScp049StartingResurrection)} triggered by {ev.Player.UserId}");
