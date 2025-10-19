@@ -134,7 +134,7 @@ public class AdminToy
             return new AdminToy(adminToyBase);
         }
 
-        return wrapper ?? new AdminToy(adminToyBase);
+        return wrapper;
     }
 
     /// <summary>
@@ -164,9 +164,8 @@ public class AdminToy
     {
         try
         {
-            if (Dictionary.TryGetValue(adminToyBase, out AdminToy adminToy))
+            if (Dictionary.Remove(adminToyBase, out AdminToy adminToy))
             {
-                Dictionary.Remove(adminToyBase);
                 adminToy.OnRemove();
             }
         }
@@ -299,7 +298,7 @@ public class AdminToy
     /// <summary>
     /// Gets or sets whether the admin toy is static.
     /// This should be enabled on as many toys possible to increase performance.
-    /// Static is only applies to the local transformations so parenting to something that moves will still causes it to move while retaining the performance boost.
+    /// Static is only applies to the local transformations so parenting to something that moves will still cause it to move while retaining the performance boost.
     /// </summary>
     /// <remarks>
     /// A static admin toy will not process <see cref="Position"/>, <see cref="Rotation"/> or <see cref="Scale"/> on both server and client drastically increasing performance.
@@ -331,7 +330,7 @@ public class AdminToy
     /// Spawns the toy on the client.
     /// </summary>
     /// <remarks>
-    /// Spawn wont cascade to children toy objects, so if they are not spawned you have to call spawn on all of them.
+    /// Spawn won't cascade to children toy objects, so if they are not spawned you have to call spawn on all of them.
     /// </remarks>
     public void Spawn() => NetworkServer.Spawn(GameObject);
 
