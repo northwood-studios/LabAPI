@@ -4,7 +4,7 @@ using System;
 namespace LabApi.Events.Arguments.ServerEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.ServerEvents.MilestoneAchieved"/> event.
+/// Represents the arguments for the <see cref="Handlers.ServerEvents.AchievedMilestone"/> event.
 /// </summary>
 public class AchievedMilestoneEventArgs : EventArgs
 {

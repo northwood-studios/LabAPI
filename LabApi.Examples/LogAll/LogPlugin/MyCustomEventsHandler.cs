@@ -11,6 +11,7 @@ using LabApi.Events.Arguments.Scp173Events;
 using LabApi.Events.Arguments.Scp3114Events;
 using LabApi.Events.Arguments.Scp914Events;
 using LabApi.Events.Arguments.Scp939Events;
+using LabApi.Events.Arguments.ScpEvents;
 using LabApi.Events.Arguments.ServerEvents;
 using LabApi.Events.Arguments.WarheadEvents;
 using LabApi.Events.CustomHandlers;
@@ -1678,6 +1679,31 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnPlayerSendingHitmarker(PlayerSendingHitmarkerEventArgs ev)
     {
         Logger.Info($"{nameof(OnPlayerSendingHitmarker)} triggered by {ev.Player} {ev.Size} {ev.PlayAudio}");
+    }
+
+    public override void OnScpHumeShieldBroken(ScpHumeShieldBrokenEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScpHumeShieldBroken)} triggered by {ev.Player}");
+    }
+
+    public override void OnServerAchievedMilestone(AchievedMilestoneEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerAchievedMilestone)} triggered by {ev.Faction} {ev.Threshold} {ev.MilestoneIndex}");
+    }
+
+    public override void OnServerAchievingMilestone(AchievingMilestoneEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerAchievingMilestone)} triggered by {ev.Faction} {ev.Threshold} {ev.MilestoneIndex}");
+    }
+
+    public override void OnServerModifiedFactionInfluence(ModifiedFactionInfluenceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerModifiedFactionInfluence)} triggered by {ev.Faction} {ev.Influence}");
+    }
+
+    public override void OnServerModifyingFactionInfluence(ModifyingFactionInfluenceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerModifyingFactionInfluence)} triggered by {ev.Faction} {ev.Influence}");
     }
 
     #region Excluded Events

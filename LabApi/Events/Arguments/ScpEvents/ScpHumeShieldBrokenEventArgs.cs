@@ -5,7 +5,7 @@ using System;
 namespace LabApi.Events.Arguments.ScpEvents;
 
 /// <summary>
-/// Represents the arguments for the <see cref="Handlers.ScpEvents.ScpHumeShieldBroken"/> event.
+/// Represents the arguments for the <see cref="Handlers.ScpEvents.HumeShieldBroken"/> event.
 /// </summary>
 public class ScpHumeShieldBrokenEventArgs : EventArgs, IPlayerEvent
 {
