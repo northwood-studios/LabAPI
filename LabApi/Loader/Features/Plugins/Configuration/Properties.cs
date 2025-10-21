@@ -23,11 +23,6 @@ public class Properties
     /// <summary>
     /// Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
     /// </summary>
-    [Description("""
-                 Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
-                 Default = use port-specific config
-                 True/Enabled = load if unsupported
-                 False/Disabled = do not load if unsupported
-                 """)]
+    [Description("""Whether to allow loading the plugin even if it was built for a different major version of LabAPI. "Default" = use port-specific config; "True"/"Enabled" = load if unsupported; "False"/"Disabled" = do not load if unsupported""")]
     public OptionalBoolean UnsupportedLoading { get; set; } = OptionalBoolean.Default;
 }
