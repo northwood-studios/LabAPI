@@ -370,6 +370,13 @@ public static partial class PluginLoader
     private static bool ValidateVersion(Plugin plugin)
     {
         Version required = plugin.RequiredApiVersion;
+
+        // TODO: Delete (why.....)
+        if (required == null)
+        {
+            return true;
+        }
+
         Version current = LabApiProperties.CurrentVersion;
 
         if (required.Major == current.Major)
