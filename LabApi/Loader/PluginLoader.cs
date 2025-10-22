@@ -381,7 +381,7 @@ public static partial class PluginLoader
 
         if (required.Major == current.Major)
         {
-            if (required <= current)
+            if (!IsGreaterVersion(required, current))
             {
                 return true;
             }
@@ -451,5 +451,20 @@ public static partial class PluginLoader
             Plugins.Add(plugin, assembly);
             Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
         }
+    }
+
+    private static bool IsGreaterVersion(Version required, Version current)
+    {
+        Version requiredVersion = new(
+            required.Major,
+            required.Minor,
+            required.Build == -1 ? 0 : required.Build,
+            required.Revision == -1 ? 0 : required.Revision);
+        Version currentVersion = new(
+            current.Major,
+            current.Minor,
+            current.Build == -1 ? 0 : current.Build,
+            current.Revision == -1 ? 0 : current.Revision);
+        return requiredVersion > currentVersion;
     }
 }
