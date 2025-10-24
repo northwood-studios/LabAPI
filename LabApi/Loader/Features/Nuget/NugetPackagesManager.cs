@@ -161,10 +161,8 @@ public class NugetPackagesManager
     /// <returns>A populated <see cref="NugetPackage"/> instance.</returns>
     public static NugetPackage ReadPackage(string name, string fullPath, byte[] data)
     {
-        using (MemoryStream ms = new MemoryStream(data))
-        {
-            return ReadPackage(name, fullPath, ms);
-        }
+        using MemoryStream ms = new MemoryStream(data);
+        return ReadPackage(name, fullPath, ms);
     }
 
     /// <summary>
@@ -182,32 +180,27 @@ public class NugetPackagesManager
             FileContent = stream.ToArray(),
         };
 
-        using (ZipArchive archive = new ZipArchive(stream))
+        using ZipArchive archive = new ZipArchive(stream);
+        ZipArchiveEntry bestEntry = GetBestVersion(archive);
+
+        if (bestEntry != null)
         {
-            ZipArchiveEntry bestEntry = GetBestVersion(archive);
+            using MemoryStream ms = new MemoryStream();
+            using Stream entryStream = bestEntry.Open();
 
-            if (bestEntry != null)
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (Stream entryStream = bestEntry.Open())
-                    {
-                        entryStream.CopyTo(ms);
-                    }
+            entryStream.CopyTo(ms);
 
-                    package.RawAssembly = ms.ToArray();
-                }
-            }
-
-            string? nuspecXml = ReadNuspecFromNupkg(archive);
-
-            if (nuspecXml == null)
-            {
-                return package;
-            }
-
-            GetMetadata(package, nuspecXml);
+            package.RawAssembly = ms.ToArray();
         }
+
+        string? nuspecXml = ReadNuspecFromNupkg(archive);
+
+        if (nuspecXml == null)
+        {
+            return package;
+        }
+
+        GetMetadata(package, nuspecXml);
 
         return package;
     }
@@ -246,24 +239,22 @@ public class NugetPackagesManager
 
             try
             {
-                using (WebClient web = new WebClient())
+                using WebClient web = new WebClient();
+                if (Uri.TryCreate(source, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
                 {
-                    if (Uri.TryCreate(source, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
-                    {
-                        string userInfo = uri.UserInfo;
-                        string[] parts = userInfo.Split(':', 2);
+                    string userInfo = uri.UserInfo;
+                    string[] parts = userInfo.Split(':', 2);
 
-                        string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
-                        string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
+                    string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
+                    string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
 
-                        string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
-                        web.Headers[HttpRequestHeader.Authorization] = $"Basic {token}";
-                    }
-
-                    packageData = web.DownloadData(downloadUrl);
-                    successfulSource = source;
-                    break;
+                    string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
+                    web.Headers[HttpRequestHeader.Authorization] = $"Basic {token}";
                 }
+
+                packageData = web.DownloadData(downloadUrl);
+                successfulSource = source;
+                break;
             }
             catch (WebException ex)
             {
@@ -320,56 +311,55 @@ public class NugetPackagesManager
             ? normalized
             : $"{normalized}/index.json";
 
-        using (WebClient client = new WebClient())
+        using WebClient client = new WebClient();
+
+        if (Uri.TryCreate(indexUrl, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
         {
-            if (Uri.TryCreate(indexUrl, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
+            string userInfo = uri.UserInfo;
+            string[] parts = userInfo.Split(':', 2);
+
+            string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
+            string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
+
+            string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
+            client.Headers[HttpRequestHeader.Authorization] = $"Basic {token}";
+
+            UriBuilder cleanUri = new(uri)
             {
-                string userInfo = uri.UserInfo;
-                string[] parts = userInfo.Split(':', 2);
+                UserName = string.Empty,
+                Password = string.Empty
+            };
+            indexUrl = cleanUri.Uri.ToString();
+        }
 
-                string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
-                string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
-
-                string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
-                client.Headers[HttpRequestHeader.Authorization] = $"Basic {token}";
-
-                UriBuilder cleanUri = new(uri)
-                {
-                    UserName = string.Empty,
-                    Password = string.Empty
-                };
-                indexUrl = cleanUri.Uri.ToString();
+        string data;
+        try
+        {
+            data = client.DownloadString(indexUrl);
+        }
+        catch (WebException ex)
+        {
+            Logger.Warn($"{Prefix} Failed to read packages source from '{indexUrl}'");
+            if (ex.Response is HttpWebResponse resp)
+            {
+                Logger.Error($"{Prefix} HTTP {(int)resp.StatusCode} - {resp.StatusDescription}");
             }
 
-            string data;
-            try
-            {
-                data = client.DownloadString(indexUrl);
-            }
-            catch (WebException ex)
-            {
-                Logger.Warn($"{Prefix} Failed to read packages source from '{indexUrl}'");
-                if (ex.Response is HttpWebResponse resp)
-                {
-                    Logger.Error($"{Prefix} HTTP {(int)resp.StatusCode} - {resp.StatusDescription}");
-                }
+            _packageBaseAddressCache[sourceUrl] = string.Empty;
+            return string.Empty;
+        }
 
-                _packageBaseAddressCache[sourceUrl] = string.Empty;
-                return string.Empty;
+        NugetPackageIndex index = JsonSerializer.Deserialize<NugetPackageIndex>(data);
+
+        foreach (NugetPackageResource resource in index.Resources)
+        {
+            if (!resource.Type.Contains("PackageBaseAddress"))
+            {
+                continue;
             }
 
-            NugetPackageIndex index = JsonSerializer.Deserialize<NugetPackageIndex>(data);
-
-            foreach (NugetPackageResource resource in index.Resources)
-            {
-                if (!resource.Type.Contains("PackageBaseAddress"))
-                {
-                    continue;
-                }
-
-                _packageBaseAddressCache[sourceUrl] = resource.Id;
-                return resource.Id;
-            }
+            _packageBaseAddressCache[sourceUrl] = resource.Id;
+            return resource.Id;
         }
 
         _packageBaseAddressCache[sourceUrl] = string.Empty;
@@ -423,10 +413,8 @@ public class NugetPackagesManager
             return null;
         }
 
-        using (StreamReader reader = new StreamReader(nuspecEntry.Open()))
-        {
-            return reader.ReadToEnd();
-        }
+        using StreamReader reader = new StreamReader(nuspecEntry.Open());
+        return reader.ReadToEnd();
     }
 
     /// <summary>
