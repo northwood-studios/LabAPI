@@ -27,4 +27,16 @@ public class LabApiConfig
     /// <seealso cref="LabApi.Loader.Features.Plugins.Configuration.Properties.UnsupportedLoading"/>
     [Description("Whether to allow loading plugins even if they were built for a different major version of LabAPI.")]
     public bool LoadUnsupportedPlugins { get; set; }
+
+    /// <summary>
+    /// Gets or sets the list of NuGet package source URLs used when resolving
+    /// and downloading dependencies from NuGet repositories.
+    /// </summary>
+    /// <remarks>
+    /// Each entry in this list represents a NuGet feed endpoint (for example,
+    /// the official <c>https://api.nuget.org/v3/index.json</c> source).
+    /// Multiple sources can be specified to support private or custom feeds.
+    /// </remarks>
+    [Description("List of NuGet package sources to use when resolving dependencies via NuGet.")]
+    public string[] NugetPackageSources { get; set; } = ["https://api.nuget.org/v3/index.json"];
 }

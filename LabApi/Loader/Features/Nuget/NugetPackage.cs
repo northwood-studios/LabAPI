@@ -1,0 +1,170 @@
+﻿using LabApi.Features.Console;
+using LabApi.Loader.Features.Misc;
+using LabApi.Loader.Features.Paths;
+using LabApi.Loader.Features.Plugins;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+
+namespace LabApi.Loader.Features.Nuget;
+
+/// <summary>
+/// Represents a NuGet package loaded by LabApi, including its metadata,
+/// content, and dependency information.
+/// </summary>
+public class NugetPackage
+{
+    /// <summary>
+    /// Gets or sets the unique package identifier (name).
+    /// </summary>
+    public string Id { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the package version string (e.g. "1.2.3").
+    /// </summary>
+    public string Version { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the tag metadata from the .nuspec file (used to identify plugins, etc.).
+    /// </summary>
+    public string Tags { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the compiled assembly content of the package (if applicable).
+    /// </summary>
+    public byte[]? RawAssembly { get; set; } = null;
+
+    public string FilePath { get; set; }
+
+    /// <summary>
+    /// Gets or sets the name of the NuGet package file (e.g. "MyPlugin.1.0.0.nupkg").
+    /// </summary>
+    public required string FileName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the raw file contents of the NuGet package (.nupkg file).
+    /// </summary>
+    public required byte[] FileContent { get; set; }
+
+    /// <summary>
+    /// Gets or sets the list of dependencies defined by this package.
+    /// </summary>
+    public List<NugetDependency> Dependencies { get; set; } = new List<NugetDependency>();
+
+    /// <summary>
+    /// Gets a value indicating whether this package is marked as a LabApi plugin.
+    /// Determined by the presence of the "labapi-plugin" tag.
+    /// </summary>
+    public bool IsPlugin => Tags
+        .ToLower()
+        .Contains("labapi-plugin");
+
+    /// <summary>
+    /// Gets or sets if package is already loaded.
+    /// </summary>
+    public bool IsLoaded { get; set; }
+
+    /// <summary>
+    /// Extracts the NuGet package file (.nupkg) to the appropriate directory
+    /// (plugins or dependencies), depending on whether it is a plugin.
+    /// </summary>
+    /// <returns>
+    /// The full path to the extracted file if successful; otherwise, <c>null</c>.
+    /// </returns>
+    public string? Extract()
+    {
+        string? folder = GetFinalFolder(IsPlugin);
+
+        if (folder == null)
+        {
+            Logger.Warn($"{NugetPackagesManager.Prefix} Could not extract package '{Id}' v{Version} to {(IsPlugin ? "plugins" : "dependencies")} folder: no valid path found!");
+            return null;
+        }
+
+        string targetFile = Path.Combine(folder, FileName);
+
+        File.WriteAllBytes(targetFile, FileContent);
+
+        FilePath = targetFile;
+
+        return targetFile;
+    }
+
+    /// <summary>
+    /// Loads package.
+    /// </summary>
+    public void Load()
+    {
+        if (IsLoaded)
+        {
+            return;
+        }
+
+        if (RawAssembly?.Length == 0)
+        {
+            Logger.Warn($"{NugetPackagesManager.Prefix} Package '{Id}' v{Version} does not contain a valid assembly, skipping...");
+            return;
+        }
+
+        Assembly assembly = Assembly.Load(RawAssembly);
+
+        if (IsPlugin)
+        {
+            try
+            {
+                AssemblyUtils.ResolveEmbeddedResources(assembly);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"{NugetPackagesManager.Prefix} Failed to resolve embedded resources for package '{Id}' v{Version}");
+                Logger.Error(e);
+            }
+
+            try
+            {
+                PluginLoader.InstantiatePlugins(assembly.GetTypes(), assembly, FilePath);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"{NugetPackagesManager.Prefix} Couldn't load the plugin inside package '{Id}' v{Version}");
+                Logger.Error(e);
+            }
+        }
+        else
+        {
+            PluginLoader.Dependencies.Add(assembly);
+        }
+
+        Logger.Info($"{NugetPackagesManager.Prefix} Package '{Id}' v{Version} was loaded!");
+
+        IsLoaded = true;
+    }
+
+    /// <summary>
+    /// Resolves and returns the final folder path for the package extraction,
+    /// creating directories if necessary.
+    /// </summary>
+    /// <param name="isPlugin">
+    /// Indicates whether to resolve the path for a plugin (<c>true</c>)
+    /// or a dependency (<c>false</c>).
+    /// </param>
+    /// <returns>
+    /// The full directory path where the package should be extracted,
+    /// or <c>null</c> if no valid path could be determined.
+    /// </returns>
+    private string? GetFinalFolder(bool isPlugin)
+    {
+        foreach (string path in isPlugin ? PluginLoader.Config.PluginPaths : PluginLoader.Config.DependencyPaths)
+        {
+            string resolvedPath = PluginLoader.ResolvePath(path);
+            string fullPath = Path.Combine(isPlugin ? PathManager.Plugins.FullName : PathManager.Dependencies.FullName, resolvedPath);
+
+            Directory.CreateDirectory(fullPath);
+
+            return fullPath;
+        }
+
+        return null;
+    }
+}

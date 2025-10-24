@@ -62,12 +62,16 @@
 		<Reference Include="Mirror" HintPath="$(SL_REFERENCES)\Mirror.dll" />
 		<Reference Include="NorthwoodLib" HintPath="$(SL_REFERENCES)\NorthwoodLib.dll" />
 		<Reference Include="Pooling" HintPath="$(SL_REFERENCES)\Pooling.dll" />
+		<Reference Include="System.IO.Compression.FileSystem" />
 		<Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
 		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.PhysicsModule.dll" />
 		<Reference Include="UnityEngine.AudioModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.AudioModule.dll" />
 		<Reference Include="mscorlib" HintPath="$(UNITY_REFERENCES)\mscorlib.dll" />
 		<Reference Include="System" HintPath="$(UNITY_REFERENCES)\System.dll" />
 		<Reference Include="System.Core" HintPath="$(UNITY_REFERENCES)\System.Core.dll" />
+		<Reference Include="System.IO.Compression" HintPath="$(UNITY_REFERENCES)\System.IO.Compression.dll" />
+		<Reference Include="System.Xml.Linq" HintPath="$(UNITY_REFERENCES)\System.Xml.Linq.dll" />
+		<Reference Include="System.Runtime.Serialization" HintPath="$(UNITY_REFERENCES)\System.Runtime.Serialization.dll" />
 		<Reference Include="netstandard" HintPath="$(UNITY_REFERENCES)\netstandard.dll" />
 	</ItemGroup>
 

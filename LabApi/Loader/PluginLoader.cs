@@ -5,6 +5,7 @@ using LabApi.Features.Permissions.Providers;
 using LabApi.Features.Wrappers;
 using LabApi.Loader.Features.Configuration;
 using LabApi.Loader.Features.Misc;
+using LabApi.Loader.Features.Nuget;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Enums;
@@ -25,6 +26,7 @@ public static partial class PluginLoader
 {
     private const string LoggerPrefix = "[LOADER]";
     private const string DllSearchPattern = "*.dll";
+    private const string NupkgSearchPattern = "*.nupkg";
     private const string PdbFileExtension = ".pdb";
     private const string LabApiConfigName = "LabApi-{0}.yml";
 
@@ -75,6 +77,8 @@ public static partial class PluginLoader
         // We register all the commands in LabAPI to avoid plugin command conflicts.
         CommandLoader.RegisterCommands();
 
+        ReadNugetPackages();
+
         // We first load all the dependencies and store them in the dependencies list
         LoadAllDependencies();
 
@@ -100,6 +104,16 @@ public static partial class PluginLoader
         // We load all the dependencies from the configured dependency directories
         Logger.Info($"{LoggerPrefix} Loading all dependencies");
 
+        foreach (NugetPackage package in NugetPackagesManager.Packages.Values)
+        {
+            if (package.IsPlugin)
+            {
+                continue;
+            }
+
+            package.Load();
+        }
+
         foreach (string dependencyPath in Config.DependencyPaths)
         {
             string resolvedPath = ResolvePath(dependencyPath);
@@ -121,13 +135,8 @@ public static partial class PluginLoader
         {
             try
             {
-                // We load the assembly from the specified file.
                 Assembly assembly = Assembly.Load(File.ReadAllBytes(file.FullName));
-
-                // And we add the assembly to the dependencies list.
                 Dependencies.Add(assembly);
-
-                // We finally log that the dependency has been loaded.
                 Logger.Info($"{LoggerPrefix} Successfully loaded {assembly.FullName}");
             }
             catch (Exception e)
@@ -136,6 +145,67 @@ public static partial class PluginLoader
                 Logger.Error(e);
             }
         }
+    }
+
+    /// <summary>
+    /// Loads dependency info from a NuGet package (.nupkg).
+    /// </summary>
+    private static void ReadNugetPackage(FileInfo file)
+    {
+        try
+        {
+            NugetPackage package = NugetPackagesManager.ReadPackage(file.FullName);
+
+            string id = $"{package.Id}.{package.Version}";
+
+            if (NugetPackagesManager.Packages.ContainsKey(id))
+            {
+                Logger.Warn($"{LoggerPrefix} Duplicate NuGet package dependency '{id}' found in '{file.FullName}', skipping...");
+                return;
+            }
+
+            NugetPackagesManager.Packages.Add(id, package);
+            return;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"{LoggerPrefix} Failed to read package '{file.FullName}'");
+            Logger.Error(e);
+        }
+
+        return;
+    }
+
+    private static void ReadNugetPackages()
+    {
+        List<FileInfo> files = new List<FileInfo>();
+
+        foreach (string dependencyPath in Config.DependencyPaths)
+        {
+            string resolvedPath = ResolvePath(dependencyPath);
+            string fullPath = Path.Combine(PathManager.Dependencies.FullName, resolvedPath);
+
+            Directory.CreateDirectory(fullPath);
+
+            files.AddRange(new DirectoryInfo(fullPath).GetFiles(NupkgSearchPattern));
+        }
+
+        foreach (string pluginPath in Config.PluginPaths)
+        {
+            string resolvedPath = ResolvePath(pluginPath);
+            string fullPath = Path.Combine(PathManager.Plugins.FullName, resolvedPath);
+
+            Directory.CreateDirectory(fullPath);
+
+            files.AddRange(new DirectoryInfo(fullPath).GetFiles(NupkgSearchPattern));
+        }
+
+        foreach (FileInfo file in files)
+        {
+            ReadNugetPackage(file);
+        }
+
+        NugetPackagesManager.ResolveMissingNugetDependencies();
     }
 
     /// <summary>
@@ -159,6 +229,16 @@ public static partial class PluginLoader
             {
                 LoadPlugins(new DirectoryInfo(fullPath).GetFiles(DllSearchPattern));
             }
+        }
+
+        foreach (NugetPackage package in NugetPackagesManager.Packages.Values)
+        {
+            if (!package.IsPlugin)
+            {
+                continue;
+            }
+
+            package.Load();
         }
 
         // Then we finally enable all the plugins
@@ -353,7 +433,7 @@ public static partial class PluginLoader
         }
     }
 
-    private static string ResolvePath(string path)
+    public static string ResolvePath(string path)
     {
         return path.Replace("$port", Server.Port.ToString());
     }
@@ -428,7 +508,7 @@ public static partial class PluginLoader
         return false;
     }
 
-    private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
+    internal static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
     {
         foreach (Type type in types)
         {
