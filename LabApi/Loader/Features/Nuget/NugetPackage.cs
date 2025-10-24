@@ -74,7 +74,7 @@ public class NugetPackage
     /// </returns>
     public string? Extract()
     {
-        string? folder = GetFinalFolder(IsPlugin);
+        string? folder = GetFinalFolder();
 
         if (folder == null)
         {
@@ -145,20 +145,16 @@ public class NugetPackage
     /// Resolves and returns the final folder path for the package extraction,
     /// creating directories if necessary.
     /// </summary>
-    /// <param name="isPlugin">
-    /// Indicates whether to resolve the path for a plugin (<c>true</c>)
-    /// or a dependency (<c>false</c>).
-    /// </param>
     /// <returns>
     /// The full directory path where the package should be extracted,
     /// or <c>null</c> if no valid path could be determined.
     /// </returns>
-    private string? GetFinalFolder(bool isPlugin)
+    private string? GetFinalFolder()
     {
-        foreach (string path in isPlugin ? PluginLoader.Config.PluginPaths : PluginLoader.Config.DependencyPaths)
+        foreach (string path in IsPlugin ? PluginLoader.Config.PluginPaths : PluginLoader.Config.DependencyPaths)
         {
             string resolvedPath = PluginLoader.ResolvePath(path);
-            string fullPath = Path.Combine(isPlugin ? PathManager.Plugins.FullName : PathManager.Dependencies.FullName, resolvedPath);
+            string fullPath = Path.Combine(IsPlugin ? PathManager.Plugins.FullName : PathManager.Dependencies.FullName, resolvedPath);
 
             Directory.CreateDirectory(fullPath);
 
