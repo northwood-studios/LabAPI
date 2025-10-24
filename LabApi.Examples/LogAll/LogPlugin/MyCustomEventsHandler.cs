@@ -11,6 +11,7 @@ using LabApi.Events.Arguments.Scp173Events;
 using LabApi.Events.Arguments.Scp3114Events;
 using LabApi.Events.Arguments.Scp914Events;
 using LabApi.Events.Arguments.Scp939Events;
+using LabApi.Events.Arguments.ScpEvents;
 using LabApi.Events.Arguments.ServerEvents;
 using LabApi.Events.Arguments.WarheadEvents;
 using LabApi.Events.CustomHandlers;
@@ -815,6 +816,26 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnPlayerLeftHazard)} triggered by {ev.Player.UserId}");
     }
 
+    public override void OnScp049Attacking(Scp049AttackingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049Attacking)} triggered by {ev.Player} {ev.Target} {ev.InstantKill} {ev.IsSenseTarget} {ev.CooldownTime}");
+    }
+
+    public override void OnScp049Attacked(Scp049AttackedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049Attacked)} triggered by {ev.Player} {ev.Target} {ev.InstantKill} {ev.IsSenseTarget}");
+    }
+
+    public override void OnScp049SenseKilledTarget(Scp049SenseKilledTargetEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049SenseKilledTarget)} triggered by {ev.Player} {ev.Target}");
+    }
+
+    public override void OnScp049SenseLostTarget(Scp049SenseLostTargetEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp049SenseLostTarget)} triggered by {ev.Player} {ev.Target}");
+    }
+
     public override void OnScp049StartingResurrection(Scp049StartingResurrectionEventArgs ev)
     {
         Logger.Info($"{nameof(OnScp049StartingResurrection)} triggered by {ev.Player.UserId}");
@@ -1148,6 +1169,16 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnScp173PlayedSound(Scp173PlayedSoundEventArgs ev)
     {
         Logger.Info($"{nameof(OnScp173PlayedSound)} triggered by {ev.Player.UserId}");
+    }
+
+    public override void OnScp173Snapped(Scp173SnappedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp173Snapped)} triggered by {ev.Player.UserId} targeting {ev.Target.UserId}");
+    }
+
+    public override void OnScp173Snapping(Scp173SnappingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScp173Snapping)} triggered by {ev.Player.UserId} targeting {ev.Target.UserId}");
     }
 
     public override void OnScp3114StrangleAborting(Scp3114StrangleAbortingEventArgs ev)
@@ -1653,6 +1684,101 @@ internal class MyCustomEventsHandler : CustomEventsHandler
     public override void OnScp127Talked(Scp127TalkedEventArgs ev)
     {
         Logger.Info($"{nameof(OnScp127Talked)} triggered by {ev.Scp127Item.CurrentOwner}");
+    }
+    
+    public override void OnPlayerCheckedHitmarker(PlayerCheckedHitmarkerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerCheckedHitmarker)} triggered by {ev.Player} {ev.Victim} {ev.Result}");
+    }
+
+    public override void OnPlayerSentHitmarker(PlayerSentHitmarkerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSentHitmarker)} triggered by {ev.Player} {ev.Size} {ev.PlayedAudio}");
+    }
+
+    public override void OnPlayerSendingHitmarker(PlayerSendingHitmarkerEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerSendingHitmarker)} triggered by {ev.Player} {ev.Size} {ev.PlayAudio}");
+    }
+
+    public override void OnScpHumeShieldBroken(ScpHumeShieldBrokenEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnScpHumeShieldBroken)} triggered by {ev.Player}");
+    }
+
+    public override void OnServerAchievedMilestone(AchievedMilestoneEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerAchievedMilestone)} triggered by {ev.Faction} {ev.Threshold} {ev.MilestoneIndex}");
+    }
+
+    public override void OnServerAchievingMilestone(AchievingMilestoneEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerAchievingMilestone)} triggered by {ev.Faction} {ev.Threshold} {ev.MilestoneIndex}");
+    }
+
+    public override void OnServerModifiedFactionInfluence(ModifiedFactionInfluenceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerModifiedFactionInfluence)} triggered by {ev.Faction} {ev.Influence}");
+    }
+
+    public override void OnServerModifyingFactionInfluence(ModifyingFactionInfluenceEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerModifyingFactionInfluence)} triggered by {ev.Faction} {ev.Influence}");
+    }
+
+    public override void OnServerBlastDoorChanged(BlastDoorChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerBlastDoorChanged)} triggered by {ev.BlastDoor} {ev.NewState}");
+    }
+
+    public override void OnServerBlastDoorChanging(BlastDoorChangingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerBlastDoorChanging)} triggered by {ev.BlastDoor} {ev.NewState}");
+    }
+
+    public override void OnServerDoorDamaged(DoorDamagedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorDamaged)} triggered by {ev.Door} {ev.Damage} {ev.DamageType}");
+    }
+
+    public override void OnServerDoorDamaging(DoorDamagingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorDamaging)} triggered by {ev.Door} {ev.Damage} {ev.DamageType}");
+    }
+
+    public override void OnServerDoorLockChanged(DoorLockChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorLockChanged)} triggered by {ev.Door} {ev.PrevLockReason} => {ev.LockReason}");
+    }
+
+    public override void OnServerDoorRepaired(DoorRepairedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorRepaired)} triggered by {ev.Door} {ev.RemainingHealth}");
+    }
+
+    public override void OnServerDoorRepairing(DoorRepairingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerDoorRepairing)} triggered by {ev.Door} {ev.RemainingHealth}");
+    }
+
+    public override void OnServerCheckpointDoorSequenceChanged(CheckpointDoorSequenceChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerCheckpointDoorSequenceChanged)} triggered by {ev.CheckpointDoor} {ev.CurrentSequence}");
+    }
+
+    public override void OnServerCheckpointDoorSequenceChanging(CheckpointDoorSequenceChangingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerCheckpointDoorSequenceChanging)} triggered by {ev.CheckpointDoor} {ev.CurrentSequence} {ev.NewSequence}");
+    }
+
+    public override void OnServerRoomColorChanged(RoomColorChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerRoomColorChanged)} triggered by {ev.Room} {ev.NewState}");
+    }
+
+    public override void OnServerRoomLightChanged(RoomLightChangedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnServerRoomLightChanged)} triggered by {ev.Room} {ev.NewState}");
     }
 
     #region Excluded Events

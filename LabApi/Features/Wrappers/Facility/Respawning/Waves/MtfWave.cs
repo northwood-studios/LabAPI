@@ -1,5 +1,7 @@
-﻿using Respawning.Config;
+﻿using LabApi.Features.Console;
+using Respawning.Config;
 using Respawning.Waves;
+using System;
 
 namespace LabApi.Features.Wrappers;
 
@@ -23,19 +25,39 @@ public class MtfWave : RespawnWave
     /// <summary>
     /// Gets or sets the amount of sergeants that can spawn with the wave.
     /// </summary>
+    [Obsolete("Use SergeantsPercentage instead", true)]
     public int MaxSergeants
     {
-        get => Base.MaxSergeants;
-        set => Base.MaxSergeants = value;
+        get => 0;
+        set => Logger.Error("Plugin Error. Cannot set MaxSergeants, use SergeantsPercentage instead.");
+    }
+
+    /// <summary>
+    /// Gets the percentage of sergeants that can spawn with the wave.
+    /// </summary>
+    public float SergeantsPercentage
+    {
+        get => Base.SergeantPercent;
+        set => Base.SergeantPercent = value;
     }
 
     /// <summary>
     /// Gets or sets the amount of captains that can spawn with the wave.
     /// </summary>
+    [Obsolete("Use CaptainsPercentage instead", true)]
     public int MaxCaptains
     {
-        get => Base.MaxCaptains;
-        set => Base.MaxCaptains = value;
+        get => 0;
+        set => Logger.Error("Plugin Error. Cannot set MaxCaptains, use CaptainsPercentage instead.");
+    }
+
+    /// <summary>
+    /// Gets the percentage of captains that can spawn with the wave.
+    /// </summary>
+    public float CaptainsPercentage
+    {
+        get => Base.CaptainPercent;
+        set => Base.CaptainPercent = value;
     }
 
     /// <inheritdoc/>

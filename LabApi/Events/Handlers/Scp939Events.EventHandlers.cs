@@ -36,4 +36,19 @@ public static partial class Scp939Events
     /// Gets called when SCP-939 has lunged.
     /// </summary>
     public static event LabEventHandler<Scp939LungedEventArgs>? Lunged;
+
+    /// <summary>
+    /// Gets called when SCP-939 has focused.
+    /// </summary>
+    public static event LabEventHandler<Scp939FocusedEventArgs>? Focused;
+
+    /// <summary>
+    /// Gets called when SCP-939 is mimicking the environment.
+    /// </summary>
+    public static event LabEventHandler<Scp939MimickingEnvironmentEventArgs>? MimickingEnvironment;
+
+    /// <summary>
+    /// Gets called when SCP-939 has mimicked the environment.
+    /// </summary>
+    public static event LabEventHandler<Scp939MimickedEnvironmentEventArgs>? MimickedEnvironment;
 }

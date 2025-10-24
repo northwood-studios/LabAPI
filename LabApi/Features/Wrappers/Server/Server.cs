@@ -209,7 +209,7 @@ public static class Server
     /// <summary>
     /// Gets the <see cref="CommandSystem.GameConsoleCommandHandler"/> instance.
     /// </summary>
-    public static GameConsoleCommandHandler GameConsoleCommandHandler => GameCore.Console.singleton.ConsoleCommandHandler;
+    public static GameConsoleCommandHandler GameConsoleCommandHandler => GameCore.Console.ConsoleCommandHandler;
 
     /// <summary>
     /// Gets the <see cref="ServerShutdown.ServerShutdownState"/> of the server.

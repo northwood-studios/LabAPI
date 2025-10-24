@@ -1,4 +1,7 @@
-﻿using PlayerRoles;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using PlayerRoles;
 using Respawning;
 using Respawning.Config;
 using Respawning.Waves;
@@ -144,11 +147,21 @@ public abstract class RespawnWave
     /// <summary>
     /// Plays the respawn announcement.
     /// </summary>
+    [Obsolete("Use PlayAnnouncement(IEnumerable<Player>) instead.", true)]
     public void PlayAnnouncement()
+    {
+        PlayAnnouncement([]);
+    }
+
+    /// <summary>
+    /// Plays the respawn announcement.
+    /// </summary>
+    /// <param name="spawnedPlayers">The players that have spawned to take into account for the announcement.</param>
+    public void PlayAnnouncement(IEnumerable<Player> spawnedPlayers)
     {
         if (Base is IAnnouncedWave wave)
         {
-            wave.Announcement.PlayAnnouncement();
+            wave.Announcement.PlayAnnouncement(spawnedPlayers.Select(p => p.ReferenceHub).ToList());
         }
     }
 
@@ -158,7 +171,9 @@ public abstract class RespawnWave
     public void PlayRespawnEffect()
     {
         if (Base is not IAnimatedWave)
+        {
             return;
+        }
 
         WaveUpdateMessage.ServerSendUpdate(Base, UpdateMessageFlags.Trigger);
     }

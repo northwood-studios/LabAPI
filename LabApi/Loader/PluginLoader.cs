@@ -1,3 +1,4 @@
+using LabApi.Features;
 using LabApi.Features.Console;
 using LabApi.Features.Permissions;
 using LabApi.Features.Permissions.Providers;
@@ -6,12 +7,13 @@ using LabApi.Loader.Features.Configuration;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Plugins.Enums;
+using LabApi.Loader.Features.Yaml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using LabApi.Loader.Features.Yaml;
 
 namespace LabApi.Loader;
 
@@ -245,6 +247,12 @@ public static partial class PluginLoader
                 continue;
             }
 
+            // We check if the required version is compatible with the installed LabAPI version
+            if (!ValidateVersion(plugin))
+            {
+                continue;
+            }
+
             // We finally enable the plugin
             EnablePlugin(plugin);
         }
@@ -359,6 +367,67 @@ public static partial class PluginLoader
         }
     }
 
+    private static bool ValidateVersion(Plugin plugin)
+    {
+        Version required = plugin.RequiredApiVersion;
+
+        // TODO: Delete (why.....)
+        if (required == null)
+        {
+            return true;
+        }
+
+        Version current = LabApiProperties.CurrentVersion;
+
+        if (required.Major == current.Major)
+        {
+            if (!IsGreaterVersion(required, current))
+            {
+                return true;
+            }
+
+            Logger.Warn($"""
+                         {LoggerPrefix} Potential issue with plugin {plugin}
+                         It was built for a newer minor/patch version of LabAPI, and might not be able to access some features it depends on.
+                         Are you running an older version of the server?
+                         Current LabAPI version: {LabApiProperties.CompiledVersion}
+                         Required by plugin: {required}
+                         """);
+
+            return true;
+        }
+
+        string difference = required.Major < current.Major ? "an outdated major version" : "a newer major version";
+
+        bool shouldLoad = plugin.Properties?.UnsupportedLoading switch
+        {
+            OptionalBoolean.True => true,
+            OptionalBoolean.False => false,
+            _ => Config.LoadUnsupportedPlugins,
+        };
+
+        if (shouldLoad)
+        {
+            Logger.Warn($"""
+                         {LoggerPrefix} Forcefully loading unsupported plugin {plugin}
+                         It was built for {difference} of LabAPI, and will likely have degraded functionality.
+                         Current LabAPI version: {LabApiProperties.CompiledVersion}
+                         Required by plugin: {required}
+                         """);
+            return true;
+        }
+
+        Logger.Error($"""
+                      {LoggerPrefix} Couldn't enable the plugin {plugin}
+                      It was built for {difference} of LabAPI, and would likely have degraded functionality.
+                      To forcefully load it, set the appropriate property in the plugins's properties.yml file.
+                      To forcefully load all unsupported plugins, set the appropriate property in the LabAPI configuration for the current port (LabApi-{Server.Port}.yml).
+                      Current LabAPI version: {LabApiProperties.CompiledVersion}
+                      Required by plugin: {required}
+                      """);
+        return false;
+    }
+
     private static void InstantiatePlugins(Type[] types, Assembly assembly, string filePath)
     {
         foreach (Type type in types)
@@ -382,5 +451,20 @@ public static partial class PluginLoader
             Plugins.Add(plugin, assembly);
             Logger.Info($"{LoggerPrefix} Successfully loaded {plugin.Name}");
         }
+    }
+
+    private static bool IsGreaterVersion(Version required, Version current)
+    {
+        Version requiredVersion = new(
+            required.Major,
+            required.Minor,
+            required.Build == -1 ? 0 : required.Build,
+            required.Revision == -1 ? 0 : required.Revision);
+        Version currentVersion = new(
+            current.Major,
+            current.Minor,
+            current.Build == -1 ? 0 : current.Build,
+            current.Revision == -1 ? 0 : current.Revision);
+        return requiredVersion > currentVersion;
     }
 }

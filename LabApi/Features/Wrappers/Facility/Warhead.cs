@@ -347,7 +347,8 @@ public static class Warhead
         internal DetonationScenario(AlphaWarheadController.DetonationScenario detonationScenario, byte id, WarheadScenarioType type)
         {
             TimeToDetonate = detonationScenario.TimeToDetonate;
-            AdditionalTime = detonationScenario.AdditionalTime;
+            // TODO: Remove the cast on 2.0.0 and change additional time to float
+            AdditionalTime = (int)detonationScenario.AdditionalTime;
             Type = type;
             Id = id;
         }

@@ -22,16 +22,16 @@ public static class CommandLoader
     /// <summary>
     /// The dictionary of command handlers.
     /// </summary>
-    public static Dictionary<Type, CommandHandler> CommandHandlers { get; } = new()
+    public static Dictionary<Type, List<CommandHandler>> CommandHandlers { get; } = new()
     {
         // The server console command handler.
-        [typeof(GameConsoleCommandHandler)] = GameCore.Console.singleton.ConsoleCommandHandler,
+        [typeof(GameConsoleCommandHandler)] = [GameCore.Console.ConsoleCommandHandler],
 
         // The remote admin command handler.
-        [typeof(RemoteAdminCommandHandler)] = CommandProcessor.RemoteAdminCommandHandler,
+        [typeof(RemoteAdminCommandHandler)] = [CommandProcessor.RemoteAdminCommandHandler],
 
         // The client console command handler.
-        [typeof(ClientCommandHandler)] = QueryProcessor.DotCommandHandler,
+        [typeof(ClientCommandHandler)] = [QueryProcessor.DotCommandHandler],
     };
 
     /// <summary>
@@ -148,14 +148,8 @@ public static class CommandLoader
     {
         command = null;
 
-        if (CommandHandlers.ContainsKey(commandType))
-        {
-            // This parent command was already registered.
-            return false;
-        }
-
         // We try to get the command handler from the dictionary of command handlers.
-        if (!CommandHandlers.TryGetValue(commandHandlerType, out CommandHandler commandHandler))
+        if (!CommandHandlers.TryGetValue(commandHandlerType, out List<CommandHandler> commandHandlers))
         {
             Logger.Error($"{LoggerPrefix} Unable to register command '{commandType.Name}' from '{logName}'. CommandHandler '{commandHandlerType}' not found.");
             return false;
@@ -180,8 +174,17 @@ public static class CommandLoader
             throw;
         }
 
-        // We finally try to register the command in the command handler.
-        return TryRegisterCommand(command, commandHandler, logName);
+        // We iterate through all command handlers (including subcommand that has multiple handler).
+        foreach (CommandHandler commandHandler in commandHandlers)
+        {
+            // We finally try to register the command in the command handler.
+            if (!TryRegisterCommand(command, commandHandler, logName))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -195,6 +198,12 @@ public static class CommandLoader
     {
         try
         {
+            // We check if the command already registered (might happen) and just return.
+            if (commandHandler.AllCommands.Any(x => string.Equals(x.Command, command.Command, StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+
             // We try to register the command.
             commandHandler.RegisterCommand(command);
 
@@ -208,10 +217,16 @@ public static class CommandLoader
             // This allows us to register subcommands to the parent command by just using the CommandHandlerAttribute.
             // [CommandHandler(typeof(MyParentCommand))]
             Type commandType = command.GetType();
+
             if (!CommandHandlers.ContainsKey(commandType))
             {
                 // We add the command type to the dictionary of command handlers.
-                CommandHandlers.Add(commandType, parentCommand);
+                CommandHandlers[commandType] = [];
+            }
+
+            if (!CommandHandlers[commandType].Contains(parentCommand))
+            {
+                CommandHandlers[commandType].Add(parentCommand);
             }
 
             // We can finally return true.
@@ -262,16 +277,19 @@ public static class CommandLoader
     public static void UnregisterCommand(ICommand command)
     {
         // We iterate through all command handlers.
-        foreach (CommandHandler commandHandler in CommandHandlers.Values)
+        foreach (List<CommandHandler> commandHandlers in CommandHandlers.Values)
         {
-            // If the command handler does not contain the command, we continue.
-            if (!commandHandler.AllCommands.Contains(command))
+            foreach (CommandHandler commandHandler in commandHandlers)
             {
-                continue;
-            }
+                // If the command handler does not contain the command, we continue.
+                if (!commandHandler.AllCommands.Contains(command))
+                {
+                    continue;
+                }
 
-            // We manually unregister the command from the command handler.
-            commandHandler.UnregisterCommand(command);
+                // We manually unregister the command from the command handler.
+                commandHandler.UnregisterCommand(command);
+            }
         }
 
         // We check if the command is a parent command.
@@ -292,6 +310,6 @@ public static class CommandLoader
     {
         // We register all commands in the LabAPI assembly.
         // We convert it to an array since IEnumerable are lazy and need to be iterated through to be executed.
-         LabApiCommands = RegisterCommands(Assembly.GetExecutingAssembly(), "LabApi").ToArray();
+        LabApiCommands = RegisterCommands(Assembly.GetExecutingAssembly(), "LabApi").ToArray();
     }
 }

@@ -41,4 +41,24 @@ public static partial class Scp049Events
     /// Gets called when SCP-049 has used its sense ability.
     /// </summary>
     public static event LabEventHandler<Scp049UsedSenseEventArgs>? UsedSense;
+
+    /// <summary>
+    /// Gets called when SCP-049 is using its attack ability.
+    /// </summary>
+    public static event LabEventHandler<Scp049AttackingEventArgs>? Attacking;
+
+    /// <summary>
+    /// Gets called when SCP-049 has used its attack ability.
+    /// </summary>
+    public static event LabEventHandler<Scp049AttackedEventArgs>? Attacked;
+
+    /// <summary>
+    /// Gets called when SCP-049 has lost a target.
+    /// </summary>
+    public static event LabEventHandler<Scp049SenseLostTargetEventArgs>? SenseLostTarget;
+
+    /// <summary>
+    /// Gets called when SCP-049 has killed a target.
+    /// </summary>
+    public static event LabEventHandler<Scp049SenseKilledTargetEventArgs>? SenseKilledTarget;
 }
