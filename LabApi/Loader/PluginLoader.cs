@@ -5,7 +5,7 @@ using LabApi.Features.Permissions.Providers;
 using LabApi.Features.Wrappers;
 using LabApi.Loader.Features.Configuration;
 using LabApi.Loader.Features.Misc;
-using LabApi.Loader.Features.Nuget;
+using LabApi.Loader.Features.NuGet;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Enums;
@@ -104,7 +104,7 @@ public static partial class PluginLoader
         // We load all the dependencies from the configured dependency directories
         Logger.Info($"{LoggerPrefix} Loading all dependencies");
 
-        foreach (NugetPackage package in NugetPackagesManager.Packages.Values)
+        foreach (NuGetPackage package in NuGetPackagesManager.Packages.Values)
         {
             if (package.IsPlugin)
             {
@@ -154,17 +154,17 @@ public static partial class PluginLoader
     {
         try
         {
-            NugetPackage package = NugetPackagesManager.ReadPackage(file.FullName);
+            NuGetPackage package = NuGetPackagesManager.ReadPackage(file.FullName);
 
             string id = $"{package.Id}.{package.Version}";
 
-            if (NugetPackagesManager.Packages.ContainsKey(id))
+            if (NuGetPackagesManager.Packages.ContainsKey(id))
             {
                 Logger.Warn($"{LoggerPrefix} Duplicate NuGet package dependency '{id}' found in '{file.FullName}', skipping...");
                 return;
             }
 
-            NugetPackagesManager.Packages.Add(id, package);
+            NuGetPackagesManager.Packages.Add(id, package);
             return;
         }
         catch (Exception e)
@@ -205,7 +205,7 @@ public static partial class PluginLoader
             ReadNugetPackage(file);
         }
 
-        NugetPackagesManager.ResolveMissingNugetDependencies();
+        NuGetPackagesManager.ResolveMissingNugetDependencies();
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ public static partial class PluginLoader
             }
         }
 
-        foreach (NugetPackage package in NugetPackagesManager.Packages.Values)
+        foreach (NuGetPackage package in NuGetPackagesManager.Packages.Values)
         {
             if (!package.IsPlugin)
             {

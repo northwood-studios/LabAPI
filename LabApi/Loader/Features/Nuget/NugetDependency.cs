@@ -1,14 +1,14 @@
 ﻿using LabApi.Features.Console;
 using System;
 
-namespace LabApi.Loader.Features.Nuget;
+namespace LabApi.Loader.Features.NuGet;
 
 /// <summary>
 /// Represents a dependency entry within a NuGet package,
 /// including its identifier and version, and provides
 /// helper methods for installation and status checking.
 /// </summary>
-public class NugetDependency
+public class NuGetDependency
 {
     /// <summary>
     /// Gets or sets the unique identifier (name) of the NuGet dependency.
@@ -24,9 +24,9 @@ public class NugetDependency
     /// Installs this NuGet dependency by downloading it from the configured source.
     /// </summary>
     /// <remarks>
-    /// This method delegates to <see cref="NugetPackagesManager.DownloadNugetPackage(string, string)"/>.
+    /// This method delegates to <see cref="NuGetPackagesManager.DownloadNugetPackage(string, string)"/>.
     /// </remarks>
-    public void Install() => NugetPackagesManager.DownloadNugetPackage(Id, Version);
+    public void Install() => NuGetPackagesManager.DownloadNugetPackage(Id, Version);
 
     /// <summary>
     /// Determines whether this dependency is already installed
@@ -38,7 +38,7 @@ public class NugetDependency
     /// </returns>
     public bool IsInstalled()
     {
-        if (NugetPackagesManager.Packages.TryGetValue($"{Id}.{Version}", out NugetPackage package))
+        if (NuGetPackagesManager.Packages.TryGetValue($"{Id}.{Version}", out NuGetPackage package))
         {
             return string.Equals(package.Version, Version, StringComparison.OrdinalIgnoreCase);
         }
@@ -76,7 +76,7 @@ public class NugetDependency
         }
         catch (Exception ex)
         {
-            Logger.Warn($"{NugetPackagesManager.Prefix} Failed to check if assembly '{id}' is already loaded: {ex.Message}");
+            Logger.Warn($"{NuGetPackagesManager.Prefix} Failed to check if assembly '{id}' is already loaded: {ex.Message}");
         }
 
         return false;

@@ -1,24 +1,20 @@
 ﻿using LabApi.Features.Console;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Runtime.Serialization;
 using System.Xml.Linq;
 using Utf8Json;
-using static LabApi.Loader.PluginLoader;
 
-namespace LabApi.Loader.Features.Nuget;
+namespace LabApi.Loader.Features.NuGet;
 
 /// <summary>
 /// Provides functionality for reading, downloading, extracting,
 /// and managing NuGet packages within the LabApi loader system.
 /// </summary>
-public class NugetPackagesManager
+public class NuGetPackagesManager
 {
     /// <summary>
     /// Prefix used for console log messages originating from NuGet operations.
@@ -91,9 +87,9 @@ public class NugetPackagesManager
     /// This collection stores all NuGet packages that have been
     /// successfully loaded or installed by the loader.
     /// Keys represent the dependency ID, and values contain the corresponding
-    /// <see cref="NugetPackage"/> instance and its metadata.
+    /// <see cref="NuGetPackage"/> instance and its metadata.
     /// </remarks>
-    public static Dictionary<string, NugetPackage> Packages { get; } = new(StringComparer.OrdinalIgnoreCase);
+    public static Dictionary<string, NuGetPackage> Packages { get; } = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Resolves any missing NuGet dependencies by checking all loaded packages
@@ -105,13 +101,13 @@ public class NugetPackagesManager
 
         int resolvedCount = 0;
 
-        Queue<NugetPackage> packagesToResolve = new Queue<NugetPackage>(Packages.Values);
+        Queue<NuGetPackage> packagesToResolve = new Queue<NuGetPackage>(Packages.Values);
 
         while (packagesToResolve.Count != 0)
         {
-            NugetPackage package = packagesToResolve.Dequeue();
+            NuGetPackage package = packagesToResolve.Dequeue();
 
-            foreach (NugetDependency dep in package.Dependencies)
+            foreach (NuGetDependency dep in package.Dependencies)
             {
                 if (dep.IsInstalled())
                 {
@@ -138,9 +134,9 @@ public class NugetPackagesManager
     /// Reads and parses a NuGet package from the specified file path.
     /// </summary>
     /// <param name="path">The full file system path to the .nupkg file.</param>
-    /// <returns>A populated <see cref="NugetPackage"/> instance.</returns>
+    /// <returns>A populated <see cref="NuGetPackage"/> instance.</returns>
     /// <exception cref="FileNotFoundException">Thrown when the specified package file does not exist.</exception>
-    public static NugetPackage ReadPackage(string path)
+    public static NuGetPackage ReadPackage(string path)
     {
         if (!File.Exists(path))
         {
@@ -158,8 +154,8 @@ public class NugetPackagesManager
     /// </summary>
     /// <param name="name">The file name of the package.</param>
     /// <param name="data">The binary contents of the .nupkg file.</param>
-    /// <returns>A populated <see cref="NugetPackage"/> instance.</returns>
-    public static NugetPackage ReadPackage(string name, string fullPath, byte[] data)
+    /// <returns>A populated <see cref="NuGetPackage"/> instance.</returns>
+    public static NuGetPackage ReadPackage(string name, string fullPath, byte[] data)
     {
         using MemoryStream ms = new MemoryStream(data);
         return ReadPackage(name, fullPath, ms);
@@ -169,11 +165,12 @@ public class NugetPackagesManager
     /// Reads and parses a NuGet package from a memory stream.
     /// </summary>
     /// <param name="name">The package file name.</param>
+    /// <param name="fullPath">The full path of a package.</param>
     /// <param name="stream">A memory stream containing the .nupkg content.</param>
-    /// <returns>A populated <see cref="NugetPackage"/> with metadata, dependencies, and assembly data loaded.</returns>
-    public static NugetPackage ReadPackage(string name, string fullPath, MemoryStream stream)
+    /// <returns>A populated <see cref="NuGetPackage"/> with metadata, dependencies, and assembly data loaded.</returns>
+    public static NuGetPackage ReadPackage(string name, string fullPath, MemoryStream stream)
     {
-        NugetPackage package = new NugetPackage()
+        NuGetPackage package = new NuGetPackage()
         {
             FilePath = fullPath,
             FileName = name,
@@ -211,7 +208,7 @@ public class NugetPackagesManager
     /// </summary>
     /// <param name="packageId">The ID of the package to download.</param>
     /// <param name="version">The version of the package to download.</param>
-    public static NugetPackage DownloadNugetPackage(string packageId, string version)
+    public static NuGetPackage DownloadNugetPackage(string packageId, string version)
     {
         string[] sources = PluginLoader.Config.NugetPackageSources;
 
@@ -277,7 +274,7 @@ public class NugetPackagesManager
         }
 
         // Proceed to install
-        NugetPackage package = ReadPackage($"{packageId}.{version}.nupkg", string.Empty, packageData);
+        NuGetPackage package = ReadPackage($"{packageId}.{version}.nupkg", string.Empty, packageData);
         string? path = package.Extract();
 
         if (path == null)
@@ -349,9 +346,9 @@ public class NugetPackagesManager
             return string.Empty;
         }
 
-        NugetPackageIndex index = JsonSerializer.Deserialize<NugetPackageIndex>(data);
+        NuGetPackageIndex index = JsonSerializer.Deserialize<NuGetPackageIndex>(data);
 
-        foreach (NugetPackageResource resource in index.Resources)
+        foreach (NuGetPackageResource resource in index.Resources)
         {
             if (!resource.Type.Contains("PackageBaseAddress"))
             {
@@ -423,7 +420,7 @@ public class NugetPackagesManager
     /// </summary>
     /// <param name="package">The package instance to populate.</param>
     /// <param name="nuspecXml">The raw XML content of the .nuspec file.</param>
-    private static void GetMetadata(NugetPackage package, string nuspecXml)
+    private static void GetMetadata(NuGetPackage package, string nuspecXml)
     {
         XDocument doc = XDocument.Parse(nuspecXml);
         XNamespace ns = doc.Root.GetDefaultNamespace();
@@ -465,14 +462,14 @@ public class NugetPackagesManager
             selectedGroup = groups.LastOrDefault();
         }
 
-        List<NugetDependency> dependencies = new List<NugetDependency>();
+        List<NuGetDependency> dependencies = new List<NuGetDependency>();
 
         if (selectedGroup != null)
         {
             string? groupFramework = selectedGroup.Attribute("targetFramework")?.Value;
             foreach (XElement dep in selectedGroup.Elements(ns + "dependency"))
             {
-                dependencies.Add(new NugetDependency
+                dependencies.Add(new NuGetDependency
                 {
                     Id = dep.Attribute("id")?.Value ?? string.Empty,
                     Version = dep.Attribute("version")?.Value ?? string.Empty,
@@ -482,7 +479,7 @@ public class NugetPackagesManager
 
         foreach (XElement dep in depsElement.Elements(ns + "dependency"))
         {
-            dependencies.Add(new NugetDependency
+            dependencies.Add(new NuGetDependency
             {
                 Id = dep.Attribute("id")?.Value ?? string.Empty,
                 Version = dep.Attribute("version")?.Value ?? string.Empty,

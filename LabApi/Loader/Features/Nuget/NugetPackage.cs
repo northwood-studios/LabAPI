@@ -1,19 +1,18 @@
 ﻿using LabApi.Features.Console;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.Paths;
-using LabApi.Loader.Features.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace LabApi.Loader.Features.Nuget;
+namespace LabApi.Loader.Features.NuGet;
 
 /// <summary>
 /// Represents a NuGet package loaded by LabApi, including its metadata,
 /// content, and dependency information.
 /// </summary>
-public class NugetPackage
+public class NuGetPackage
 {
     /// <summary>
     /// Gets or sets the unique package identifier (name).
@@ -50,7 +49,7 @@ public class NugetPackage
     /// <summary>
     /// Gets or sets the list of dependencies defined by this package.
     /// </summary>
-    public List<NugetDependency> Dependencies { get; set; } = new List<NugetDependency>();
+    public List<NuGetDependency> Dependencies { get; set; } = new List<NuGetDependency>();
 
     /// <summary>
     /// Gets a value indicating whether this package is marked as a LabApi plugin.
@@ -78,7 +77,7 @@ public class NugetPackage
 
         if (folder == null)
         {
-            Logger.Warn($"{NugetPackagesManager.Prefix} Could not extract package '{Id}' v{Version} to {(IsPlugin ? "plugins" : "dependencies")} folder: no valid path found!");
+            Logger.Warn($"{NuGetPackagesManager.Prefix} Could not extract package '{Id}' v{Version} to {(IsPlugin ? "plugins" : "dependencies")} folder: no valid path found!");
             return null;
         }
 
@@ -103,7 +102,7 @@ public class NugetPackage
 
         if (RawAssembly?.Length == 0)
         {
-            Logger.Warn($"{NugetPackagesManager.Prefix} Package '{Id}' v{Version} does not contain a valid assembly, skipping...");
+            Logger.Warn($"{NuGetPackagesManager.Prefix} Package '{Id}' v{Version} does not contain a valid assembly, skipping...");
             return;
         }
 
@@ -117,7 +116,7 @@ public class NugetPackage
             }
             catch (Exception e)
             {
-                Logger.Error($"{NugetPackagesManager.Prefix} Failed to resolve embedded resources for package '{Id}' v{Version}");
+                Logger.Error($"{NuGetPackagesManager.Prefix} Failed to resolve embedded resources for package '{Id}' v{Version}");
                 Logger.Error(e);
             }
 
@@ -127,7 +126,7 @@ public class NugetPackage
             }
             catch (Exception e)
             {
-                Logger.Error($"{NugetPackagesManager.Prefix} Couldn't load the plugin inside package '{Id}' v{Version}");
+                Logger.Error($"{NuGetPackagesManager.Prefix} Couldn't load the plugin inside package '{Id}' v{Version}");
                 Logger.Error(e);
             }
         }
@@ -136,7 +135,7 @@ public class NugetPackage
             PluginLoader.Dependencies.Add(assembly);
         }
 
-        Logger.Info($"{NugetPackagesManager.Prefix} Package '{Id}' v{Version} was loaded!");
+        Logger.Info($"{NuGetPackagesManager.Prefix} Package '{Id}' v{Version} was loaded!");
 
         IsLoaded = true;
     }

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace LabApi.Loader.Features.Nuget;
+namespace LabApi.Loader.Features.NuGet;
 
 /// <summary>
 /// Represents a single resource entry within a NuGet service index (<c>index.json</c>).
@@ -10,7 +10,7 @@ namespace LabApi.Loader.Features.Nuget;
 /// such as the <c>PackageBaseAddress</c> (used to download packages) or
 /// <c>SearchQueryService</c> (used to search packages).
 /// </remarks>
-public class NugetPackageResource
+public class NuGetPackageResource
 {
     /// <summary>
     /// Gets or sets the type of the NuGet service resource.
