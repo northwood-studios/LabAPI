@@ -1,10 +1,12 @@
-﻿using Generators;
+﻿using System;
+using Generators;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using MapGeneration.Distributors;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 using BaseElevatorDoor = Interactables.Interobjects.ElevatorDoor;
 
 namespace LabApi.Features.Wrappers;
@@ -146,7 +148,15 @@ public class Elevator
     /// Gets the current world space bounds of this elevator.
     /// <para>World space bounds are cached and recalculated if not valid after elevator movement.</para>
     /// </summary>
-    public Bounds WorldSpaceBounds => Base.WorldspaceBounds;
+    // Rename WorldSpaceRelativeBounds to WorldSpaceBounds in the next major.
+    [Obsolete("Use WorldSpaceRelativeBounds.Bounds instead.")]
+    public Bounds WorldSpaceBounds => Base.WorldspaceBounds.Bounds;
+
+    /// <summary>
+    /// Gets the current world space bounds of this elevator.
+    /// <para>World space bounds are cached and recalculated if not valid after elevator movement.</para>
+    /// </summary>
+    public RelativeBounds WorldSpaceRelativeBounds => Base.WorldspaceBounds;
 
     /// <summary>
     /// Gets the reason why is ANY elevator door locked.
