@@ -6,6 +6,7 @@ using PlayerRoles.PlayableScps.Scp049.Zombies;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using RelativePositioning;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -119,7 +120,8 @@ public class Ragdoll
             Base.Info.StartRelativePosition,
             Base.Info.StartRelativeRotation,
             Base.Info.Nickname,
-            Base.Info.CreationTime);
+            Base.Info.CreationTime,
+            Base.Info.Serial);
     }
 
     /// <summary>
@@ -135,7 +137,8 @@ public class Ragdoll
             Base.Info.StartRelativePosition,
             Base.Info.StartRelativeRotation,
             value,
-            Base.Info.CreationTime);
+            Base.Info.CreationTime,
+            Base.Info.Serial);
     }
 
     /// <summary>
@@ -152,7 +155,8 @@ public class Ragdoll
             Base.Info.StartRelativePosition,
             Base.Info.StartRelativeRotation,
             Base.Info.Nickname,
-            Base.Info.CreationTime);
+            Base.Info.CreationTime,
+            Base.Info.Serial);
     }
 
     /// <summary>
@@ -170,11 +174,12 @@ public class Ragdoll
                 Base.Info.OwnerHub,
                 Base.Info.Handler,
                 Base.Info.RoleType,
-                relPos, 
+                relPos,
                 relRot,
                 Base.Info.Scale,
                 Base.Info.Nickname,
-                Base.Info.CreationTime);
+                Base.Info.CreationTime,
+                Base.Info.Serial);
         }
     }
 
@@ -196,7 +201,8 @@ public class Ragdoll
                 relRot,
                 Base.Info.Scale,
                 Base.Info.Nickname,
-                Base.Info.CreationTime);
+                Base.Info.CreationTime,
+                Base.Info.Serial);
         }
     }
 
@@ -218,9 +224,15 @@ public class Ragdoll
                 Base.Info.StartRelativeRotation,
                 Vector3.Scale(value, RagdollManager.GetDefaultScale(Role)),
                 Base.Info.Nickname,
-                Base.Info.CreationTime);
+                Base.Info.CreationTime,
+                Base.Info.Serial);
         }
     }
+
+    /// <summary>
+    /// Gets the serial number of the ragdoll.
+    /// </summary>
+    public ushort Serial => Base.NetworkInfo.Serial;
 
     /// <summary>
     /// Gets or sets whether the corpse is consumed.
