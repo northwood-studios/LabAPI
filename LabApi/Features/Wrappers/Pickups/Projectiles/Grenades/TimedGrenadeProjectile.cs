@@ -81,7 +81,11 @@ public class TimedGrenadeProjectile : Projectile
 
         newPickup.ServerActivate();
         TimedGrenadeProjectile wrapper = (TimedGrenadeProjectile)Pickup.Get(newPickup);
-        wrapper.RemainingTime = timeOverride;
+
+        if (timeOverride >= 0)
+        {
+            wrapper.RemainingTime = timeOverride;
+        }
 
         return wrapper;
     }
