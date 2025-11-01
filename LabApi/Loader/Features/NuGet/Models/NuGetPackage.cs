@@ -68,7 +68,7 @@ public class NuGetPackage
         .Contains(LabApiPluginTag);
 
     /// <summary>
-    /// /// Gets or sets a value indicating whether the package is already loaded.
+    /// Gets or sets a value indicating whether the package is already loaded.
     /// </summary>
     public bool IsLoaded { get; set; }
 
