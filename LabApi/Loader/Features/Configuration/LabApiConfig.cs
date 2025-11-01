@@ -39,4 +39,16 @@ public class LabApiConfig
     /// </remarks>
     [Description("List of NuGet package sources to use when resolving dependencies via NuGet.")]
     public string[] NugetPackageSources { get; set; } = ["https://api.nuget.org/v3/index.json"];
+
+    /// <summary>
+    /// Gets or sets a value indicating whether dependencies should be automatically
+    /// downloaded from the configured NuGet sources when they are missing or outdated.
+    /// </summary>
+    /// <remarks>
+    /// When set to <see langword="true"/>, the system attempts to retrieve and install
+    /// required packages automatically during dependency resolution.
+    /// Disabling this option may require manual dependency management.
+    /// </remarks>
+    [Description("Automatically download dependencies from NuGet when missing or outdated.")]
+    public bool AutomaticallyDownloadDependencies { get; set; } = true;
 }

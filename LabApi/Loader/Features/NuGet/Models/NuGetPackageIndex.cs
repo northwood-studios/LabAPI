@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace LabApi.Loader.Features.NuGet;
+namespace LabApi.Loader.Features.NuGet.Models;
 
 /// <summary>
 /// Represents the root structure of a NuGet service index (<c>index.json</c>),

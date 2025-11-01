@@ -63,6 +63,7 @@
 		<Reference Include="NorthwoodLib" HintPath="$(SL_REFERENCES)\NorthwoodLib.dll" />
 		<Reference Include="Pooling" HintPath="$(SL_REFERENCES)\Pooling.dll" />
 		<Reference Include="System.IO.Compression.FileSystem" HintPath="$(UNITY_REFERENCES)\System.IO.Compression.FileSystem.dll" />
+		<Reference Include="System.Net.Http" />
 		<Reference Include="UnityEngine.CoreModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll" />
 		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.PhysicsModule.dll" />
 		<Reference Include="UnityEngine.AudioModule" HintPath="$(UNITY_REFERENCES)\UnityEngine.AudioModule.dll" />

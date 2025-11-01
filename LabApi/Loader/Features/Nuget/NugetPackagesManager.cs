@@ -1,10 +1,13 @@
 ﻿using LabApi.Features.Console;
+using LabApi.Loader.Features.Configuration;
+using LabApi.Loader.Features.NuGet.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Xml.Linq;
 using Utf8Json;
 
@@ -20,6 +23,8 @@ public class NuGetPackagesManager
     /// Prefix used for console log messages originating from NuGet operations.
     /// </summary>
     public const string Prefix = "[NUGET]";
+
+    private static HttpClient _client = new HttpClient();
 
     private static readonly Dictionary<string, string> _packageBaseAddressCache = new(StringComparer.OrdinalIgnoreCase);
 
@@ -114,11 +119,23 @@ public class NuGetPackagesManager
                     continue;
                 }
 
-                Logger.Warn($"{Prefix} Package '{package.Id}' v{package.Version} has missing dependency '{dep.Id}' v{dep.Version}, attempting to resolve...");
+                Logger.Warn($"{Prefix} Package '{package.Id}' v{package.Version} has missing dependency '{dep.Id}' v{dep.Version}{(PluginLoader.Config.AutomaticallyDownloadDependencies ? ", attempting to resolve..." : ".")}");
+
+                if (!PluginLoader.Config.AutomaticallyDownloadDependencies)
+                {
+                    continue;
+                }
 
                 try
                 {
-                    packagesToResolve.Enqueue(DownloadNugetPackage(dep.Id, dep.Version));
+                    NuGetPackage? downloadedPackage = dep.Install();
+
+                    if (downloadedPackage == null)
+                    {
+                        continue;
+                    }
+
+                    packagesToResolve.Enqueue(downloadedPackage);
                     resolvedCount++;
                 }
                 catch (Exception ex)
@@ -208,7 +225,7 @@ public class NuGetPackagesManager
     /// </summary>
     /// <param name="packageId">The ID of the package to download.</param>
     /// <param name="version">The version of the package to download.</param>
-    public static NuGetPackage DownloadNugetPackage(string packageId, string version)
+    public static NuGetPackage? DownloadNugetPackage(string packageId, string version)
     {
         string[] sources = PluginLoader.Config.NugetPackageSources;
 
@@ -236,30 +253,26 @@ public class NuGetPackagesManager
 
             try
             {
-                using WebClient web = new WebClient();
-                if (Uri.TryCreate(source, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, downloadUrl);
+
+                using HttpResponseMessage response = _client.SendAsync(request).GetAwaiter().GetResult();
+
+                if (response.IsSuccessStatusCode)
                 {
-                    string userInfo = uri.UserInfo;
-                    string[] parts = userInfo.Split(':', 2);
-
-                    string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
-                    string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
-
-                    string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
-                    web.Headers[HttpRequestHeader.Authorization] = $"Basic {token}";
+                    packageData = response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
+                    successfulSource = source;
+                    break;
                 }
-
-                packageData = web.DownloadData(downloadUrl);
-                successfulSource = source;
-                break;
+                else
+                {
+                    Logger.Warn($"{Prefix} Failed to download '{packageId}' v{version} from {downloadUrl}");
+                    Logger.Error($"{Prefix} HTTP {(int)response.StatusCode} - {response.ReasonPhrase}");
+                }
             }
-            catch (WebException ex)
+            catch (HttpRequestException ex)
             {
                 Logger.Warn($"{Prefix} Failed to download '{packageId}' v{version} from {downloadUrl}");
-                if (ex.Response is HttpWebResponse resp)
-                {
-                    Logger.Error($"{Prefix} HTTP {(int)resp.StatusCode} - {resp.StatusDescription}");
-                }
+                Logger.Error($"{Prefix} HTTP error: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -308,39 +321,18 @@ public class NuGetPackagesManager
             ? normalized
             : $"{normalized}/index.json";
 
-        using WebClient client = new WebClient();
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, indexUrl);
 
-        if (Uri.TryCreate(indexUrl, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
-        {
-            string userInfo = uri.UserInfo;
-            string[] parts = userInfo.Split(':', 2);
-
-            string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
-            string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
-
-            string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
-            client.Headers[HttpRequestHeader.Authorization] = $"Basic {token}";
-
-            UriBuilder cleanUri = new(uri)
-            {
-                UserName = string.Empty,
-                Password = string.Empty
-            };
-            indexUrl = cleanUri.Uri.ToString();
-        }
+        using HttpResponseMessage response = _client.SendAsync(request).GetAwaiter().GetResult();
 
         string data;
-        try
+        if (response.IsSuccessStatusCode)
         {
-            data = client.DownloadString(indexUrl);
+            data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         }
-        catch (WebException ex)
+        else
         {
             Logger.Warn($"{Prefix} Failed to read packages source from '{indexUrl}'");
-            if (ex.Response is HttpWebResponse resp)
-            {
-                Logger.Error($"{Prefix} HTTP {(int)resp.StatusCode} - {resp.StatusDescription}");
-            }
 
             _packageBaseAddressCache[sourceUrl] = string.Empty;
             return string.Empty;
@@ -361,6 +353,38 @@ public class NuGetPackagesManager
 
         _packageBaseAddressCache[sourceUrl] = string.Empty;
         return string.Empty;
+    }
+
+    /// <summary>
+    /// Configures Basic Authentication on the provided <see cref="HttpClient"/> based on the
+    /// user information embedded in the specified URL, and returns a sanitized URL with credentials removed.
+    /// </summary>
+    /// <param name="client">The <see cref="HttpClient"/> to configure.</param>
+    /// <param name="url">The original URL that may contain embedded credentials.</param>
+    /// <returns>The sanitized URL with user credentials removed.</returns>
+    public static string ConfigureBasicAuth(HttpClient client, string url)
+    {
+        if (Uri.TryCreate(url, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
+        {
+            string[] parts = uri.UserInfo.Split(':', 2);
+
+            string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
+            string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
+
+            string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", token);
+
+            UriBuilder cleanUri = new(uri)
+            {
+                UserName = string.Empty,
+                Password = string.Empty,
+            };
+
+            return cleanUri.Uri.ToString();
+        }
+
+        return url;
     }
 
     /// <summary>

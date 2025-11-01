@@ -1,7 +1,7 @@
 ﻿using LabApi.Features.Console;
 using System;
 
-namespace LabApi.Loader.Features.NuGet;
+namespace LabApi.Loader.Features.NuGet.Models;
 
 /// <summary>
 /// Represents a dependency entry within a NuGet package,
@@ -23,10 +23,14 @@ public class NuGetDependency
     /// <summary>
     /// Installs this NuGet dependency by downloading it from the configured source.
     /// </summary>
+    /// <returns>
+    /// A <see cref="NuGetPackage"/> instance representing the downloaded package,
+    /// or <see langword="null"/> if the installation failed or the package could not be found.
+    /// </returns>
     /// <remarks>
     /// This method delegates to <see cref="NuGetPackagesManager.DownloadNugetPackage(string, string)"/>.
     /// </remarks>
-    public void Install() => NuGetPackagesManager.DownloadNugetPackage(Id, Version);
+    public NuGetPackage? Install() => NuGetPackagesManager.DownloadNugetPackage(Id, Version);
 
     /// <summary>
     /// Determines whether this dependency is already installed

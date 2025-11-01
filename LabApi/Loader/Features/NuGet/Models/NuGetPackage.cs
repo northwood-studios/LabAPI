@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace LabApi.Loader.Features.NuGet;
+namespace LabApi.Loader.Features.NuGet.Models;
 
 /// <summary>
 /// Represents a NuGet package loaded by LabApi, including its metadata,

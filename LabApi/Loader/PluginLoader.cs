@@ -6,6 +6,7 @@ using LabApi.Features.Wrappers;
 using LabApi.Loader.Features.Configuration;
 using LabApi.Loader.Features.Misc;
 using LabApi.Loader.Features.NuGet;
+using LabApi.Loader.Features.NuGet.Models;
 using LabApi.Loader.Features.Paths;
 using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Enums;
