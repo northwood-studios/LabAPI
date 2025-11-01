@@ -206,7 +206,7 @@ public static partial class PluginLoader
             ReadNugetPackage(file);
         }
 
-        NuGetPackagesManager.ResolveMissingNugetDependencies();
+        NuGetPackagesManager.ResolveMissingNuGetDependencies();
     }
 
     /// <summary>

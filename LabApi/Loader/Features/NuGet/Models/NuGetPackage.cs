@@ -15,6 +15,11 @@ namespace LabApi.Loader.Features.NuGet.Models;
 public class NuGetPackage
 {
     /// <summary>
+    /// Identifies the plugin tag used to mark NuGet package as plugin.
+    /// </summary>
+    private const string LabApiPluginTag = "labapi-plugin";
+
+    /// <summary>
     /// Gets or sets the unique package identifier (name).
     /// </summary>
     public string Id { get; set; } = string.Empty;
@@ -34,7 +39,10 @@ public class NuGetPackage
     /// </summary>
     public byte[]? RawAssembly { get; set; } = null;
 
-    public string FilePath { get; set; }
+    /// <summary>
+    /// Gets or sets the full path of NuGet package.
+    /// </summary>
+    public string FilePath { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the name of the NuGet package file (e.g. "MyPlugin.1.0.0.nupkg").
@@ -57,10 +65,10 @@ public class NuGetPackage
     /// </summary>
     public bool IsPlugin => Tags
         .ToLower()
-        .Contains("labapi-plugin");
+        .Contains(LabApiPluginTag);
 
     /// <summary>
-    /// Gets or sets if package is already loaded.
+    /// /// Gets or sets a value indicating whether the package is already loaded.
     /// </summary>
     public bool IsLoaded { get; set; }
 

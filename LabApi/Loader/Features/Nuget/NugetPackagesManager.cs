@@ -100,7 +100,7 @@ public class NuGetPackagesManager
     /// Resolves any missing NuGet dependencies by checking all loaded packages
     /// and automatically downloading missing ones from configured NuGet sources.
     /// </summary>
-    public static void ResolveMissingNugetDependencies()
+    public static void ResolveMissingNuGetDependencies()
     {
         Logger.Info($"{Prefix} Resolving missing NuGet dependencies...");
 

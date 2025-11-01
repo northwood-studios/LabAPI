@@ -1,5 +1,6 @@
 ﻿using LabApi.Features.Console;
 using System;
+using System.Reflection;
 
 namespace LabApi.Loader.Features.NuGet.Models;
 
@@ -68,7 +69,7 @@ public class NuGetDependency
     {
         try
         {
-            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly? asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 string asmName = asm.GetName().Name ?? string.Empty;
 
