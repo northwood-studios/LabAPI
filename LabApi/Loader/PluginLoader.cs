@@ -311,35 +311,6 @@ public static partial class PluginLoader
         }
     }
 
-    /// <summary>
-    /// Loads dependency info from a NuGet package (.nupkg).
-    /// </summary>
-    private static void ReadNugetPackage(FileInfo file)
-    {
-        try
-        {
-            NuGetPackage package = NuGetPackagesManager.ReadPackage(file.FullName);
-
-            string id = $"{package.Id}.{package.Version}";
-
-            if (NuGetPackagesManager.Packages.ContainsKey(id))
-            {
-                Logger.Warn($"{LoggerPrefix} Duplicate NuGet package dependency '{id}' found in '{file.FullName}', skipping...");
-                return;
-            }
-
-            NuGetPackagesManager.Packages.Add(id, package);
-            return;
-        }
-        catch (Exception e)
-        {
-            Logger.Error($"{LoggerPrefix} Failed to read package '{file.FullName}'");
-            Logger.Error(e);
-        }
-
-        return;
-    }
-
     private static void RegisterNuGetPackage()
     {
         List<FileInfo> files = new List<FileInfo>();
@@ -366,10 +337,39 @@ public static partial class PluginLoader
 
         foreach (FileInfo file in files)
         {
-            ReadNugetPackage(file);
+            RegisterNuGetPackage(file);
         }
 
         NuGetPackagesManager.ResolveMissingNuGetDependencies();
+    }
+
+    /// <summary>
+    /// Loads package info from a NuGet package (.nupkg).
+    /// </summary>
+    private static void RegisterNuGetPackage(FileInfo file)
+    {
+        try
+        {
+            NuGetPackage package = NuGetPackagesManager.ReadPackage(file.FullName);
+
+            string id = $"{package.Id}.{package.Version}";
+
+            if (NuGetPackagesManager.Packages.ContainsKey(id))
+            {
+                Logger.Warn($"{LoggerPrefix} Duplicate NuGet package dependency '{id}' found in '{file.FullName}', skipping...");
+                return;
+            }
+
+            NuGetPackagesManager.Packages.Add(id, package);
+            return;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"{LoggerPrefix} Failed to read package '{file.FullName}'");
+            Logger.Error(e);
+        }
+
+        return;
     }
 
     /// <summary>
