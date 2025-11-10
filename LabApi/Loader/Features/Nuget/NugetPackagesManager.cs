@@ -356,38 +356,6 @@ public class NuGetPackagesManager
     }
 
     /// <summary>
-    /// Configures Basic Authentication on the provided <see cref="HttpClient"/> based on the
-    /// user information embedded in the specified URL, and returns a sanitized URL with credentials removed.
-    /// </summary>
-    /// <param name="client">The <see cref="HttpClient"/> to configure.</param>
-    /// <param name="url">The original URL that may contain embedded credentials.</param>
-    /// <returns>The sanitized URL with user credentials removed.</returns>
-    public static string ConfigureBasicAuth(HttpClient client, string url)
-    {
-        if (Uri.TryCreate(url, UriKind.Absolute, out Uri? uri) && !string.IsNullOrEmpty(uri.UserInfo))
-        {
-            string[] parts = uri.UserInfo.Split(':', 2);
-
-            string username = parts.Length > 0 ? Uri.UnescapeDataString(parts[0]) : string.Empty;
-            string password = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
-
-            string token = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{username}:{password}"));
-            client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", token);
-
-            UriBuilder cleanUri = new(uri)
-            {
-                UserName = string.Empty,
-                Password = string.Empty,
-            };
-
-            return cleanUri.Uri.ToString();
-        }
-
-        return url;
-    }
-
-    /// <summary>
     /// Selects the most appropriate assembly file from a NuGet archive
     /// based on the internal framework version priority list.
     /// </summary>
