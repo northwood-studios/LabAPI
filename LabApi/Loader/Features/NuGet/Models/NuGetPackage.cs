@@ -79,7 +79,7 @@ public class NuGetPackage
     /// <returns>
     /// The full path to the extracted file if successful; otherwise, <c>null</c>.
     /// </returns>
-    public string? Extract()
+    public string? ExtractToFolder()
     {
         string? folder = GetFinalFolder();
 

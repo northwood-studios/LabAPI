@@ -170,6 +170,7 @@ public class NuGetPackagesManager
     /// Reads and parses a NuGet package from a byte array.
     /// </summary>
     /// <param name="name">The file name of the package.</param>
+    /// <param name="fullPath">The file full path.</param>
     /// <param name="data">The binary contents of the .nupkg file.</param>
     /// <returns>A populated <see cref="NuGetPackage"/> instance.</returns>
     public static NuGetPackage ReadPackage(string name, string fullPath, byte[] data)
@@ -288,7 +289,9 @@ public class NuGetPackagesManager
 
         // Proceed to install
         NuGetPackage package = ReadPackage($"{packageId}.{version}.nupkg", string.Empty, packageData);
-        string? path = package.Extract();
+
+        // Extracts nuget package to specific folder if thats plugin or dependency.
+        string? path = package.ExtractToFolder();
 
         if (path == null)
         {
