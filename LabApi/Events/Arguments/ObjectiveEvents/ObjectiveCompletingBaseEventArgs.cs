@@ -17,13 +17,14 @@ public abstract class ObjectiveCompletingBaseEventArgs : EventArgs, ICancellable
     /// <param name="faction">The Faction to grant the influence to.</param>
     /// <param name="influenceToGrant">The influence points to grant to the <paramref name="faction"/>.</param>
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
-    public ObjectiveCompletingBaseEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant)
+    /// <param name="sendToPlayers">Whether the objective completion will be sent to players.</param>
+    public ObjectiveCompletingBaseEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, bool sendToPlayers)
     {
         Player = Player.Get(hub);
         Faction = faction;
         InfluenceToGrant = influenceToGrant;
         TimeToGrant = timeToGrant;
-        SendToPlayers = true;
+        SendToPlayers = sendToPlayers;
 
         IsAllowed = true;
     }
