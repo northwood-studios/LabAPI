@@ -161,7 +161,7 @@ public abstract class RespawnWave
     {
         if (Base is IAnnouncedWave wave)
         {
-            wave.Announcement.PlayAnnouncement(spawnedPlayers.Select(p => p.ReferenceHub).ToList());
+            wave.Announcement.PlayAnnouncement(spawnedPlayers.Select(p => p.ReferenceHub).ToList(), wave);
         }
     }
 
