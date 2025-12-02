@@ -168,6 +168,7 @@ public class Item
         Register<InventorySystem.Items.Firearms.Ammo.AmmoItem>(x => new AmmoItem(x));
         Register<BodyArmor>(x => new BodyArmorItem(x));
         Register<InventorySystem.Items.ThrowableProjectiles.ThrowableItem>(x => new ThrowableItem(x));
+        Register<InventorySystem.Items.ThrowableProjectiles.SnowballItem>(x => new SnowballItem(x));
         Register<InventorySystem.Items.Keycards.KeycardItem>(x => new KeycardItem(x));
         Register<InventorySystem.Items.Keycards.ChaosKeycardItem>(x => new KeycardItem(x));
         Register<InventorySystem.Items.Keycards.SingleUseKeycardItem>(x => new KeycardItem(x));
@@ -255,7 +256,13 @@ public class Item
 
         if (CanCache)
         {
-            Dictionary.Add(itemBase, this);
+            if (Dictionary.ContainsKey(itemBase))
+            {
+                Console.Logger.InternalError($"Failed to create an item for base: {itemBase}");
+                return;
+            }
+
+            Dictionary[itemBase] = this;
             SerialsCache[itemBase.ItemSerial] = this;
         }
     }
