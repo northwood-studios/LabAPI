@@ -157,7 +157,7 @@ public static partial class PluginLoader
 
             if (Directory.Exists(fullPath))
             {
-                LoadPlugins(new DirectoryInfo(fullPath).GetFiles(DllSearchPattern));
+                LoadPlugins(new DirectoryInfo(fullPath).GetFiles(DllSearchPattern, SearchOption.AllDirectories));
             }
         }
 
