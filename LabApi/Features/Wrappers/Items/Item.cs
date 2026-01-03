@@ -146,6 +146,7 @@ public class Item
         Register<Medkit>(x => new MedkitItem(x));
         Register<Scp207>(x => new Scp207Item(x));
         Register<AntiScp207>(x => new AntiScp207Item(x));
+        Register<Scp021J>(x => new Scp021JItem(x));
 
         Register<InventorySystem.Items.Usables.UsableItem>(x => new UsableItem(x));
         Register<InventorySystem.Items.Usables.Scp1576.Scp1576Item>(x => new Scp1576Item(x));
@@ -159,6 +160,7 @@ public class Item
 
         Register<InventorySystem.Items.Jailbird.JailbirdItem>(x => new JailbirdItem(x));
         Register<Coin>(x => new CoinItem(x));
+        Register<InventorySystem.Items.MarshmallowMan.MarshmallowItem>(x => new MarshmallowItem(x));
 
         Register<InventorySystem.Items.ToggleableLights.ToggleableLightItemBase>(x => new LightItem(x));
         Register<InventorySystem.Items.ToggleableLights.Flashlight.FlashlightItem>(x => new FlashlightItem(x));
