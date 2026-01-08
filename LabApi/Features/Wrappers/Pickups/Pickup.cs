@@ -133,6 +133,10 @@ public class Pickup
         Register<ExplosionGrenade>(n => new ExplosiveGrenadeProjectile(n));
         Register((InventorySystem.Items.ThrowableProjectiles.Scp018Projectile n) => new Scp018Projectile(n));
         Register((InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile n) => new Scp2176Projectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.SingleTrajectoryProjectile n) => new SingleTrajectoryProjectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.FlybyDetectorProjectile n) => new FlybyDetectorProjectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.Scp2536Projectile n) => new Scp2536Projectile(n));
+        Register((InventorySystem.Items.ThrowableProjectiles.SnowballProjectile n) => new SnowballProjectile(n));
 
         Register<InventorySystem.Items.Firearms.Ammo.AmmoPickup>(x => new AmmoPickup(x));
         Register<InventorySystem.Items.Armor.BodyArmorPickup>(x => new BodyArmorPickup(x));
@@ -229,6 +233,12 @@ public class Pickup
 
         if (CanCache)
         {
+            if (Dictionary.ContainsKey(itemPickupBase))
+            {
+                Console.Logger.InternalError($"Failed to create a pickup for base: {itemPickupBase}");
+                return;
+            }
+
             Dictionary.Add(itemPickupBase, this);
 
             if (itemPickupBase.Info.Serial != 0)

@@ -16,8 +16,9 @@ public class EscapingObjectiveEventArgs : ObjectiveCompletingBaseEventArgs
     /// <param name="timeToGrant">The time to reduce from the <paramref name="faction"/>.</param>
     /// <param name="newRole">The new role the player gets after escaping.</param>
     /// <param name="oldRole">The old role of the player.</param>
-    public EscapingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, RoleTypeId oldRole, RoleTypeId newRole)
-        : base(hub, faction, influenceToGrant, timeToGrant)
+    /// <param name="sendToPlayers">Whether the objective completion will be sent to players.</param>
+    public EscapingObjectiveEventArgs(ReferenceHub hub, Faction faction, float influenceToGrant, float timeToGrant, RoleTypeId oldRole, RoleTypeId newRole, bool sendToPlayers)
+        : base(hub, faction, influenceToGrant, timeToGrant, sendToPlayers)
     {
         OldRole = oldRole;
         NewRole = newRole;
