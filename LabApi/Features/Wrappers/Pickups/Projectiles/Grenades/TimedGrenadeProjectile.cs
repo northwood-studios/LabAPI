@@ -1,5 +1,4 @@
 ﻿using Footprinting;
-using Hazards;
 using InventorySystem;
 using InventorySystem.Items.Pickups;
 using InventorySystem.Items.ThrowableProjectiles;
@@ -57,7 +56,7 @@ public class TimedGrenadeProjectile : Projectile
     /// <param name="pos">The position to spawn the grenade on.</param>
     /// <param name="type">Type of the grenade.</param>
     /// <param name="owner">The player owner of the grenade.</param>
-    /// <param name="timeOverride">Time override until detonation.</param>
+    /// <param name="timeOverride">Time override until detonation. A value less than 0 will not change the original fuse time.</param>
     /// <returns>An active projectile.</returns>
     public static TimedGrenadeProjectile? SpawnActive(Vector3 pos, ItemType type, Player? owner = null, double timeOverride = -1d)
     {
