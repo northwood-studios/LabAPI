@@ -269,7 +269,19 @@ public class Door
     /// <summary>
     /// Gets the rooms which have this door.
     /// </summary>
-    public Room[] Rooms => Base.Rooms.Select(Room.Get).ToArray()!;
+    public Room[] Rooms
+    {
+        get
+        {
+            // Sometimes the Rooms can be null. (When registering checkpoint SubDoors)
+            if (Base.Rooms == null)
+            {
+                return [];
+            }
+
+            return Base.Rooms.Select(Room.Get).ToArray()!;
+        }
+    }
 
     /// <summary>
     /// Gets the zone in which this door is.
