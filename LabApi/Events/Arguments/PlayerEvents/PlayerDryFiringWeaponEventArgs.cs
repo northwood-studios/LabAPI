@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.DryFiringWeapon"/> event.
 /// </summary>
-public class PlayerDryFiringWeaponEventArgs : EventArgs, IFirearmItemEvent, ICancellableEvent
+public class PlayerDryFiringWeaponEventArgs : EventArgs, IFirearmItemEvent, ICancellableEvent, IPlayerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerDryFiringWeaponEventArgs"/> class.

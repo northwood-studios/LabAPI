@@ -8,7 +8,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.UpdatingEffect"/> event.
 /// </summary>
-public class PlayerEffectUpdatingEventArgs : EventArgs, ICancellableEvent
+public class PlayerEffectUpdatingEventArgs : EventArgs, ICancellableEvent, IPlayerEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerEffectUpdatingEventArgs"/> class.
