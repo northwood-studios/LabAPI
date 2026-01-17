@@ -13,7 +13,7 @@ public abstract class Plugin<TConfig> : Plugin
     /// <summary>
     /// The configuration of the <see cref="Plugin"/>.
     /// </summary>
-    public TConfig? Config { get; set; }
+    public TConfig Config { get; set; } = new TConfig();
 
     /// <summary>
     /// The file name of the configuration file.
