@@ -8,4 +8,6 @@ public static class Core
     public const string EventArgumentsNamespace = "LabApi.Events.Arguments";
     public const string EventHandlerNamespace = "LabApi.Events.Handlers";
     public const string EventArgsName = "ev";
+    public const string DisableObsoleteWarning = "#pragma warning disable CS0612";
+    public const string RestoreObsoleteWarning = "#pragma warning restore CS0612";
 }

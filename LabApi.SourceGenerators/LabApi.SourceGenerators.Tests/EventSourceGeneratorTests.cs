@@ -18,12 +18,14 @@ public class EventSourceGeneratorTests
                                                public class Scp079Events
                                                {
                                                    public static event LabEventHandler<Scp079GainingExperienceEventArgs>? GainingExperience;
-                                                   public event LabEventHandler<Scp079GainedExperienceEventArgs>?  GainedExperience;
+                                                   public event LabEventHandler<Scp079GainedExperienceEventArgs>? GainedExperience;
                                                }
                                                
                                                public static partial class ServerEvents
                                                {
                                                    public static event LabEventHandler? WaitingForPlayers;
+                                                   
+                                                   [Obsolete("Use RoundEnding2 instead.", true)]
                                                    public static event LabEventHandler<RoundEndingEventArgs>? RoundEnding;
                                                }
                                            }
@@ -36,6 +38,7 @@ public class EventSourceGeneratorTests
 
                                            namespace {{Core.EventArgumentsNamespace}}.ServerEvents
                                            {
+                                               [Obsolete("Use RoundEndingEventArgs2 instead.", true)]
                                                public class RoundEndingEventArgs : EventArgs { }
                                            }
                                            """;
@@ -45,6 +48,7 @@ public class EventSourceGeneratorTests
         {
             "Scp079Events.EventInvokers.g.cs",
             $$"""
+            using System;
             using {{Core.EventArgumentsNamespace}}.Scp079Events;
 
             namespace {{Core.EventHandlerNamespace}};
@@ -69,6 +73,7 @@ public class EventSourceGeneratorTests
         {
             "ServerEvents.EventInvokers.g.cs",
             $$"""
+            using System;
             using {{Core.EventArgumentsNamespace}}.ServerEvents;
 
             namespace {{Core.EventHandlerNamespace}};
@@ -85,6 +90,7 @@ public class EventSourceGeneratorTests
                 /// Invokes the <see cref="RoundEnding"/> event.
                 /// </summary>
                 /// <param name="{{Core.EventArgsName}}">The <see cref="RoundEndingEventArgs"/> of the event.</param>
+                [Obsolete("Use RoundEnding2 instead.", true)]
                 public static void OnRoundEnding(RoundEndingEventArgs {{Core.EventArgsName}}) => RoundEnding.InvokeEvent({{Core.EventArgsName}});
             }
             """
@@ -104,7 +110,9 @@ public class EventSourceGeneratorTests
                     CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnScp079GainingExperience), typeof(Scp079Events), nameof(Scp079Events.GainingExperience));
                     CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnScp079GainedExperience), typeof(Scp079Events), nameof(Scp079Events.GainedExperience));
                     CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnServerWaitingForPlayers), typeof(ServerEvents), nameof(ServerEvents.WaitingForPlayers));
+            {{Core.DisableObsoleteWarning}}
                     CheckEvent(handler, handlerType, nameof(CustomEventsHandler.OnServerRoundEnding), typeof(ServerEvents), nameof(ServerEvents.RoundEnding));
+            {{Core.RestoreObsoleteWarning}}
                 }
             }
             """
