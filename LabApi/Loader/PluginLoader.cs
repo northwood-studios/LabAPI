@@ -107,7 +107,7 @@ public static partial class PluginLoader
 
             Directory.CreateDirectory(fullPath);
 
-            LoadDependencies(new DirectoryInfo(fullPath).GetFiles(DllSearchPattern));
+            LoadDependencies(new DirectoryInfo(fullPath).GetFiles(DllSearchPattern, SearchOption.AllDirectories));
         }
     }
 
