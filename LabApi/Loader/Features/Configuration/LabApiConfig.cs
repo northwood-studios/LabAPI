@@ -27,4 +27,28 @@ public class LabApiConfig
     /// <seealso cref="LabApi.Loader.Features.Plugins.Configuration.Properties.UnsupportedLoading"/>
     [Description("Whether to allow loading plugins even if they were built for a different major version of LabAPI.")]
     public bool LoadUnsupportedPlugins { get; set; }
+
+    /// <summary>
+    /// Gets or sets the list of NuGet package source URLs used when resolving
+    /// and downloading dependencies from NuGet repositories.
+    /// </summary>
+    /// <remarks>
+    /// Each entry in this list represents a NuGet feed endpoint (for example,
+    /// the official <c>https://api.nuget.org/v3/index.json</c> source).
+    /// Multiple sources can be specified to support private or custom feeds.
+    /// </remarks>
+    [Description("List of NuGet package sources to use when resolving dependencies via NuGet.")]
+    public string[] NugetPackageSources { get; set; } = ["https://api.nuget.org/v3/index.json"];
+
+    /// <summary>
+    /// Gets or sets a value indicating whether dependencies should be automatically
+    /// downloaded from the configured NuGet sources when they are missing or outdated.
+    /// </summary>
+    /// <remarks>
+    /// When set to <see langword="true"/>, the system attempts to retrieve and install
+    /// required packages automatically during dependency resolution.
+    /// Disabling this option may require manual dependency management.
+    /// </remarks>
+    [Description("Automatically download dependencies from NuGet when missing or outdated.")]
+    public bool AutomaticallyDownloadDependencies { get; set; } = true;
 }
