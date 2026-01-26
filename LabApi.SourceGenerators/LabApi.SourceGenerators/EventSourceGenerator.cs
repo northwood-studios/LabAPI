@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -56,7 +57,7 @@ public class EventSourceGenerator : IIncrementalGenerator
         string? eventArgsType = null;
         Diagnostic? diagnostic = null;
 
-        if (fieldDeclaration.Declaration.Type is NullableTypeSyntax { ElementType: GenericNameSyntax genericName })
+        if (fieldDeclaration.Declaration.Type is NullableTypeSyntax {ElementType: GenericNameSyntax genericName})
             eventArgsType = genericName.TypeArgumentList.Arguments.FirstOrDefault()?.ToString();
         else if (fieldDeclaration.Declaration.Type is GenericNameSyntax)
         {
@@ -98,6 +99,7 @@ public class EventSourceGenerator : IIncrementalGenerator
             string trimmedEventType = eventType.Replace("Events", "");
 
             StringBuilder invokeEventsBuilder = new ();
+            invokeEventsBuilder.AppendLine("using System;");
             invokeEventsBuilder.AppendLine($"using {Core.EventArgumentsNamespace}.{eventType};");
             invokeEventsBuilder.AppendLine();
             invokeEventsBuilder.AppendLine($"namespace {Core.EventHandlerNamespace};");
@@ -107,6 +109,7 @@ public class EventSourceGenerator : IIncrementalGenerator
             invokeEventsBuilder.AppendLine("{");
 
             StringBuilder customEventHandlerBuilder = new ();
+            customEventHandlerBuilder.AppendLine("using System;");
             customEventHandlerBuilder.AppendLine($"using {Core.EventArgumentsNamespace}.{eventType};");
             customEventHandlerBuilder.AppendLine($"using {Core.EventHandlerNamespace};");
             customEventHandlerBuilder.AppendLine();
@@ -117,10 +120,22 @@ public class EventSourceGenerator : IIncrementalGenerator
             customEventHandlerBuilder.AppendLine("{");
 
             bool isFirstMethod = true;
-            foreach ((_, _, string? eventArgsType, string eventName, _) in group)
+            foreach ((EventFieldDeclarationSyntax syntax, _, string? eventArgsType, string eventName, _) in group)
             {
+                bool isObsolete = TryGetObsoleteAttribute(syntax, out string? obsoleteSyntax);
+                
+                if (isObsolete)
+                {
+                    registerEventsBuilder.AppendLine(Core.DisableObsoleteWarning);
+                }
+
                 registerEventsBuilder.AppendLine(
                     $"        CheckEvent(handler, handlerType, nameof(CustomEventsHandler.On{trimmedEventType}{eventName}), typeof({eventType}), nameof({eventType}.{eventName}));");
+
+                if (isObsolete)
+                {
+                    registerEventsBuilder.AppendLine(Core.RestoreObsoleteWarning);
+                }
 
                 if (!isFirstMethod)
                 {
@@ -137,12 +152,27 @@ public class EventSourceGenerator : IIncrementalGenerator
                 if (eventArgsType != null)
                 {
                     invokeEventsBuilder.AppendLine($"    /// <param name=\"{Core.EventArgsName}\">The <see cref=\"{eventArgsType}\"/> of the event.</param>");
+
+                    if (isObsolete)
+                    {
+                        invokeEventsBuilder.Append("    ").AppendLine(obsoleteSyntax);
+
+                        customEventHandlerBuilder.Append("    ").AppendLine(obsoleteSyntax);
+                    }
+                    
                     invokeEventsBuilder.AppendLine($"    public static void On{eventName}({eventArgsType} {Core.EventArgsName}) => {eventName}.InvokeEvent({Core.EventArgsName});");
 
                     customEventHandlerBuilder.AppendLine($"    public virtual void On{trimmedEventType}{eventName}({eventArgsType} {Core.EventArgsName}) {{ }}");
                 }
                 else
                 {
+                    if (isObsolete)
+                    {
+                        invokeEventsBuilder.Append("    ").AppendLine(obsoleteSyntax);
+
+                        customEventHandlerBuilder.Append("    ").AppendLine(obsoleteSyntax);
+                    }
+                    
                     invokeEventsBuilder.AppendLine($"    public static void On{eventName}() => {eventName}.InvokeEvent();");
 
                     customEventHandlerBuilder.AppendLine($"    public virtual void On{trimmedEventType}{eventName}() {{ }}");
@@ -163,4 +193,49 @@ public class EventSourceGenerator : IIncrementalGenerator
 
         context.AddSource("CustomHandlersManager.g.cs", SourceText.From(registerEventsBuilder.ToString(), Encoding.UTF8));
     }
+
+    private static bool TryGetObsoleteAttribute(MemberDeclarationSyntax syntax, out string? obsoleteSyntax)
+    {
+        foreach (var list in syntax.AttributeLists)
+        {
+            foreach (var attribute in list.Attributes)
+            {
+                if (attribute.Name.ToString() is not ("Obsolete" or "System.Obsolete" or "ObsoleteAttribute" or "System.ObsoleteAttribute"))
+                    continue;
+
+                ExtractObsoleteAttributeData(attribute, out string? message, out string? error);
+                obsoleteSyntax = (message, error) switch
+                {
+                    (not null, not null) => $"[Obsolete({message}, {error})]",
+                    (not null, null) => $"[Obsolete({message})]",
+                    _ => "[Obsolete]"
+                };
+
+                return true;
+            }
+        }
+
+        obsoleteSyntax = null;
+        return false;
+    }
+
+    private static void ExtractObsoleteAttributeData(AttributeSyntax attribute, out string? message, out string? error)
+    {
+        switch (attribute.ArgumentList?.Arguments.Count)
+        {
+            case 1:
+                message = attribute.ArgumentList.Arguments[0].ToFullString();
+                error = null;
+                break;
+            case 2:
+                message = attribute.ArgumentList.Arguments[0].ToFullString();
+                error = attribute.ArgumentList.Arguments[1].ToFullString();
+                break;
+            default:
+                message = null;
+                error = null;
+                break;
+        }
+    }
+
 }
