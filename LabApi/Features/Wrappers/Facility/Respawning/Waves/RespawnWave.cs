@@ -106,7 +106,7 @@ public abstract class RespawnWave
     public float TimeLeft
     {
         get => Base.Timer.TimeLeft;
-        set => Base.Timer.SetTime(value);
+        set => Base.Timer.SetTime(this.Base.Timer.SpawnIntervalSeconds - value);
     }
 
     /// <summary>
