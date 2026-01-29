@@ -47,7 +47,7 @@ public static class RoleExtensions
     /// <returns>Whether a SpawnPoint was found.</returns>
     public static bool TryGetRandomSpawnPoint(this RoleTypeId role, out Vector3 position, out float horizontalRotation)
     {
-        if (TryGetRoleBase(role, out IFpcRole? fpcRole))
+        if (TryGetRoleBase(role, out IFpcRole? fpcRole) && fpcRole.SpawnpointHandler != null)
         {
             return fpcRole.SpawnpointHandler.TryGetSpawnpoint(out position, out horizontalRotation);
         }
