@@ -440,6 +440,22 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerToggledDisruptorFiringModeEventArgs>? ToggledDisruptorFiringMode;
 
+    /// <summary>
+    /// Gets called when the player wants to inspect any item.
+    /// </summary>
+    /// <remarks>
+    /// Keycard and Items that cannot be inspected will not run this event.
+    /// </remarks>
+    public static event LabEventHandler<PlayerInspectingItemEventArgs>? InspectingItem;
+
+    /// <summary>
+    /// Gets called when the player inspected item.
+    /// </summary>
+    /// <remarks>
+    /// Keycard and Items that cannot be inspected will not run this event.
+    /// </remarks>
+    public static event LabEventHandler<PlayerInspectedItemEventArgs>? InspectedItem;
+
     #endregion
 
     #region Item Actions and Interactions
