@@ -114,6 +114,28 @@ public class Door
     }
 
     /// <summary>
+    /// Gets the door by it's name.
+    /// </summary>
+    /// <param name="doorName">The door's name.</param>
+    /// <returns>The requested door. May be null if door with provided name does not exist.</returns>
+    public static Door? Get(DoorName doorName)
+    {
+        KeyValuePair<string, DoorName> doorKv = DoorNameDictionary.FirstOrDefault(door => door.Value == doorName);
+
+        if (string.IsNullOrEmpty(doorKv.Key))
+        {
+            return null;
+        }
+
+        if (!DoorNametagExtension.NamedDoors.TryGetValue(doorKv.Key, out DoorNametagExtension doorNametagExtension))
+        {
+            return null;
+        }
+
+        return Get(doorNametagExtension.TargetDoor);
+    }
+
+    /// <summary>
     /// Gets the door in specified zone.
     /// </summary>
     /// <param name="facilityZone">Target zone.</param>
