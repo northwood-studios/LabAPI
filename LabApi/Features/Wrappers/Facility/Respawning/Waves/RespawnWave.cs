@@ -122,6 +122,15 @@ public abstract class RespawnWave
     }
 
     /// <summary>
+    /// Gets or sets whether this wave's timer is frozen.
+    /// </summary>
+    public bool IsForcefullyPaused
+    {
+        get => Base.Timer.IsForcefullyPaused;
+        set => Base.Timer.IsForcefullyPaused = value;
+    }
+
+    /// <summary>
     /// Gets or sets the time that has passed since last wave respawn.
     /// </summary>
     public float TimePassed => Base.Timer.TimePassed;
