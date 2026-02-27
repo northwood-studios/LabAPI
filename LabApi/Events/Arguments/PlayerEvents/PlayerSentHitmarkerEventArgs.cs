@@ -15,11 +15,13 @@ public class PlayerSentHitmarkerEventArgs : EventArgs, IPlayerEvent
     /// <param name="hub">The player that sent the hitmarker.</param>
     /// <param name="size">The target size multiplier.</param>
     /// <param name="playedAudio">Whether the hitmarker sound effect was played.</param>
-    public PlayerSentHitmarkerEventArgs(ReferenceHub hub, float size, bool playedAudio)
+    /// <param name="hitmarkerType">The type of the hitmarker.</param>
+    public PlayerSentHitmarkerEventArgs(ReferenceHub hub, float size, bool playedAudio, HitmarkerType hitmarkerType)
     {
         Player = Player.Get(hub);
         Size = size;
         PlayedAudio = playedAudio;
+        Hitmarker = hitmarkerType;
     }
 
     /// <summary>
@@ -36,4 +38,9 @@ public class PlayerSentHitmarkerEventArgs : EventArgs, IPlayerEvent
     /// Gets a value indicating whether the hitmarker sound effect was played.
     /// </summary>
     public bool PlayedAudio { get; }
+
+    /// <summary>
+    /// Gets the type of the hitmarker.
+    /// </summary>
+    public HitmarkerType Hitmarker { get; }
 }

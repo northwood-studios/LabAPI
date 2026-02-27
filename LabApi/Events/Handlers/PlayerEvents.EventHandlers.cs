@@ -625,6 +625,26 @@ public static partial class PlayerEvents
     /// </summary>
     public static event LabEventHandler<PlayerMovementStateChangedEventArgs>? MovementStateChanged;
 
+    /// <summary>
+    /// Gets called when processing a player's interaction with the Scp1509 item.
+    /// </summary>
+    public static event LabEventHandler<PlayerProcessingScp1509MessageEventArgs>? ProcessingScp1509Message;
+
+    /// <summary>
+    /// Gets called after a player's interaction with the Scp1509 item is processed.
+    /// </summary>
+    public static event LabEventHandler<PlayerProcessedScp1509MessageEventArgs>? ProcessedScp1509Message;
+
+    /// <summary>
+    /// Gets called when a player is about to be resurrected with the Scp1509 item.
+    /// </summary>
+    public static event LabEventHandler<PlayerScp1509ResurrectingEventArgs>? Scp1509Resurrecting;
+
+    /// <summary>
+    /// Gets called after a player has been resurrected with the Scp1509 item.
+    /// </summary>
+    public static event LabEventHandler<PlayerScp1509ResurrectedEventArgs>? Scp1509Resurrected;
+
     #endregion
 
     #region World Interaction

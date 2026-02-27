@@ -852,10 +852,7 @@ public class Player
 
         set
         {
-            if (ReferenceHub.roleManager.CurrentRole is IFpcRole role)
-            {
-                role.FpcModule.Motor.GravityController.Gravity = value;
-            }
+            FpcGravityController.ServerSetGravity(ReferenceHub, value);
         }
     }
 
