@@ -154,6 +154,7 @@ public class Item
         Register<InventorySystem.Items.Usables.Scp244.Scp244Item>(x => new Scp244Item(x));
         Register<Scp268>(x => new Scp268Item(x));
         Register<InventorySystem.Items.Usables.Scp1344.Scp1344Item>(x => new Scp1344Item(x));
+        Register<InventorySystem.Items.Scp1509.Scp1509Item>(x => new Scp1509Item(x));
 
         Register<Firearm>(FirearmItem.CreateFirearmWrapper);
         Register<ParticleDisruptor>(FirearmItem.CreateFirearmWrapper);

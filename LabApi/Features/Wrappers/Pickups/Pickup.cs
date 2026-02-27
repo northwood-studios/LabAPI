@@ -148,6 +148,7 @@ public class Pickup
         Register<InventorySystem.Items.Usables.Scp1576.Scp1576Pickup>(x => new Scp1576Pickup(x));
         Register<InventorySystem.Items.Usables.Scp244.Scp244DeployablePickup>(x => new Scp244Pickup(x));
         Register<InventorySystem.Items.Usables.Scp330.Scp330Pickup>(x => new Scp330Pickup(x));
+        Register<InventorySystem.Items.Scp1509.Scp1509Pickup>(x => new Scp1509Pickup(x));
         Register<InventorySystem.Items.ThrowableProjectiles.TimedGrenadePickup>(x => new TimedGrenadePickup(x));
         Register<CollisionDetectionPickup>(x => new Pickup(x));
     }
