@@ -67,7 +67,7 @@ public class Player
     /// <summary>
     /// A reference to all <see cref="Player"/> instances that are authenticated or dummy players.
     /// </summary>
-    public static IEnumerable<Player> ReadyList => List.Where(x => x.IsDummy || (x.IsPlayer && x.IsReady));
+    public static IEnumerable<Player> ReadyList => List.Where(static x => x.IsDummy || (x.IsPlayer && x.IsReady));
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instances that are NPCs.
@@ -75,22 +75,22 @@ public class Player
     /// <remarks>
     /// The host player is not counted as an NPC.
     /// </remarks>
-    public static IEnumerable<Player> NpcList => List.Where(x => x.IsNpc);
+    public static IEnumerable<Player> NpcList => List.Where(static x => x.IsNpc);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instance that are real players but are not authenticated yet.
     /// </summary>
-    public static IEnumerable<Player> UnauthenticatedList => List.Where(x => x.IsPlayer && !x.IsReady);
+    public static IEnumerable<Player> UnauthenticatedList => List.Where(static x => x.IsPlayer && !x.IsReady);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instances that are dummy NPCs.
     /// </summary>
-    public static IEnumerable<Player> DummyList => List.Where(x => x.IsDummy);
+    public static IEnumerable<Player> DummyList => List.Where(static x => x.IsDummy);
 
     /// <summary>
     /// A reference to all <see cref="Player"/> instance that are NPCs but are not dummies.
     /// </summary>
-    public static IEnumerable<Player> RegularNpcList => List.Where(x => x.IsNpc && !x.IsDummy);
+    public static IEnumerable<Player> RegularNpcList => List.Where(static x => x.IsNpc && !x.IsDummy);
 
     /// <summary>
     /// The <see cref="Player"/> representing the host or server.
