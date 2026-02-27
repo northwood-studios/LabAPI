@@ -33,7 +33,7 @@ public class Ragdoll
     /// <param name="player">Player for ragdoll template.</param>
     /// <param name="handler">Handler that is shown as a death cause.</param>
     /// <returns>New ragdoll.</returns>
-    public static Ragdoll? SpawnRagdoll(Player player, DamageHandlerBase handler) => SpawnRagdoll(player.Role, player.Position, player.Rotation, handler, player.DisplayName);
+    public static Ragdoll? SpawnRagdoll(Player player, DamageHandlerBase handler) => SpawnRagdoll(player.Role, player.Position, player.Rotation, handler, player.DisplayName, owner: player.ReferenceHub);
 
     /// <summary>
     /// Attempts to spawn a ragdoll from specified role. Ragdoll is not created if specified role doesn't have any ragdoll model available.
@@ -44,10 +44,12 @@ public class Ragdoll
     /// <param name="handler">Damage handler of the death cause.</param>
     /// <param name="nickname">Nickname that is visible when hovering over.</param>
     /// <param name="scale">Spawn scale. Converted to base ragdoll scale if <see langword="null"/>.</param>
+    /// <param name="serial">Serial identity of the ragdoll.</param>
+    /// <param name="owner">The owner of this ragdoll.</param>
     /// <returns>Ragdoll object or <see langword="null"/>.</returns>
-    public static Ragdoll? SpawnRagdoll(RoleTypeId role, Vector3 position, Quaternion rotation, DamageHandlerBase handler, string nickname, Vector3? scale = null)
+    public static Ragdoll? SpawnRagdoll(RoleTypeId role, Vector3 position, Quaternion rotation, DamageHandlerBase handler, string nickname, Vector3? scale = null, ushort? serial = null, ReferenceHub? owner = null)
     {
-        BasicRagdoll ragdoll = RagdollManager.ServerCreateRagdoll(role, position, rotation, handler, nickname, scale);
+        BasicRagdoll ragdoll = RagdollManager.ServerCreateRagdoll(role, position, rotation, handler, nickname, scale, serial, owner);
         return ragdoll == null ? null : Get(ragdoll);
     }
 
