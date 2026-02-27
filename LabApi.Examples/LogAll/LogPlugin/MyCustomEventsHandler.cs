@@ -1781,6 +1781,26 @@ internal class MyCustomEventsHandler : CustomEventsHandler
         Logger.Info($"{nameof(OnServerRoomLightChanged)} triggered by {ev.Room} {ev.NewState}");
     }
 
+    public override void OnPlayerProcessingScp1509Message(PlayerProcessingScp1509MessageEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerProcessingScp1509Message)} triggered by {ev.Player} {ev.Scp1509Item} {ev.Message} {ev.AllowInspect} {ev.AllowAttack}");
+    }
+
+    public override void OnPlayerProcessedScp1509Message(PlayerProcessedScp1509MessageEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerProcessedScp1509Message)} triggered by {ev.Player} {ev.Scp1509Item} {ev.Message}");
+    }
+
+    public override void OnPlayerScp1509Resurrecting(PlayerScp1509ResurrectingEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerScp1509Resurrecting)} triggered by {ev.Player} {ev.Item} {ev.KilledPlayer} {ev.RevivedPlayer} {ev.RespawnRole}");
+    }
+
+    public override void OnPlayerScp1509Resurrected(PlayerScp1509ResurrectedEventArgs ev)
+    {
+        Logger.Info($"{nameof(OnPlayerScp1509Resurrected)} triggered by {ev.Player} {ev.Item} {ev.KilledPlayer} {ev.RevivedPlayer} {ev.RespawnRole}");
+    }
+
     #region Excluded Events
 
     // The following events spam the console and are therefore excluded from this example:
