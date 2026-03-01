@@ -236,6 +236,7 @@ public static partial class PluginLoader
     public static void EnablePlugins(IEnumerable<Plugin> plugins)
     {
         Logger.DebugEnabled.Clear();
+        
         foreach (Plugin plugin in plugins)
         {
             // We try to load the configuration of the plugin
