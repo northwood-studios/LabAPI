@@ -21,11 +21,8 @@ public class Properties
     public bool IsEnabled { get; set; } = true;
 
     /// <summary>
-    /// Whether <see cref="LabApi.Features.Console.Logger.Debug"/> should print logs.
+    /// Whether Debug logs should be printed for this plugin.
     /// </summary>
-    /// <remarks>
-    /// Using the same naming as EXILED to ease transition for devs moving to LabAPI.
-    /// </remarks>
     [Description("Whether or not [DEBUG] log messages should appear in the console. Default is false.")]
     public bool Debug { get; set; } = false;
 

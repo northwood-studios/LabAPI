@@ -14,8 +14,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using NorthwoodLib.Pools;
-using Utils.NonAllocLINQ;
 
 namespace LabApi.Loader;
 
@@ -236,7 +234,7 @@ public static partial class PluginLoader
     public static void EnablePlugins(IEnumerable<Plugin> plugins)
     {
         Logger.DebugEnabled.Clear();
-        
+
         foreach (Plugin plugin in plugins)
         {
             // We try to load the configuration of the plugin

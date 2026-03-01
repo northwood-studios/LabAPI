@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace LabApi.Features.Console;
@@ -23,14 +24,12 @@ public static class Logger
     public static void Raw(string message, ConsoleColor color) => ServerConsole.AddLog(message, color);
 
     /// <summary>
-    /// An O(1) set of Assemblies that should display Debug messages.
-    /// Populated automatically by <see cref="LabApi.Loader.Features.Plugins.Configuration.Properties.Debug"/>
+    /// List of assemblies to display Debug level logs for.
     /// </summary>
-    public static System.Collections.Generic.HashSet<Assembly> DebugEnabled { get; } = new();
+    public static HashSet<Assembly> DebugEnabled { get; } = new();
 
     /// <summary>
     /// Logs a debug message to the server console.
-    /// Checks <see cref="DebugEnabled"/> before sending the message.
     /// </summary>
     /// <param name="message">The message to log.</param>
     public static void Debug(object message) => Debug(
@@ -42,10 +41,6 @@ public static class Logger
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <param name="canBePrinted">Whether the message can be printed.</param>
-    /// <remarks>
-    /// Uses explicit <paramref name="canBePrinted"/>.
-    /// Can be replaced with the single parameter overload to use <see cref="LabApi.Loader.Features.Plugins.Configuration.Properties.Debug"/> Property instead.
-    /// </remarks>
     public static void Debug(object message, bool canBePrinted)
     {
         if (!canBePrinted)

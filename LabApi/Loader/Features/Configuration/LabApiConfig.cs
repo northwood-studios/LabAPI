@@ -1,4 +1,5 @@
 ﻿using LabApi.Loader.Features.Paths;
+using LabApi.Loader.Features.Plugins.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -24,14 +25,14 @@ public class LabApiConfig
     /// <summary>
     /// Whether to allow loading plugins even if they were built for a different major version of LabAPI.
     /// </summary>
-    /// <seealso cref="LabApi.Loader.Features.Plugins.Configuration.Properties.UnsupportedLoading"/>
+    /// <seealso cref="Properties.UnsupportedLoading"/>
     [Description("Whether to allow loading plugins even if they were built for a different major version of LabAPI.")]
     public bool LoadUnsupportedPlugins { get; set; }
 
     /// <summary>
     /// Whether debug logs should appear regardless of pre-plugin properties.
     /// </summary>
-    /// <seealso cref="LabApi.Loader.Features.Plugins.Configuration.Properties.Debug"/>
+    /// <seealso cref="Properties.Debug"/>
     [Description("Whether debug logs should be printed regardless of per-plugin properties. Only recommended during Plugin development.")]
     public bool DebugOverride { get; set; } = false;
 }
