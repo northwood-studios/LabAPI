@@ -33,7 +33,9 @@ public static class Logger
     /// Checks <see cref="DebugEnabled"/> before sending the message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    public static void Debug(object message) => Debug(message,   Loader.PluginLoader.Config?.DebugOverride == true || DebugEnabled.Contains(Assembly.GetCallingAssembly()));
+    public static void Debug(object message) => Debug(
+        message,
+        Loader.PluginLoader.Config?.DebugOverride == true || DebugEnabled.Contains(Assembly.GetCallingAssembly()));
 
     /// <summary>
     /// Logs a debug message to the server console.

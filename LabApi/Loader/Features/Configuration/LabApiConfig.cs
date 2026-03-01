@@ -32,6 +32,6 @@ public class LabApiConfig
     /// Whether debug logs should appear regardless of pre-plugin properties.
     /// </summary>
     /// <seealso cref="LabApi.Loader.Features.Plugins.Configuration.Properties.Debug"/>
-    [Description("Whether debug logs should be printed regardless of pre-plugin properties. Only recommended during Plugin development.")]
+    [Description("Whether debug logs should be printed regardless of per-plugin properties. Only recommended during Plugin development.")]
     public bool DebugOverride { get; set; } = false;
 }
