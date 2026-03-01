@@ -21,6 +21,15 @@ public class Properties
     public bool IsEnabled { get; set; } = true;
 
     /// <summary>
+    /// Whether <see cref="LabApi.Features.Console.Logger.Debug"/> should print logs.
+    /// </summary>
+    /// <remarks>
+    /// Using the same naming as EXILED to ease transition for devs moving to LabAPI.
+    /// </remarks>
+    [Description("Whether or not [Debug] log messages should appear. Default is false.")]
+    public bool Debug { get; set; } = false;
+
+    /// <summary>
     /// Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
     /// </summary>
     [Description("""Whether to allow loading the plugin even if it was built for a different major version of LabAPI. "Default" = use port-specific config; "True"/"Enabled" = load if unsupported; "False"/"Disabled" = do not load if unsupported""")]
