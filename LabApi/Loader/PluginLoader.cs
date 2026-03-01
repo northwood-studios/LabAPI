@@ -235,7 +235,7 @@ public static partial class PluginLoader
     /// <param name="plugins">The sorted collection of <see cref="Plugin"/>s.</param>
     public static void EnablePlugins(IEnumerable<Plugin> plugins)
     {
-        List<Assembly> debugAssemblies = ListPool<Assembly>.Shared.Rent();
+        Logger.DebugEnabled.Clear();
         foreach (Plugin plugin in plugins)
         {
             // We try to load the configuration of the plugin
@@ -262,25 +262,17 @@ public static partial class PluginLoader
                 // This body will not be run on most live servers.
                 if (Plugins.TryGetValue(plugin, out Assembly asm))
                 {
-                    debugAssemblies.AddIfNotContains(asm);
+                    if (Logger.DebugEnabled.Add(asm))
+                    {
+                        // Only want to print when the first plugin in an assembly enables Debug
+                        Logger.Info($"Debug logging enabled for {asm.FullName}");
+                    }
                 }
             }
 
             // We finally enable the plugin
             EnablePlugin(plugin);
         }
-
-        // Update the Set of Assemblies that should display Debug level logs.
-        // It is possible for an Assembly to contain more than 1 plugin, we enable Debug if any 1 plugin in the Assembly requests it.
-        // This list is only updated when all Plugins are reloaded as to not interfere with Enabled plugins that may still want Debugging.
-        // On most live servers this loop will be skipped
-        Logger.DebugEnabled.Clear();
-        foreach (var asm in debugAssemblies)
-        {
-            Logger.DebugEnabled.Add(asm);
-        }
-
-        ListPool<Assembly>.Shared.Return(debugAssemblies);
     }
 
     /// <summary>
