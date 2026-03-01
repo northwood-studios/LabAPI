@@ -26,7 +26,7 @@ public class Properties
     /// <remarks>
     /// Using the same naming as EXILED to ease transition for devs moving to LabAPI.
     /// </remarks>
-    [Description("Whether or not [Debug] log messages should appear. Default is false.")]
+    [Description("Whether or not [DEBUG] log messages should appear in the console. Default is false.")]
     public bool Debug { get; set; } = false;
 
     /// <summary>
