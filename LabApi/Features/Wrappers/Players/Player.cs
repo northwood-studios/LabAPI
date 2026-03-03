@@ -1481,9 +1481,11 @@ public class Player
     public void RemoveItem(ItemType item, int maxAmount = 1)
     {
         int count = 0;
-        for (int i = 0; i < Items.Count(); i++)
+        Item[] items = Items.ToArray();
+        for (int i = 0; i < items.Length; i++)
         {
-            ItemBase? itemBase = Items.ElementAt(i).Base;
+            ItemBase itemBase = items[i].Base;
+
             if (itemBase.ItemTypeId != item)
             {
                 continue;
