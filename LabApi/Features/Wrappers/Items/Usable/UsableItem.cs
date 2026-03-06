@@ -63,7 +63,9 @@ public class UsableItem : Item
     public bool IsUsing
     {
         get => Base.IsUsing;
-        set => Base.IsUsing = value;
+        set => UsableItemsController.ServerEmulateMessage(
+            Serial,
+            value ? StatusMessage.StatusType.Start : StatusMessage.StatusType.Cancel);
     }
 
     /// <summary>
