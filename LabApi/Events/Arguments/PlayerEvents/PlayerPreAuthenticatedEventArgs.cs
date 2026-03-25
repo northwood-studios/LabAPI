@@ -5,6 +5,7 @@ namespace LabApi.Events.Arguments.PlayerEvents;
 
 /// <summary>
 /// Represents the arguments for the <see cref="Handlers.PlayerEvents.PreAuthenticated"/> event.
+/// <b>DO NOT call Unity APIs in handlers of this event; doing so may cause the server to crash.</b>
 /// </summary>
 public class PlayerPreAuthenticatedEventArgs : EventArgs
 {
