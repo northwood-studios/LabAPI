@@ -1,3 +1,4 @@
+using LabApi.Features;
 using LabApi.Loader.Features.Plugins.Configuration;
 using LabApi.Loader.Features.Plugins.Enums;
 using System;
@@ -32,7 +33,7 @@ public abstract class Plugin
     /// <summary>
     /// The <see cref="Version"/> of LabAPI required by the <see cref="Plugin"/>.
     /// </summary>
-    public abstract Version RequiredApiVersion { get; }
+    public virtual Version RequiredApiVersion { get; } = new Version(LabApiProperties.CompiledVersion);
 
     /// <summary>
     /// The <see cref="LoadPriority"/> of the <see cref="Plugin"/>.
