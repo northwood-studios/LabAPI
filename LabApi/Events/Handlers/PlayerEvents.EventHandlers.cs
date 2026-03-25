@@ -30,12 +30,14 @@ public static partial class PlayerEvents
     public static event LabEventHandler<PlayerSendingVoiceMessageEventArgs>? SendingVoiceMessage;
 
     /// <summary>
-    /// Gets called when the player is pre-authenticating.
+    /// Gets called <b>on a separate thread</b> when the player is pre-authenticating.
+    /// <b>DO NOT call Unity APIs in handlers of this event; doing so may cause the server to crash.</b>
     /// </summary>
     public static event LabEventHandler<PlayerPreAuthenticatingEventArgs>? PreAuthenticating;
 
     /// <summary>
-    /// Gets called when the player has pre-authenticated.
+    /// Gets called <b>on a separate thread</b> when the player has pre-authenticated.
+    /// <b>DO NOT call Unity APIs in handlers of this event; doing so may cause the server to crash.</b>
     /// </summary>
     public static event LabEventHandler<PlayerPreAuthenticatedEventArgs>? PreAuthenticated;
 
