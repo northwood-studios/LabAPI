@@ -236,6 +236,8 @@ public static partial class PluginLoader
     /// <param name="plugins">The sorted collection of <see cref="Plugin"/>s.</param>
     public static void EnablePlugins(IEnumerable<Plugin> plugins)
     {
+        Logger.DebugEnabled.Clear();
+
         foreach (Plugin plugin in plugins)
         {
             // We try to load the configuration of the plugin
@@ -254,6 +256,20 @@ public static partial class PluginLoader
             if (!ValidateVersion(plugin))
             {
                 continue;
+            }
+
+            // Check if the plugin associated with this assembly wants Debug logs enabled.
+            if (plugin.Properties?.Debug == true)
+            {
+                // This body will not be run on most live servers.
+                if (Plugins.TryGetValue(plugin, out Assembly asm))
+                {
+                    if (Logger.DebugEnabled.Add(asm))
+                    {
+                        // Only want to print when the first plugin in an assembly enables Debug
+                        Logger.Info($"Debug logging enabled for {asm.FullName}");
+                    }
+                }
             }
 
             // We finally enable the plugin
