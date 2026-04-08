@@ -1,3 +1,4 @@
+using LabApi.Events.Handlers;
 using LabApi.Features;
 using LabApi.Features.Console;
 using LabApi.Features.Permissions;
@@ -91,6 +92,9 @@ public static partial class PluginLoader
 
         // We also register the default permissions provider
         PermissionsManager.RegisterProvider<DefaultPermissionsProvider>();
+
+        // Finally, we invoke the OnPluginsEnabled event
+        ServerEvents.OnPluginsEnabled();
     }
 
     /// <summary>

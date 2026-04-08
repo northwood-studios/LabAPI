@@ -301,4 +301,9 @@ public static partial class ServerEvents
     /// Gets called when a checkpoint door sequence is changed.
     /// </summary>
     public static event LabEventHandler<CheckpointDoorSequenceChangedEventArgs>? CheckpointDoorSequenceChanged;
+
+    /// <summary>
+    /// Gets called when all the plugins are enabled.
+    /// </summary>
+    public static event LabEventHandler? PluginsEnabled;
 }
