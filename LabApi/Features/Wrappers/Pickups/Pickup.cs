@@ -80,24 +80,14 @@ public class Pickup
     /// <returns>True of the pickup exists, otherwise false.</returns>
     public static bool TryGet(ushort itemSerial, [NotNullWhen(true)] out Pickup? pickup) => SerialCache.TryGetValue(itemSerial, out pickup);
 
-    /// <summary>
-    /// Creates a new <see cref="Pickup"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="ItemType"/>.</param>
-    /// <param name="position">The initial position.</param>
-    /// <returns>The instantiated <see cref="Pickup"/>.</returns>
-    /// <remarks>The pickup is only spawned on the server, to spawn the pickup for clients use <see cref="Spawn"/>.</remarks>
+    /// <inheritdoc cref="Create(ItemType, Vector3, Quaternion, Vector3, bool)"/>
     public static Pickup? Create(ItemType type, Vector3 position) => Create(type, position, Quaternion.identity, Vector3.one);
 
-    /// <summary>
-    /// Creates a new <see cref="Pickup"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="ItemType"/>.</param>
-    /// <param name="position">The initial position.</param>
-    /// <param name="rotation">The initial rotation.</param>
-    /// <returns>The instantiated <see cref="Pickup"/>.</returns>
-    /// <remarks>The pickup is only spawned on the server, to spawn the pickup for clients use <see cref="Spawn"/>.</remarks>
+    /// <inheritdoc cref="Create(ItemType, Vector3, Quaternion, Vector3, bool)"/>
     public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation) => Create(type, position, rotation, Vector3.one);
+
+    /// <inheritdoc cref="Create(ItemType, Vector3, Quaternion, Vector3, bool)"/>
+    public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation, Vector3 scale) => Create(type, position, rotation, scale, true);
 
     /// <summary>
     /// Creates a new <see cref="Pickup"/>.
@@ -106,9 +96,10 @@ public class Pickup
     /// <param name="position">The initial position.</param>
     /// <param name="rotation">The initial rotation.</param>
     /// <param name="scale">The initial scale.</param>
+    /// <param name="networkSpawn">Whether to spawn the instance on the client.</param>
     /// <returns>The instantiated <see cref="Pickup"/>.</returns>
-    /// <remarks>The pickup is only spawned on the server, to spawn the pickup for clients use <see cref="Spawn"/>.</remarks>
-    public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation, Vector3 scale)
+    /// <remarks>The pickup is only spawned on the server if <paramref name="networkSpawn"/> is <see langword="false" />, to spawn the pickup for clients use <see cref="Spawn"/>.</remarks>
+    public static Pickup? Create(ItemType type, Vector3 position, Quaternion rotation, Vector3 scale, bool networkSpawn = true)
     {
         if (type == ItemType.None || !InventoryItemLoader.AvailableItems.TryGetValue(type, out ItemBase itemBase))
         {
@@ -117,6 +108,12 @@ public class Pickup
 
         ItemPickupBase newPickupBase = InventoryExtensions.ServerCreatePickup(itemBase, new PickupSyncInfo(type, itemBase.Weight), position, rotation, false);
         newPickupBase.transform.localScale = scale;
+
+        if (networkSpawn)
+        {
+            NetworkServer.Spawn(newPickupBase.gameObject);
+        }
+
         return Get(newPickupBase);
     }
 
