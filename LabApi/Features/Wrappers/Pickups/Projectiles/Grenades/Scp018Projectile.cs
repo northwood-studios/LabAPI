@@ -57,11 +57,6 @@ public class Scp018Projectile : TimedGrenadeProjectile
     public new InventorySystem.Items.ThrowableProjectiles.Scp018Projectile Base { get; }
 
     /// <summary>
-    /// Gets the physics module for this ball.
-    /// </summary>
-    public new PickupStandardPhysics PhysicsModule => PhysicsModule;
-
-    /// <summary>
     /// Gets the damage applied to player on hit.
     /// </summary>
     public float CurrentDamage => Base.CurrentDamage;
@@ -71,8 +66,23 @@ public class Scp018Projectile : TimedGrenadeProjectile
     /// </summary>
     public Vector3 Velocity
     {
-        get => PhysicsModule.Rb.linearVelocity;
-        set => PhysicsModule.Rb.linearVelocity = value;
+        get
+        {
+            if (PickupStandardPhysics == null)
+            {
+                return Vector3.zero;
+            }
+
+            return PickupStandardPhysics.Rb.linearVelocity;
+        }
+
+        set
+        {
+            if (PickupStandardPhysics != null)
+            {
+                PickupStandardPhysics.Rb.linearVelocity = value;
+            }
+        }
     }
 
     /// <summary>
