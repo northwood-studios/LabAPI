@@ -82,6 +82,13 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         return permissions.Any(permission => HasPermission(group, permission));
     }
 
+    /// <inheritdoc cref="IPermissionsProvider.HasPermission" />
+    public bool HasPermission(Player player, string specificPermission)
+    {
+        PermissionGroup group = GetPlayerGroup(player);
+        return HasPermission(group, specificPermission);
+    }
+
     /// <inheritdoc cref="IPermissionsProvider.AddPermissions"/>
     public void AddPermissions(Player player, params string[] permissions)
     {

@@ -31,6 +31,14 @@ public interface IPermissionsProvider
     public bool HasAnyPermission(Player player, params string[] permissions);
 
     /// <summary>
+    /// Whether the given <paramref name="player"/> has the given <paramref name="specificPermission"/>.
+    /// </summary>
+    /// <param name="player">The player to check the permissions for.</param>
+    /// <param name="specificPermission">The permissions to check.</param>
+    /// <returns>True if the <paramref name="player"/> has the <paramref name="specificPermission"/>; otherwise, false.</returns>
+    public bool HasPermission(Player player, string specificPermission) => HasAnyPermission(player, specificPermission);
+
+    /// <summary>
     /// Adds all the given <paramref name="permissions"/> to the given <paramref name="player"/>.
     /// </summary>
     /// <param name="player">The player to add the permissions to.</param>

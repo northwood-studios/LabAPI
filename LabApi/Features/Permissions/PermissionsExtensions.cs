@@ -27,6 +27,10 @@ public static class PermissionsExtensions
     public static bool HasAnyPermission(this ICommandSender sender, params string[] permissions) =>
         Player.Get(sender)?.HasAnyPermission(permissions) ?? sender is not PlayerCommandSender;
 
+    /// <inheritdoc cref="IPermissionsProvider.HasPermission"/>
+    public static bool HasPermission(this ICommandSender sender, string specificPermission) =>
+        Player.Get(sender)?.HasPermission(specificPermission) ?? sender is not PlayerCommandSender;
+
     /// <inheritdoc cref="IPermissionsProvider.AddPermissions"/>
     public static void AddPermissions(this ICommandSender sender, params string[] permissions) =>
         Player.Get(sender)?.AddPermissions(permissions);

@@ -92,6 +92,10 @@ public static class PermissionsManager
     public static bool HasAnyPermission(this Player player, params string[] permissions)
         => PermissionProviders.Values.Any(x => x.HasAnyPermission(player, permissions));
 
+    /// <inheritdoc cref="IPermissionsProvider.HasPermission"/>
+    public static bool HasPermission(this Player player, string specificPermission)
+        => PermissionProviders.Values.Any(x => x.HasPermission(player, specificPermission));
+
     /// <inheritdoc cref="IPermissionsProvider.AddPermissions"/>
     public static void AddPermissions(this Player player, params string[] permissions)
     {
