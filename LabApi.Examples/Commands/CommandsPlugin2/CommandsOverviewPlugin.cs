@@ -28,8 +28,6 @@ namespace CommandsPlugin2
 
         public override string Author => "LabAPI Team";
 
-        public override Version Version => new Version(1, 0, 0);
-
         public override Version RequiredApiVersion => new Version(LabApiProperties.CompiledVersion);
 
         /// <summary>

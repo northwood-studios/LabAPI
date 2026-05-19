@@ -7,13 +7,11 @@ namespace LogPlugin;
 
 internal class LogPlugin : Plugin
 {
-    public override string Name { get; } = "LogPlugin";
+    public override string Name => "LogPlugin";
 
-    public override string Description { get; } = "Example Plugin that logs (almost) all events.";
+    public override string Description => "Example Plugin that logs (almost) all events.";
 
-    public override string Author { get; } = "Northwood";
-
-    public override Version Version { get; } = new Version(1, 0, 0, 0);
+    public override string Author => "Northwood";
 
     public override Version RequiredApiVersion { get; } = new Version(LabApiProperties.CompiledVersion);
 

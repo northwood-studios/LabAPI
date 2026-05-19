@@ -6,13 +6,11 @@ namespace CommandsPlugin;
 
 public class CommandsPlugin : Plugin
 {
-    public override string Name { get; } = "CommandsPlugin";
+    public override string Name => "CommandsPlugin";
 
-    public override string Description { get; } = "Simple example plugin that demonstrates adding commands.";
+    public override string Description => "Simple example plugin that demonstrates adding commands.";
 
-    public override string Author { get; } = "Northwood";
-
-    public override Version Version { get; } = new Version(1, 0, 0, 0);
+    public override string Author => "Northwood";
 
     public override Version RequiredApiVersion { get; } = new Version(LabApiProperties.CompiledVersion);
 
