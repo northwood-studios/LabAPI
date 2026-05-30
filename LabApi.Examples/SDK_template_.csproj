@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <AssemblyName>YourPluginName</AssemblyName>
+    <RootNamespace>YourPluginNamespace</RootNamespace>
+
+    <!-- Disable implicit references to manually bind Unity .NET -->
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+
+    <!-- NuGet config (optional) -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>YourName</Authors>
+    <PackageId>YourPluginID</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Your SCP:SL plugin description</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Define Unity DLL folder -->
+    <UNITY_REFERENCES>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed</UNITY_REFERENCES>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Essential Unity and Framework references -->
+    <Reference Include="mscorlib">
+      <HintPath>$(UNITY_REFERENCES)\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>$(UNITY_REFERENCES)\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>$(UNITY_REFERENCES)\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>$(UNITY_REFERENCES)\netstandard.dll</HintPath>
+    </Reference>
+
+    <!-- Game assemblies -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(UNITY_REFERENCES)\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(UNITY_REFERENCES)\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(UNITY_REFERENCES)\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(UNITY_REFERENCES)\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- LabAPI NuGet -->
+    <PackageReference Include="Northwood.LabAPI" Version="1.1.0" />
+  </ItemGroup>
+
+</Project>
