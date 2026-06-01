@@ -21,6 +21,12 @@ public class Properties
     public bool IsEnabled { get; set; } = true;
 
     /// <summary>
+    /// Whether Debug logs should be printed for this plugin.
+    /// </summary>
+    [Description("Whether or not [DEBUG] log messages should appear in the console. Default is false.")]
+    public bool Debug { get; set; } = false;
+
+    /// <summary>
     /// Whether to allow loading the plugin even if it was built for a different major version of LabAPI.
     /// </summary>
     [Description("""Whether to allow loading the plugin even if it was built for a different major version of LabAPI. "Default" = use port-specific config; "True"/"Enabled" = load if unsupported; "False"/"Disabled" = do not load if unsupported""")]

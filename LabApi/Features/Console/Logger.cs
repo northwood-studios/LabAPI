@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace LabApi.Features.Console;
@@ -23,11 +24,24 @@ public static class Logger
     public static void Raw(string message, ConsoleColor color) => ServerConsole.AddLog(message, color);
 
     /// <summary>
+    /// List of assemblies to display Debug level logs for.
+    /// </summary>
+    public static HashSet<Assembly> DebugEnabled { get; } = new();
+
+    /// <summary>
+    /// Logs a debug message to the server console.
+    /// </summary>
+    /// <param name="message">The message to log.</param>
+    public static void Debug(object message) => Debug(
+        message,
+        Loader.PluginLoader.Config?.DebugOverride == true || DebugEnabled.Contains(Assembly.GetCallingAssembly()));
+
+    /// <summary>
     /// Logs a debug message to the server console.
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <param name="canBePrinted">Whether the message can be printed.</param>
-    public static void Debug(object message, bool canBePrinted = true)
+    public static void Debug(object message, bool canBePrinted)
     {
         if (!canBePrinted)
         {
