@@ -170,6 +170,8 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     /// <remarks>
     /// The <paramref name="groupName"/> is used to get permissions of a player using <see cref="Player.PermissionsGroupName"/>.
     /// The <paramref name="groupName"/> can also be obtained from a <see cref="UserGroup"/>'s registry name.
+    /// WARNING: If used to remove a group which wasn't created at runtime it can cause a change to the <see cref="PermissionsFileName"/> file's contents.
+    /// WARNING: It marks all permission groups as Runtime, and as such when overriding a group it can cause it to be deleted if it was previously obtained from the <see cref="PermissionsFileName"/> file.
     /// </remarks>
     public bool AddPermissionGroup(string groupName, PermissionGroup group, bool overrideExisting = false)
     {
@@ -192,6 +194,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     /// <remarks>
     /// The <paramref name="groupName"/> is used to get permissions of a player using <see cref="Player.PermissionsGroupName"/>.
     /// The <paramref name="groupName"/> can also be obtained from a <see cref="UserGroup"/>'s registry name.
+    /// WARNING: If used to remove a group which wasn't created at runtime it can cause a change to the <see cref="PermissionsFileName"/> file's contents.
     /// </remarks>
     public bool RemovePermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? group)
         => _permissionsDictionary.Remove(groupName, out group);
