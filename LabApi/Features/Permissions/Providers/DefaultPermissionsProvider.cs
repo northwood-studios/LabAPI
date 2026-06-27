@@ -5,6 +5,7 @@ using NorthwoodLib.Pools;
 using Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -110,9 +111,36 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     /// <inheritdoc />
     void IPermissionsProvider.ReloadPermissions() => ReloadPermissions();
 
-    private PermissionGroup GetPlayerGroup(Player player) => _permissionsDictionary.GetValueOrDefault(player.PermissionsGroupName ?? "default") ?? PermissionGroup.Default;
+    /// <summary>
+    /// Gets the <see cref="PermissionGroup"/> the player is a part of.
+    /// </summary>
+    /// <param name="player">The player whose <see cref="PermissionGroup"/> to find.</param>
+    /// <returns>The <see cref="PermissionGroup"/> the player is a part of, otherwise <see cref="PermissionGroup.Default"/>.</returns>
+    public PermissionGroup GetPlayerGroup(Player player) => GetPermissionGroup(player.PermissionsGroupName ?? "default");
 
-    private string[] GetPermissions(PermissionGroup group)
+    /// <summary>
+    /// Gets the <see cref="PermissionGroup"/> from a <see cref="UserGroup"/>'s registry name.
+    /// </summary>
+    /// <param name="groupName">A <see cref="UserGroup"/>'s registry name to find the <see cref="PermissionGroup"/> of.</param>
+    /// <returns>The <see cref="PermissionGroup"/> if one is defined, <see cref="PermissionGroup.Default"/> otherwise.</returns>
+    /// <remarks>The <paramref name="groupName"/> should be a key in <see cref="PermissionsHandler.Groups"/> and not necessarily the <see cref="UserGroup.Name"/> as they can differ.</remarks>
+    public PermissionGroup GetPermissionGroup(string groupName) => _permissionsDictionary.GetValueOrDefault(groupName) ?? PermissionGroup.Default;
+
+    /// <summary>
+    /// Tries to get the <see cref="PermissionGroup"/> from a <see cref="UserGroup"/>'s registry name.
+    /// </summary>
+    /// <param name="groupName">A <see cref="UserGroup"/>'s registry name to find the <see cref="PermissionGroup"/> of.</param>
+    /// <param name="permissionGroup">The found <see cref="PermissionGroup"/> when true, null otherwise.</param>
+    /// <returns>Whether a <see cref="PermissionGroup"/> with the registry name of <paramref name="groupName"/> was found.</returns>
+    /// <remarks>The <paramref name="groupName"/> should be a key in <see cref="PermissionsHandler.Groups"/> and not necessarily the <see cref="UserGroup.Name"/> as they can differ.</remarks>
+    public bool TryGetPermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? permissionGroup) => _permissionsDictionary.TryGetValue(groupName, out permissionGroup);
+
+    /// <summary>
+    /// Gets the <see cref="string"/>[] of permissions a <see cref="PermissionGroup"/> grants.
+    /// </summary>
+    /// <param name="group">The <see cref="PermissionGroup"/>, permissions of which will be returned.</param>
+    /// <returns>A <see cref="string"/> array of permission to this group grants.</returns>
+    public string[] GetPermissions(PermissionGroup group)
     {
         List<string> permissions = ListPool<string>.Shared.Rent();
 
@@ -131,6 +159,41 @@ public class DefaultPermissionsProvider : IPermissionsProvider
 
         return [.. permissions];
     }
+
+    /// <summary>
+    /// Adds a new permission group or overrides an existing permission group.
+    /// </summary>
+    /// <param name="groupName">The registry name of a permission group.</param>
+    /// <param name="group">The group to add.</param>
+    /// <param name="overrideExisting">Whether to override any existing group.</param>
+    /// <returns>Whether the group was successfully added, always true if <paramref name="overrideExisting"/> is true.</returns>
+    /// <remarks>
+    /// The <paramref name="groupName"/> is used to get permissions of a player using <see cref="Player.PermissionsGroupName"/>.
+    /// The <paramref name="groupName"/> can also be obtained from a <see cref="UserGroup"/>'s registry name.
+    /// </remarks>
+    public bool AddPermissionGroup(string groupName, PermissionGroup group, bool overrideExisting = false)
+    {
+        if (overrideExisting)
+        {
+            _permissionsDictionary[groupName] = group;
+            return true;
+        }
+
+        return _permissionsDictionary.TryAdd(groupName, group);
+    }
+
+    /// <summary>
+    /// Adds a new permission group or overrides an existing permission group.
+    /// </summary>
+    /// <param name="groupName">The registry name of a permission group.</param>
+    /// <param name="group">The group which was removed or null.</param>
+    /// <returns>Whether the group was found and removed successfully.</returns>
+    /// <remarks>
+    /// The <paramref name="groupName"/> is used to get permissions of a player using <see cref="Player.PermissionsGroupName"/>.
+    /// The <paramref name="groupName"/> can also be obtained from a <see cref="UserGroup"/>'s registry name.
+    /// </remarks>
+    public bool RemovePermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? group)
+        => _permissionsDictionary.Remove(groupName, out group);
 
     private bool HasPermission(PermissionGroup group, string permission)
     {
