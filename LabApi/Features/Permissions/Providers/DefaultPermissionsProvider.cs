@@ -173,6 +173,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     /// </remarks>
     public bool AddPermissionGroup(string groupName, PermissionGroup group, bool overrideExisting = false)
     {
+        group.IsRuntime = true;
         if (overrideExisting)
         {
             _permissionsDictionary[groupName] = group;
@@ -271,5 +272,5 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         }
     }
 
-    private void SavePermissions() => File.WriteAllText(_permissions.FullName, YamlParser.Serializer.Serialize(_permissionsDictionary));
+    private void SavePermissions() => File.WriteAllText(_permissions.FullName, YamlParser.Serializer.Serialize(_permissionsDictionary.Where(kvp => !kvp.Value.IsRuntime).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)));
 }

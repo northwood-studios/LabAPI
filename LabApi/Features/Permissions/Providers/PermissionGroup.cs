@@ -65,6 +65,12 @@ public class PermissionGroup
     public bool IsRoot { get; set; } = false;
 
     /// <summary>
+    /// An internal bool indicating whether the permission was created at runtime and as such should not be saved.
+    /// </summary>
+    [YamlIgnore]
+    internal bool IsRuntime { get; set; } = false;
+
+    /// <summary>
     /// An internal dictionary that saves special permissions. (x.*).
     /// </summary>
     [YamlIgnore]
