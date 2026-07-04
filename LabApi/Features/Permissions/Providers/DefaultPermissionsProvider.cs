@@ -119,27 +119,25 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     public PermissionGroup GetPlayerGroup(Player player) => GetPermissionGroup(player.PermissionsGroupName ?? "default");
 
     /// <summary>
-    /// Gets the <see cref="PermissionGroup"/> from a <see cref="UserGroup"/>'s registry name.
+    /// Gets the <see cref="PermissionGroup"/> from a <see cref="UserGroup.Name"/>.
     /// </summary>
-    /// <param name="groupName">A <see cref="UserGroup"/>'s registry name to find the <see cref="PermissionGroup"/> of.</param>
-    /// <returns>The <see cref="PermissionGroup"/> if one is defined, <see cref="PermissionGroup.Default"/> otherwise.</returns>
-    /// <remarks>The <paramref name="groupName"/> should be a key in <see cref="PermissionsHandler.Groups"/> and not necessarily the <see cref="UserGroup.Name"/> as they can differ.</remarks>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> to find the <see cref="PermissionGroup"/> of.</param>
+    /// <returns>A <see cref="PermissionGroup"/> if one is defined, <see cref="PermissionGroup.Default"/> otherwise.</returns>
     public PermissionGroup GetPermissionGroup(string groupName) => _permissionsDictionary.GetValueOrDefault(groupName) ?? PermissionGroup.Default;
 
     /// <summary>
-    /// Tries to get the <see cref="PermissionGroup"/> from a <see cref="UserGroup"/>'s registry name.
+    /// Tries to get the <see cref="PermissionGroup"/> from a <see cref="UserGroup.Name"/>.
     /// </summary>
-    /// <param name="groupName">A <see cref="UserGroup"/>'s registry name to find the <see cref="PermissionGroup"/> of.</param>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> to find the <see cref="PermissionGroup"/> of.</param>
     /// <param name="permissionGroup">The found <see cref="PermissionGroup"/> when true, null otherwise.</param>
     /// <returns>Whether a <see cref="PermissionGroup"/> with the registry name of <paramref name="groupName"/> was found.</returns>
-    /// <remarks>The <paramref name="groupName"/> should be a key in <see cref="PermissionsHandler.Groups"/> and not necessarily the <see cref="UserGroup.Name"/> as they can differ.</remarks>
     public bool TryGetPermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? permissionGroup) => _permissionsDictionary.TryGetValue(groupName, out permissionGroup);
 
     /// <summary>
     /// Gets the <see cref="string"/> array of permissions a <see cref="PermissionGroup"/> grants.
     /// </summary>
     /// <param name="group">The <see cref="PermissionGroup"/>, permissions of which will be returned.</param>
-    /// <returns>A <see cref="string"/> array of permission to this group grants.</returns>
+    /// <returns>A <see cref="string"/> array of permissions this group grants.</returns>
     public string[] GetPermissions(PermissionGroup group)
     {
         List<string> permissions = ListPool<string>.Shared.Rent();
@@ -161,43 +159,34 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     }
 
     /// <summary>
-    /// Adds a new permission group or overrides an existing permission group.
+    /// Adds a new permission group.
     /// </summary>
-    /// <param name="groupName">The registry name of a permission group.</param>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> the <paramref name="group"/> is linked to.</param>
     /// <param name="group">The group to add.</param>
-    /// <param name="overrideExisting">Whether to override any existing group.</param>
-    /// <returns>Whether the group was successfully added, always true if <paramref name="overrideExisting"/> is true.</returns>
-    /// <remarks>
-    /// The <paramref name="groupName"/> is used to get permissions of a player using <see cref="Player.PermissionsGroupName"/>.
-    /// The <paramref name="groupName"/> can also be obtained from a <see cref="UserGroup"/>'s registry name.
-    /// WARNING: If used to remove a group which wasn't created at runtime it can cause a change to the <see cref="PermissionsFileName"/> file's contents.
-    /// WARNING: It marks all permission groups as Runtime, and as such when overriding a group it can cause it to be deleted if it was previously obtained from the <see cref="PermissionsFileName"/> file.
-    /// </remarks>
-    public bool AddPermissionGroup(string groupName, PermissionGroup group, bool overrideExisting = false)
-    {
-        group.IsRuntime = true;
-        if (overrideExisting)
-        {
-            _permissionsDictionary[groupName] = group;
-            return true;
-        }
-
-        return _permissionsDictionary.TryAdd(groupName, group);
-    }
+    /// <returns>Whether the group was successfully added. False if group with this name is already registered or if the <paramref name="group"/>'s <see cref="PermissionGroup.IsRuntime"/> is set to false.</returns>
+    public bool AddPermissionGroup(string groupName, PermissionGroup group)
+        => group.IsRuntime && _permissionsDictionary.TryAdd(groupName, group);
 
     /// <summary>
-    /// Adds a new permission group or overrides an existing permission group.
+    /// Removes a permission group if it exists.
     /// </summary>
-    /// <param name="groupName">The registry name of a permission group.</param>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> which links to a <see cref="PermissionGroup"/> that is to be removed.</param>
     /// <param name="group">The group which was removed or null.</param>
-    /// <returns>Whether the group was found and removed successfully.</returns>
-    /// <remarks>
-    /// The <paramref name="groupName"/> is used to get permissions of a player using <see cref="Player.PermissionsGroupName"/>.
-    /// The <paramref name="groupName"/> can also be obtained from a <see cref="UserGroup"/>'s registry name.
-    /// WARNING: If used to remove a group which wasn't created at runtime it can cause a change to the <see cref="PermissionsFileName"/> file's contents.
-    /// </remarks>
+    /// <returns>Whether the group was found and removed successfully. False if group with this name could not be found or if the <paramref name="group"/>'s <see cref="PermissionGroup.IsRuntime"/> is set to false.</returns>
     public bool RemovePermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? group)
-        => _permissionsDictionary.Remove(groupName, out group);
+    {
+        if (!_permissionsDictionary.TryGetValue(groupName, out group))
+        {
+            return false;
+        }
+
+        if (!group.IsRuntime)
+        {
+            return false;
+        }
+
+        return _permissionsDictionary.Remove(groupName, out group);
+    }
 
     private bool HasPermission(PermissionGroup group, string permission)
     {
