@@ -136,7 +136,7 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     public bool TryGetPermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? permissionGroup) => _permissionsDictionary.TryGetValue(groupName, out permissionGroup);
 
     /// <summary>
-    /// Gets the <see cref="string"/>[] of permissions a <see cref="PermissionGroup"/> grants.
+    /// Gets the <see cref="string"/> array of permissions a <see cref="PermissionGroup"/> grants.
     /// </summary>
     /// <param name="group">The <see cref="PermissionGroup"/>, permissions of which will be returned.</param>
     /// <returns>A <see cref="string"/> array of permission to this group grants.</returns>
