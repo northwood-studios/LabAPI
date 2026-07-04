@@ -11,7 +11,7 @@ public class PermissionGroup
     /// <summary>
     /// Gets the default permission group.
     /// </summary>
-    public static PermissionGroup Default => new([], []);
+    public static PermissionGroup Default => new([], []) { IsRuntime = false };
 
     /// <summary>
     /// Generates the default permission groups based on the available groups in the RA settings.
@@ -68,7 +68,7 @@ public class PermissionGroup
     /// An internal bool indicating whether the permission was created at runtime and should not be saved.
     /// </summary>
     [YamlIgnore]
-    internal bool IsRuntime { get; set; } = false;
+    public bool IsRuntime { get; internal set; } = true;
 
     /// <summary>
     /// An internal dictionary that saves special permissions. (x.*).

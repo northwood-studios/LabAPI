@@ -47,6 +47,10 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         {
             // We deserialize the permissions from the file.
             _permissionsDictionary = YamlParser.Deserializer.Deserialize<Dictionary<string, PermissionGroup>>(File.ReadAllText(_permissions.FullName));
+            foreach (PermissionGroup permissionGroup in _permissionsDictionary.Values)
+            {
+                permissionGroup.IsRuntime = false;
+            }
 
             // We then reload the permissions to fill the special permissions.
             ReloadPermissions();
