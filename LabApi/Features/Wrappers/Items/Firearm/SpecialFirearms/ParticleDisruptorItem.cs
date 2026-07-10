@@ -38,6 +38,7 @@ public class ParticleDisruptorItem : FirearmItem
     }
 
     private DisruptorModeSelector _selectorModule = null!;
+    private MagazineModule _magazineModule = null!;
 
     /// <summary>
     /// An internal constructor to prevent external instantiation.
@@ -96,24 +97,14 @@ public class ParticleDisruptorItem : FirearmItem
     /// </summary>
     public override int ChamberedAmmo
     {
-        get
-        {
-            if (ActionModule is DisruptorActionModule actionModule)
-            {
-                return actionModule.IsLoaded ? 1 : 0;
-            }
-
-            return 0;
-        }
+        get => _magazineModule.AmmoStored;
+        set => _magazineModule.ServerSetInstanceAmmo(Serial, value);
     }
 
     /// <summary>
     /// Gets the maximum chambered ammo.
     /// </summary>
-    public override int ChamberMax
-    {
-        get => 1;
-    }
+    public override int ChamberMax => _magazineModule.AmmoMax;
 
     /// <summary>
     /// Gets whether the firearm is cocked and can fire.
@@ -161,7 +152,11 @@ public class ParticleDisruptorItem : FirearmItem
             if (module is DisruptorModeSelector selectorModule)
             {
                 _selectorModule = selectorModule;
-                break;
+            }
+
+            if (module is MagazineModule magazineModule)
+            {
+                _magazineModule = magazineModule;
             }
         }
     }
