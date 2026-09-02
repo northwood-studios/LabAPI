@@ -11,7 +11,7 @@ public class PermissionGroup
     /// <summary>
     /// Gets the default permission group.
     /// </summary>
-    public static PermissionGroup Default => new([], []);
+    public static PermissionGroup Default => new([], []) { IsRuntime = false };
 
     /// <summary>
     /// Generates the default permission groups based on the available groups in the RA settings.
@@ -32,8 +32,11 @@ public class PermissionGroup
     /// <summary>
     /// Constructor for deserialization.
     /// </summary>
+    /// <remarks>
+    /// All objects created by this constructor will have their <see cref="IsRuntime"/> property set to false.
+    /// </remarks>
     public PermissionGroup()
-        : this([], [])
+        : this([], [], false)
     {
     }
 
@@ -42,10 +45,12 @@ public class PermissionGroup
     /// </summary>
     /// <param name="inheritedGroups">Array of groups that should be inherited.</param>
     /// <param name="permissions">Array of permissions this group should have.</param>
-    public PermissionGroup(string[] inheritedGroups, string[] permissions)
+    /// <param name="isRuntime">Bool indicating whether the <see cref="PermissionGroup"/> should skip being saved to the permission file config. See: <seealso cref="IsRuntime"/>.</param>
+    public PermissionGroup(string[] inheritedGroups, string[] permissions, bool isRuntime = true)
     {
         InheritedGroups = inheritedGroups;
         Permissions = permissions;
+        IsRuntime = isRuntime;
     }
 
     /// <summary>
@@ -63,6 +68,13 @@ public class PermissionGroup
     /// </summary>
     [YamlIgnore]
     public bool IsRoot { get; set; } = false;
+
+    /// <summary>
+    /// A bool indicating whether the permission was created at runtime and should not be saved.
+    /// Will not be saved if set to true.
+    /// </summary>
+    [YamlIgnore]
+    public bool IsRuntime { get; internal set; }
 
     /// <summary>
     /// An internal dictionary that saves special permissions. (x.*).

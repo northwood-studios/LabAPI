@@ -2,6 +2,7 @@ using LabApi.Features.Console;
 using LabApi.Features.Wrappers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace LabApi.Features.Permissions;
@@ -31,13 +32,7 @@ public static class PermissionsManager
             return;
         }
 
-        if (Activator.CreateInstance<T>() is not IPermissionsProvider provider)
-        {
-            Logger.Error($"{LoggerPrefix} Failed to create an instance of the permission provider of type {typeof(T).FullName}.");
-            return;
-        }
-
-        PermissionProviders.Add(typeof(T), provider);
+        PermissionProviders.Add(typeof(T), new T());
     }
 
     /// <summary>
@@ -62,13 +57,38 @@ public static class PermissionsManager
     /// <returns>The registered <see cref="IPermissionsProvider"/> of the given type <typeparamref name="T"/>; otherwise, null.</returns>
     public static IPermissionsProvider? GetProvider<T>()
         where T : IPermissionsProvider, new()
+        => GetProvider(typeof(T));
+
+    /// <summary>
+    /// Retrieves the registered <see cref="IPermissionsProvider"/> of the given type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the permission provider to retrieve.</typeparam>
+    /// <returns>The registered <see cref="IPermissionsProvider"/> of the given type <typeparamref name="T"/>; otherwise, null.</returns>
+    public static bool TryGetProvider<T>([NotNullWhen(true)] out T? provider)
+        where T : class, IPermissionsProvider, new()
     {
-        if (PermissionProviders.TryGetValue(typeof(T), out IPermissionsProvider provider))
+        provider = GetProvider(typeof(T)) as T;
+        return provider != null;
+    }
+
+    /// <summary>
+    /// Retrieves the registered <see cref="IPermissionsProvider"/> of the given type <paramref name="providerType"/>.
+    /// </summary>
+    /// <param name="providerType">The type of the permission provider to retrieve.</param>
+    /// <returns>The registered <see cref="IPermissionsProvider"/> of the given type <paramref name="providerType"/>; otherwise, null.</returns>
+    public static IPermissionsProvider? GetProvider(Type providerType)
+    {
+        if (providerType == null)
+        {
+            throw new ArgumentNullException(nameof(providerType));
+        }
+
+        if (PermissionProviders.TryGetValue(providerType, out IPermissionsProvider provider))
         {
             return provider;
         }
 
-        Logger.Warn($"{LoggerPrefix} The permission provider of type {typeof(T).FullName} is not registered.");
+        Logger.Warn($"{LoggerPrefix} The permission provider of type {providerType.FullName} is not registered.");
         return null;
     }
 

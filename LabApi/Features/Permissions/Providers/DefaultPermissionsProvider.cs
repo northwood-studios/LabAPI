@@ -5,6 +5,7 @@ using NorthwoodLib.Pools;
 using Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -110,9 +111,34 @@ public class DefaultPermissionsProvider : IPermissionsProvider
     /// <inheritdoc />
     void IPermissionsProvider.ReloadPermissions() => ReloadPermissions();
 
-    private PermissionGroup GetPlayerGroup(Player player) => _permissionsDictionary.GetValueOrDefault(player.PermissionsGroupName ?? "default") ?? PermissionGroup.Default;
+    /// <summary>
+    /// Gets the <see cref="PermissionGroup"/> the player is a part of.
+    /// </summary>
+    /// <param name="player">The player whose <see cref="PermissionGroup"/> to find.</param>
+    /// <returns>The <see cref="PermissionGroup"/> the player is a part of, otherwise <see cref="PermissionGroup.Default"/>.</returns>
+    public PermissionGroup GetPlayerGroup(Player player) => GetPermissionGroup(player.PermissionsGroupName ?? "default");
 
-    private string[] GetPermissions(PermissionGroup group)
+    /// <summary>
+    /// Gets the <see cref="PermissionGroup"/> from a <see cref="UserGroup.Name"/>.
+    /// </summary>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> to find the <see cref="PermissionGroup"/> of.</param>
+    /// <returns>A <see cref="PermissionGroup"/> if one is defined, <see cref="PermissionGroup.Default"/> otherwise.</returns>
+    public PermissionGroup GetPermissionGroup(string groupName) => _permissionsDictionary.GetValueOrDefault(groupName) ?? PermissionGroup.Default;
+
+    /// <summary>
+    /// Tries to get the <see cref="PermissionGroup"/> from a <see cref="UserGroup.Name"/>.
+    /// </summary>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> to find the <see cref="PermissionGroup"/> of.</param>
+    /// <param name="permissionGroup">The found <see cref="PermissionGroup"/> when true, null otherwise.</param>
+    /// <returns>Whether a <see cref="PermissionGroup"/> with the registry name of <paramref name="groupName"/> was found.</returns>
+    public bool TryGetPermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? permissionGroup) => _permissionsDictionary.TryGetValue(groupName, out permissionGroup);
+
+    /// <summary>
+    /// Gets the <see cref="string"/> array of permissions a <see cref="PermissionGroup"/> grants.
+    /// </summary>
+    /// <param name="group">The <see cref="PermissionGroup"/>, permissions of which will be returned.</param>
+    /// <returns>A <see cref="string"/> array of permissions this group grants.</returns>
+    public string[] GetPermissions(PermissionGroup group)
     {
         List<string> permissions = ListPool<string>.Shared.Rent();
 
@@ -130,6 +156,36 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         }
 
         return [.. permissions];
+    }
+
+    /// <summary>
+    /// Adds a new permission group.
+    /// </summary>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> the <paramref name="group"/> is linked to.</param>
+    /// <param name="group">The group to add.</param>
+    /// <returns>Whether the group was successfully added. False if group with this name is already registered or if the <paramref name="group"/>'s <see cref="PermissionGroup.IsRuntime"/> is set to false.</returns>
+    public bool AddPermissionGroup(string groupName, PermissionGroup group)
+        => group.IsRuntime && _permissionsDictionary.TryAdd(groupName, group);
+
+    /// <summary>
+    /// Removes a permission group if it exists.
+    /// </summary>
+    /// <param name="groupName">A <see cref="UserGroup.Name"/> which links to a <see cref="PermissionGroup"/> that is to be removed.</param>
+    /// <param name="group">The group which was removed or null.</param>
+    /// <returns>Whether the group was found and removed successfully. False if group with this name could not be found or if the <paramref name="group"/>'s <see cref="PermissionGroup.IsRuntime"/> is set to false.</returns>
+    public bool RemovePermissionGroup(string groupName, [NotNullWhen(true)] out PermissionGroup? group)
+    {
+        if (!_permissionsDictionary.TryGetValue(groupName, out group))
+        {
+            return false;
+        }
+
+        if (!group.IsRuntime)
+        {
+            return false;
+        }
+
+        return _permissionsDictionary.Remove(groupName, out group);
     }
 
     private bool HasPermission(PermissionGroup group, string permission)
@@ -208,5 +264,5 @@ public class DefaultPermissionsProvider : IPermissionsProvider
         }
     }
 
-    private void SavePermissions() => File.WriteAllText(_permissions.FullName, YamlParser.Serializer.Serialize(_permissionsDictionary));
+    private void SavePermissions() => File.WriteAllText(_permissions.FullName, YamlParser.Serializer.Serialize(_permissionsDictionary.Where(kvp => !kvp.Value.IsRuntime).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)));
 }
