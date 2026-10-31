@@ -1307,6 +1307,11 @@ public class Player
     }
 
     /// <summary>
+    /// Gets the player's aspect ratio synchronization component.
+    /// </summary>
+    public AspectRatioSync AspectRatioSync => ReferenceHub.aspectRatioSync;
+
+    /// <summary>
     /// Teleports the player by the delta location.
     /// </summary>
     /// <param name="delta">Position to add to the current one.</param>
