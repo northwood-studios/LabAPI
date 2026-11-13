@@ -1307,6 +1307,11 @@ public class Player
     }
 
     /// <summary>
+    /// Gets the estimated one-way network latency (RTT / 2) between the client and server.
+    /// </summary>
+    public int Ping => LiteNetLib4MirrorServer.GetPing(Connection.connectionId);
+
+    /// <summary>
     /// Teleports the player by the delta location.
     /// </summary>
     /// <param name="delta">Position to add to the current one.</param>
