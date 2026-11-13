@@ -2,6 +2,7 @@
 using CommandSystem;
 using CustomPlayerEffects;
 using Footprinting;
+using Generators;
 using Hints;
 using InventorySystem;
 using InventorySystem.Disarming;
@@ -32,6 +33,7 @@ using Utils.Networking;
 using Utils.NonAllocLINQ;
 using VoiceChat;
 using VoiceChat.Playbacks;
+using static PlayerStatsSystem.AhpStat;
 
 namespace LabApi.Features.Wrappers;
 
@@ -1308,11 +1310,6 @@ public class Player
     /// Gets the player's aspect ratio synchronization component.
     /// </summary>
     public AspectRatioSync AspectRatioSync => ReferenceHub.aspectRatioSync;
-
-    /// <summary>
-    /// Gets the estimated one-way network latency (RTT / 2) between the client and server.
-    /// </summary>
-    public int Ping => LiteNetLib4MirrorServer.GetPing(Connection.connectionId);
 
     /// <summary>
     /// Teleports the player by the delta location.
